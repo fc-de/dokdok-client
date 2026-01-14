@@ -1,7 +1,7 @@
 name: 🐞 Bug
 description: 버그가 발생했나요?
-title: "[fix] "
-labels: ["bug"]
+title: '[fix] '
+labels: ['bug']
 body:
   - type: textarea
     id: bug-description

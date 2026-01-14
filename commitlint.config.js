@@ -29,4 +29,4 @@ export default {
     // 제목 끝에 마침표(.) 금지
     'subject-full-stop': [2, 'never', '.'],
   },
-};
+}
