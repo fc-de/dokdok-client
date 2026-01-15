@@ -1,0 +1,45 @@
+# Lefthook 설정 파일
+# Git 훅을 통해 커밋 메시지, 코드 품질 등을 자동으로 검증합니다.
+
+# ============================================
+# commit-msg: 커밋 메시지 작성 후 실행되는 훅
+# ============================================
+commit-msg:
+  commands:
+    # commitlint로 커밋 메시지 형식 검증
+    commitlint:
+      run: npx commitlint --edit {1}
+      # {1}은 커밋 메시지 파일 경로 (.git/COMMIT_EDITMSG)
+
+# ============================================
+# pre-commit: 커밋 직전에 실행되는 훅
+# ============================================
+pre-commit:
+  # 여러 명령어를 병렬로 실행하여 속도 향상
+  parallel: true
+  commands:
+    # ESLint로 코드 품질 검사
+    lint:
+      glob: '*.{js,ts,tsx}'
+      run: npx eslint {staged_files}
+      # {staged_files}: 스테이징된 파일만 검사
+
+# ============================================
+# pre-push: 푸시 직전에 실행되는 훅
+# ============================================
+pre-push:
+  commands:
+    # 브랜치 이름 컨벤션 검사
+    branch-naming:
+      run: |
+        branch=$(git rev-parse --abbrev-ref HEAD)
+        # 허용 패턴: main, feature/{기능}-#{이슈번호}, fix/{기능}-#{이슈번호}
+        if [[ "$branch" != "main" ]] && [[ ! "$branch" =~ ^(feature|fix)/.*-#[0-9]+$ ]]; then
+          echo "❌ 브랜치 이름이 컨벤션에 맞지 않습니다."
+          echo ""
+          echo "허용되는 형식:"
+          echo "  - main"
+          echo "  - feature/{기능명}-#{이슈번호}  (예: feature/login-form-#12)"
+          echo "  - fix/{버그내용}-#{이슈번호}    (예: fix/ios-login-error-#22)"
+          exit 1
+        fi
