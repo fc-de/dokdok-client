@@ -58,8 +58,6 @@ reviews:
     base_branches:
       - 'main'
       - 'develop'
-      - 'release/*'
-      - 'feat/*'
 
 chat:
   auto_reply: true
