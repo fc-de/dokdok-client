@@ -33,13 +33,13 @@ pre-push:
     branch-naming:
       run: |
         branch=$(git rev-parse --abbrev-ref HEAD)
-        # 허용 패턴: main, feature/{기능}-#{이슈번호}, fix/{기능}-#{이슈번호}
-        if [[ "$branch" != "main" ]] && [[ ! "$branch" =~ ^(feature|fix)/.*-#[0-9]+$ ]]; then
+        # 허용 패턴: main, feat/{기능}-{이슈번호}, fix/{기능}-{이슈번호}
+        if [[ "$branch" != "main" ]] && [[ ! "$branch" =~ ^(feat|fix)/.*-[0-9]+$ ]]; then
           echo "❌ 브랜치 이름이 컨벤션에 맞지 않습니다."
           echo ""
           echo "허용되는 형식:"
           echo "  - main"
-          echo "  - feature/{기능명}-#{이슈번호}  (예: feature/login-form-#12)"
-          echo "  - fix/{버그내용}-#{이슈번호}    (예: fix/ios-login-error-#22)"
+          echo "  - feat/{기능명}-{이슈번호}  (예: feat/login-form-12)"
+          echo "  - fix/{버그내용}-{이슈번호}    (예: fix/ios-login-error-22)"
           exit 1
         fi
