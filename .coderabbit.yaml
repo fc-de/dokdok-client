@@ -3,76 +3,61 @@
 language: 'ko'
 early_access: false
 
+tone_instructions: |
+  리뷰는 짧고 명확하게 작성해줘.
+  문제 → 영향 → 대안 순서를 지켜줘.
+  기본 기준은 React 18(18.2.0) + React Router v6 환경이야.
+
 reviews:
-  profile: 'assertive'
+  request_changes_workflow: false
   high_level_summary: true
   review_status: true
+  collapse_walkthrough: false
+
+  path_filters:
+    - '!node_modules/**'
+    - '!dist/**'
+    - '!build/**'
+    - '!**/*.png'
+    - '!**/*.jpg'
+    - '!**/*.jpeg'
+    - '!**/*.gif'
+    - '!**/*.svg'
+    - '!**/__generated__/**'
+    - '!**/generated/**'
+    - '!**/*.map'
+    - '!**/*.min.*'
+    - '!**/*.lock'
+
+  path_instructions:
+    - path: '**/*.{ts,tsx}'
+      instructions: |
+        React 18 기준의 렌더링 흐름과 hooks 사용이 적절한지 확인해줘.
+        React Router v6 패턴에 맞는 구조인지 검토해줘.
+
+        서버 상태는 TanStack Query 사용을 기본으로 가정하고,
+        queryKey 안정성, enabled 조건, select 비용, invalidate/refetch 타이밍을 중점적으로 봐줘.
+
+        전역 상태(Zustand/Redux Toolkit)는 UI 상태 중심으로 권장하고,
+        서버 상태를 전역에 두는 경우에는 그 필요성을 근거와 함께 설명하도록 유도해줘.
+
+        TailwindCSS v4 + shadcn UI 사용 시,
+        className 중복/과도 사용이나 구조적인 문제가 있을 때만 언급해줘.
+        접근성이나 스타일 취향 지적은 필수가 아니라 참고 사항으로만 다뤄줘.
+
+        any 사용은 지양하고,
+        불가피할 경우 사유와 범위를 명확히 하도록 코멘트해줘.
 
   auto_review:
     enabled: true
     drafts: false
+    ignore_title_keywords:
+      - 'WIP'
+      - 'DO NOT MERGE'
+      - 'DRAFT'
+    base_branches:
+      - 'main'
+      - 'develop'
 
-  path_filters:
-    include:
-      - 'src/**'
-      - 'public/**'
-      - 'index.html'
-      - 'vite.config.*'
-      - 'tsconfig*.json'
-      - 'tailwind.config.*'
-      - 'postcss.config.*'
-      - '.eslintrc.*'
-      - 'eslint.config.*'
-      - '.prettierrc*'
-      - '.github/**'
-
-    exclude:
-      - '**/*.lock'
-      - 'pnpm-lock.yaml'
-      - 'yarn.lock'
-      - 'package-lock.json'
-      - 'dist/**'
-      - 'build/**'
-      - 'coverage/**'
-      - '.next/**'
-      - '.turbo/**'
-      - '**/*.min.*'
-      - '**/*.map'
-      - '**/*.snap'
-      - '**/generated/**'
-      - '**/*.d.ts'
-
-  tools:
-    eslint: true
-    typescript: true
-
-  tone_instructions: |
-    - 리뷰는 짧고 명확하게 작성해줘. "문제 → 영향 → 대안" 순서를 지켜줘.
-    - 기본 기준은 React 18(18.2.0) + React Router v6로 설명해줘.
-      단, PR 목적이 업그레이드/마이그레이션(React 19, RR v7 등)이라면 그 맥락에 맞춰 예외적으로 언급해줘.
-
-    - (가드레일) 기본 원칙: 서버 데이터/비동기 상태는 TanStack Query를 우선 고려하고,
-      전역 상태(Zustand/Redux)는 주로 UI 상태(필터, 모달, 토글 등) 중심으로 사용하는 방향을 권장해줘.
-      예외적으로 서버 상태를 전역에 둘 필요가 있다면
-      (공유 입력 상태, 낙관적 UI, 임시 편집/드래프트, 실시간 동기화 등)
-      "왜 Query만으로는 부족한지" 근거를 함께 설명해줘.
-
-    - TanStack Query 사용 시: queryKey 안정성(객체/함수 포함 여부), staleTime/gcTime, enabled 조건,
-      select 비용(무거운 변환), invalidate/refetch 타이밍이 UI 흐름과 맞는지 중점적으로 확인해줘.
-    - Axios 요청은 공통 인스턴스/인터셉터 사용 여부와
-      네트워크 오류/서버 오류 분리, 에러 핸들링(사용자 메시지/로깅) 일관성을 확인해줘.
-    - TailwindCSS / shadcn UI 사용 시:
-      className 중복·과도 여부는 기본으로 확인해줘.
-      접근성(aria, focus-visible 등)은 개선 포인트가 뚜렷할 때만 "참고 사항"으로 가볍게 언급해줘(필수 요구 X).
-      반응형/다크모드는 현재 요구사항이 명확하지 않으니,
-      PR에서 해당 기능을 명시적으로 다루는 경우에만 체크해줘.
-    - any는 가능하면 피하고, 불가피하면 사유와 범위를 좁히고
-      (unknown + narrowing),
-      후속 작업으로 제거할 계획이 있는지 확인해줘.
-    - useEffect 의존성/cleanup은 필수로 확인하고,
-      memo/useCallback은 실제 리렌더 비용이 보이거나
-      근거가 있을 때만 남용/누락을 지적해줘.
-
-limits:
-  max_files: 35
-  max_lines: 1200
+chat:
+  auto_reply: true
