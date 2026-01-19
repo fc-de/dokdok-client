@@ -290,7 +290,7 @@
 @utility bg-ai-gradient {
   background: linear-gradient(
     270deg,
-    var(--primary-300, #56cdaf) 0%,
-    var(--purple-200, #a372cd) 100%
+    var(--color-primary-300, #56cdaf) 0%,
+    var(--color-purple-200, #a372cd) 100%
   );
 }
