@@ -1,0 +1,10 @@
+/* Main stylesheet - Import order matters */
+
+@import 'pretendard/dist/web/static/pretendard.css';
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@import './tokens.css';
+@import './theme.css';
+@import './base.css';
+@import './typography.css';

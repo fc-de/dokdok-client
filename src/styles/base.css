@@ -1,0 +1,14 @@
+/* Base Styles - Layer base rules */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-pretendard;
+    line-height: var(--leading-140);
+  }
+  html {
+    letter-spacing: var(--tracking-tight-2);
+  }
+}
