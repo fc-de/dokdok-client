@@ -53,6 +53,11 @@ export default defineConfig([
           selector: 'typeLike',
           format: ['PascalCase'],
         },
+        // 타입 프로퍼티: 환경 변수 등을 위해 UPPER_CASE 허용
+        {
+          selector: 'typeProperty',
+          format: ['camelCase', 'UPPER_CASE'],
+        },
         // import: 모든 형식 허용
         {
           selector: 'import',
@@ -62,6 +67,11 @@ export default defineConfig([
         {
           selector: 'objectLiteralProperty',
           format: null,
+        },
+        // 객체 메서드: endpoints 상수 등에서 UPPER_CASE 허용
+        {
+          selector: 'objectLiteralMethod',
+          format: ['camelCase', 'UPPER_CASE'],
         },
         // 구조 분해 변수: 외부 라이브러리 호환
         {
