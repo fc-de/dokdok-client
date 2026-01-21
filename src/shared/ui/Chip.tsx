@@ -50,3 +50,18 @@ function Chip({ className, variant, onDelete, children, ...props }: ChipProps) {
 }
 
 export { Chip, chipVariants }
+
+/*
+ * 사용 예시:
+ *
+ * import { Chip } from '@/shared/ui/Chip'
+ *
+ * // 기본 사용
+ * <Chip>태그</Chip>
+ *
+ * // variant 변경
+ * <Chip variant="default">Default</Chip>
+ * <Chip variant="selected">Selected</Chip>
+ * <Chip variant="edit" onDelete={() => console.log('삭제')}>Edit (X버튼 포함)</Chip>
+ * <Chip variant="success">Success</Chip>
+ */

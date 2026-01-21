@@ -97,3 +97,42 @@ function NumberedCheckbox({ id, className, children, disabled = false }: Numbere
 }
 
 export { NumberedCheckboxGroup, NumberedCheckbox }
+
+/*
+ * 사용 예시:
+ *
+ * import { useState } from 'react'
+ * import { NumberedCheckboxGroup, NumberedCheckbox } from '@/shared/ui/NumberedCheckbox'
+ *
+ * function Example() {
+ *   const [selected, setSelected] = useState<string[]>([])
+ *
+ *   return (
+ *     <NumberedCheckboxGroup
+ *       value={selected}
+ *       onChange={setSelected}
+ *       className="flex flex-col gap-3"
+ *     >
+ *       <NumberedCheckbox id="a">항목 A</NumberedCheckbox>
+ *       <NumberedCheckbox id="b">항목 B</NumberedCheckbox>
+ *       <NumberedCheckbox id="c">항목 C</NumberedCheckbox>
+ *       <NumberedCheckbox id="d" disabled>비활성화 항목</NumberedCheckbox>
+ *     </NumberedCheckboxGroup>
+ *   )
+ * }
+ *
+ * // 클릭 순서대로 번호가 매겨짐
+ * // A → C → B 순서로 클릭하면: A(1), C(2), B(3)
+ * // 선택 해제하면 뒤 번호가 당겨짐
+ *
+ * // 선택된 값 활용 (서버 전송 등)
+ * // selected = ['a', 'c', 'b'] (배열 순서 = 선택 순서)
+ *
+ * // 객체로 변환
+ * const orderMap = Object.fromEntries(selected.map((id, i) => [id, i + 1]))
+ * // { a: 1, c: 2, b: 3 }
+ *
+ * // 배열로 변환
+ * const orderList = selected.map((id, i) => ({ id, order: i + 1 }))
+ * // [{ id: 'a', order: 1 }, { id: 'c', order: 2 }, { id: 'b', order: 3 }]
+ */

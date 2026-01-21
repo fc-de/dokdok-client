@@ -30,3 +30,28 @@ function Checkbox({
 }
 
 export { Checkbox }
+
+/*
+ * 사용 예시:
+ *
+ * import { Checkbox } from '@/shared/ui/Checkbox'
+ *
+ * // 기본 사용 (uncontrolled)
+ * <Checkbox />
+ *
+ * // controlled
+ * const [checked, setChecked] = useState(false)
+ * <Checkbox checked={checked} onCheckedChange={setChecked} />
+ *
+ * // 기본값 설정
+ * <Checkbox defaultChecked />
+ *
+ * // 비활성화
+ * <Checkbox disabled />
+ *
+ * // 라벨과 함께 사용
+ * <label className="flex items-center gap-2">
+ *   <Checkbox checked={agreed} onCheckedChange={setAgreed} />
+ *   <span>약관에 동의합니다</span>
+ * </label>
+ */

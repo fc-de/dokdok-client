@@ -56,3 +56,34 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button'
 
 export { Button, buttonVariants }
+
+/*
+ * 사용 예시:
+ *
+ * import { Button } from '@/shared/ui/Button'
+ *
+ * // 기본 사용 (primary, small)
+ * <Button>버튼</Button>
+ *
+ * // variant 변경
+ * <Button variant="primary">Primary</Button>
+ * <Button variant="secondary">Secondary</Button>
+ * <Button variant="ghost">Ghost (텍스트 버튼)</Button>
+ * <Button variant="cta">CTA</Button>
+ *
+ * // size 변경
+ * <Button size="small">Small (h-9)</Button>
+ * <Button size="medium">Medium (h-11)</Button>
+ * <Button size="large">Large (h-[54px])</Button>
+ *
+ * // 비활성화
+ * <Button disabled>Disabled</Button>
+ *
+ * // ghost는 색상을 className으로 지정
+ * <Button variant="ghost" className="text-primary-300">텍스트 버튼</Button>
+ *
+ * // asChild로 다른 요소로 렌더링 (예: Link)
+ * <Button asChild>
+ *   <a href="/path">Link Button</a>
+ * </Button>
+ */
