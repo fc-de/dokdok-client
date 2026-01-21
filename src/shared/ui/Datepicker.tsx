@@ -2,9 +2,9 @@ import { format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
 import * as React from 'react'
 
-import { Calendar } from '@/components/ui/Calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover'
 import { cn } from '@/shared/lib/utils'
+import { Calendar } from '@/shared/ui/Calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/Popover'
 
 type DatePickerProps = {
   value?: Date
