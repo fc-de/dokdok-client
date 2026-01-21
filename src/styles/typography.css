@@ -23,10 +23,14 @@
 }
 @utility text-subtitle3 {
   font-size: var(--text-subtitle3);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-medium);
 }
 @utility text-subtitle4 {
   font-size: var(--text-subtitle4);
+  font-weight: var(--font-weight-regular);
+}
+@utility text-subtitle5 {
+  font-size: var(--text-subtitle5);
   font-weight: var(--font-weight-medium);
 }
 
@@ -49,6 +53,10 @@
 @utility text-body5 {
   font-size: var(--text-body5);
   font-weight: var(--font-weight-semibold);
+}
+@utility text-body6 {
+  font-size: var(--text-body6);
+  font-weight: var(--font-weight-regular);
 }
 
 @utility text-caption1 {
