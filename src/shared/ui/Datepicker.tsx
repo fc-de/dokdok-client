@@ -31,7 +31,7 @@ function DatePicker({ value, onChange, placeholder = '날짜 선택', className 
         <button
           data-empty={!date}
           className={cn(
-            'flex data-[empty=true]:text-grey-600 w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small text-body1 transition-colors text-black items-center',
+            'flex w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small text-body1 transition-colors text-black items-center',
             className
           )}
         >

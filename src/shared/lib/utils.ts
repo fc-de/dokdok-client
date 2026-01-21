@@ -12,6 +12,7 @@ const customTwMerge = extendTailwindMerge({
         'text-subtitle2',
         'text-subtitle3',
         'text-subtitle4',
+        'text-subtitle5',
         'text-body1',
         'text-body2',
         'text-body3',
