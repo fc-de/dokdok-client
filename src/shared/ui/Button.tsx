@@ -17,9 +17,9 @@ const buttonVariants = cva(
                 cta: 'bg-grey-800 text-primary-200 hover:bg-grey-900',
             },
             size: {
-                sm: 'h-9 text-body2',
-                md: 'h-11 text-subtitle2',
-                lg: 'h-[54px] text-subtitle2',
+                small: 'h-9 text-body2',
+                medium: 'h-11 text-subtitle2',
+                large: 'h-[54px] text-subtitle2',
             },
         },
         compoundVariants: [
@@ -30,7 +30,7 @@ const buttonVariants = cva(
         ],
         defaultVariants: {
             variant: 'primary',
-            size: 'sm',
+            size: 'small',
         },
     }
 )
