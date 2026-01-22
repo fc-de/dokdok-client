@@ -79,6 +79,9 @@ function NumberedCheckbox({ id, className, children, disabled = false }: Numbere
     <div className="inline-flex items-center gap-2 align-middle">
       <button
         type="button"
+        role="checkbox"
+        aria-checked={isChecked}
+        aria-disabled={disabled}
         data-slot="numbered-checkbox"
         data-state={isChecked ? 'checked' : 'unchecked'}
         onClick={() => !disabled && toggle(id)}

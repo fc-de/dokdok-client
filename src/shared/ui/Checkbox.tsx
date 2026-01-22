@@ -11,7 +11,7 @@ import { cn } from '@/shared/lib/utils'
  * - `disabled`로 비활성화할 수 있습니다.
  * @example
  * ```tsx
- * <Checkbox checked={agreed} onCheckedChange={setAgreed} />
+ * <Checkbox checked={agreed} onCheckedChange={() => setAgreed} />
  * <Checkbox defaultChecked disabled />
  * ```
  */
@@ -20,19 +20,20 @@ function Checkbox({ className, ...props }: React.ComponentProps<typeof CheckboxP
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        'peer size-6 shrink-0 rounded-base transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'peer size-6 shrink-0 rounded-base outline-none transition-colors',
+        'grid place-content-center cursor-pointer',
         'bg-grey-400 data-[state=checked]:bg-primary-300',
+        'focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
       {...props}
     >
-      <CheckboxPrimitive.Indicator
-        data-slot="checkbox-indicator"
-        forceMount
-        className="grid place-content-center text-white"
-      >
-        <CheckIcon className="size-4" />
-      </CheckboxPrimitive.Indicator>
+      <CheckIcon
+        className={cn(
+          'size-4 transition-colors',
+          'text-grey-200 peer-data-[state=checked]:text-white'
+        )}
+      />
     </CheckboxPrimitive.Root>
   )
 }

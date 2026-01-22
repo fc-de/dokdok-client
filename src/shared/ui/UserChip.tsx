@@ -77,6 +77,7 @@ export function UserChip({
       {removable && !disabled && (
         <button
           type="button"
+          aria-label="삭제"
           onClick={(e) => {
             e.stopPropagation()
             onRemove?.()

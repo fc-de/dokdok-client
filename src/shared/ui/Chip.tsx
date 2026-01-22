@@ -12,7 +12,7 @@ const chipVariants = cva(
         default: 'border-grey-300 text-grey-600 bg-transparent',
         selected: 'border-primary-300 text-black bg-primary-100',
         edit: 'border-grey-400 text-black bg-white',
-        success: 'border-primary-300 border-0 text-purple-200 bg-purple-100',
+        success: 'border-0 text-purple-200 bg-purple-100',
       },
     },
     defaultVariants: {

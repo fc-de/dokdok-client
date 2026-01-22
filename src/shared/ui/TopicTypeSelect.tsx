@@ -112,21 +112,21 @@ function TopicTypeSelectItem({
 }: TopicTypeSelectItemProps) {
   const { selected, type, toggle, disabled: groupDisabled } = useTopicTypeSelectContext()
 
-  const isDisabled = groupDisabled || itemDisabled
+  const isHidden = groupDisabled || itemDisabled
   const isSelected = type === 'single' ? selected === value : (selected as string[]).includes(value)
+
+  if (isHidden) return null
 
   return (
     <button
       type="button"
       data-slot="topic-type-select-item"
       data-state={isSelected ? 'on' : 'off'}
-      onClick={() => !isDisabled && toggle(value)}
-      disabled={isDisabled}
+      onClick={() => toggle(value)}
       className={cn(
         'h-10 w-54 px-[14px] py-[10px] rounded-small border transition-colors cursor-pointer',
         'bg-white border-grey-400 text-grey-700',
         isSelected && 'border-primary-300 bg-primary-100 text-primary-300',
-        isDisabled && 'invisible pointer-events-none',
         className
       )}
     >
