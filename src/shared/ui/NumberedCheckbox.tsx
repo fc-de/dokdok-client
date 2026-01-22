@@ -21,7 +21,20 @@ function useNumberedCheckboxContext() {
     return context
 }
 
-// Group
+/**
+ * NumberedCheckbox (순서가 표시되는 체크박스)
+ * - 클릭 순서대로 번호가 매겨지며, 선택 해제 시 뒤 번호가 당겨집니다.
+ * - `value` 배열의 순서가 선택 순서를 나타냅니다.
+ * - `disabled`로 개별 항목을 비활성화할 수 있습니다.
+ * @example
+ * ```tsx
+ * <NumberedCheckboxGroup value={selected} onChange={setSelected}>
+ *   <NumberedCheckbox id="a">항목 A</NumberedCheckbox>
+ *   <NumberedCheckbox id="b">항목 B</NumberedCheckbox>
+ *   <NumberedCheckbox id="c" disabled>항목 C</NumberedCheckbox>
+ * </NumberedCheckboxGroup>
+ * ```
+ */
 export interface NumberedCheckboxGroupProps {
     value: string[]
     onChange: (value: string[]) => void
@@ -97,42 +110,3 @@ function NumberedCheckbox({ id, className, children, disabled = false }: Numbere
 }
 
 export { NumberedCheckboxGroup, NumberedCheckbox }
-
-/*
- * 사용 예시:
- *
- * import { useState } from 'react'
- * import { NumberedCheckboxGroup, NumberedCheckbox } from '@/shared/ui/NumberedCheckbox'
- *
- * function Example() {
- *   const [selected, setSelected] = useState<string[]>([])
- *
- *   return (
- *     <NumberedCheckboxGroup
- *       value={selected}
- *       onChange={setSelected}
- *       className="flex flex-col gap-3"
- *     >
- *       <NumberedCheckbox id="a">항목 A</NumberedCheckbox>
- *       <NumberedCheckbox id="b">항목 B</NumberedCheckbox>
- *       <NumberedCheckbox id="c">항목 C</NumberedCheckbox>
- *       <NumberedCheckbox id="d" disabled>비활성화 항목</NumberedCheckbox>
- *     </NumberedCheckboxGroup>
- *   )
- * }
- *
- * // 클릭 순서대로 번호가 매겨짐
- * // A → C → B 순서로 클릭하면: A(1), C(2), B(3)
- * // 선택 해제하면 뒤 번호가 당겨짐
- *
- * // 선택된 값 활용 (서버 전송 등)
- * // selected = ['a', 'c', 'b'] (배열 순서 = 선택 순서)
- *
- * // 객체로 변환
- * const orderMap = Object.fromEntries(selected.map((id, i) => [id, i + 1]))
- * // { a: 1, c: 2, b: 3 }
- *
- * // 배열로 변환
- * const orderList = selected.map((id, i) => ({ id, order: i + 1 }))
- * // [{ id: 'a', order: 1 }, { id: 'c', order: 2 }, { id: 'b', order: 3 }]
- */

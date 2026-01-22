@@ -41,6 +41,19 @@ export interface ButtonProps
     asChild?: boolean
 }
 
+/**
+ * Button (다양한 스타일의 버튼)
+ * - `variant`로 버튼 스타일을 지정합니다: primary, secondary, ghost, cta
+ * - `size`로 버튼 크기를 지정합니다: small, medium, large
+ * - `asChild`를 사용하면 자식 요소로 렌더링됩니다 (예: Link)
+ * @example
+ * ```tsx
+ * <Button variant="primary" size="medium">Primary</Button>
+ * <Button variant="secondary">Secondary</Button>
+ * <Button variant="ghost" className="text-primary-300">텍스트 버튼</Button>
+ * <Button asChild><a href="/path">Link Button</a></Button>
+ * ```
+ */
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, type, ...props }, ref) => {
         const Comp = asChild ? Slot : 'button'
@@ -57,34 +70,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button'
 
 export { Button, buttonVariants }
-
-/*
- * 사용 예시:
- *
- * import { Button } from '@/shared/ui/Button'
- *
- * // 기본 사용 (primary, small)
- * <Button>버튼</Button>
- *
- * // variant 변경
- * <Button variant="primary">Primary</Button>
- * <Button variant="secondary">Secondary</Button>
- * <Button variant="ghost">Ghost (텍스트 버튼)</Button>
- * <Button variant="cta">CTA</Button>
- *
- * // size 변경
- * <Button size="small">Small (h-9)</Button>
- * <Button size="medium">Medium (h-11)</Button>
- * <Button size="large">Large (h-[54px])</Button>
- *
- * // 비활성화
- * <Button disabled>Disabled</Button>
- *
- * // ghost는 색상을 className으로 지정
- * <Button variant="ghost" className="text-primary-300">텍스트 버튼</Button>
- *
- * // asChild로 다른 요소로 렌더링 (예: Link)
- * <Button asChild>
- *   <a href="/path">Link Button</a>
- * </Button>
- */

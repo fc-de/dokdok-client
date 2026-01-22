@@ -27,6 +27,17 @@ export interface ChipProps
     onDelete?: () => void
 }
 
+/**
+ * Chip (태그/필터 칩)
+ * - `variant`로 칩 스타일을 지정합니다: default, selected, edit, success
+ * - `variant="edit"`일 때 `onDelete` 콜백으로 삭제 버튼을 활성화합니다.
+ * @example
+ * ```tsx
+ * <Chip variant="selected">선택됨</Chip>
+ * <Chip variant="edit" onDelete={() => handleDelete()}>수정 가능</Chip>
+ * <Chip variant="success">완료</Chip>
+ * ```
+ */
 function Chip({ className, variant, onDelete, children, ...props }: ChipProps) {
     return (
         <span
@@ -50,18 +61,3 @@ function Chip({ className, variant, onDelete, children, ...props }: ChipProps) {
 }
 
 export { Chip, chipVariants }
-
-/*
- * 사용 예시:
- *
- * import { Chip } from '@/shared/ui/Chip'
- *
- * // 기본 사용
- * <Chip>태그</Chip>
- *
- * // variant 변경
- * <Chip variant="default">Default</Chip>
- * <Chip variant="selected">Selected</Chip>
- * <Chip variant="edit" onDelete={() => console.log('삭제')}>Edit (X버튼 포함)</Chip>
- * <Chip variant="success">Success</Chip>
- */

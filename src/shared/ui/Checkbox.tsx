@@ -4,6 +4,17 @@ import { CheckIcon } from "lucide-react"
 
 import { cn } from '@/shared/lib/utils'
 
+/**
+ * Checkbox (체크박스)
+ * - `checked`, `onCheckedChange`로 controlled 모드로 사용합니다.
+ * - `defaultChecked`로 초기값을 설정할 수 있습니다.
+ * - `disabled`로 비활성화할 수 있습니다.
+ * @example
+ * ```tsx
+ * <Checkbox checked={agreed} onCheckedChange={setAgreed} />
+ * <Checkbox defaultChecked disabled />
+ * ```
+ */
 function Checkbox({
   className,
   ...props
@@ -30,28 +41,3 @@ function Checkbox({
 }
 
 export { Checkbox }
-
-/*
- * 사용 예시:
- *
- * import { Checkbox } from '@/shared/ui/Checkbox'
- *
- * // 기본 사용 (uncontrolled)
- * <Checkbox />
- *
- * // controlled
- * const [checked, setChecked] = useState(false)
- * <Checkbox checked={checked} onCheckedChange={setChecked} />
- *
- * // 기본값 설정
- * <Checkbox defaultChecked />
- *
- * // 비활성화
- * <Checkbox disabled />
- *
- * // 라벨과 함께 사용
- * <label className="flex items-center gap-2">
- *   <Checkbox checked={agreed} onCheckedChange={setAgreed} />
- *   <span>약관에 동의합니다</span>
- * </label>
- */

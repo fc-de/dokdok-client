@@ -3,7 +3,23 @@ import * as TabsPrimitive from '@radix-ui/react-tabs'
 
 import { cn } from '@/shared/lib/utils'
 
-// Tabs Root
+/**
+ * Tabs (탭 네비게이션)
+ * - `size`로 탭 크기를 지정합니다: small, medium, large
+ * - `badge`를 사용하면 탭 옆에 숫자 배지가 표시됩니다 (medium, large만 지원)
+ * - `value`, `onValueChange`로 controlled 모드로 사용할 수 있습니다.
+ * @example
+ * ```tsx
+ * <Tabs defaultValue="tab1">
+ *   <TabsList size="medium">
+ *     <TabsTrigger value="tab1" size="medium" badge={12}>전체</TabsTrigger>
+ *     <TabsTrigger value="tab2" size="medium" badge={5}>진행중</TabsTrigger>
+ *   </TabsList>
+ *   <TabsContent value="tab1">전체 목록</TabsContent>
+ *   <TabsContent value="tab2">진행중 목록</TabsContent>
+ * </Tabs>
+ * ```
+ */
 function Tabs({
     className,
     ...props
@@ -17,7 +33,6 @@ function Tabs({
     )
 }
 
-// Tabs List
 interface TabsListProps extends React.ComponentProps<typeof TabsPrimitive.List> {
     size?: 'small' | 'medium' | 'large'
 }
@@ -33,7 +48,6 @@ function TabsList({ className, size = 'small', ...props }: TabsListProps) {
     )
 }
 
-// Tabs Trigger
 interface TabsTriggerProps
     extends React.ComponentProps<typeof TabsPrimitive.Trigger> {
     size?: 'small' | 'medium' | 'large'
@@ -98,7 +112,6 @@ function TabsTrigger({
     )
 }
 
-// Tabs Content
 function TabsContent({
     className,
     ...props
@@ -113,52 +126,3 @@ function TabsContent({
 }
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }
-
-/*
- * 사용 예시:
- *
- * import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/shared/ui/Tabs'
- *
- * // Small 사이즈 (기본)
- * <Tabs defaultValue="tab1">
- *   <TabsList>
- *     <TabsTrigger value="tab1">탭 1</TabsTrigger>
- *     <TabsTrigger value="tab2">탭 2</TabsTrigger>
- *     <TabsTrigger value="tab3">탭 3</TabsTrigger>
- *   </TabsList>
- *   <TabsContent value="tab1">탭 1 내용</TabsContent>
- *   <TabsContent value="tab2">탭 2 내용</TabsContent>
- *   <TabsContent value="tab3">탭 3 내용</TabsContent>
- * </Tabs>
- *
- * // Medium 사이즈 (badge 포함, 밑줄 있음)
- * <Tabs defaultValue="tab1">
- *   <TabsList size="medium">
- *     <TabsTrigger value="tab1" size="medium" badge={12}>전체</TabsTrigger>
- *     <TabsTrigger value="tab2" size="medium" badge={5}>진행중</TabsTrigger>
- *     <TabsTrigger value="tab3" size="medium" badge={3}>완료</TabsTrigger>
- *   </TabsList>
- *   <TabsContent value="tab1">전체 목록</TabsContent>
- *   <TabsContent value="tab2">진행중 목록</TabsContent>
- *   <TabsContent value="tab3">완료 목록</TabsContent>
- * </Tabs>
- *
- * // Large 사이즈 (badge 포함)
- * <Tabs defaultValue="tab1">
- *   <TabsList size="large">
- *     <TabsTrigger value="tab1" size="large" badge={99}>인기</TabsTrigger>
- *     <TabsTrigger value="tab2" size="large" badge={24}>최신</TabsTrigger>
- *   </TabsList>
- *   <TabsContent value="tab1">인기 콘텐츠</TabsContent>
- *   <TabsContent value="tab2">최신 콘텐츠</TabsContent>
- * </Tabs>
- *
- * // badge 없이 사용
- * <TabsTrigger value="tab1" size="medium">텍스트만</TabsTrigger>
- *
- * // Controlled
- * const [activeTab, setActiveTab] = useState('tab1')
- * <Tabs value={activeTab} onValueChange={setActiveTab}>
- *   ...
- * </Tabs>
- */

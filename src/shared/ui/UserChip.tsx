@@ -14,6 +14,18 @@ export interface UserChipProps {
     className?: string
 }
 
+/**
+ * UserChip (사용자 정보 칩)
+ * - `imageUrl`로 프로필 이미지를 표시합니다.
+ * - `selected`로 선택 상태를 표시합니다.
+ * - `removable`을 설정하면 삭제 버튼(X)이 표시됩니다.
+ * @example
+ * ```tsx
+ * <UserChip name="홍길동" imageUrl="/profile.jpg" />
+ * <UserChip name="홍길동" selected removable onRemove={() => handleRemove()} />
+ * <UserChip name="홍길동" disabled />
+ * ```
+ */
 export function UserChip({
     name,
     imageUrl,
@@ -80,44 +92,3 @@ export function UserChip({
         </div>
     )
 }
-
-/*
- * 사용 예시:
- *
- * import { UserChip } from '@/shared/ui/UserChip'
- *
- * // 기본 사용
- * <UserChip name="홍길동" />
- *
- * // 프로필 이미지 포함
- * <UserChip name="홍길동" imageUrl="/profile.jpg" />
- *
- * // 선택 상태
- * <UserChip name="홍길동" selected />
- *
- * // 삭제 버튼 포함 (X 버튼)
- * <UserChip
- *   name="홍길동"
- *   removable
- *   onRemove={() => console.log('삭제')}
- * />
- *
- * // 클릭 핸들러
- * <UserChip
- *   name="홍길동"
- *   onClick={() => console.log('클릭')}
- * />
- *
- * // 비활성화
- * <UserChip name="홍길동" disabled />
- *
- * // 선택 + 삭제 가능 조합
- * <UserChip
- *   name="홍길동"
- *   imageUrl="/profile.jpg"
- *   selected
- *   removable
- *   onClick={() => setSelected(true)}
- *   onRemove={() => handleRemove()}
- * />
- */

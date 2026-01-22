@@ -48,6 +48,20 @@ export type TopicTypeSelectGroupProps =
     | TopicTypeSelectGroupSingleProps
     | TopicTypeSelectGroupMultipleProps
 
+/**
+ * TopicTypeSelect (주제/유형 선택 버튼 그룹)
+ * - `type`으로 단일/다중 선택을 지정합니다: single(기본), multiple
+ * - `maxSelection`으로 다중 선택 시 최대 선택 개수를 제한합니다.
+ * - `disabled`로 그룹 전체 또는 개별 아이템을 비활성화할 수 있습니다.
+ * @example
+ * ```tsx
+ * <TopicTypeSelectGroup type="multiple" value={values} onChange={setValues} maxSelection={2}>
+ *   <TopicTypeSelectItem value="novel">소설</TopicTypeSelectItem>
+ *   <TopicTypeSelectItem value="essay">에세이</TopicTypeSelectItem>
+ *   <TopicTypeSelectItem value="self-help">자기계발</TopicTypeSelectItem>
+ * </TopicTypeSelectGroup>
+ * ```
+ */
 function TopicTypeSelectGroup({
     type = 'single',
     value,
@@ -141,56 +155,3 @@ function TopicTypeSelectItem({
 }
 
 export { TopicTypeSelectGroup, TopicTypeSelectItem }
-
-/*
- * 사용 예시:
- *
- * import { useState } from 'react'
- * import { TopicTypeSelectGroup, TopicTypeSelectItem } from '@/shared/ui/TopicTypeSelect'
- *
- * // Single 선택 (기본) - 하나만 선택 가능
- * function SingleExample() {
- *   const [value, setValue] = useState<string>('')
- *
- *   return (
- *     <TopicTypeSelectGroup value={value} onChange={setValue}>
- *       <TopicTypeSelectItem value="novel">소설</TopicTypeSelectItem>
- *       <TopicTypeSelectItem value="essay">에세이</TopicTypeSelectItem>
- *       <TopicTypeSelectItem value="self-help">자기계발</TopicTypeSelectItem>
- *     </TopicTypeSelectGroup>
- *   )
- * }
- *
- * // Multiple 선택 - 여러 개 선택 가능
- * function MultipleExample() {
- *   const [values, setValues] = useState<string[]>([])
- *
- *   return (
- *     <TopicTypeSelectGroup type="multiple" value={values} onChange={setValues}>
- *       <TopicTypeSelectItem value="novel">소설</TopicTypeSelectItem>
- *       <TopicTypeSelectItem value="essay">에세이</TopicTypeSelectItem>
- *       <TopicTypeSelectItem value="self-help">자기계발</TopicTypeSelectItem>
- *     </TopicTypeSelectGroup>
- *   )
- * }
- *
- * // Multiple 선택 개수 제한 - 최대 2개까지만 선택 가능
- * <TopicTypeSelectGroup type="multiple" value={values} onChange={setValues} maxSelection={2}>
- *   <TopicTypeSelectItem value="novel">소설</TopicTypeSelectItem>
- *   <TopicTypeSelectItem value="essay">에세이</TopicTypeSelectItem>
- *   <TopicTypeSelectItem value="self-help">자기계발</TopicTypeSelectItem>
- * </TopicTypeSelectGroup>
- *
- * // 그룹 레이아웃 변경
- * <TopicTypeSelectGroup value={value} onChange={setValue} className="flex-col">
- *   ...
- * </TopicTypeSelectGroup>
- *
- * // 전체 비활성화
- * <TopicTypeSelectGroup value={value} onChange={setValue} disabled>
- *   ...
- * </TopicTypeSelectGroup>
- *
- * // 개별 아이템 비활성화
- * <TopicTypeSelectItem value="novel" disabled>소설</TopicTypeSelectItem>
- */

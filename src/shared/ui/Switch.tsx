@@ -3,6 +3,17 @@ import * as SwitchPrimitive from '@radix-ui/react-switch'
 
 import { cn } from '@/shared/lib/utils'
 
+/**
+ * Switch (토글 스위치)
+ * - `checked`, `onCheckedChange`로 controlled 모드로 사용합니다.
+ * - `defaultChecked`로 초기값을 설정할 수 있습니다.
+ * - `disabled`로 비활성화할 수 있습니다.
+ * @example
+ * ```tsx
+ * <Switch checked={isOn} onCheckedChange={setIsOn} />
+ * <Switch defaultChecked disabled />
+ * ```
+ */
 function Switch({
     className,
     ...props
@@ -26,28 +37,3 @@ function Switch({
 }
 
 export { Switch }
-
-/*
- * 사용 예시:
- *
- * import { Switch } from '@/shared/ui/Switch'
- *
- * // 기본 사용 (uncontrolled)
- * <Switch />
- *
- * // controlled
- * const [isOn, setIsOn] = useState(false)
- * <Switch checked={isOn} onCheckedChange={setIsOn} />
- *
- * // 기본값 설정
- * <Switch defaultChecked />
- *
- * // 비활성화
- * <Switch disabled />
- *
- * // 라벨과 함께 사용
- * <label className="flex items-center gap-2">
- *   <Switch checked={isOn} onCheckedChange={setIsOn} />
- *   <span>알림 받기</span>
- * </label>
- */

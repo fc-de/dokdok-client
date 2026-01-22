@@ -10,6 +10,17 @@ export interface LikeButtonProps {
     className?: string
 }
 
+/**
+ * LikeButton (좋아요 버튼)
+ * - `count`로 좋아요 수를 표시합니다.
+ * - `isLiked`로 좋아요 상태를 표시합니다.
+ * - `onClick` 콜백은 토글된 liked 값을 인자로 받습니다.
+ * @example
+ * ```tsx
+ * <LikeButton count={42} isLiked={isLiked} onClick={(liked) => setIsLiked(liked)} />
+ * <LikeButton count={5} disabled />
+ * ```
+ */
 function LikeButton({
     count,
     isLiked = false,
@@ -51,44 +62,3 @@ function LikeButton({
 }
 
 export { LikeButton }
-
-/*
- * 사용 예시:
- *
- * import { useState } from 'react'
- * import { LikeButton } from '@/shared/ui/LikeButton'
- *
- * function Example() {
- *   const [isLiked, setIsLiked] = useState(false)
- *   const [count, setCount] = useState(42)
- *
- *   const handleClick = async (liked: boolean) => {
- *     // API 호출
- *     if (liked) {
- *       await api.post('/like', { postId: 123 })
- *     } else {
- *       await api.delete('/like', { postId: 123 })
- *     }
- *     // 상태 업데이트
- *     setIsLiked(liked)
- *     setCount((prev) => (liked ? prev + 1 : prev - 1))
- *   }
- *
- *   return (
- *     <LikeButton
- *       count={count}
- *       isLiked={isLiked}
- *       onClick={handleClick}
- *     />
- *   )
- * }
- *
- * // 기본 상태 (좋아요 안 함)
- * <LikeButton count={10} isLiked={false} onClick={handleClick} />
- *
- * // 좋아요 상태
- * <LikeButton count={11} isLiked onClick={handleClick} />
- *
- * // 비활성화
- * <LikeButton count={5} disabled onClick={handleClick} />
- */

@@ -36,6 +36,18 @@ export interface BadgeProps
     extends Omit<HTMLAttributes<HTMLSpanElement>, 'color'>,
         VariantProps<typeof badgeVariants> {}
 
+/**
+ * Badge (상태/라벨 배지)
+ * - `size`로 배지 크기를 지정합니다: small, medium
+ * - `color`로 배지 색상을 지정합니다: red, blue, grey, purple, green, yellow
+ * - `effect`로 그림자 효과를 지정합니다: on, off
+ * @example
+ * ```tsx
+ * <Badge color="red" size="medium">긴급</Badge>
+ * <Badge color="green" effect="on">완료</Badge>
+ * <Badge color="grey">기본</Badge>
+ * ```
+ */
 function Badge({ className, size, color, effect, ...props }: BadgeProps) {
     return (
         <span
@@ -47,31 +59,3 @@ function Badge({ className, size, color, effect, ...props }: BadgeProps) {
 }
 
 export { Badge, badgeVariants }
-
-/*
- * 사용 예시:
- *
- * import { Badge } from '@/shared/ui/Badge'
- *
- * // 기본 사용 (small, grey, effect off)
- * <Badge>라벨</Badge>
- *
- * // size 변경
- * <Badge size="small">Small</Badge>
- * <Badge size="medium">Medium</Badge>
- *
- * // color 변경
- * <Badge color="red">Red</Badge>
- * <Badge color="blue">Blue</Badge>
- * <Badge color="grey">Grey</Badge>
- * <Badge color="purple">Purple</Badge>
- * <Badge color="green">Green</Badge>
- * <Badge color="yellow">Yellow</Badge>
- *
- * // effect (그림자)
- * <Badge effect="on">With Shadow</Badge>
- * <Badge effect="off">No Shadow</Badge>
- *
- * // 조합
- * <Badge size="medium" color="blue" effect="on">조합 예시</Badge>
- */

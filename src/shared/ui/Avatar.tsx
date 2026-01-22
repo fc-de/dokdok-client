@@ -2,6 +2,18 @@ import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
 import { cn } from "../lib/utils"
 
+/**
+ * Avatar (사용자 프로필 이미지)
+ * - `AvatarImage`로 이미지를 표시하고, 로드 실패 시 `AvatarFallback`이 표시됩니다.
+ * - 기본 크기는 32x32 (size-8)이며, className으로 커스터마이징 가능합니다.
+ * @example
+ * ```tsx
+ * <Avatar>
+ *   <AvatarImage src="/profile.jpg" alt="사용자" />
+ *   <AvatarFallback>홍</AvatarFallback>
+ * </Avatar>
+ * ```
+ */
 function Avatar({
   className,
   ...props
@@ -48,12 +60,3 @@ function AvatarFallback({
 }
 
 export { Avatar, AvatarImage, AvatarFallback }
-
-/**
- * 사용예시:
- * 
- * <Avatar>
- *   <AvatarImage src="user_image.png" alt="사용자 이미지" />
- *   <AvatarFallback>사용자 이미지</AvatarFallback>
- * </Avatar>
- */
