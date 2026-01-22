@@ -14,9 +14,13 @@ import { cn } from '@/shared/lib/utils'
  * <Switch defaultChecked disabled />
  * ```
  */
-function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimitive.Root>) {
+const Switch = React.forwardRef<
+  React.ElementRef<typeof SwitchPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>
+>(({ className, ...props }, ref) => {
   return (
     <SwitchPrimitive.Root
+      ref={ref}
       data-slot="switch"
       className={cn(
         'peer inline-flex shrink-0 items-center w-10 h-6 p-[3px] rounded-base transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
@@ -31,6 +35,7 @@ function Switch({ className, ...props }: React.ComponentProps<typeof SwitchPrimi
       />
     </SwitchPrimitive.Root>
   )
-}
+})
+Switch.displayName = SwitchPrimitive.Root.displayName
 
 export { Switch }
