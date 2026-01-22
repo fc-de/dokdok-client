@@ -102,7 +102,6 @@ export interface TopicTypeSelectItemProps {
     children: ReactNode
     className?: string
     disabled?: boolean
-    width?: string
 }
 
 function TopicTypeSelectItem({

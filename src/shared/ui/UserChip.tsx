@@ -25,21 +25,34 @@ export function UserChip({
     className,
 }: UserChipProps) {
     return (
-        <button
-            type="button"
+        <div
+            role="button"
+            tabIndex={disabled ? -1 : 0}
+            aria-disabled={disabled}
             data-slot="user-chip"
-            disabled={disabled}
-            onClick={onClick}
+            onClick={() => {
+                if (disabled) return
+                onClick?.()
+            }}
+            onKeyDown={(e) => {
+                if (disabled) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onClick?.()
+                }
+            }}
             className={cn(
                 'w-75 h-17 inline-flex items-center justify-between rounded-base p-4 border transition-colors',
                 'bg-white border-grey-300 text-black',
                 removable && 'h-14',
                 selected && 'border-primary-300',
                 disabled && 'text-grey-400 border-grey-300',
-                !disabled && 'cursor-pointer hover:bg-grey-200 shadow-[0_2px_16px_0_rgba(17,17,17,0.06)]',
+                !disabled &&
+                'cursor-pointer hover:bg-grey-200 shadow-[0_2px_16px_0_rgba(17,17,17,0.06)]',
                 className
             )}
         >
+
             <div className='flex gap-small items-center'>
                 <Avatar>
                     {disabled && <div className="absolute inset-0 bg-white/70" />}
@@ -64,7 +77,7 @@ export function UserChip({
                     <X className="size-[18px]" />
                 </button>
             )}
-        </button>
+        </div>
     )
 }
 

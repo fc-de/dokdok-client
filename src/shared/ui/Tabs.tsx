@@ -74,7 +74,7 @@ function TabsTrigger({
             {...props}
         >
             <span>{children}</span>
-            {badge !== undefined && (
+            {badge !== undefined && size !== 'small' && (
                 <span
                     data-slot="tabs-badge"
                     className={cn(
