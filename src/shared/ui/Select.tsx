@@ -4,12 +4,12 @@ import * as React from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
-interface SelectProps extends React.ComponentProps<typeof SelectPrimitive.Root> {
+type SelectProps = {
   placeholder?: string
   className?: string
-  children?: React.ReactNode
+  children: React.ReactNode
   label?: string
-}
+} & React.ComponentProps<typeof SelectPrimitive.Root>
 
 function Select({ placeholder, className, children, label, ...props }: SelectProps) {
   return (
@@ -70,7 +70,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[250px] min-w-32 origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-hidden rounded-base border shadow-md',
+          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-[250px] min-w-32 origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-hidden rounded-base border shadow-drop',
           position === 'popper' &&
             'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
           className
@@ -118,7 +118,7 @@ function SelectItem({
  * - `Select`의 `className`에 `width`, `height`를 지정하여 크기를 제어합니다.(기본값: w-265px, h-53px)
  * @example
  * ```tsx
- * <Select placeholder="Select a fruit" label="과일">
+ * <Select placeholder="과일을 선택하세요" label="과일">
  *   <Select.SelectItem value="apple">Apple</Select.SelectItem>
  *   <Select.SelectItem value="banana">Banana</Select.SelectItem>
  *   <Select.SelectItem value="blueberry">Blueberry</Select.SelectItem>

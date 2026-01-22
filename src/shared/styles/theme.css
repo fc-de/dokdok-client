@@ -133,6 +133,9 @@
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
+
+  /* shadow */
+  --shadow-drop: 0 2px 16px 0 rgba(17, 17, 17, 0.06);
 }
 
 /* Custom Utilities */
