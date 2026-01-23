@@ -1,3 +1,4 @@
+import { startOfToday } from 'date-fns'
 import { ko } from 'date-fns/locale'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'
@@ -22,7 +23,7 @@ function Calendar({
     <DayPicker
       locale={ko}
       showOutsideDays={showOutsideDays}
-      disabled={{ before: new Date() }}
+      disabled={{ before: startOfToday() }}
       className={cn(
         'bg-white group/calendar [--cell-size:--spacing(8)] pt-medium px-medium pb-base rounded-base in-data-[slot=card-content]:bg-transparent in-data-[slot=popover-content]:bg-transparent',
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
