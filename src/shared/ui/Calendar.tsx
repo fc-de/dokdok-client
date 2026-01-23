@@ -1,26 +1,26 @@
+import { ko } from 'date-fns/locale'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'
 import { type DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@/shared/lib/utils'
-import { Button, buttonVariants } from '@/shared/ui/Button'
+
+const calendarButtonBaseClass = `inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-small text-caption1 transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none aria-invalid:border-destructive`
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = false,
   captionLayout = 'label',
-  buttonVariant = 'ghost',
   formatters,
   components,
   ...props
-}: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>['variant']
-}) {
+}: React.ComponentProps<typeof DayPicker>) {
   const defaultClassNames = getDefaultClassNames()
 
   return (
     <DayPicker
+      locale={ko}
       showOutsideDays={showOutsideDays}
       disabled={{ before: new Date() }}
       className={cn(
@@ -30,7 +30,7 @@ function Calendar({
         className
       )}
       modifiers={{
-        dayOfWeek: { dayOfWeek: [0, 6] },
+        dayOfWeek: { dayOfWeek: [0] },
       }}
       modifiersClassNames={{
         dayOfWeek: 'is-weekend',
@@ -52,17 +52,17 @@ function Calendar({
           defaultClassNames.nav
         ),
         button_previous: cn(
-          buttonVariants({ variant: buttonVariant }),
-          'size-(--cell-size) aria-disabled:opacity-30 p-0 select-none hover:bg-grey-200',
+          calendarButtonBaseClass,
+          'size-(--cell-size) aria-disabled:opacity-30 p-0 select-none hover:bg-grey-200 ',
           defaultClassNames.button_previous
         ),
         button_next: cn(
-          buttonVariants({ variant: buttonVariant }),
+          calendarButtonBaseClass,
           'size-(--cell-size) aria-disabled:opacity-30 p-0 select-none hover:bg-grey-200',
           defaultClassNames.button_next
         ),
         month_caption: cn(
-          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size)',
+          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) text-body3 text-black',
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
@@ -75,7 +75,7 @@ function Calendar({
         ),
         dropdown: cn('absolute bg-popover inset-0 opacity-0', defaultClassNames.dropdown),
         caption_label: cn(
-          'select-none font-medium',
+          'select-none',
           captionLayout === 'label'
             ? 'text-body3'
             : 'rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5',
@@ -84,7 +84,7 @@ function Calendar({
         table: 'w-full border-collapse',
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
-          'text-grey-700 flex-1 rounded-small font-medium text-[0.8rem] select-none',
+          'text-grey-600 flex-1 rounded-small select-none text-caption1',
           defaultClassNames.weekday
         ),
         week: cn('flex w-full mt-2', defaultClassNames.week),
@@ -162,10 +162,9 @@ function CalendarDayButton({
   }, [modifiers.focused])
 
   return (
-    <Button
+    <button
+      type="button"
       ref={ref}
-      variant="ghost"
-      size="icon"
       data-day={day.date.toLocaleDateString()}
       data-selected-single={
         modifiers.selected &&
@@ -177,7 +176,8 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        'data-[selected-single=true]:bg-grey-300 data-[selected-single=true]:text-black data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-grey-300 data-[range-start=true]:text-black data-[range-end=true]:bg-grey-300 data-[range-end=true]:text-black flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-small data-[range-end=true]:rounded-r-small data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-small data-[range-start=true]:rounded-l-small [&>span]:text-xs [&>span]:opacity-70 group-[.is-weekend]/day:text-accent-300 group-[.is-weekend]/day:data-[selected-single=true]:text-accent-300 group-[.is-weekend]/day:hover:text-accent-300 group-[.is-weekend]/day:disabled:text-grey-400',
+        calendarButtonBaseClass,
+        'data-[selected-single=true]:bg-grey-300 data-[selected-single=true]:text-black data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-grey-300 data-[range-start=true]:text-black data-[range-end=true]:bg-grey-300 data-[range-end=true]:text-black flex aspect-square  w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-small data-[range-end=true]:rounded-r-small data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-small data-[range-start=true]:rounded-l-small [&>span]:text-xs [&>span]:opacity-70 group-[.is-weekend]/day:text-accent-300 group-[.is-weekend]/day:data-[selected-single=true]:text-accent-300 group-[.is-weekend]/day:hover:text-accent-300 group-[.is-weekend]/day:disabled:text-grey-400',
         defaultClassNames.day,
         className
       )}
@@ -186,4 +186,4 @@ function CalendarDayButton({
   )
 }
 
-export { Calendar, CalendarDayButton }
+export { Calendar }
