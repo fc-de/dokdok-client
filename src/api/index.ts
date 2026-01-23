@@ -1,5 +1,5 @@
 export { api, apiClient } from './client'
 export type { ErrorCodeType } from './errors'
-export { ApiError, ErrorCode } from './errors'
+export { ApiError, ErrorCode, ErrorMessage } from './errors'
 export { setupInterceptors } from './interceptors'
 export type { ApiErrorResponse, ApiResponse, PaginatedResponse } from './types'

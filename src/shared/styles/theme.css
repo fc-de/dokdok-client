@@ -55,6 +55,7 @@
   --color-white: #ffffff;
 
   /* Grey */
+  --color-grey-900: #1f2423;
   --color-grey-800: #383838;
   --color-grey-700: #505050;
   --color-grey-600: #787878;
@@ -147,7 +148,19 @@
   );
 }
 
-@utility textarea-scrollbar {
+@utility text-ai-gradient {
+  background-image: linear-gradient(
+    270deg,
+    var(--color-primary-300, #56cdaf) 0%,
+    var(--color-purple-200, #a372cd) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+@utility custom-scroll {
   &::-webkit-scrollbar {
     /* ✅ 전체 영역 6+8+8 */
     width: 22px;
@@ -159,28 +172,35 @@
 
   &::-webkit-scrollbar-thumb {
     /* ✅ 실제 보이는 thumb */
-    background-color: var(--color-grey-400, #d9d9d9);
+    background-color: var(--color-grey-600);
     border-radius: 30px;
     border: 8px solid #fff;
   }
 }
 
-@utility select-scroll {
+@utility custom-scroll-dark {
+  &::-webkit-scrollbar {
+    /* ✅ 전체 영역 6+8+8 */
+    width: 22px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /* ✅ 실제 보이는 thumb */
+    background-color: var(--color-grey-600);
+    border-radius: 30px;
+    border: 8px solid var(--color-grey-800);
+  }
+}
+
+@utility select-scroll-visable {
   /* shadcn select는 런타임에 스크롤을 숨기기 때문에 important사용*/
   scrollbar-width: auto !important;
   -ms-overflow-style: auto !important;
   &::-webkit-scrollbar {
-    width: 20px;
     display: block !important;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--color-grey-100, #fafafa);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--color-grey-600, #787878);
-    border-radius: 30px;
-    border: 5px solid #fff;
   }
 }

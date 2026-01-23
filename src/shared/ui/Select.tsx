@@ -81,7 +81,7 @@ function SelectContent({
       >
         <SelectPrimitive.Viewport
           className={cn(
-            'p-xtiny w-full select-scroll',
+            'p-xtiny w-full custom-scroll select-scroll-visable',
             position === 'popper' && 'min-w-(--radix-select-trigger-width)'
           )}
         >
