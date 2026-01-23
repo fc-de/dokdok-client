@@ -6,7 +6,7 @@ import { cn } from '@/shared/lib/utils'
 const textareaVariants = cva(
   [
     'flex w-full rounded-small border bg-white px-medium py-base outline-none transition-colors',
-    'text-body1 text-black',
+    'typo-body1 text-black',
     'placeholder:text-grey-600',
     'resize-none',
   ],
@@ -60,7 +60,7 @@ function Textarea({
 
   const heightValue = `${height}px`
   return (
-    <div className="flex w-full flex-col gap-xsmall">
+    <div className="flex flex-col w-full gap-xsmall">
       <textarea
         data-slot="textarea"
         disabled={disabled}
@@ -76,12 +76,12 @@ function Textarea({
         {...props}
       />
       {showFooter && (
-        <div className="flex w-full items-center justify-between">
-          <span className={cn('text-body6', error ? 'text-accent-300' : 'text-grey-600')}>
+        <div className="flex items-center justify-between w-full">
+          <span className={cn('typo-body6', error ? 'text-accent-300' : 'text-grey-600')}>
             {error ? errorMessage : helperText}
           </span>
           {showCount && (
-            <span className="text-body6 text-grey-600">
+            <span className="typo-body6 text-grey-600">
               {currentLength}/{maxLength}
             </span>
           )}

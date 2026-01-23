@@ -40,11 +40,11 @@ function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & { label?: string }) {
   return (
     <div className="flex flex-col justify-end">
-      {label && <p className="text-left text-body4 text-grey-600 mb-tiny">{label}</p>}
+      {label && <p className="text-left typo-body4 text-grey-600 mb-tiny">{label}</p>}
       <SelectPrimitive.Trigger
         data-slot="select-trigger"
         className={cn(
-          "border-primary-300 text-black flex w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-base border bg-transparent px-small py-xsmall text-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          "border-primary-300 text-black flex w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-base border bg-transparent px-small py-xsmall typo-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
           className
         )}
         {...props}
@@ -101,7 +101,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "text-black relative flex w-full cursor-default items-center gap-small px-large py-base text-body1 outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=checked]:bg-grey-200 hover:bg-grey-100 data-[state=checked]:rounded-tiny  [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 h-(--radix-select-trigger-height)",
+        "text-black relative flex w-full cursor-default items-center gap-small px-large py-base typo-body1 outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-[state=checked]:bg-grey-200 hover:bg-grey-100 data-[state=checked]:rounded-tiny  [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 h-(--radix-select-trigger-height)",
         className
       )}
       {...props}

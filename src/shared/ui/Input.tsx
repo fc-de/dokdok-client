@@ -6,7 +6,7 @@ import { cn } from '@/shared/lib/utils'
 const inputVariants = cva(
   [
     'flex w-full rounded-small border bg-white px-medium py-base outline-none transition-colors',
-    'text-body1 text-black',
+    'typo-body1 text-black',
     'placeholder:text-grey-600',
   ],
   {
@@ -59,8 +59,8 @@ function Input({
   const showFooter = error || helperText || showCount
 
   return (
-    <div className="flex w-full flex-col">
-      {label && <p className="text-left text-subtitle3 text-black mb-medium">{label}</p>}
+    <div className="flex flex-col w-full">
+      {label && <p className="text-left text-black typo-subtitle3 mb-medium">{label}</p>}
       <input
         type={type}
         disabled={disabled}
@@ -74,12 +74,12 @@ function Input({
         {...props}
       />
       {showFooter && (
-        <div className="flex w-full items-center justify-between mt-xsmall">
-          <span className={cn('text-body6', error ? 'text-accent-300' : 'text-grey-600')}>
+        <div className="flex items-center justify-between w-full mt-xsmall">
+          <span className={cn('typo-body6', error ? 'text-accent-300' : 'text-grey-600')}>
             {error ? errorMessage : helperText}
           </span>
           {showCount && (
-            <span className="text-body6 text-grey-600">
+            <span className="typo-body6 text-grey-600">
               {currentLength}/{maxLength}
             </span>
           )}

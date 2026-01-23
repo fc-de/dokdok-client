@@ -13,8 +13,8 @@ const textButtonVariants = cva(
   {
     variants: {
       size: {
-        small: 'text-caption1',
-        medium: 'text-body3',
+        small: 'typo-caption1',
+        medium: 'typo-body3',
       },
     },
     defaultVariants: {
@@ -24,7 +24,8 @@ const textButtonVariants = cva(
 )
 
 export interface TextButtonProps
-  extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'>,
+  extends
+    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'>,
     VariantProps<typeof textButtonVariants> {
   /** 버튼에 표시할 아이콘 (Lucide 아이콘) */
   icon?: LucideIcon

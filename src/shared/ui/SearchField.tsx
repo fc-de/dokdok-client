@@ -26,13 +26,13 @@ function SearchField({ className, disabled, ...props }: SearchFieldProps) {
         className
       )}
     >
-      <Search className="h-3 w-3 shrink-0 text-grey-600" strokeWidth={1.5} />
+      <Search className="w-3 h-3 shrink-0 text-grey-600" strokeWidth={1.5} />
       <input
         type="text"
         disabled={disabled}
         className={cn(
           'flex-1 bg-transparent outline-none',
-          'text-body1 text-black',
+          'typo-body1 text-black',
           'placeholder:text-grey-600',
           disabled && 'pointer-events-none'
         )}

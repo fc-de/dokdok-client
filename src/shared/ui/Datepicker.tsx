@@ -46,7 +46,7 @@ function DatePicker({ value, onChange, placeholder = '날짜 선택', className 
           type="button"
           data-empty={!date}
           className={cn(
-            'flex w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small text-body1 transition-colors text-black items-center text-black',
+            'flex w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small typo-body1 transition-colors text-black items-center text-black',
             className
           )}
         >
@@ -54,11 +54,11 @@ function DatePicker({ value, onChange, placeholder = '날짜 선택', className 
           {date ? (
             format(date, 'yyyy.MM.dd')
           ) : (
-            <span className="text-body1 text-grey-600">{placeholder}</span>
+            <span className="typo-body1 text-grey-600">{placeholder}</span>
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-fit p-0 border-none" align="start">
+      <PopoverContent className="p-0 border-none w-fit" align="start">
         <Calendar mode="single" selected={date ?? undefined} onSelect={handleSelect} required />
       </PopoverContent>
     </Popover>

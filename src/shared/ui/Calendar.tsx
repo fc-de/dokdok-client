@@ -6,7 +6,7 @@ import { type DayButton, DayPicker, getDefaultClassNames } from 'react-day-picke
 
 import { cn } from '@/shared/lib/utils'
 
-const calendarButtonBaseClass = `inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-small text-caption1 transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none aria-invalid:border-destructive`
+const calendarButtonBaseClass = `inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-small typo-caption1 transition-all disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none aria-invalid:border-destructive`
 
 function Calendar({
   className,
@@ -63,7 +63,7 @@ function Calendar({
           defaultClassNames.button_next
         ),
         month_caption: cn(
-          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) text-body3 text-black',
+          'flex items-center justify-center h-(--cell-size) w-full px-(--cell-size) typo-body3 text-black',
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
@@ -78,14 +78,14 @@ function Calendar({
         caption_label: cn(
           'select-none',
           captionLayout === 'label'
-            ? 'text-body3'
+            ? 'typo-body3'
             : 'rounded-md pl-2 pr-1 flex items-center gap-1 text-sm h-8 [&>svg]:text-muted-foreground [&>svg]:size-3.5',
           defaultClassNames.caption_label
         ),
         table: 'w-full border-collapse',
         weekdays: cn('flex', defaultClassNames.weekdays),
         weekday: cn(
-          'text-grey-600 flex-1 rounded-small select-none text-caption1',
+          'text-grey-600 flex-1 rounded-small select-none typo-caption1',
           defaultClassNames.weekday
         ),
         week: cn('flex w-full mt-2', defaultClassNames.week),

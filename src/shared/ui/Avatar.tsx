@@ -70,7 +70,7 @@ function Avatar({
         >
           <img src={CrownIcon} className={isSmall ? 'size-2' : 'size-2.5'} alt="모임장 표시" />
           {disabled && (
-            <div className="absolute inset-0 rounded-full bg-white/70 pointer-events-none" />
+            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
           )}
         </div>
       )
@@ -86,7 +86,7 @@ function Avatar({
         >
           <img src={StarIcon} className={isSmall ? 'size-1.5' : 'size-2'} alt="약속장 표시" />
           {disabled && (
-            <div className="absolute inset-0 rounded-full bg-white/70 pointer-events-none" />
+            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
           )}
         </div>
       )
@@ -109,10 +109,10 @@ function Avatar({
 
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-grey-600/10"
+          className="absolute inset-0 rounded-full pointer-events-none ring-1 ring-inset ring-grey-600/10"
         />
 
-        {disabled && <div className="absolute inset-0 bg-white/70 pointer-events-none" />}
+        {disabled && <div className="absolute inset-0 pointer-events-none bg-white/70" />}
       </AvatarPrimitive.Root>
 
       {getBadgeIcon()}
@@ -164,7 +164,7 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       className={cn(
         'block size-full rounded-full',
-        'flex items-center justify-center bg-grey-100 text-grey-600 text-body2 font-medium',
+        'flex items-center justify-center bg-grey-100 text-grey-600 typo-body2 font-medium',
         className
       )}
       {...props}
@@ -282,23 +282,23 @@ function AvatarGroupCount({
           <img
             src={preview!.src!}
             alt={previewName || '추가 인원'}
-            className="block size-full object-cover"
+            className="block object-cover size-full"
           />
         ) : (
-          <div className="flex size-full items-center justify-center rounded-full bg-grey-100 text-grey-600 text-body2 font-medium">
+          <div className="flex items-center justify-center font-medium rounded-full size-full bg-grey-100 text-grey-600 typo-body2">
             {previewFallback}
           </div>
         )}
 
         <div aria-hidden className="absolute inset-0 bg-black/60" />
 
-        <div className="absolute inset-0 flex items-center justify-center text-white text-body2 font-medium">
+        <div className="absolute inset-0 flex items-center justify-center font-medium text-white typo-body2">
           {children}
         </div>
 
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-grey-600/10"
+          className="absolute inset-0 rounded-full pointer-events-none ring-1 ring-inset ring-grey-600/10"
         />
       </div>
     </div>
@@ -330,7 +330,7 @@ function AvatarGroupCount({
                     <AvatarImage src={item.src} alt={item.name} />
                     <AvatarFallback>{fallbackText}</AvatarFallback>
                   </Avatar>
-                  <span className="text-body3 leading-none">{item.name}</span>
+                  <span className="leading-none typo-body3">{item.name}</span>
                 </li>
               )
             })}

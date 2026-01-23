@@ -5,7 +5,7 @@ import * as React from 'react'
 import { cn } from '@/shared/lib/utils'
 
 const chipVariants = cva(
-  'inline-flex items-center justify-center rounded-medium border px-[13px] py-[7px] text-caption1 whitespace-nowrap transition-colors',
+  'inline-flex items-center justify-center rounded-medium border px-[13px] py-[7px] typo-caption1 whitespace-nowrap transition-colors',
   {
     variants: {
       variant: {
@@ -45,7 +45,7 @@ function Chip({ className, variant, onDelete, children, ...props }: ChipProps) {
         <button
           type="button"
           onClick={onDelete}
-          className="ml-tiny cursor-pointer"
+          className="cursor-pointer ml-tiny"
           aria-label="삭제"
         >
           <X className="size-3 text-grey-600" />

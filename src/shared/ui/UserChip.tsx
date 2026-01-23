@@ -64,14 +64,14 @@ export function UserChip({
         className
       )}
     >
-      <div className="flex gap-small items-center">
+      <div className="flex items-center gap-small">
         <Avatar>
           {disabled && <div className="absolute inset-0 bg-white/70" />}
           <AvatarImage src={imageUrl} />
           <AvatarFallback>{name.slice(0, 1)}</AvatarFallback>
         </Avatar>
 
-        <span className="text-body2">{name}</span>
+        <span className="typo-body2">{name}</span>
       </div>
 
       {removable && !disabled && (
@@ -82,7 +82,7 @@ export function UserChip({
             e.stopPropagation()
             onRemove?.()
           }}
-          className="flex items-center justify-center rounded-full text-grey-600 hover:text-grey-800 cursor-pointer"
+          className="flex items-center justify-center rounded-full cursor-pointer text-grey-600 hover:text-grey-800"
         >
           <X className="size-[18px]" />
         </button>
