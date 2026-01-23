@@ -172,7 +172,7 @@
 
   &::-webkit-scrollbar-thumb {
     /* ✅ 실제 보이는 thumb */
-    background-color: var(--color-grey-600);
+    background-color: var(--color-grey-400);
     border-radius: 30px;
     border: 8px solid #fff;
   }
@@ -202,5 +202,25 @@
   -ms-overflow-style: auto !important;
   &::-webkit-scrollbar {
     display: block !important;
+  }
+}
+
+@utility select-scroll {
+  /* shadcn select는 런타임에 스크롤을 숨기기 때문에 important사용*/
+  scrollbar-width: auto !important;
+  -ms-overflow-style: auto !important;
+  &::-webkit-scrollbar {
+    width: 20px;
+    display: block !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-grey-100, #fafafa);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-grey-600, #787878);
+    border-radius: 30px;
+    border: 5px solid #fff;
   }
 }
