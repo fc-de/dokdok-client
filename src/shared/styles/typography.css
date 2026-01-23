@@ -1,61 +1,69 @@
 /* Typography Utility Classes */
 
-@utility text-heading1 {
+@utility typo-heading1 {
   font-size: var(--text-heading1);
   font-weight: var(--font-weight-semibold);
 }
-@utility text-heading2 {
+@utility typo-heading2 {
   font-size: var(--text-heading2);
   font-weight: var(--font-weight-semibold);
 }
-@utility text-heading3 {
+@utility typo-heading3 {
   font-size: var(--text-heading3);
   font-weight: var(--font-weight-semibold);
 }
 
-@utility text-subtitle1 {
+@utility typo-subtitle1 {
   font-size: var(--text-subtitle1);
   font-weight: var(--font-weight-semibold);
 }
-@utility text-subtitle2 {
+@utility typo-subtitle2 {
   font-size: var(--text-subtitle2);
   font-weight: var(--font-weight-semibold);
 }
-@utility text-subtitle3 {
+@utility typo-subtitle3 {
   font-size: var(--text-subtitle3);
+  font-weight: var(--font-weight-medium);
+}
+@utility typo-subtitle4 {
+  font-size: var(--text-subtitle4);
   font-weight: var(--font-weight-regular);
 }
-@utility text-subtitle4 {
-  font-size: var(--text-subtitle4);
+@utility typo-subtitle5 {
+  font-size: var(--text-subtitle5);
   font-weight: var(--font-weight-medium);
 }
 
-@utility text-body1 {
+@utility typo-body1 {
   font-size: var(--text-body1);
   font-weight: var(--font-weight-regular);
 }
-@utility text-body2 {
+@utility typo-body2 {
   font-size: var(--text-body2);
   font-weight: var(--font-weight-semibold);
 }
-@utility text-body3 {
+@utility typo-body3 {
   font-size: var(--text-body3);
   font-weight: var(--font-weight-medium);
 }
-@utility text-body4 {
+@utility typo-body4 {
   font-size: var(--text-body4);
   font-weight: var(--font-weight-regular);
 }
-@utility text-body5 {
+@utility typo-body5 {
   font-size: var(--text-body5);
   font-weight: var(--font-weight-semibold);
 }
+@utility typo-body6 {
+  font-size: var(--text-body6);
+  font-weight: var(--font-weight-regular);
+}
 
-@utility text-caption1 {
+@utility typo-caption1 {
   font-size: var(--text-caption1);
   font-weight: var(--font-weight-medium);
 }
-@utility text-caption2 {
+@utility typo-caption2 {
   font-size: var(--text-caption2);
   font-weight: var(--font-weight-medium);
 }

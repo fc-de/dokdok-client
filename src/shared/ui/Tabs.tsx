@@ -59,17 +59,17 @@ function TabsTrigger({ className, size = 'small', badge, children, ...props }: T
         'group inline-flex items-center gap-tiny cursor-pointer transition-colors whitespace-nowrap disabled:pointer-events-none disabled:opacity-50',
         // Small
         size === 'small' && [
-          'text-body3 text-grey-600',
-          'data-[state=active]:text-body2 data-[state=active]:text-black',
+          'typo-body3 text-grey-600',
+          'data-[state=active]:typo-body2 data-[state=active]:text-black',
         ],
         // Medium
         size === 'medium' && [
-          'text-subtitle3 text-grey-700 pb-[12px]',
-          'data-[state=active]:text-subtitle2 data-[state=active]:text-black',
+          'typo-subtitle3 text-grey-700 pb-[12px]',
+          'data-[state=active]:typo-subtitle2 data-[state=active]:text-black',
           'data-[state=active]:border-b-2 data-[state=active]:border-black',
         ],
         // Large
-        size === 'large' && ['text-subtitle1 text-grey-600', 'data-[state=active]:text-black'],
+        size === 'large' && ['typo-subtitle1 text-grey-600', 'data-[state=active]:text-black'],
         className
       )}
       {...props}
@@ -82,12 +82,12 @@ function TabsTrigger({ className, size = 'small', badge, children, ...props }: T
             'inline-flex items-center justify-center rounded-tiny',
             // Medium badge
             size === 'medium' && [
-              'text-body3 text-grey-700 bg-grey-200 size-6',
+              'typo-body3 text-grey-700 bg-grey-200 size-6',
               'group-data-[state=active]:text-black',
             ],
             // Large badge
             size === 'large' && [
-              'text-caption2 text-white bg-grey-500 px-2 py-0.5',
+              'typo-caption2 text-white bg-grey-500 px-2 py-0.5',
               'group-data-[state=active]:bg-black group-data-[state=active]:text-white',
             ]
           )}

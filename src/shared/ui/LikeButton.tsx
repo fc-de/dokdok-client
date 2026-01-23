@@ -41,7 +41,7 @@ function LikeButton({
       onClick={handleClick}
       disabled={disabled}
       className={cn(
-        'inline-flex items-center gap-tiny rounded-small px-[10px] py-tiny text-caption1 transition-colors',
+        'inline-flex items-center gap-tiny rounded-small px-[10px] py-tiny typo-caption1 transition-colors',
         isLiked
           ? 'border border-primary-300 bg-primary-100 text-primary-300'
           : 'border border-grey-400 bg-white text-grey-700',

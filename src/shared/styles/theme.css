@@ -72,6 +72,7 @@
   --color-primary-400: #4d7b6f;
   --color-primary-300: #56cdaf;
   --color-primary-200: #9ee2d1;
+  --color-primary-150: #e7faf6;
   --color-primary-100: #f7fffe;
 
   /* Accent */
@@ -117,12 +118,14 @@
   --text-subtitle2: 16px;
   --text-subtitle3: 16px;
   --text-subtitle4: 15px;
+  --text-subtitle5: 15px;
 
   --text-body1: 15px;
   --text-body2: 14px;
   --text-body3: 14px;
   --text-body4: 14px;
   --text-body5: 13px;
+  --text-body6: 13px;
 
   --text-caption1: 13px;
   --text-caption2: 12px;
@@ -131,6 +134,9 @@
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
+
+  /* shadow */
+  --shadow-drop: 0 2px 16px 0 rgba(17, 17, 17, 0.06);
 }
 
 /* Custom Utilities */
@@ -166,7 +172,7 @@
 
   &::-webkit-scrollbar-thumb {
     /* ✅ 실제 보이는 thumb */
-    background-color: var(--color-grey-600);
+    background-color: var(--color-grey-400);
     border-radius: 30px;
     border: 8px solid #fff;
   }
@@ -187,5 +193,14 @@
     background-color: var(--color-grey-600);
     border-radius: 30px;
     border: 8px solid var(--color-grey-800);
+  }
+}
+
+@utility select-scroll-visible {
+  /* shadcn select는 런타임에 스크롤을 숨기기 때문에 important사용*/
+  scrollbar-width: auto !important;
+  -ms-overflow-style: auto !important;
+  &::-webkit-scrollbar {
+    display: block !important;
   }
 }

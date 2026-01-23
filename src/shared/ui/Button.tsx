@@ -24,9 +24,9 @@ const buttonVariants = cva(
         cta: 'bg-grey-800 text-primary-200 hover:bg-grey-900',
       },
       size: {
-        small: 'h-9 text-body2',
-        medium: 'h-11 text-subtitle2',
-        large: 'h-[54px] text-subtitle2',
+        small: 'h-9 typo-body2',
+        medium: 'h-11 typo-subtitle2',
+        large: 'h-[54px] typo-subtitle2',
       },
       outline: {
         true: '',
@@ -150,11 +150,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           <>
             <span
               aria-hidden
-              className="absolute inset-px rounded-small bg-white group-hover:bg-grey-100"
+              className="absolute bg-white inset-px rounded-small group-hover:bg-grey-100"
             />
             <span
               data-slot="ai-inner"
-              className="relative z-10 flex h-full w-full items-center justify-center"
+              className="relative z-10 flex items-center justify-center w-full h-full"
             >
               <span className="inline-block text-ai-gradient">{children}</span>
             </span>

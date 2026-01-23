@@ -8,8 +8,8 @@ const badgeVariants = cva(
   {
     variants: {
       size: {
-        small: 'px-xsmall py-xtiny text-body5',
-        medium: 'px-2 py-[5px] text-body3',
+        small: 'px-xsmall py-xtiny typo-body5',
+        medium: 'px-2 py-[5px] typo-body3',
       },
       color: {
         red: 'bg-accent-200 text-accent-300',

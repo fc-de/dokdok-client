@@ -93,7 +93,7 @@ function NumberedCheckbox({ id, className, children, disabled = false }: Numbere
           className
         )}
       >
-        <span className={cn('text-body3 leading-none', isChecked ? 'text-black' : 'invisible')}>
+        <span className={cn('typo-body3 leading-none', isChecked ? 'text-black' : 'invisible')}>
           {displayNumber ?? 0}
         </span>
       </button>
