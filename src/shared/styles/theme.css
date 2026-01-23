@@ -196,7 +196,7 @@
   }
 }
 
-@utility select-scroll-visable {
+@utility select-scroll-visible {
   /* shadcn select는 런타임에 스크롤을 숨기기 때문에 important사용*/
   scrollbar-width: auto !important;
   -ms-overflow-style: auto !important;
