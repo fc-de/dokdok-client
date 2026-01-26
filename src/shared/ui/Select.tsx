@@ -131,4 +131,4 @@ const SelectNamespace = Object.assign(Select, {
   SelectItem,
 })
 
-export { SelectNamespace as Select, SelectItem }
+export { SelectNamespace as Select }

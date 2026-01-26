@@ -164,7 +164,7 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       className={cn(
         'block size-full rounded-full',
-        'flex items-center justify-center bg-grey-100 text-grey-600 typo-body2 font-medium',
+        'flex items-center justify-center bg-grey-100 text-grey-600 typo-body2',
         className
       )}
       {...props}
@@ -285,14 +285,14 @@ function AvatarGroupCount({
             className="block object-cover size-full"
           />
         ) : (
-          <div className="flex items-center justify-center font-medium rounded-full size-full bg-grey-100 text-grey-600 typo-body2">
+          <div className="flex items-center justify-center rounded-full size-full bg-grey-100 text-grey-600 typo-body2">
             {previewFallback}
           </div>
         )}
 
         <div aria-hidden className="absolute inset-0 bg-black/60" />
 
-        <div className="absolute inset-0 flex items-center justify-center font-medium text-white typo-body2">
+        <div className="absolute inset-0 flex items-center justify-center text-white typo-body2">
           {children}
         </div>
 

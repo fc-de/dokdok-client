@@ -4,6 +4,7 @@ import {
   AuthLayout,
   BookDetailPage,
   BookListPage,
+  ComponentGuidePage,
   GatheringDetailPage,
   GatheringListPage,
   HomePage,
@@ -17,6 +18,10 @@ import { RootLayout } from '@/shared/layout'
 import { PrivateRoute } from './PrivateRoute'
 
 export const router = createBrowserRouter([
+  {
+    path: '/component-guide',
+    element: <ComponentGuidePage />,
+  },
   {
     element: <AuthLayout />,
     children: [

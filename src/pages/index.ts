@@ -1,5 +1,6 @@
 export * from './Auth'
 export * from './Books'
+export * from './ComponentGuide'
 export * from './Gatherings'
 export * from './Home'
 export * from './Meetings'
