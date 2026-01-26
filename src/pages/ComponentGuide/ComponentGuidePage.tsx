@@ -15,11 +15,13 @@ import { Checkbox } from '@/shared/ui/Checkbox'
 import { Chip } from '@/shared/ui/Chip'
 import { Container } from '@/shared/ui/Container'
 import { DatePicker } from '@/shared/ui/Datepicker'
+import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Input } from '@/shared/ui/Input'
 import { LikeButton } from '@/shared/ui/LikeButton'
 import { NumberedCheckbox, NumberedCheckboxGroup } from '@/shared/ui/NumberedCheckbox'
 import { SearchField } from '@/shared/ui/SearchField'
 import { Select } from '@/shared/ui/Select'
+import { StarRatingFilter, type StarRatingRange } from '@/shared/ui/StarRatingFilter'
 import { Switch } from '@/shared/ui/Switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 import { Textarea } from '@/shared/ui/Textarea'
@@ -50,6 +52,8 @@ function ComponentGuidePage() {
     { id: 'select', name: 'Select', category: '폼' },
     { id: 'topicTypeSelect', name: 'TopicTypeSelect', category: '폼' },
     { id: 'datePicker', name: 'DatePicker', category: '폼' },
+    { id: 'filterDropdown', name: 'FilterDropdown', category: '폼' },
+    { id: 'starRatingFilter', name: 'StarRatingFilter', category: '폼' },
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
   ]
 
@@ -130,6 +134,8 @@ function ComponentGuidePage() {
           {selectedSection === 'select' && <SelectSection />}
           {selectedSection === 'topicTypeSelect' && <TopicTypeSelectSection />}
           {selectedSection === 'datePicker' && <DatePickerSection />}
+          {selectedSection === 'filterDropdown' && <FilterDropdownSection />}
+          {selectedSection === 'starRatingFilter' && <StarRatingFilterSection />}
           {selectedSection === 'tabs' && <TabsSection />}
         </div>
       </main>
@@ -182,7 +188,7 @@ function Showcase({
           {code && (
             <button
               onClick={() => setShowCode(!showCode)}
-              className="px-small py-tiny rounded-small typo-caption2 text-grey-700 hover:bg-grey-100 transition-colors flex items-center gap-tiny"
+              className="flex items-center transition-colors px-small py-tiny rounded-small typo-caption2 text-grey-700 hover:bg-grey-100 gap-tiny"
             >
               <ChevronDown
                 className={`w-3 h-3 transition-transform ${showCode ? 'rotate-180' : ''}`}
@@ -195,7 +201,7 @@ function Showcase({
       <div className="flex flex-wrap items-center gap-medium">{children}</div>
       {code && showCode && (
         <div className="mt-medium">
-          <pre className="bg-grey-100 rounded-small p-small overflow-x-auto">
+          <pre className="overflow-x-auto bg-grey-100 rounded-small p-small">
             <code className="typo-caption2 text-grey-900">{code}</code>
           </pre>
         </div>
@@ -663,7 +669,8 @@ function CardSection() {
         <Card className="w-80">
           <h3 className="typo-subtitle2 mb-small">카드 제목</h3>
           <p className="typo-body3 text-grey-600">
-            커스텀 컨텐츠가 포함된 카드 컴포넌트입니다. 관련된 정보를 그룹화하기 위한 깔끔한 컨테이너를 제공합니다.
+            커스텀 컨텐츠가 포함된 카드 컴포넌트입니다. 관련된 정보를 그룹화하기 위한 깔끔한
+            컨테이너를 제공합니다.
           </p>
         </Card>
       </Showcase>
@@ -688,7 +695,8 @@ function ContainerSection() {
           <Container.Title>컨테이너 제목</Container.Title>
           <Container.Content>
             <p className="typo-body3 text-grey-600">
-              이것은 컨텐츠 영역입니다. Container 컴포넌트는 Title과 Content 서브컴포넌트를 사용하는 네임스페이스 패턴을 사용합니다.
+              이것은 컨텐츠 영역입니다. Container 컴포넌트는 Title과 Content 서브컴포넌트를 사용하는
+              네임스페이스 패턴을 사용합니다.
             </p>
           </Container.Content>
         </Container>
@@ -1369,6 +1377,129 @@ function TabsSection() {
             </Card>
           </TabsContent>
         </Tabs>
+      </Showcase>
+    </Section>
+  )
+}
+
+function FilterDropdownSection() {
+  const [selectedClub, setSelectedClub] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('react')
+
+  return (
+    <Section title="FilterDropdown" description="단일 선택 필터 컴포넌트 (토글 지원)">
+      <Showcase
+        title="기본 사용"
+        description="단일 선택만 가능한 필터"
+        code={`const [selected, setSelected] = useState('')
+
+<FilterDropdown placeholder="독서모임" value={selected} onChange={setSelected}>
+  <FilterDropdown.Option value="club1">독서클럽이름열두글자어때</FilterDropdown.Option>
+  <FilterDropdown.Option value="club2">FCDE</FilterDropdown.Option>
+  <FilterDropdown.Option value="club3">책읽기모임</FilterDropdown.Option>
+</FilterDropdown>`}
+      >
+        <FilterDropdown placeholder="독서모임" value={selectedClub} onChange={setSelectedClub}>
+          <FilterDropdown.Option value="club1">독서클럽이름열두글자어때</FilterDropdown.Option>
+          <FilterDropdown.Option value="club2">FCDE</FilterDropdown.Option>
+          <FilterDropdown.Option value="club3">책읽기모임</FilterDropdown.Option>
+        </FilterDropdown>
+        <div className="typo-caption1 text-grey-600">선택된 값: {selectedClub || '없음'}</div>
+      </Showcase>
+
+      <Showcase
+        title="기본 값 포함"
+        description="초기 선택 값이 있는 경우"
+        code={`const [selected, setSelected] = useState('react')
+
+<FilterDropdown placeholder="카테고리" value={selected} onChange={setSelected}>
+  <FilterDropdown.Option value="react">React</FilterDropdown.Option>
+  <FilterDropdown.Option value="vue">Vue</FilterDropdown.Option>
+  <FilterDropdown.Option value="angular">Angular</FilterDropdown.Option>
+</FilterDropdown>`}
+      >
+        <FilterDropdown
+          placeholder="카테고리"
+          value={selectedCategory}
+          onChange={setSelectedCategory}
+        >
+          <FilterDropdown.Option value="react">React</FilterDropdown.Option>
+          <FilterDropdown.Option value="vue">Vue</FilterDropdown.Option>
+          <FilterDropdown.Option value="angular">Angular</FilterDropdown.Option>
+        </FilterDropdown>
+      </Showcase>
+
+      <Showcase
+        title="비활성화 상태"
+        code={`<FilterDropdown placeholder="비활성화" disabled>
+  <FilterDropdown.Option value="option1">옵션 1</FilterDropdown.Option>
+</FilterDropdown>`}
+      >
+        <FilterDropdown placeholder="비활성화" disabled>
+          <FilterDropdown.Option value="option1">옵션 1</FilterDropdown.Option>
+        </FilterDropdown>
+      </Showcase>
+
+      <Showcase title="토글 기능">
+        <div className="typo-caption1 text-grey-600">
+          이미 선택된 옵션을 다시 클릭하면 선택이 해제됩니다
+        </div>
+      </Showcase>
+    </Section>
+  )
+}
+
+function StarRatingFilterSection() {
+  const [rating1, setRating1] = useState<StarRatingRange | null>(null)
+  const [rating2, setRating2] = useState<StarRatingRange | null>({ min: 3, max: 5 })
+
+  return (
+    <Section title="StarRatingFilter" description="별점 범위 선택 필터 컴포넌트">
+      <Showcase
+        title="기본 사용"
+        description="별점 범위를 선택할 수 있는 필터"
+        code={`const [rating, setRating] = useState<StarRatingRange | null>(null)
+
+<StarRatingFilter
+  placeholder="별점"
+  value={rating}
+  onChange={setRating}
+/>`}
+      >
+        <StarRatingFilter placeholder="별점" value={rating1} onChange={setRating1} />
+        <div className="typo-caption1 text-grey-600">
+          선택된 범위: {rating1 ? `${rating1.min} ~ ${rating1.max}` : '없음'}
+        </div>
+      </Showcase>
+
+      <Showcase
+        title="기본 값 포함"
+        description="초기 별점 범위가 설정된 경우"
+        code={`const [rating, setRating] = useState<StarRatingRange | null>({ min: 3, max: 5 })
+
+<StarRatingFilter
+  placeholder="별점"
+  value={rating}
+  onChange={setRating}
+/>`}
+      >
+        <StarRatingFilter placeholder="별점" value={rating2} onChange={setRating2} />
+        <div className="typo-caption1 text-grey-600">
+          현재 범위: {rating2 ? `${rating2.min} ~ ${rating2.max}` : '없음'}
+        </div>
+      </Showcase>
+
+      <Showcase title="비활성화 상태" code={`<StarRatingFilter placeholder="별점" disabled />`}>
+        <StarRatingFilter placeholder="별점" disabled />
+      </Showcase>
+
+      <Showcase title="사용 방법">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• 단일 선택: 별 하나를 클릭하면 해당 별점만 선택됩니다</p>
+          <p>• 범위 선택: 최솟값과 최댓값을 선택하여 범위를 지정합니다</p>
+          <p>• 같은 별을 다시 클릭하면 선택이 해제됩니다</p>
+          <p>• 적용 버튼을 눌러야 실제 값이 변경됩니다</p>
+        </div>
       </Showcase>
     </Section>
   )
