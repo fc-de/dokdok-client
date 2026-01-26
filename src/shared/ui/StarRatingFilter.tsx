@@ -1,11 +1,10 @@
-import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
 import { ChevronDownIcon, Star } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
-import { Popover } from '@/shared/ui/Popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/Popover'
 
 type StarRatingFilterProps = {
   placeholder: string
@@ -102,8 +101,8 @@ function StarRatingFilter({
           variant="secondary"
           disabled={disabled}
           className={cn(
-            'flex gap-1 rounded-tiny typo-body3 px-tiny py-[5px] text-grey-700',
-            disabled && 'bg-grey-200 text-grey-500',
+            'flex gap-1 rounded-tiny typo-body3 px-tiny py-[5px] text-grey-700 [&_.chevron-icon]:transition-transform data-[state=open]:[&_.chevron-icon]:rotate-180',
+            disabled && 'bg-grey-200 text-grey-500 ',
             hasValue &&
               !disabled &&
               'bg-yellow-100 text-yellow-200 border border-yellow-200 hover:bg-yellow-100'
@@ -112,8 +111,7 @@ function StarRatingFilter({
           {getTriggerText()}
           <ChevronDownIcon
             className={cn(
-              'size-4 transition-all',
-              'data-[state=open]:rotate-180',
+              'chevron-icon size-4',
               disabled ? 'text-grey-500' : hasValue ? 'text-yellow-200' : 'text-grey-700'
             )}
           />

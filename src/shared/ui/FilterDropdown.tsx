@@ -1,4 +1,3 @@
-import { PopoverContent, PopoverTrigger } from '@radix-ui/react-popover'
 import { ChevronDownIcon } from 'lucide-react'
 import type { ReactElement } from 'react'
 import { Children, cloneElement, isValidElement, useState } from 'react'
@@ -6,7 +5,7 @@ import { Children, cloneElement, isValidElement, useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { Chip } from '@/shared/ui/Chip'
-import { Popover } from '@/shared/ui/Popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/Popover'
 
 type FilterDropdownProps = {
   placeholder: string
