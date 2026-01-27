@@ -1,16 +1,16 @@
-import React from 'react'
-
 import { Division } from '@/shared/components/Division'
 import { Switch } from '@/shared/ui/Switch'
 
 import { useBookDetail } from '../hooks'
-import BookReviewCard from './BookReviewCard'
+import BookReview from './BookReview'
 
 type BookInfoProps = {
   bookId: number
+  isRecording: boolean
+  onToggleRecording: () => void
 }
 
-const BookInfo = ({ bookId }: BookInfoProps) => {
+const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => {
   const { data, isLoading } = useBookDetail(bookId)
 
   //   if (isLoading) return <BookInfoSkeleton />
@@ -61,10 +61,7 @@ const BookInfo = ({ bookId }: BookInfoProps) => {
             <h2 className="typo-heading2">{data?.title}</h2>
             <div className="flex gap-xsmall items-center">
               <p className="typo-body3 text-grey-600">기록 중</p>
-              <Switch
-                checked={data?.bookReadingStatus === 'READING'}
-                onCheckedChange={() => console.log('기록 중 스위치')}
-              />
+              <Switch checked={isRecording} onCheckedChange={onToggleRecording} />
             </div>
           </div>
           <div>
@@ -81,7 +78,7 @@ const BookInfo = ({ bookId }: BookInfoProps) => {
 
         <Division />
 
-        <BookReviewCard bookId={bookId} />
+        <BookReview bookId={bookId} />
       </section>
     </div>
   )
