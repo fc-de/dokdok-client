@@ -18,6 +18,16 @@ import { DatePicker } from '@/shared/ui/Datepicker'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Input } from '@/shared/ui/Input'
 import { LikeButton } from '@/shared/ui/LikeButton'
+import {
+  Modal,
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+} from '@/shared/ui/Modal'
 import { NumberedCheckbox, NumberedCheckboxGroup } from '@/shared/ui/NumberedCheckbox'
 import { SearchField } from '@/shared/ui/SearchField'
 import { Select } from '@/shared/ui/Select'
@@ -55,6 +65,7 @@ function ComponentGuidePage() {
     { id: 'filterDropdown', name: 'FilterDropdown', category: '폼' },
     { id: 'starRatingFilter', name: 'StarRatingFilter', category: '폼' },
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
+    { id: 'modal', name: 'Modal', category: '오버레이' },
   ]
 
   const filteredSections = sections.filter(
@@ -137,6 +148,7 @@ function ComponentGuidePage() {
           {selectedSection === 'filterDropdown' && <FilterDropdownSection />}
           {selectedSection === 'starRatingFilter' && <StarRatingFilterSection />}
           {selectedSection === 'tabs' && <TabsSection />}
+          {selectedSection === 'modal' && <ModalSection />}
         </div>
       </main>
     </div>
@@ -1444,6 +1456,202 @@ function FilterDropdownSection() {
         <div className="typo-caption1 text-grey-600">
           이미 선택된 옵션을 다시 클릭하면 선택이 해제됩니다
         </div>
+      </Showcase>
+    </Section>
+  )
+}
+
+function ModalSection() {
+  return (
+    <Section title="Modal" description="고정 높이와 내부 스크롤을 지원하는 모달 컴포넌트">
+      <Showcase
+        title="기본 사용 (Normal)"
+        description="variant='normal' (600px 너비), Footer 버튼 오른쪽 정렬"
+        code={`<Modal>
+  <ModalTrigger asChild>
+    <Button>모달 열기</Button>
+  </ModalTrigger>
+  <ModalContent variant="normal">
+    <ModalHeader>
+      <ModalTitle>모달 제목</ModalTitle>
+    </ModalHeader>
+    <ModalBody>
+      <p>모달 내용이 들어갑니다.</p>
+    </ModalBody>
+    <ModalFooter>
+      <Button>확인</Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>`}
+      >
+        <Modal>
+          <ModalTrigger asChild>
+            <Button>Normal 모달 열기</Button>
+          </ModalTrigger>
+          <ModalContent variant="normal">
+            <ModalHeader>
+              <ModalTitle>일반 모달</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <div className="space-y-medium">
+                <p className="typo-body2 text-grey-700">
+                  이것은 기본 너비(600px)의 모달입니다. 높이는 625px로 고정되어 있으며, 내용이 넘칠
+                  경우 Body 영역에서만 스크롤이 발생합니다.
+                </p>
+                <div className="space-y-small">
+                  <Input label="이름" placeholder="이름을 입력하세요" />
+                  <Input label="이메일" placeholder="이메일을 입력하세요" />
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <ModalClose asChild>
+                <Button>확인</Button>
+              </ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Showcase>
+
+      <Showcase
+        title="넓은 모달 (Wide)"
+        description="variant='wide' (900px 너비)"
+        code={`<Modal>
+  <ModalTrigger asChild>
+    <Button>Wide 모달 열기</Button>
+  </ModalTrigger>
+  <ModalContent variant="wide">
+    <ModalHeader>
+      <ModalTitle>넓은 모달</ModalTitle>
+    </ModalHeader>
+    <ModalBody>...</ModalBody>
+    <ModalFooter>...</ModalFooter>
+  </ModalContent>
+</Modal>`}
+      >
+        <Modal>
+          <ModalTrigger asChild>
+            <Button>Wide 모달 열기</Button>
+          </ModalTrigger>
+          <ModalContent variant="wide">
+            <ModalHeader>
+              <ModalTitle>넓은 모달</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <div className="space-y-medium">
+                <p className="typo-body2 text-grey-700">
+                  이것은 넓은 너비(900px)의 모달입니다. 더 많은 콘텐츠를 표시하기에 적합합니다.
+                </p>
+                <div className="grid grid-cols-2 gap-medium">
+                  <Input label="이름" placeholder="이름" />
+                  <Input label="이메일" placeholder="이메일" />
+                  <Input label="전화번호" placeholder="전화번호" />
+                  <Input label="주소" placeholder="주소" />
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <ModalClose asChild>
+                <Button variant="secondary">취소</Button>
+              </ModalClose>
+              <Button>저장</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Showcase>
+
+      <Showcase
+        title="Footer 전체 너비 버튼"
+        description="variant='full' - 버튼 하나가 전체 너비 차지"
+        code={`<ModalFooter variant="full">
+  <Button className="w-full">확인</Button>
+</ModalFooter>`}
+      >
+        <Modal>
+          <ModalTrigger asChild>
+            <Button variant="secondary">Full 버튼 모달</Button>
+          </ModalTrigger>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>알림</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <p className="typo-body2 text-grey-700">
+                Footer에 전체 너비 버튼이 있는 모달입니다. 단일 액션만 필요한 경우에 사용합니다.
+              </p>
+            </ModalBody>
+            <ModalFooter variant="full">
+              <ModalClose asChild>
+                <Button className="w-full">확인</Button>
+              </ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Showcase>
+
+      <Showcase
+        title="Footer 없음"
+        description="ModalFooter를 생략하면 Footer가 표시되지 않습니다"
+        code={`<ModalContent>
+  <ModalHeader>
+    <ModalTitle>알림</ModalTitle>
+  </ModalHeader>
+  <ModalBody>
+    <p>Footer가 없는 모달입니다.</p>
+  </ModalBody>
+</ModalContent>`}
+      >
+        <Modal>
+          <ModalTrigger asChild>
+            <Button variant="secondary">Footer 없는 모달</Button>
+          </ModalTrigger>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>알림</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <p className="typo-body2 text-grey-700">
+                이 모달은 Footer가 없습니다. 단순한 정보 표시용으로 사용할 수 있습니다.
+              </p>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </Showcase>
+
+      <Showcase
+        title="스크롤 테스트"
+        description="내용이 많을 경우 Body 영역에서만 스크롤 발생"
+        code={`<ModalBody>
+  {/* 긴 내용 - Header/Footer 고정, Body만 스크롤 */}
+</ModalBody>`}
+      >
+        <Modal>
+          <ModalTrigger asChild>
+            <Button variant="secondary">스크롤 테스트</Button>
+          </ModalTrigger>
+          <ModalContent>
+            <ModalHeader>
+              <ModalTitle>긴 내용의 모달</ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+              <div className="space-y-medium">
+                {[...Array(15).keys()].map((i) => (
+                  <Card key={i}>
+                    <p className="typo-body2">
+                      스크롤 테스트용 컨텐츠 #{i + 1}. Header와 Footer는 고정되고, Body 영역에서만
+                      스크롤이 발생합니다.
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </ModalBody>
+            <ModalFooter variant="full">
+              <ModalClose asChild>
+                <Button className="w-full">닫기</Button>
+              </ModalClose>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Showcase>
     </Section>
   )
