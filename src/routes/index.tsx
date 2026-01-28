@@ -13,6 +13,7 @@ import {
   OnboardingPage,
   RecordListPage,
 } from '@/pages'
+import MeetingSettingPage from '@/pages/Meetings/MeetingSettingPage'
 import { RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
@@ -64,6 +65,10 @@ export const router = createBrowserRouter([
           {
             path: '/meetings',
             element: <MeetingListPage />,
+          },
+          {
+            path: '/meeting-setting',
+            element: <MeetingSettingPage />,
           },
           {
             path: '/records',
