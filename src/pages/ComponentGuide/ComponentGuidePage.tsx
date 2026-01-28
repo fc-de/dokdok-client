@@ -29,6 +29,7 @@ import {
   ModalTrigger,
 } from '@/shared/ui/Modal'
 import { NumberedCheckbox, NumberedCheckboxGroup } from '@/shared/ui/NumberedCheckbox'
+import { Pagination } from '@/shared/ui/Pagination'
 import { SearchField } from '@/shared/ui/SearchField'
 import { Select } from '@/shared/ui/Select'
 import { StarRatingFilter, type StarRatingRange } from '@/shared/ui/StarRatingFilter'
@@ -65,6 +66,7 @@ function ComponentGuidePage() {
     { id: 'filterDropdown', name: 'FilterDropdown', category: '폼' },
     { id: 'starRatingFilter', name: 'StarRatingFilter', category: '폼' },
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
+    { id: 'pagination', name: 'Pagination', category: '내비게이션' },
     { id: 'modal', name: 'Modal', category: '오버레이' },
   ]
 
@@ -148,6 +150,7 @@ function ComponentGuidePage() {
           {selectedSection === 'filterDropdown' && <FilterDropdownSection />}
           {selectedSection === 'starRatingFilter' && <StarRatingFilterSection />}
           {selectedSection === 'tabs' && <TabsSection />}
+          {selectedSection === 'pagination' && <PaginationSection />}
           {selectedSection === 'modal' && <ModalSection />}
         </div>
       </main>
@@ -1652,6 +1655,89 @@ function ModalSection() {
             </ModalFooter>
           </ModalContent>
         </Modal>
+      </Showcase>
+    </Section>
+  )
+}
+
+function PaginationSection() {
+  const [page1, setPage1] = useState(0)
+  const [page2, setPage2] = useState(0)
+  const [page3, setPage3] = useState(0)
+
+  return (
+    <Section title="Pagination" description="페이지 번호와 이전/다음 버튼을 포함한 페이지네이션 컴포넌트">
+      <Showcase
+        title="기본 사용"
+        description="5페이지 미만 (화살표 버튼 없음)"
+        code={`const [currentPage, setCurrentPage] = useState(0)
+
+<Pagination
+  currentPage={currentPage}
+  totalPages={4}
+  onPageChange={setCurrentPage}
+/>`}
+      >
+        <div className="w-full">
+          <Pagination currentPage={page1} totalPages={4} onPageChange={setPage1} />
+          <div className="typo-caption1 text-grey-600 mt-small text-center">
+            현재 페이지: {page1 + 1} / 4
+          </div>
+        </div>
+      </Showcase>
+
+      <Showcase
+        title="다중 페이지 그룹"
+        description="5페이지 이상 (화살표 버튼 표시)"
+        code={`const [currentPage, setCurrentPage] = useState(0)
+
+<Pagination
+  currentPage={currentPage}
+  totalPages={12}
+  onPageChange={setCurrentPage}
+/>`}
+      >
+        <div className="w-full">
+          <Pagination currentPage={page2} totalPages={12} onPageChange={setPage2} />
+          <div className="typo-caption1 text-grey-600 mt-small text-center">
+            현재 페이지: {page2 + 1} / 12
+          </div>
+        </div>
+      </Showcase>
+
+      <Showcase
+        title="많은 페이지"
+        description="페이지 그룹 네비게이션 테스트"
+        code={`const [currentPage, setCurrentPage] = useState(0)
+
+<Pagination
+  currentPage={currentPage}
+  totalPages={30}
+  onPageChange={setCurrentPage}
+  showPages={5}
+/>`}
+      >
+        <div className="w-full">
+          <Pagination
+            currentPage={page3}
+            totalPages={30}
+            onPageChange={setPage3}
+            showPages={5}
+          />
+          <div className="typo-caption1 text-grey-600 mt-small text-center">
+            현재 페이지: {page3 + 1} / 30
+          </div>
+        </div>
+      </Showcase>
+
+      <Showcase title="기능 설명">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• 페이지 번호는 0부터 시작하지만 UI에는 1부터 표시됩니다</p>
+          <p>• 5페이지 미만일 경우 모든 페이지 번호를 표시하고 화살표 버튼은 숨깁니다</p>
+          <p>• 5페이지 이상일 경우 현재 그룹의 페이지만 표시하고 화살표로 그룹 이동</p>
+          <p>• 페이지 변경 시 자동으로 페이지 상단으로 스크롤됩니다</p>
+          <p>• showPages prop으로 한 번에 표시할 페이지 수를 조정할 수 있습니다</p>
+        </div>
       </Showcase>
     </Section>
   )

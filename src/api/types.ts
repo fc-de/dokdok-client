@@ -50,31 +50,31 @@ export type ApiErrorResponse = {
 }
 
 /**
- * 페이지네이션 응답 타입 (Spring Data JPA Page 형식)
+ * 페이지네이션 응답 타입
  *
- * @template T - 컨텐츠 아이템의 타입
+ * @template T - 아이템의 타입
  *
  * @example
  * ```typescript
  * // 페이지네이션 응답 예시
  * {
- *   "content": [{ "id": 1, "title": "책1" }, { "id": 2, "title": "책2" }],
- *   "totalPages": 5,
- *   "totalElements": 50,
- *   "size": 10,
- *   "number": 0
+ *   "items": [{ "id": 1, "title": "책1" }, { "id": 2, "title": "책2" }],
+ *   "totalCount": 50,
+ *   "currentPage": 0,
+ *   "pageSize": 10,
+ *   "totalPages": 5
  * }
  * ```
  */
 export type PaginatedResponse<T> = {
-  /** 현재 페이지의 컨텐츠 배열 */
-  content: T[]
+  /** 현재 페이지의 아이템 배열 */
+  items: T[]
+  /** 전체 아이템 수 */
+  totalCount: number
+  /** 현재 페이지 번호 (0부터 시작) */
+  currentPage: number
+  /** 페이지 크기 (한 페이지당 아이템 수) */
+  pageSize: number
   /** 전체 페이지 수 */
   totalPages: number
-  /** 전체 요소 수 */
-  totalElements: number
-  /** 페이지 크기 (한 페이지당 요소 수) */
-  size: number
-  /** 현재 페이지 번호 (0부터 시작) */
-  number: number
 }
