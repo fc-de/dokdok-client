@@ -54,7 +54,10 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop">
+    <form
+      className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop"
+      onSubmit={handleSubmit}
+    >
       <p className="w-full text-black typo-heading2">
         독크독크에서 사용할
         <br />
@@ -102,16 +105,9 @@ export default function OnboardingPage() {
       </div>
 
       {/* 시작하기 버튼 */}
-      <Button
-        type="button"
-        variant="primary"
-        size="large"
-        className="w-full"
-        disabled={!canSubmit}
-        onClick={handleSubmit}
-      >
+      <Button type="submit" variant="primary" size="large" className="w-full" disabled={!canSubmit}>
         시작하기
       </Button>
-    </div>
+    </form>
   )
 }

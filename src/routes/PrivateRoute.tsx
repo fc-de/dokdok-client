@@ -19,8 +19,8 @@ export function PrivateRoute() {
     )
   }
 
-  // 서버 에러(5xx)는 에러 화면 표시
-  if (isError && error instanceof ApiError && error.status >= 500) {
+  // 서버 에러(5xx) 또는 네트워크 오류는 에러 화면 표시
+  if (isError && (!(error instanceof ApiError) || error.status >= 500)) {
     return <ErrorFallback message="서버에 문제가 발생했습니다" onRetry={() => refetch()} />
   }
 
