@@ -39,7 +39,7 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   }
 
   const handleReject = async () => {
-    const confirmed = await openConfirm('약속 거부', '약속을 거절 하시겠습니까?')
+    const confirmed = await openConfirm('약속 거절', '약속을 거절 하시겠습니까?')
     if (!confirmed) return
 
     rejectMutation.mutate(item.meetingId)
@@ -48,7 +48,7 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   const handleDelete = async () => {
     const confirmed = await openConfirm(
       '약속 삭제',
-      '삭제된 약속은 리스트에서 사라지며 복구할 수 없어요. 정말 약속을 삭제하시겠어요?',
+      '삭제된 약속은 리스트에서 사라지며 복구할 수 없어요.\n정말 약속을 삭제하시겠어요?',
       { confirmText: '삭제', variant: 'danger' }
     )
     if (!confirmed) return
@@ -72,7 +72,7 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
         {meetingStatus === 'PENDING' ? (
           <>
             <Button variant="secondary" outline size="small" onClick={handleReject}>
-              거부
+              거절
             </Button>
             <Button variant="primary" size="small" onClick={handleApprove}>
               수락

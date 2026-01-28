@@ -49,17 +49,17 @@ export function GlobalModalHost() {
   }
 
   const footerVariant = type === 'confirm' ? 'double' : 'full'
-
+  //에러, 얼럿일 경우 디자인 맞춰서 수정해야 함
   return (
     <Modal open={isOpen} onOpenChange={close}>
-      <ModalContent variant="normal">
+      <ModalContent variant="normal" className="h-auto w-fit min-w-md">
         <ModalHeader hideCloseButton>
-          <ModalTitle>{title}</ModalTitle>
+          <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <p className="typo-body2 text-grey-700">{description}</p>
+          <p className="typo-body4 text-grey-700 whitespace-pre-line">{description}</p>
         </ModalBody>
-        <ModalFooter variant={footerVariant}>
+        <ModalFooter variant={footerVariant} className="border-none">
           {buttons.map(
             (
               button: {
