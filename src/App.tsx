@@ -3,7 +3,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { setupInterceptors } from '@/api'
 import { queryClient } from '@/shared/lib/tanstack-query'
-import { ConfirmModalHost } from '@/shared/ui/ConfirmModalHost'
+import { GlobalModalHost } from '@/shared/ui/GlobalModalHost'
 
 import { router } from './routes'
 
@@ -14,7 +14,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      <ConfirmModalHost />
+      <GlobalModalHost />
     </QueryClientProvider>
   )
 }

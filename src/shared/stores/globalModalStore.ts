@@ -1,9 +1,11 @@
 /**
  * @file globalModalStore.ts
- * @description 전역 Confirm 모달 상태 관리 스토어 (Zustand)
+ * @description 전역 모달 상태 관리 스토어 (Zustand)
  */
 
 import { create } from 'zustand'
+
+type ModalType = 'alert' | 'error' | 'confirm'
 
 type ModalButton = {
   text: string
@@ -13,13 +15,18 @@ type ModalButton = {
 
 type ModalState = {
   isOpen: boolean
+  type: ModalType | null
   title: string
   description: string
   buttons: ModalButton[]
 }
 
 type GlobalModalStore = ModalState & {
-  /** 확인 모달 열기 (Promise 반환) */
+  /** Alert 모달 열기 */
+  openAlert: (title: string, description: string) => void
+  /** Error 모달 열기 */
+  openError: (title: string, description: string) => void
+  /** Confirm 모달 열기 (Promise 반환) */
   openConfirm: (
     title: string,
     description: string,
@@ -34,6 +41,7 @@ type GlobalModalStore = ModalState & {
 
 const initialState: ModalState = {
   isOpen: false,
+  type: null,
   title: '',
   description: '',
   buttons: [],
@@ -41,6 +49,38 @@ const initialState: ModalState = {
 
 export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
   ...initialState,
+
+  openAlert: (title: string, description: string) => {
+    set({
+      isOpen: true,
+      type: 'alert',
+      title,
+      description,
+      buttons: [
+        {
+          text: '확인',
+          variant: 'primary',
+          onClick: () => get().close(),
+        },
+      ],
+    })
+  },
+
+  openError: (title: string, description: string) => {
+    set({
+      isOpen: true,
+      type: 'error',
+      title,
+      description,
+      buttons: [
+        {
+          text: '확인',
+          variant: 'primary',
+          onClick: () => get().close(),
+        },
+      ],
+    })
+  },
 
   openConfirm: (
     title: string,
@@ -60,6 +100,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
 
       set({
         isOpen: true,
+        type: 'confirm',
         title,
         description,
         buttons: [
