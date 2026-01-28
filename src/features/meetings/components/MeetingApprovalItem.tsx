@@ -29,10 +29,12 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   const confirmMutation = useConfirmMeeting()
   const rejectMutation = useRejectMeeting()
   const deleteMutation = useDeleteMeeting()
-
+  const isPending =
+    confirmMutation.isPending || rejectMutation.isPending || deleteMutation.isPending
   const { openConfirm, openError } = useGlobalModalStore()
 
   const handleApprove = async () => {
+    if (isPending) return
     const confirmed = await openConfirm('약속 승인', '약속을 승인 하시겠습니까?')
     if (!confirmed) return
 
@@ -42,6 +44,7 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   }
 
   const handleReject = async () => {
+    if (isPending) return
     const confirmed = await openConfirm('약속 거절', '약속을 거절 하시겠습니까?')
     if (!confirmed) return
 
@@ -51,6 +54,7 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   }
 
   const handleDelete = async () => {
+    if (isPending) return
     const confirmed = await openConfirm(
       '약속 삭제',
       '삭제된 약속은 리스트에서 사라지며 복구할 수 없어요.\n정말 약속을 삭제하시겠어요?',
@@ -78,15 +82,21 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
       <div className="flex gap-small shrink-0">
         {meetingStatus === 'PENDING' ? (
           <>
-            <Button variant="secondary" outline size="small" onClick={handleReject}>
+            <Button
+              variant="secondary"
+              outline
+              size="small"
+              onClick={handleReject}
+              disabled={isPending}
+            >
               거절
             </Button>
-            <Button variant="primary" size="small" onClick={handleApprove}>
+            <Button variant="primary" size="small" onClick={handleApprove} disabled={isPending}>
               수락
             </Button>
           </>
         ) : (
-          <Button variant="danger" outline size="small" onClick={handleDelete}>
+          <Button variant="danger" outline size="small" onClick={handleDelete} disabled={isPending}>
             삭제
           </Button>
         )}
