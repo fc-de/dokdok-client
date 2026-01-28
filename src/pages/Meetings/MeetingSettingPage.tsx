@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { MeetingApprovalList } from '@/features/meetings/components/MeetingApprovalList'
 import { useMeetingApprovalsCount } from '@/features/meetings/hooks/useMeetingApprovalsCount'
 import type { MeetingStatus } from '@/features/meetings/meetings.types'
+import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
 import { Container } from '@/shared/ui/Container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
@@ -13,10 +14,25 @@ export default function MeetingSettingPage() {
   const { id } = useParams<{ id: string }>()
   const gatheringId = Number(id)
   const [activeTab, setActiveTab] = useState<MeetingTab>('PENDING')
+  const { openError } = useGlobalModalStore()
 
   // 각 탭의 totalCount만 가져오기
-  const { pendingCount, confirmedCount, isPendingLoading, isConfirmedLoading } =
-    useMeetingApprovalsCount(gatheringId)
+  const {
+    pendingCount,
+    confirmedCount,
+    isPendingLoading,
+    isConfirmedLoading,
+    pendingError,
+    confirmedError,
+  } = useMeetingApprovalsCount(gatheringId)
+
+  // 에러 발생 시 모달 표시
+  if (pendingError) {
+    openError('오류', '확정 대기 약속 수를 불러오는 데 실패했습니다.')
+  }
+  if (confirmedError) {
+    openError('오류', '확정 완료 약속 수를 불러오는 데 실패했습니다.')
+  }
 
   return (
     <div>
@@ -36,7 +52,7 @@ export default function MeetingSettingPage() {
               <TabsTrigger
                 className="typo-subtitle2"
                 value="PENDING"
-                badge={isPendingLoading ? '-' : pendingCount}
+                badge={isPendingLoading || pendingError ? '-' : pendingCount}
                 size="medium"
               >
                 확정 대기
@@ -44,17 +60,18 @@ export default function MeetingSettingPage() {
               <TabsTrigger
                 className="typo-subtitle2"
                 value="CONFIRMED"
-                badge={isConfirmedLoading ? '-' : confirmedCount}
+                badge={isConfirmedLoading || confirmedError ? '-' : confirmedCount}
                 size="medium"
               >
                 확정 완료
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="PENDING">
-              <MeetingApprovalList gatheringId={gatheringId} status="PENDING" />
-            </TabsContent>
-            <TabsContent value="CONFIRMED">
-              <MeetingApprovalList gatheringId={gatheringId} status="CONFIRMED" />
+            <TabsContent value={activeTab}>
+              <MeetingApprovalList
+                key={`${gatheringId}-${activeTab}`}
+                gatheringId={gatheringId}
+                status={activeTab}
+              />
             </TabsContent>
           </Tabs>
         </Container.Content>

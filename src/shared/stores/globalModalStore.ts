@@ -25,7 +25,7 @@ type GlobalModalStore = ModalState & {
   /** Alert 모달 열기 */
   openAlert: (title: string, description: string) => void
   /** Error 모달 열기 */
-  openError: (title: string, description: string) => void
+  openError: (title: string, description: string, onClose?: () => void) => void
   /** Confirm 모달 열기 (Promise 반환) */
   openConfirm: (
     title: string,
@@ -66,7 +66,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
     })
   },
 
-  openError: (title: string, description: string) => {
+  openError: (title: string, description: string, onClose?: () => void) => {
     set({
       isOpen: true,
       type: 'error',
@@ -76,7 +76,10 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
         {
           text: '확인',
           variant: 'primary',
-          onClick: () => get().close(),
+          onClick: () => {
+            get().close()
+            onClose?.()
+          },
         },
       ],
     })

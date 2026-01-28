@@ -4,11 +4,13 @@
  */
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { MeetingApprovalItem } from '@/features/meetings/components/MeetingApprovalItem'
 import { useMeetingApprovals } from '@/features/meetings/hooks/useMeetingApprovals'
 import type { MeetingStatus } from '@/features/meetings/meetings.types'
 import { PAGE_SIZES } from '@/shared/constants'
+import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
 import { Pagination } from '@/shared/ui/Pagination'
 
 export type MeetingApprovalListProps = {
@@ -18,6 +20,7 @@ export type MeetingApprovalListProps = {
   status: MeetingStatus
 }
 export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalListProps) {
+  const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(0)
   const pageSize = PAGE_SIZES.MEETING_APPROVALS
 
@@ -28,6 +31,8 @@ export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalList
     size: pageSize,
   })
 
+  const { openError } = useGlobalModalStore()
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-large">
@@ -37,11 +42,11 @@ export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalList
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center py-large">
-        <p className="typo-body3 text-error">데이터를 불러오는 중 오류가 발생했습니다.</p>
-      </div>
-    )
+    openError('에러', error.userMessage, () => {
+      navigate('/', { replace: true })
+    })
+
+    return null
   }
 
   if (!data || data.items.length === 0) {

@@ -23,26 +23,31 @@ export type MeetingApprovalItemProps = {
  * 약속 승인 리스트의 개별 아이템을 렌더링합니다.
  */
 export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
-  const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus } = item
+  const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus, meetingId } =
+    item
 
   const confirmMutation = useConfirmMeeting()
   const rejectMutation = useRejectMeeting()
   const deleteMutation = useDeleteMeeting()
 
-  const { openConfirm } = useGlobalModalStore()
+  const { openConfirm, openError } = useGlobalModalStore()
 
   const handleApprove = async () => {
     const confirmed = await openConfirm('약속 승인', '약속을 승인 하시겠습니까?')
     if (!confirmed) return
 
-    confirmMutation.mutate(item.meetingId)
+    confirmMutation.mutate(meetingId, {
+      onError: (error) => openError('에러', error.userMessage),
+    })
   }
 
   const handleReject = async () => {
     const confirmed = await openConfirm('약속 거절', '약속을 거절 하시겠습니까?')
     if (!confirmed) return
 
-    rejectMutation.mutate(item.meetingId)
+    rejectMutation.mutate(meetingId, {
+      onError: (error) => openError('에러', error.userMessage),
+    })
   }
 
   const handleDelete = async () => {
@@ -53,7 +58,9 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
     )
     if (!confirmed) return
 
-    deleteMutation.mutate(item.meetingId)
+    deleteMutation.mutate(meetingId, {
+      onError: (error) => openError('에러', error.userMessage),
+    })
   }
 
   return (

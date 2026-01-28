@@ -19,19 +19,24 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  * size=1로 요청하여 totalCount만 효율적으로 가져옵니다.
  * 두 개의 쿼리를 useQueries로 한 번에 처리하여 코드 간결성을 높입니다.
  *
- * @param gatheringId - 모임 식별자
+ * @param gatheringId - 모임 식별자 (유효하지 않은 경우 쿼리 비활성화)
  *
- * @returns 카운트 및 로딩 상태 객체
+ * @returns 카운트 및 로딩/에러 상태 객체
  * - pendingCount: PENDING 상태 카운트
  * - confirmedCount: CONFIRMED 상태 카운트
  * - isPendingLoading: PENDING 로딩 상태
  * - isConfirmedLoading: CONFIRMED 로딩 상태
  * - isLoading: 둘 중 하나라도 로딩 중인지 여부
+ * - pendingError: PENDING 에러 객체
+ * - confirmedError: CONFIRMED 에러 객체
+ * - isError: 둘 중 하나라도 에러가 발생했는지 여부
  *
  * @example
- * const { pendingCount, confirmedCount, isLoading } = useMeetingApprovalsCount(1)
+ * const { pendingCount, confirmedCount, isLoading, isError } = useMeetingApprovalsCount(1)
  */
 export const useMeetingApprovalsCount = (gatheringId: number) => {
+  const isValidGatheringId = !Number.isNaN(gatheringId) && gatheringId > 0
+
   const results = useQueries({
     queries: [
       {
@@ -43,7 +48,7 @@ export const useMeetingApprovalsCount = (gatheringId: number) => {
             page: 0,
             size: 1,
           }),
-        enabled: !!gatheringId,
+        enabled: isValidGatheringId,
         select: (data: PaginatedResponse<MeetingApprovalItem>) => data.totalCount,
         gcTime: 10 * 60 * 1000,
       },
@@ -56,7 +61,7 @@ export const useMeetingApprovalsCount = (gatheringId: number) => {
             page: 0,
             size: 1,
           }),
-        enabled: !!gatheringId,
+        enabled: isValidGatheringId,
         select: (data: PaginatedResponse<MeetingApprovalItem>) => data.totalCount,
         gcTime: 10 * 60 * 1000,
       },
@@ -69,5 +74,8 @@ export const useMeetingApprovalsCount = (gatheringId: number) => {
     isPendingLoading: results[0].isLoading,
     isConfirmedLoading: results[1].isLoading,
     isLoading: results[0].isLoading || results[1].isLoading,
+    pendingError: results[0].error,
+    confirmedError: results[1].error,
+    isError: results[0].isError || results[1].isError,
   }
 }
