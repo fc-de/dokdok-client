@@ -42,7 +42,7 @@ import {
  * ```
  */
 export function GlobalModalHost() {
-  const { isOpen, type, title, description, buttons, close } = useGlobalModalStore()
+  const { isOpen, type, title, description, buttons } = useGlobalModalStore()
 
   if (!isOpen) {
     return null
@@ -50,8 +50,9 @@ export function GlobalModalHost() {
 
   const footerVariant = type === 'confirm' ? 'double' : 'full'
   //에러, 얼럿일 경우 디자인 맞춰서 수정해야 함
+
   return (
-    <Modal open={isOpen} onOpenChange={close}>
+    <Modal open={isOpen}>
       <ModalContent variant="normal" className="h-auto w-fit min-w-md">
         <ModalHeader hideCloseButton>
           <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
