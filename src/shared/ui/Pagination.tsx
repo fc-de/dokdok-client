@@ -96,7 +96,7 @@ export function Pagination({
     >
       <ul
         data-slot="pagination-content"
-        className="flex flex-row items-center justify-between min-w-[220px]"
+        className="flex flex-row items-center justify-between max-w-[220px] w-fit"
       >
         {/* 이전 그룹 버튼 */}
         {shouldShowGroupButtons && (
