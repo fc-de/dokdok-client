@@ -67,7 +67,7 @@ export const router = createBrowserRouter([
             element: <MeetingListPage />,
           },
           {
-            path: '/meeting-setting',
+            path: '/gatherings/:id/meeting-setting',
             element: <MeetingSettingPage />,
           },
           {

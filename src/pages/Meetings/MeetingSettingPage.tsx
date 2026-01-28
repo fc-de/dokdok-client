@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 import { MeetingApprovalList } from '@/features/meetings/components/MeetingApprovalList'
 import { useMeetingApprovalsCount } from '@/features/meetings/hooks/useMeetingApprovalsCount'
@@ -9,8 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 type MeetingTab = Extract<MeetingStatus, 'PENDING' | 'CONFIRMED'>
 
 export default function MeetingSettingPage() {
-  // TODO: 실제 gatheringId는 URL 파라미터나 상태 관리에서 가져와야 함
-  const gatheringId = 1
+  const { id } = useParams<{ id: string }>()
+  const gatheringId = Number(id)
   const [activeTab, setActiveTab] = useState<MeetingTab>('PENDING')
 
   // 각 탭의 totalCount만 가져오기

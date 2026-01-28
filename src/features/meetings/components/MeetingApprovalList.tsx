@@ -67,7 +67,6 @@ export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalList
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          pageSize={pageSize}
           onPageChange={(page: number) => setCurrentPage(page)}
         />
       )}
