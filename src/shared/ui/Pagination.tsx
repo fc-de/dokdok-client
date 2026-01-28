@@ -14,6 +14,24 @@ export type PaginationProps = {
   showPages?: number
   /** 추가 클래스명 */
   className?: string
+  /**
+   * 페이지 변경 시 스크롤 상단 이동 여부
+   * - 기본값: true (window를 상단으로 스크롤)
+   * - false: 스크롤 동작 없음
+   */
+  scrollTop?: boolean
+  /**
+   * 스크롤할 대상 요소의 ref
+   * - 지정하지 않으면 window를 스크롤
+   * - 모달이나 특정 컨테이너 내부 스크롤에 사용
+   */
+  scrollTargetRef?: React.RefObject<HTMLElement>
+  /**
+   * 커스텀 스크롤 동작 콜백
+   * - scrollTargetRef보다 우선 적용됨
+   * - 특수한 스크롤 동작이 필요한 경우 사용
+   */
+  onScrollToTop?: () => void
 }
 
 /**
@@ -25,12 +43,40 @@ export type PaginationProps = {
  *
  * @example
  * ```tsx
+ * // 기본 사용 (window 스크롤)
  * const [currentPage, setCurrentPage] = useState(0)
- *
  * <Pagination
  *   currentPage={currentPage}
  *   totalPages={10}
  *   onPageChange={setCurrentPage}
+ * />
+ *
+ * // 스크롤 비활성화
+ * <Pagination
+ *   currentPage={currentPage}
+ *   totalPages={10}
+ *   onPageChange={setCurrentPage}
+ *   scrollTop={false}
+ * />
+ *
+ * // 모달 내부 스크롤 (ref 사용)
+ * const modalRef = useRef<HTMLDivElement>(null)
+ * <Pagination
+ *   currentPage={currentPage}
+ *   totalPages={10}
+ *   onPageChange={setCurrentPage}
+ *   scrollTargetRef={modalRef}
+ * />
+ *
+ * // 커스텀 스크롤 동작
+ * <Pagination
+ *   currentPage={currentPage}
+ *   totalPages={10}
+ *   onPageChange={setCurrentPage}
+ *   onScrollToTop={() => {
+ *     // 커스텀 스크롤 로직
+ *     window.scrollTo({ top: 100, behavior: 'instant' })
+ *   }}
  * />
  * ```
  */
@@ -40,10 +86,30 @@ export function Pagination({
   onPageChange,
   showPages = DEFAULT_SHOW_PAGES,
   className,
+  scrollTop = true,
+  scrollTargetRef,
+  onScrollToTop,
 }: PaginationProps) {
-  // 페이지 변경 시 부모 컴포넌트에 알림 및 스크롤 상단 이동
+  // 페이지 변경 시 부모 컴포넌트에 알림 및 스크롤 동작
   const handleChange = (page: number) => {
     onPageChange(page)
+
+    // scrollTop이 false면 스크롤 동작 안 함
+    if (!scrollTop) return
+
+    // 1순위: 커스텀 콜백
+    if (onScrollToTop) {
+      onScrollToTop()
+      return
+    }
+
+    // 2순위: ref로 지정된 요소
+    if (scrollTargetRef?.current) {
+      scrollTargetRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    // 3순위: 기본값 (window)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
