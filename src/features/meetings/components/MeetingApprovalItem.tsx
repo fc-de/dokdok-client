@@ -8,6 +8,7 @@ import { useDeleteMeeting } from '@/features/meetings/hooks/useDeleteMeeting'
 import { useRejectMeeting } from '@/features/meetings/hooks/useRejectMeeting'
 import formatDateTime from '@/features/meetings/lib/formatDateTime'
 import type { MeetingApprovalItem as MeetingApprovalItemType } from '@/features/meetings/meetings.types'
+import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
 import { Button } from '@/shared/ui/Button'
 
 export type MeetingApprovalItemProps = {
@@ -28,59 +29,31 @@ export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   const rejectMutation = useRejectMeeting()
   const deleteMutation = useDeleteMeeting()
 
-  // alert, confirm 모달로 교체
+  const { openConfirm } = useGlobalModalStore()
 
-  const handleApprove = () => {
-    if (!confirm('약속을 승인 하시겠습니까?')) {
-      return
-    }
+  const handleApprove = async () => {
+    const confirmed = await openConfirm('약속 승인', '약속을 승인 하시겠습니까?')
+    if (!confirmed) return
 
-    confirmMutation.mutate(item.meetingId, {
-      onSuccess: (response) => {
-        alert(response.message)
-      },
-      onError: (error) => {
-        if (error) {
-          alert(error.userMessage)
-        }
-      },
-    })
+    confirmMutation.mutate(item.meetingId)
   }
 
-  const handleReject = () => {
-    if (!confirm('약속을 거절 하시겠습니까?')) {
-      return
-    }
+  const handleReject = async () => {
+    const confirmed = await openConfirm('약속 거부', '약속을 거절 하시겠습니까?')
+    if (!confirmed) return
 
-    rejectMutation.mutate(item.meetingId, {
-      onSuccess: (response) => {
-        alert(response.message)
-      },
-      onError: (error) => {
-        if (error) {
-          alert(error.userMessage)
-        }
-      },
-    })
+    rejectMutation.mutate(item.meetingId)
   }
 
-  const handleDelete = () => {
-    if (
-      !confirm('삭제된 약속은 리스트에서 사라지며 복구할 수 없어요. 정말 약속을 삭제하시겠어요?')
-    ) {
-      return
-    }
+  const handleDelete = async () => {
+    const confirmed = await openConfirm(
+      '약속 삭제',
+      '삭제된 약속은 리스트에서 사라지며 복구할 수 없어요. 정말 약속을 삭제하시겠어요?',
+      { confirmText: '삭제', variant: 'danger' }
+    )
+    if (!confirmed) return
 
-    deleteMutation.mutate(item.meetingId, {
-      onSuccess: (response) => {
-        alert(response.message)
-      },
-      onError: (error) => {
-        if (error) {
-          alert(error.message)
-        }
-      },
-    })
+    deleteMutation.mutate(item.meetingId)
   }
 
   return (

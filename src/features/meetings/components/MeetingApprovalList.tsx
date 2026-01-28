@@ -37,7 +37,6 @@ export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalList
   }
 
   if (error) {
-    alert(error.userMessage)
     return (
       <div className="flex items-center justify-center py-large">
         <p className="typo-body3 text-error">데이터를 불러오는 중 오류가 발생했습니다.</p>
