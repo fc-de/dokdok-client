@@ -11,7 +11,7 @@ import { completeOnboarding } from '../user.api'
  * @description
  * - 신규 사용자의 닉네임을 설정하고 온보딩을 완료합니다
  * - 성공 시 auth 쿼리를 무효화하여 needsOnboarding 상태를 갱신합니다
- * - 성공 후 /books 페이지로 자동 리다이렉트됩니다
+ * - 성공 후 홈 페이지로 자동 리다이렉트됩니다
  *
  * @example
  * ```tsx

@@ -12,6 +12,11 @@ export type CurrentUser = {
 export const getKakaoLoginUrl = () => {
   const apiUrl = import.meta.env.VITE_API_URL
   const feOrigin = import.meta.env.VITE_APP_URL
+
+  if (!apiUrl || !feOrigin) {
+    throw new Error('Missing required environment variables: VITE_API_URL or VITE_APP_URL')
+  }
+
   return `${apiUrl}/oauth2/authorization/kakao?fe_origin=${feOrigin}`
 }
 

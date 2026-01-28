@@ -4,8 +4,7 @@ import { useState } from 'react'
 import { useCheckNickname, useOnboarding } from '@/features/user'
 import UserAvatarIcon from '@/shared/assets/icon/UserAvatar.svg'
 import { useDebounce } from '@/shared/hooks/useDebounce'
-import { Button } from '@/shared/ui/Button'
-import { Input } from '@/shared/ui/Input'
+import { Button, Input } from '@/shared/ui'
 
 /**
  * 신규 사용자 온보딩 페이지
@@ -30,8 +29,9 @@ export default function OnboardingPage() {
   const isNicknameAvailable = nicknameCheck?.available === true
   const isNicknameDuplicate = nicknameCheck?.available === false
 
-  // 버튼 활성화 조건: 닉네임이 입력되어 있고, 중복 체크 통과 시 활성화
-  const canSubmit = nickname.length > 0 && isNicknameAvailable && !isPending
+  // 버튼 활성화 조건: 디바운스 완료 + 닉네임 중복 체크 통과 시 활성화
+  const canSubmit =
+    nickname.length >= 2 && debouncedNickname === nickname && isNicknameAvailable && !isPending
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]

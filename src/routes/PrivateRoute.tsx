@@ -1,10 +1,12 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
+import { ApiError } from '@/api'
 import { useAuth } from '@/features/auth'
 import { ROUTES } from '@/shared/constants'
+import { ErrorFallback } from '@/shared/ui'
 
 export function PrivateRoute() {
-  const { data: user, isLoading } = useAuth()
+  const { data: user, isLoading, isError, error, refetch } = useAuth()
   const location = useLocation()
 
   const isOnboardingPage = location.pathname === ROUTES.ONBOARDING
@@ -15,6 +17,11 @@ export function PrivateRoute() {
         <p>Loading...</p>
       </div>
     )
+  }
+
+  // 서버 에러(5xx)는 에러 화면 표시
+  if (isError && error instanceof ApiError && error.status >= 500) {
+    return <ErrorFallback message="서버에 문제가 발생했습니다" onRetry={() => refetch()} />
   }
 
   // 인증되지 않은 사용자 → 로그인 페이지로
