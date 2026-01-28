@@ -1,7 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 
-import { DEFAULT_PAGE_SIZE, DEFAULT_SHOW_PAGES } from '@/shared/constants'
-import { usePagination } from '@/shared/hooks/usePagination'
+import { DEFAULT_SHOW_PAGES } from '@/shared/constants'
 import { cn } from '@/shared/lib/utils'
 
 export type PaginationProps = {
@@ -9,8 +8,6 @@ export type PaginationProps = {
   currentPage: number
   /** 전체 페이지 수 */
   totalPages: number
-  /** 페이지당 아이템 수 (기본값: 5) */
-  pageSize: number
   /** 페이지 변경 콜백 (0부터 시작하는 페이지 번호) */
   onPageChange: (page: number) => void
   /** 한 번에 표시할 페이지 번호 수 (기본값: 5) */
@@ -33,7 +30,6 @@ export type PaginationProps = {
  * <Pagination
  *   currentPage={currentPage}
  *   totalPages={10}
- *   pageSize={10}
  *   onPageChange={setCurrentPage}
  * />
  * ```
@@ -41,24 +37,40 @@ export type PaginationProps = {
 export function Pagination({
   currentPage,
   totalPages,
-  pageSize = DEFAULT_PAGE_SIZE,
   onPageChange,
   showPages = DEFAULT_SHOW_PAGES,
   className,
 }: PaginationProps) {
-  const { getPageNumbers } = usePagination({
-    initialPage: currentPage,
-    pageSize,
-    showPages,
-  })
-
   // 페이지 변경 시 부모 컴포넌트에 알림 및 스크롤 상단 이동
   const handleChange = (page: number) => {
     onPageChange(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const pageNumbers = getPageNumbers(totalPages)
+  const getPageNumbers = (): number[] => {
+    const pages: number[] = []
+
+    if (totalPages <= showPages) {
+      // 전체 페이지가 표시 범위 이하면 모두 표시
+      for (let i = 0; i < totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      // 현재 페이지가 속한 그룹 계산
+      const currentGroup = Math.floor(currentPage / showPages)
+      const start = currentGroup * showPages
+      const end = Math.min(totalPages - 1, start + showPages - 1)
+
+      // 페이지들 추가
+      for (let i = start; i <= end; i++) {
+        pages.push(i)
+      }
+    }
+
+    return pages
+  }
+
+  const pageNumbers = getPageNumbers()
   const shouldShowGroupButtons = totalPages > showPages
 
   // 현재 페이지 그룹의 첫 번째와 마지막 페이지
@@ -66,7 +78,9 @@ export function Pagination({
   const lastPageInGroup = pageNumbers[pageNumbers.length - 1] ?? 0
 
   // 이전/다음 그룹으로 이동할 페이지 계산
-  const previousGroupPage = Math.max(0, firstPageInGroup - 1)
+  // 이전 그룹: 이전 그룹의 마지막 페이지
+  const previousGroupPage = Math.max(0, firstPageInGroup - showPages)
+  // 다음 그룹: 다음 그룹의 첫 번째 페이지
   const nextGroupPage = Math.min(totalPages - 1, lastPageInGroup + 1)
 
   // 첫 번째/마지막 페이지 그룹 여부
@@ -80,7 +94,10 @@ export function Pagination({
       data-slot="pagination"
       className={cn('mx-auto flex w-full justify-center', className)}
     >
-      <ul data-slot="pagination-content" className="flex flex-row items-center gap-xsmall">
+      <ul
+        data-slot="pagination-content"
+        className="flex flex-row items-center justify-between min-w-[220px]"
+      >
         {/* 이전 그룹 버튼 */}
         {shouldShowGroupButtons && (
           <li data-slot="pagination-item">
@@ -112,8 +129,9 @@ export function Pagination({
               data-active={currentPage === page}
               onClick={() => handleChange(page)}
               className={cn(
-                'typo-subtitle3 flex items-center justify-center rounded-small transition-colors cursor-pointer px-xsmall',
+                'typo-subtitle3 flex items-center justify-center rounded-small transition-colors cursor-pointer',
                 currentPage === page ? 'text-grey-800' : 'text-grey-600',
+                'size-8',
                 'hover:text-grey-800',
                 'disabled:text-grey-400 disabled:cursor-not-allowed'
               )}
