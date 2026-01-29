@@ -109,6 +109,11 @@
   --spacing-large: 24px;
   --spacing-xlarge: 40px;
 
+  /* Layout tokens */
+  --spacing-layout-max: 1440px;
+  --spacing-layout-padding: 120px;
+  --spacing-gnb-height: 64px;
+
   /* font-size tokens */
   --text-heading1: 36px;
   --text-heading2: 24px;

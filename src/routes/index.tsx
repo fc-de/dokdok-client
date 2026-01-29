@@ -1,7 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import {
-  AuthLayout,
   BookDetailPage,
   BookListPage,
   ComponentGuidePage,
@@ -14,7 +13,7 @@ import {
   RecordListPage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants/routes'
-import { RootLayout } from '@/shared/layout'
+import { AuthLayout, MainLayout, RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
 
@@ -24,60 +23,69 @@ export const router = createBrowserRouter([
     element: <ComponentGuidePage />,
   },
   {
-    element: <AuthLayout />,
+    element: <RootLayout />,
     children: [
-      {
-        path: ROUTES.LOGIN,
-        element: <LoginPage />,
-      },
-    ],
-  },
-  {
-    element: <PrivateRoute />,
-    children: [
+      // 인증 페이지 (GNB 없음)
       {
         element: <AuthLayout />,
         children: [
           {
-            path: ROUTES.ONBOARDING,
-            element: <OnboardingPage />,
+            path: ROUTES.LOGIN,
+            element: <LoginPage />,
           },
         ],
       },
+      // 인증 필요한 페이지
       {
-        element: <RootLayout />,
+        element: <PrivateRoute />,
         children: [
+          // 온보딩 (GNB 없음)
           {
-            path: ROUTES.HOME,
-            element: <HomePage />,
+            element: <AuthLayout />,
+            children: [
+              {
+                path: ROUTES.ONBOARDING,
+                element: <OnboardingPage />,
+              },
+            ],
           },
+          // 메인 페이지들 (GNB 있음)
           {
-            path: ROUTES.HOME_ALIAS,
-            element: <Navigate to={ROUTES.HOME} replace />,
-          },
-          {
-            path: ROUTES.BOOKS,
-            element: <BookListPage />,
-          },
-          {
-            path: `${ROUTES.BOOKS}/:id`,
-            element: <BookDetailPage />,
-          },
-          {
-            path: ROUTES.GATHERINGS,
-            element: <GatheringListPage />,
-          },
-          {
-            path: `${ROUTES.GATHERINGS}/:id`,
-            element: <GatheringDetailPage />,
-          },
-          {
-            path: ROUTES.MEETINGS,
-            element: <MeetingListPage />,
-          },
-          {
-            path: ROUTES.RECORDS,
-            element: <RecordListPage />,
+            element: <MainLayout />,
+            children: [
+              {
+                path: ROUTES.HOME,
+                element: <HomePage />,
+              },
+              {
+                path: ROUTES.HOME_ALIAS,
+                element: <Navigate to={ROUTES.HOME} replace />,
+              },
+              {
+                path: ROUTES.BOOKS,
+                element: <BookListPage />,
+              },
+              {
+                path: `${ROUTES.BOOKS}/:id`,
+                element: <BookDetailPage />,
+              },
+              {
+                path: ROUTES.GATHERINGS,
+                element: <GatheringListPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id`,
+                element: <GatheringDetailPage />,
+              },
+              {
+                path: ROUTES.MEETINGS,
+                element: <MeetingListPage />,
+              },
+              {
+                path: ROUTES.RECORDS,
+                element: <RecordListPage />,
+              },
+            ],
           },
         ],
       },
