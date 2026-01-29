@@ -3,15 +3,13 @@
  * @description 약속 승인 리스트 컴포넌트
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { MeetingApprovalItem } from '@/features/meetings/components/MeetingApprovalItem'
-import { useMeetingApprovals } from '@/features/meetings/hooks/useMeetingApprovals'
-import type { MeetingStatus } from '@/features/meetings/meetings.types'
+import { MeetingApprovalItem, type MeetingStatus, useMeetingApprovals } from '@/features/meetings'
 import { PAGE_SIZES } from '@/shared/constants'
-import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
 import { Pagination } from '@/shared/ui/Pagination'
+import { useGlobalModalStore } from '@/store'
 
 export type MeetingApprovalListProps = {
   /** 모임 식별자 */
@@ -19,19 +17,26 @@ export type MeetingApprovalListProps = {
   /** 약속 상태 (PENDING: 확정 대기, CONFIRMED: 확정 완료) */
   status: MeetingStatus
 }
-export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalListProps) {
+export default function MeetingApprovalList({ gatheringId, status }: MeetingApprovalListProps) {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(0)
   const pageSize = PAGE_SIZES.MEETING_APPROVALS
+  const { openError } = useGlobalModalStore()
 
-  const { data, isLoading, error } = useMeetingApprovals({
+  const { data, isLoading, isError, error } = useMeetingApprovals({
     gatheringId,
     status,
     page: currentPage,
     size: pageSize,
   })
 
-  const { openError } = useGlobalModalStore()
+  useEffect(() => {
+    if (isError) {
+      openError('에러', error.userMessage, () => {
+        navigate('/', { replace: true })
+      })
+    }
+  }, [isError, openError, error, navigate])
 
   if (isLoading) {
     return (
@@ -39,14 +44,6 @@ export function MeetingApprovalList({ gatheringId, status }: MeetingApprovalList
         <p className="typo-body3 text-grey-600">로딩 중...</p>
       </div>
     )
-  }
-
-  if (error) {
-    openError('에러', error.userMessage, () => {
-      navigate('/', { replace: true })
-    })
-
-    return null
   }
 
   if (!data || data.items.length === 0) {

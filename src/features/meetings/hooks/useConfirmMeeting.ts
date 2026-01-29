@@ -7,8 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ApiError } from '@/api/errors'
 import type { ApiResponse } from '@/api/types'
-import { confirmMeeting } from '@/features/meetings/meetings.api'
-import type { ConfirmMeetingResponse } from '@/features/meetings/meetings.types'
+import { confirmMeeting, type ConfirmMeetingResponse } from '@/features/meetings'
 
 import { meetingQueryKeys } from './meetingQueryKeys'
 

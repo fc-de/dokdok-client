@@ -6,8 +6,7 @@
 import { useQueries } from '@tanstack/react-query'
 
 import type { PaginatedResponse } from '@/api/types'
-import { getMeetingApprovals } from '@/features/meetings/meetings.api'
-import type { MeetingApprovalItem } from '@/features/meetings/meetings.types'
+import { getMeetingApprovals, type MeetingApprovalItemType } from '@/features/meetings'
 
 import { meetingQueryKeys } from './meetingQueryKeys'
 
@@ -49,7 +48,7 @@ export const useMeetingApprovalsCount = (gatheringId: number) => {
             size: 1,
           }),
         enabled: isValidGatheringId,
-        select: (data: PaginatedResponse<MeetingApprovalItem>) => data.totalCount,
+        select: (data: PaginatedResponse<MeetingApprovalItemType>) => data.totalCount,
         gcTime: 10 * 60 * 1000,
       },
       {
@@ -62,7 +61,7 @@ export const useMeetingApprovalsCount = (gatheringId: number) => {
             size: 1,
           }),
         enabled: isValidGatheringId,
-        select: (data: PaginatedResponse<MeetingApprovalItem>) => data.totalCount,
+        select: (data: PaginatedResponse<MeetingApprovalItemType>) => data.totalCount,
         gcTime: 10 * 60 * 1000,
       },
     ],

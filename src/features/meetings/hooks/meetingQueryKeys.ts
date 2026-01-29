@@ -3,7 +3,7 @@
  * @description 약속 관련 Query Key Factory
  */
 
-import type { GetMeetingApprovalsParams } from '@/features/meetings/meetings.types'
+import type { GetMeetingApprovalsParams } from '@/features/meetings'
 
 /**
  * Query Key Factory

@@ -1,12 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { MeetingApprovalList } from '@/features/meetings/components/MeetingApprovalList'
-import { useMeetingApprovalsCount } from '@/features/meetings/hooks/useMeetingApprovalsCount'
-import type { MeetingStatus } from '@/features/meetings/meetings.types'
-import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
+import {
+  MeetingApprovalList,
+  type MeetingStatus,
+  useMeetingApprovalsCount,
+} from '@/features/meetings'
 import { Container } from '@/shared/ui/Container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
+import { useGlobalModalStore } from '@/store'
 
 type MeetingTab = Extract<MeetingStatus, 'PENDING' | 'CONFIRMED'>
 
@@ -27,12 +29,14 @@ export default function MeetingSettingPage() {
   } = useMeetingApprovalsCount(gatheringId)
 
   // 에러 발생 시 모달 표시
-  if (pendingError) {
-    openError('오류', '확정 대기 약속 수를 불러오는 데 실패했습니다.')
-  }
-  if (confirmedError) {
-    openError('오류', '확정 완료 약속 수를 불러오는 데 실패했습니다.')
-  }
+  useEffect(() => {
+    if (pendingError) {
+      openError('오류', '확정 대기 약속 수를 불러오는 데 실패했습니다.')
+    }
+    if (confirmedError) {
+      openError('오류', '확정 완료 약속 수를 불러오는 데 실패했습니다.')
+    }
+  }, [pendingError, confirmedError, openError])
 
   return (
     <div>

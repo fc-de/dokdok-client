@@ -3,7 +3,6 @@
  * @description 전역 모달 호스트 컴포넌트
  */
 
-import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
 import { Button } from '@/shared/ui/Button'
 import {
   Modal,
@@ -13,6 +12,7 @@ import {
   ModalHeader,
   ModalTitle,
 } from '@/shared/ui/Modal'
+import { useGlobalModalStore } from '@/store'
 
 /**
  * 전역 모달 호스트
@@ -58,28 +58,19 @@ export function GlobalModalHost() {
           <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <p className="typo-body4 text-grey-700 whitespace-pre-line">{description}</p>
+          <p className="whitespace-pre-line typo-body4 text-grey-700">{description}</p>
         </ModalBody>
         <ModalFooter variant={footerVariant} className="border-none">
-          {buttons.map(
-            (
-              button: {
-                text: string
-                variant?: 'primary' | 'secondary' | 'danger'
-                onClick?: () => void
-              },
-              index: number
-            ) => (
-              <Button
-                key={index}
-                variant={button.variant === 'secondary' ? 'secondary' : button.variant || 'primary'}
-                outline={button.variant === 'secondary'}
-                onClick={button.onClick}
-              >
-                {button.text}
-              </Button>
-            )
-          )}
+          {buttons.map((button, index) => (
+            <Button
+              key={index}
+              variant={button.variant || 'primary'}
+              outline={button.variant === 'secondary'}
+              onClick={button.onClick}
+            >
+              {button.text}
+            </Button>
+          ))}
         </ModalFooter>
       </ModalContent>
     </Modal>

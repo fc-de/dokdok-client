@@ -7,11 +7,11 @@ import { useQuery } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
 import type { PaginatedResponse } from '@/api/types'
-import { getMeetingApprovals } from '@/features/meetings/meetings.api'
-import type {
-  GetMeetingApprovalsParams,
-  MeetingApprovalItem,
-} from '@/features/meetings/meetings.types'
+import {
+  getMeetingApprovals,
+  type GetMeetingApprovalsParams,
+  type MeetingApprovalItemType,
+} from '@/features/meetings'
 
 import { meetingQueryKeys } from './meetingQueryKeys'
 
@@ -43,7 +43,7 @@ export const useMeetingApprovals = (params: GetMeetingApprovalsParams) => {
   const isValidGatheringId =
     !Number.isNaN(params.gatheringId) && params.gatheringId > 0
 
-  return useQuery<PaginatedResponse<MeetingApprovalItem>, ApiError>({
+  return useQuery<PaginatedResponse<MeetingApprovalItemType>, ApiError>({
     queryKey: meetingQueryKeys.approvalList(params),
     queryFn: () => getMeetingApprovals(params),
     // gatheringId가 유효할 때만 쿼리 실행

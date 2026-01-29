@@ -3,13 +3,15 @@
  * @description 약속 승인 아이템 컴포넌트
  */
 
-import { useConfirmMeeting } from '@/features/meetings/hooks/useConfirmMeeting'
-import { useDeleteMeeting } from '@/features/meetings/hooks/useDeleteMeeting'
-import { useRejectMeeting } from '@/features/meetings/hooks/useRejectMeeting'
-import formatDateTime from '@/features/meetings/lib/formatDateTime'
-import type { MeetingApprovalItem as MeetingApprovalItemType } from '@/features/meetings/meetings.types'
-import { useGlobalModalStore } from '@/shared/stores/globalModalStore'
+import {
+  formatDateTime,
+  type MeetingApprovalItemType,
+  useConfirmMeeting,
+  useDeleteMeeting,
+  useRejectMeeting,
+} from '@/features/meetings'
 import { Button } from '@/shared/ui/Button'
+import { useGlobalModalStore } from '@/store'
 
 export type MeetingApprovalItemProps = {
   /** 약속 승인 아이템 데이터 */
@@ -22,7 +24,7 @@ export type MeetingApprovalItemProps = {
  * @description
  * 약속 승인 리스트의 개별 아이템을 렌더링합니다.
  */
-export function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
+export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
   const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus, meetingId } =
     item
 
