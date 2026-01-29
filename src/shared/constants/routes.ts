@@ -3,6 +3,9 @@ export const ROUTES = {
   LOGIN: '/login',
   ONBOARDING: '/onboarding',
 
+  HOME: '/',
+  HOME_ALIAS: '/home',
+
   // Books
   BOOKS: '/books',
   BOOK_DETAIL: (id: number | string) => `/books/${id}`,
@@ -16,6 +19,9 @@ export const ROUTES = {
   // Meetings
   MEETINGS: '/meetings',
   MEETING_DETAIL: (id: number | string) => `/meetings/${id}`,
+  MEETING_CREATE: '/meetings/create',
+  MEETING_UPDATE: '/meetings/update',
+  MEETING_SETTING: '/meetings/setting',
 
   // Records
   RECORDS: '/records',

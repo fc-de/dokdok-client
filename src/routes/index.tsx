@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 import {
   AuthLayout,
@@ -14,6 +14,7 @@ import {
   RecordListPage,
 } from '@/pages'
 import MeetingSettingPage from '@/pages/Meetings/MeetingSettingPage'
+import { ROUTES } from '@/shared/constants/routes'
 import { RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
@@ -27,12 +28,8 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       {
-        path: '/login',
+        path: ROUTES.LOGIN,
         element: <LoginPage />,
-      },
-      {
-        path: '/onboarding',
-        element: <OnboardingPage />,
       },
     ],
   },
@@ -40,38 +37,51 @@ export const router = createBrowserRouter([
     element: <PrivateRoute />,
     children: [
       {
+        element: <AuthLayout />,
+        children: [
+          {
+            path: ROUTES.ONBOARDING,
+            element: <OnboardingPage />,
+          },
+        ],
+      },
+      {
         element: <RootLayout />,
         children: [
           {
-            path: '/',
+            path: ROUTES.HOME,
             element: <HomePage />,
           },
           {
-            path: '/books',
+            path: ROUTES.HOME_ALIAS,
+            element: <Navigate to={ROUTES.HOME} replace />,
+          },
+          {
+            path: ROUTES.BOOKS,
             element: <BookListPage />,
           },
           {
-            path: '/books/:id',
+            path: `${ROUTES.BOOKS}/:id`,
             element: <BookDetailPage />,
           },
           {
-            path: '/gatherings',
+            path: ROUTES.GATHERINGS,
             element: <GatheringListPage />,
           },
           {
-            path: '/gatherings/:id',
+            path: `${ROUTES.GATHERINGS}/:id`,
             element: <GatheringDetailPage />,
           },
           {
-            path: '/meetings',
+            path: ROUTES.MEETINGS,
             element: <MeetingListPage />,
           },
           {
-            path: '/gatherings/:id/meeting-setting',
+            path: `${ROUTES.GATHERINGS}/:id/${ROUTES.MEETING_SETTING}`,
             element: <MeetingSettingPage />,
           },
           {
-            path: '/records',
+            path: ROUTES.RECORDS,
             element: <RecordListPage />,
           },
         ],

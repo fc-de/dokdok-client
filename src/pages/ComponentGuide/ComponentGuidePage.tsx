@@ -7,18 +7,16 @@ import {
   AvatarGroup,
   AvatarGroupCount,
   AvatarImage,
-} from '@/shared/ui/Avatar'
-import { Badge } from '@/shared/ui/Badge'
-import { Button } from '@/shared/ui/Button'
-import { Card } from '@/shared/ui/Card'
-import { Checkbox } from '@/shared/ui/Checkbox'
-import { Chip } from '@/shared/ui/Chip'
-import { Container } from '@/shared/ui/Container'
-import { DatePicker } from '@/shared/ui/Datepicker'
-import { FilterDropdown } from '@/shared/ui/FilterDropdown'
-import { Input } from '@/shared/ui/Input'
-import { LikeButton } from '@/shared/ui/LikeButton'
-import {
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Chip,
+  Container,
+  DatePicker,
+  FilterDropdown,
+  Input,
+  LikeButton,
   Modal,
   ModalBody,
   ModalClose,
@@ -27,18 +25,24 @@ import {
   ModalHeader,
   ModalTitle,
   ModalTrigger,
-} from '@/shared/ui/Modal'
-import { NumberedCheckbox, NumberedCheckboxGroup } from '@/shared/ui/NumberedCheckbox'
-import { Pagination } from '@/shared/ui/Pagination'
-import { SearchField } from '@/shared/ui/SearchField'
-import { Select } from '@/shared/ui/Select'
-import { StarRatingFilter, type StarRatingRange } from '@/shared/ui/StarRatingFilter'
-import { Switch } from '@/shared/ui/Switch'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
-import { Textarea } from '@/shared/ui/Textarea'
-import { TextButton } from '@/shared/ui/TextButton'
-import { TopicTypeSelectGroup, TopicTypeSelectItem } from '@/shared/ui/TopicTypeSelect'
-import { UserChip } from '@/shared/ui/UserChip'
+  NumberedCheckbox,
+  NumberedCheckboxGroup,
+  Pagination,
+  SearchField,
+  Select,
+  type StarRatingRange,
+  StarRatingFilter,
+  Switch,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  Textarea,
+  TextButton,
+  TopicTypeSelectGroup,
+  TopicTypeSelectItem,
+  UserChip,
+} from '@/shared/ui'
 
 function ComponentGuidePage() {
   const [selectedSection, setSelectedSection] = useState<string>('button')
