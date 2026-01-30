@@ -1,11 +1,13 @@
 name: Deploy Frontend
 
 on:
-  push:
+  pull_request:
     branches: [main, dev]
+    types: [closed]
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
