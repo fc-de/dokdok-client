@@ -62,7 +62,8 @@
     "react-dom": "18.2.0",
     "react-router-dom": "^6.30.3",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "zustand": "^5.0.10"
   },
   "packageManager": "pnpm@10.28.0"
 }

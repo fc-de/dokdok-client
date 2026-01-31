@@ -9,6 +9,7 @@ import {
   HomePage,
   LoginPage,
   MeetingListPage,
+  MeetingSettingPage,
   OnboardingPage,
   RecordListPage,
 } from '@/pages'
@@ -80,6 +81,10 @@ export const router = createBrowserRouter([
               {
                 path: ROUTES.MEETINGS,
                 element: <MeetingListPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/${ROUTES.MEETING_SETTING}`,
+                element: <MeetingSettingPage />,
               },
               {
                 path: ROUTES.RECORDS,
