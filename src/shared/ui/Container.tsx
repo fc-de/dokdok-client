@@ -8,6 +8,7 @@ type ContainerProps = {
 type TitleProps = {
   className?: string
   children: string
+  required?: boolean
 }
 
 type ContentProps = {
@@ -28,8 +29,13 @@ function Container({ className, children }: ContainerProps) {
   )
 }
 
-function Title({ className, children }: TitleProps) {
-  return <h3 className={cn('typo-heading3', className)}>{children}</h3>
+function Title({ className, children, required }: TitleProps) {
+  return (
+    <h3 className={cn('typo-heading3', className)}>
+      {children}
+      {required && <span className="ml-xtiny text-primary-300 text-caption2 leading-none align-top" aria-hidden="true">*</span>}
+    </h3>
+  )
 }
 
 function Content({ className, children }: ContentProps) {

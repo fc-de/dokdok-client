@@ -9,6 +9,7 @@ import {
   GatheringListPage,
   HomePage,
   LoginPage,
+  MeetingCreatePage,
   MeetingListPage,
   OnboardingPage,
   RecordListPage,
@@ -29,6 +30,15 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.LOGIN,
         element: <LoginPage />,
+      },
+    ],
+  },
+  {
+    element: <RootLayout />,
+    children: [
+      {
+        path: `${ROUTES.GATHERINGS}/:id${ROUTES.MEETING_CREATE}`,
+        element: <MeetingCreatePage />,
       },
     ],
   },

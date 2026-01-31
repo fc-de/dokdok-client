@@ -19,6 +19,7 @@ export const ROUTES = {
   // Meetings
   MEETINGS: '/meetings',
   MEETING_DETAIL: (id: number | string) => `/meetings/${id}`,
+  MEETING_CREATE: '/meetings/create',
 
   // Records
   RECORDS: '/records',

@@ -46,15 +46,15 @@ function DatePicker({ value, onChange, placeholder = '날짜 선택', className 
           type="button"
           data-empty={!date}
           className={cn(
-            'flex w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small typo-body1 transition-colors text-black items-center text-black',
+            'flex w-full md:max-w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-medium py-xsmall gap-small typo-body1 transition-colors text-black items-center text-black',
             className
           )}
         >
-          <CalendarDays />
+          <CalendarDays size={20} />
           {date ? (
             format(date, 'yyyy.MM.dd')
           ) : (
-            <span className="typo-body1 text-grey-600">{placeholder}</span>
+            <span className="typo-subtitle5 text-grey-600">{placeholder}</span>
           )}
         </button>
       </PopoverTrigger>
