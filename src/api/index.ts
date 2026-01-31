@@ -1,4 +1,5 @@
 export { api, apiClient } from './client'
+export { API_BASE, API_PATHS } from './endpoints'
 export type { ErrorCodeType } from './errors'
 export { ApiError, ErrorCode, ErrorMessage } from './errors'
 export { setupInterceptors } from './interceptors'
