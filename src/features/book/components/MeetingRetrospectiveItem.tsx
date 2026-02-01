@@ -69,8 +69,8 @@ const MeetingRetrospectiveItem = ({ record, onEdit }: MeetingRetrospectiveItemPr
             {topic.othersPerspectives.length > 0 && (
               <div className="flex flex-col gap-small">
                 {topic.othersPerspectives.map((perspective) => (
-                  <div className="flex flex-col gap-medium">
-                    <ExcerptBlock key={perspective.meetingMemberId}>
+                  <div key={perspective.meetingMemberId} className="flex flex-col gap-medium">
+                    <ExcerptBlock>
                       <p className="typo-subtitle5 text-grey-800">{perspective.opinionContent}</p>
                       <span className="typo-body1 text-grey-600">{perspective.memberNickname}</span>
                     </ExcerptBlock>

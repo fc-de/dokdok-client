@@ -43,7 +43,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[108px] z-30 bg-white w-screen ml-[calc(-50vw+50%)]">
+      <div className="sticky top-[108px] z-30 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
         <div className="flex justify-between mb-base">
           <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
@@ -130,7 +130,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               ))}
               {recordsData?.meetingPersonalRecords.map((record) => (
                 <MeetingRetrospectiveItem
-                  key={record.retrospectiveId}
+                  key={`retrospective-${record.retrospectiveId}`}
                   record={record}
                   onEdit={
                     isRecording
@@ -141,7 +141,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               ))}
               {recordsData?.meetingPreOpinions?.map((record, idx) => (
                 <MeetingPreOpinionItem
-                  key={idx}
+                  key={`pre-opinion-${idx}`}
                   record={record}
                   onEdit={isRecording ? () => console.log('edit pre-opinion', idx) : undefined}
                 />

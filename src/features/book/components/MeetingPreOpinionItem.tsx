@@ -36,8 +36,8 @@ const MeetingPreOpinionItem = ({ record, onEdit }: MeetingPreOpinionItemProps) =
       </div>
 
       {sortedTopics.map((topic, idx) => (
-        <div>
-          <div key={idx} className="flex flex-col gap-small pl-xtiny">
+        <div key={topic.confirmOrder}>
+          <div className="flex flex-col gap-small pl-xtiny">
             <div>
               <h4 className="typo-subtitle2 text-grey-800">
                 주제 {topic.confirmOrder}. {topic.topicTitle}
