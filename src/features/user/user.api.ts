@@ -53,11 +53,15 @@ export const updateProfileImage = async (profileImage: File) => {
   const formData = new FormData()
   formData.append('profileImage', profileImage)
 
-  const { data } = await apiClient.patch<ApiResponse<User>>(USER_ENDPOINTS.PROFILE_IMAGE, formData, {
-    headers: {
-      'Content-Type': undefined,
-    },
-  })
+  const { data } = await apiClient.patch<ApiResponse<User>>(
+    USER_ENDPOINTS.PROFILE_IMAGE,
+    formData,
+    {
+      headers: {
+        'Content-Type': undefined,
+      },
+    }
+  )
   return data.data
 }
 

@@ -61,7 +61,13 @@ export default function OnboardingPage() {
       </div>
 
       {/* 시작하기 버튼 */}
-      <Button type="submit" variant="primary" size="large" className="w-full" disabled={!canSubmit || isPending}>
+      <Button
+        type="submit"
+        variant="primary"
+        size="large"
+        className="w-full"
+        disabled={!canSubmit || isPending}
+      >
         시작하기
       </Button>
     </form>

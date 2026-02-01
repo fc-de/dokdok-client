@@ -40,8 +40,7 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  * })
  */
 export const useMeetingApprovals = (params: GetMeetingApprovalsParams) => {
-  const isValidGatheringId =
-    !Number.isNaN(params.gatheringId) && params.gatheringId > 0
+  const isValidGatheringId = !Number.isNaN(params.gatheringId) && params.gatheringId > 0
 
   return useQuery<PaginatedResponse<MeetingApprovalItemType>, ApiError>({
     queryKey: meetingQueryKeys.approvalList(params),
