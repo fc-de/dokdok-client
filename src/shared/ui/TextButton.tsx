@@ -6,7 +6,7 @@ import { cn } from '../lib/utils'
 
 const textButtonVariants = cva(
   [
-    'inline-flex items-center font-normal select-none text-grey-600',
+    'inline-flex items-center select-none text-grey-600',
     'cursor-pointer transition-colors',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:rounded-xtiny',
   ].join(' '),
