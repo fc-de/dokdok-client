@@ -30,8 +30,8 @@ import {
   Pagination,
   SearchField,
   Select,
-  type StarRatingRange,
   StarRatingFilter,
+  type StarRatingRange,
   Switch,
   Tabs,
   TabsContent,
@@ -1670,7 +1670,10 @@ function PaginationSection() {
   const [page3, setPage3] = useState(0)
 
   return (
-    <Section title="Pagination" description="페이지 번호와 이전/다음 버튼을 포함한 페이지네이션 컴포넌트">
+    <Section
+      title="Pagination"
+      description="페이지 번호와 이전/다음 버튼을 포함한 페이지네이션 컴포넌트"
+    >
       <Showcase
         title="기본 사용"
         description="5페이지 미만 (화살표 버튼 없음)"
@@ -1722,12 +1725,7 @@ function PaginationSection() {
 />`}
       >
         <div className="w-full">
-          <Pagination
-            currentPage={page3}
-            totalPages={30}
-            onPageChange={setPage3}
-            showPages={5}
-          />
+          <Pagination currentPage={page3} totalPages={30} onPageChange={setPage3} showPages={5} />
           <div className="typo-caption1 text-grey-600 mt-small text-center">
             현재 페이지: {page3 + 1} / 30
           </div>

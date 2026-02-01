@@ -1,6 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { ApiError } from '@/api'
+
 import { checkNickname } from '../user.api'
+import type { NicknameCheckResult } from '../user.types'
+import { userQueryKeys } from './userQueryKeys'
 
 /**
  * 닉네임 중복 확인 query 훅
@@ -26,11 +30,11 @@ import { checkNickname } from '../user.api'
  * ```
  */
 export function useCheckNickname(nickname: string, enabled: boolean) {
-  return useQuery({
-    queryKey: ['user', 'check-nickname', nickname],
+  return useQuery<NicknameCheckResult, ApiError>({
+    queryKey: userQueryKeys.checkNickname(nickname),
     queryFn: () => checkNickname(nickname),
-    enabled: enabled && nickname.length >= 2, // 2자 이상일 때만 체크
-    staleTime: 30 * 1000, // 30초 캐싱
-    retry: false, // 에러 발생 시 재시도 안 함
+    enabled: enabled && nickname.length >= 2,
+    staleTime: 30 * 1000,
+    retry: false,
   })
 }
