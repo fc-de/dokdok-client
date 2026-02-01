@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useDebounce } from '@/shared/hooks'
 
@@ -73,6 +73,11 @@ export function useProfileForm(options: UseProfileFormOptions = {}) {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null)
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null)
   const [isRemoving, setIsRemoving] = useState(false)
+
+  // initialNickname 변경 시 nickname 상태 동기화 (비동기 user 데이터 로드 대응)
+  useEffect(() => {
+    setNickname(initialNickname)
+  }, [initialNickname])
 
   // 닉네임 유효성 검사 (한글/영문/숫자만 허용, 완성된 한글만)
   // - 한글 자모음만 있는 경우(ㄱ, ㅏ 등)는 조합 중인 상태로 판단하여 제외
