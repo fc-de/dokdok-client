@@ -108,11 +108,20 @@ export interface MeetingComment {
   createdAt: string
 }
 
+/** 모임 공동 회고 - 핵심 포인트 */
+export interface MeetingKeyPoint {
+  title: string
+  details: string[]
+}
+
 /** 모임 공동 회고 - 토픽 */
 export interface MeetingTopic {
   topicId: number
-  topicName: string
-  summarizedOpinions: string[]
+  confirmOrder: number
+  topicTitle: string
+  topicDescription: string
+  summary: string
+  keyPoints: MeetingKeyPoint[]
   comments: MeetingComment[]
 }
 
@@ -125,17 +134,59 @@ export interface MeetingGroupRecord {
   topics: MeetingTopic[]
 }
 
-/** 모임 개인 회고 내용 */
-export interface MeetingPersonalRetrospective {
-  changedThoughts: string[]
-  othersPerspectives: string[]
-  freeTexts: string[]
+/** 모임 개인 회고 - 생각 변화 */
+export interface RetrospectiveChangedThought {
+  keyIssue: string
+  postOpinion: string
+}
+
+/** 모임 개인 회고 - 타인 관점 */
+export interface RetrospectiveOthersPerspective {
+  meetingMemberId: number
+  memberNickname: string
+  opinionContent: string
+  impressiveReason: string
+}
+
+/** 모임 개인 회고 - 토픽 그룹 */
+export interface RetrospectiveTopicGroup {
+  topicId: number
+  topicTitle: string
+  confirmOrder: number
+  changedThoughts: RetrospectiveChangedThought[]
+  othersPerspectives: RetrospectiveOthersPerspective[]
+}
+
+/** 모임 개인 회고 - 자유 텍스트 */
+export interface RetrospectiveFreeText {
+  title: string
+  content: string
 }
 
 /** 모임 개인 회고 */
 export interface MeetingPersonalRecord {
   retrospectiveId: number
-  retrospective: MeetingPersonalRetrospective
+  gatheringName: string
+  recordType: string
+  createdAt: string
+  topicGroups: RetrospectiveTopicGroup[]
+  freeTexts: RetrospectiveFreeText[]
+}
+
+/** 사전의견 토픽 */
+export interface PreOpinionTopic {
+  confirmOrder: number
+  topicTitle: string
+  topicDescription: string
+  answer: string
+}
+
+/** 모임 사전의견 */
+export interface MeetingPreOpinion {
+  type: 'PRE_OPINION'
+  gatheringName: string
+  sharedAt: string
+  topics: PreOpinionTopic[]
 }
 
 /** 감상 기록 조회 요청 파라미터 */
@@ -150,4 +201,5 @@ export interface GetBookRecordsResponse {
   personalRecords: PersonalRecord[]
   meetingGroupRecords: MeetingGroupRecord[]
   meetingPersonalRecords: MeetingPersonalRecord[]
+  meetingPreOpinions: MeetingPreOpinion[]
 }

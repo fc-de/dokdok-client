@@ -66,7 +66,7 @@
   --color-grey-100: #fafbfb;
 
   /* Dark */
-  --color-dark-100: #1f2423;
+  --color-dark-100: #5f6f7a;
 
   /* Primary */
   --color-primary-400: #4d7b6f;
@@ -100,6 +100,7 @@
   --radius-medium: 20px;
 
   /* Spacing tokens */
+  --spacing-xxtiny: 2px;
   --spacing-xtiny: 4px;
   --spacing-tiny: 6px;
   --spacing-xsmall: 8px;

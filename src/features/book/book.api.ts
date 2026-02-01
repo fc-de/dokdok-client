@@ -229,10 +229,25 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
       topics: [
         {
           topicId: 1,
-          topicName: '가볍 목업, 유사 목업',
-          summarizedOpinions: [
-            '실제적인 것에 찾기 과정이 없어 학습해야 고려할 때마다 알도다',
-            '데미안이라는 인물이 실존하는지, 아니면 내면의 동일시인 때문에 찾아 온미팅다',
+          confirmOrder: 1,
+          topicTitle: '가짜 욕망, 유사 욕망',
+          topicDescription: '가짜욕망, 유사욕망에 대해 이야기해봅시다.',
+          summary: '참여자들은 『데미안』 속 싱클레어가 느꼈던 혼란을 자신들의 경험과 연결하며...',
+          keyPoints: [
+            {
+              title: '사회가 만든 욕망의 구조',
+              details: [
+                '안정적인 직업, 성과, 인정 욕구가 개인의 욕망처럼 내면화된 경험 공유',
+                '"원해서 선택했다"기보다 "선택하지 않으면 불안해서 택했다"는 표현이 반복됨',
+              ],
+            },
+            {
+              title: '유사 욕망과 진짜 욕망의 차이',
+              details: [
+                '유사 욕망은 비교와 평가 속에서 강화되며, 타인의 반응에 민감함',
+                '진짜 욕망은 오히려 혼자 있을 때 더 선명해지고, 남에게 말할수록 흐려지는 경우가 많다는 의견',
+              ],
+            },
           ],
           comments: [
             {
@@ -240,10 +255,24 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
               userId: 1,
               nickname: '사용자1',
               profileImageUrl: 'https://placehold.co/40x40',
-              comment: '모임 하기전엔 이랬는데, 누구의 이런 발언을 듣고 이렇게 생각이 바뀌었다.',
+              comment: '모임 하기전엔 이랬는데, 누구의 이런 말을 듣고 이렇게 생각이 바뀌었다.',
               createdAt: '2026-01-15T15:30:00',
             },
           ],
+        },
+        {
+          topicId: 2,
+          confirmOrder: 2,
+          topicTitle: '선과 악',
+          topicDescription: '인간의 세계에서 선과 악 어느 것이 힘이 더 셀까',
+          summary: '선과 악 중 어느 쪽이 더 강한지를 묻기보다...',
+          keyPoints: [
+            {
+              title: '악이 더 강해 보이는 이유',
+              details: ['결과가 빠르고 명확하게 드러나며, 책임을 외부로 돌리기 쉬움'],
+            },
+          ],
+          comments: [],
         },
       ],
     },
@@ -251,11 +280,82 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
   meetingPersonalRecords: [
     {
       retrospectiveId: 1,
-      retrospective: {
-        changedThoughts: ['책을 읽기 전과 후 생각이 많이 바뀌었다.'],
-        othersPerspectives: ['다른 분의 의견을 듣고 새로운 시각을 얻었다.'],
-        freeTexts: ['자유롭게 적는 회고 내용'],
-      },
+      gatheringName: '책책책 책을 읽자',
+      recordType: '개인 회고',
+      createdAt: '2026-01-05T21:38:00',
+      topicGroups: [
+        {
+          topicId: 1,
+          topicTitle: '가짜 욕망, 유사 욕망',
+          confirmOrder: 1,
+          changedThoughts: [
+            {
+              keyIssue:
+                '모임 이후에는 가짜 욕망과 유사 욕망을 명확히 구분하려는 태도 자체가 현실적이지 않을 수 있겠다는 생각이 들었다.',
+              postOpinion:
+                '어떤 욕망은 그 당시에는 진짜처럼 느껴지지만 시간이 지나면서 다르게 보이기도 하고, 유사 욕망을 거쳐서야 진짜 욕망에 가까워지는 경우도 있다는 이야기를 들었다.',
+            },
+          ],
+          othersPerspectives: [],
+        },
+        {
+          topicId: 2,
+          topicTitle: '선과 악',
+          confirmOrder: 2,
+          changedThoughts: [
+            {
+              keyIssue:
+                '토론을 거치면서 어느 쪽이 더 강한지를 따지는 질문 자체가 핵심은 아닐 수 있겠다는 생각이 들었다.',
+              postOpinion:
+                '데미안과 아브락사스의 개념을 중심으로 보면, 선과 악은 분리된 두 힘이라기보다 한 인간 안에서 동시에 작동하는 요소에 가깝다.',
+            },
+          ],
+          othersPerspectives: [
+            {
+              meetingMemberId: 10,
+              memberNickname: '독서왕',
+              opinionContent:
+                '선과 악을 나눌 수 있느냐는 질문보다, 우리는 왜 그렇게 나눠야 마음이 편해지는지를 더 봐야 하는 것 같아요.',
+              impressiveReason:
+                '그동안 나는 선과 악을 어떻게 조율할지에만 집중했지, 왜 굳이 명확한 경계를 만들고 싶어 하는지는 생각해본 적이 없다.',
+            },
+          ],
+        },
+      ],
+      freeTexts: [
+        {
+          title: '오늘의 한 줄',
+          content:
+            '이 의견을 통해 아브락사스가 하나의 결론이 아니라 질문의 역할을 한다는 점이 인상 깊었고, 주제를 바라보는 시야가 넓어졌다.',
+        },
+        {
+          title: '오늘의 한 줄',
+          content:
+            '이 의견을 통해 아브락사스가 하나의 결론이 아니라 질문의 역할을 한다는 점이 인상 깊었고, 주제를 바라보는 시야가 넓어졌다.',
+        },
+      ],
+    },
+  ],
+  meetingPreOpinions: [
+    {
+      type: 'PRE_OPINION',
+      gatheringName: '책책책 책을 읽자',
+      sharedAt: '2026-01-05T21:38:00',
+      topics: [
+        {
+          confirmOrder: 2,
+          topicTitle: '선과 악',
+          topicDescription: '본인에게 충격과 변화를 가져온 경험이 있다면 이야기해 주세요.',
+          answer:
+            '이 질문에 대해 단순히 선이 더 세다거나, 악이 더 강하다고 말하기는 어렵다고 느꼈다. 오히려 현실에서는 악이 더 즉각적으로 힘을 발휘하는 경우가 많다고 생각했다. 선은 보통 인내, 조율, 기다림을 필요로 하고 악은 빠르고 직관적으로 작동한다. 그래서 순간적인 영향력이나 파괴력은 악이 더 커 보일 때가 많다. 하지만 데미안에서 말하는 선과 악은 서로 싸우는 두 진영이라기보다 한 인간 안에서 공존하는 힘처럼 느껴졌다. 이 관점에서 보면 문제는 어느 쪽이 더 세냐가 아니라 어느 쪽을 끝까지 외면하느냐에 더 가까운 것 같다. 악을 없애려 하기보다 존재를 인정하지 않을 때 오히려 더 왜곡된 형태로 나타나는 게 아닐까 생각해봤다.',
+        },
+        {
+          confirmOrder: 1,
+          topicTitle: '진짜 욕망이란',
+          topicDescription: '진짜 욕망에 대해 자유롭게 이야기해봅시다.',
+          answer: '진짜 욕망은 내면에서 자연스럽게 올라오는 것이라고 생각한다.',
+        },
+      ],
     },
   ],
 }
@@ -296,6 +396,7 @@ function filterMockBookRecords(
   let personalRecords = [...data.personalRecords]
   let meetingGroupRecords = [...data.meetingGroupRecords]
   let meetingPersonalRecords = [...data.meetingPersonalRecords]
+  let meetingPreOpinions = [...(data.meetingPreOpinions ?? [])]
 
   // 모임 필터 - 모임 선택 시 개인 기록 제외, 모임 기록만 표시
   if (gatheringId !== undefined) {
@@ -308,11 +409,13 @@ function filterMockBookRecords(
     personalRecords = personalRecords.filter((record) => record.recordType === recordType)
     meetingGroupRecords = []
     meetingPersonalRecords = []
+    meetingPreOpinions = []
   }
 
   return {
     personalRecords,
     meetingGroupRecords,
     meetingPersonalRecords,
+    meetingPreOpinions,
   }
 }
