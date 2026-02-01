@@ -1,29 +1,25 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { ApiError } from '@/api'
+
 import { fetchCurrentUser } from '../auth.api'
+import type { CurrentUser } from '../auth.types'
+import { authQueryKeys } from './authQueryKeys'
 
 /**
  * 현재 로그인 사용자 정보를 조회하는 훅
  *
  * @description
- * - CurrentUser 타입 반환: { userId, nickname, profileImageUrl, needsOnboarding }
  * - 401 에러 시 재시도하지 않음 (로그인 페이지로 리다이렉트)
- * - 5분 동안 stale 데이터로 유지
- *
- * @example
- * ```tsx
- * const { data: user, isLoading } = useAuth()
- *
- * if (user?.needsOnboarding) {
- *   return <Navigate to="/onboarding" />
- * }
- * ```
+ * - staleTime: Infinity - 수동 갱신(setQueryData) 전까지 캐시 데이터를 신선하게 유지
  */
 export function useAuth() {
-  return useQuery({
-    queryKey: ['auth', 'me'],
+  return useQuery<CurrentUser, ApiError>({
+    queryKey: authQueryKeys.me(),
     queryFn: fetchCurrentUser,
-    retry: false, // 401 에러는 재시도하지 않음
-    staleTime: 5 * 60 * 1000, // 5분
+    retry: false,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnWindowFocus: true,
   })
 }
