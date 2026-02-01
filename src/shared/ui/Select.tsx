@@ -42,7 +42,7 @@ function SelectTrigger({
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       className={cn(
-        "border-grey-300 data-[state=open]:border-primary-300 text-black flex w-full md:max-w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-small border bg-transparent px-small py-xsmall typo-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 [&_svg]:transition-transform data-[state=open]:[&_svg]:rotate-180 data-[placeholder]:text-grey-600 data-[placeholder]:text-grey-600",
+        "border-grey-300 data-[state=open]:border-primary-300 flex w-full md:max-w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-small border bg-transparent px-small py-xsmall typo-subtitle5 *:data-[slot=select-value]:typo-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[slot=select-value]:text-black *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 [&_svg]:transition-transform data-[state=open]:[&_svg]:rotate-180 data-placeholder:text-grey-600",
         className
       )}
       {...props}

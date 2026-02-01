@@ -8,6 +8,8 @@ import type { ApiResponse, PaginatedResponse } from '@/api/types'
 import { getMockMeetingApprovals } from '@/features/meetings/meetings.mock'
 import type {
   ConfirmMeetingResponse,
+  CreateMeetingRequest,
+  CreateMeetingResponse,
   GetMeetingApprovalsParams,
   MeetingApprovalItem,
   RejectMeetingResponse,
@@ -125,5 +127,29 @@ export const confirmMeeting = async (meetingId: number) => {
  */
 export const deleteMeeting = async (meetingId: number) => {
   const response = await apiClient.delete<ApiResponse<null>>(`/api/meetings/${meetingId}`)
+  return response.data
+}
+
+/**
+ * 약속 생성
+ *
+ * @description
+ * 새로운 약속을 생성합니다.
+ * 생성된 약속은 PENDING 상태로 시작되며, 모임장의 승인을 기다립니다.
+ *
+ * @param data - 약속 생성 요청 데이터
+ *
+ * @returns 생성된 약속 정보
+ *
+ * @throws
+ * - M013: 최대 참가 인원이 유효하지 않습니다.
+ * - GA001: 모임을 찾을 수 없습니다.
+ * - B001: 책을 찾을 수 없습니다.
+ */
+export const createMeeting = async (data: CreateMeetingRequest) => {
+  const response = await apiClient.post<ApiResponse<CreateMeetingResponse>>(
+    '/api/meetings',
+    data
+  )
   return response.data
 }

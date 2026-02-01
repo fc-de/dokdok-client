@@ -1,3 +1,6 @@
+import { Info } from 'lucide-react'
+import * as React from 'react'
+
 import { cn } from '@/shared/lib/utils'
 
 type ContainerProps = {
@@ -9,6 +12,7 @@ type TitleProps = {
   className?: string
   children: string
   required?: boolean
+  errorMessage?: string
 }
 
 type ContentProps = {
@@ -16,9 +20,13 @@ type ContentProps = {
   children?: React.ReactNode
 }
 
-function Container({ className, children }: ContainerProps) {
+const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Container(
+  { className, children },
+  ref
+) {
   return (
     <div
+      ref={ref}
       className={cn(
         'bg-white rounded-base p-large shadow-drop flex flex-col gap-medium',
         className
@@ -27,14 +35,30 @@ function Container({ className, children }: ContainerProps) {
       {children}
     </div>
   )
-}
+})
 
-function Title({ className, children, required }: TitleProps) {
+function Title({ className, children, required, errorMessage }: TitleProps) {
   return (
-    <h3 className={cn('typo-heading3', className)}>
-      {children}
-      {required && <span className="ml-xtiny text-primary-300 text-caption2 leading-none align-top" aria-hidden="true">*</span>}
-    </h3>
+    <div className="flex justify-between">
+      <div className="flex items-center gap-xsmall">
+        <h3 className={cn('typo-heading3', className)}>
+          {children}
+          {required && (
+            <span
+              className="leading-none align-top ml-xtiny text-primary-300 text-caption2"
+              aria-hidden="true"
+            >
+              *
+            </span>
+          )}
+        </h3>
+      </div>
+      {errorMessage && (
+        <span className="flex items-center typo-body3 text-accent-300 gap-tiny">
+          <Info size="16" /> {errorMessage}
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -50,11 +74,12 @@ function Content({ className, children }: ContentProps) {
  * @features
  * - 기본 스타일: `rounded-base`, `p-large`, `shadow-drop`, `flex-col gap-medium`
  * - `className`을 통해 스타일 확장 가능
+ * - Title에 `errorMessage` 프롭을 전달하면 타이틀 옆에 에러 메시지 표시
  *
  * @example
  * ```tsx
  * <Container>
- *   <Container.Title>컨테이너 타이틀</Container.Title>
+ *   <Container.Title required errorMessage="에러 메시지">컨테이너 타이틀</Container.Title>
  *   <Container.Content>내용이 들어갑니다</Container.Content>
  * </Container>
  * ```
