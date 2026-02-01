@@ -1,11 +1,22 @@
 import { Bell } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 
+import { useAuth } from '@/features/auth'
+import { MyPageDropdown, useUserProfile } from '@/features/user'
+import UserAvatarIcon from '@/shared/assets/icon/UserAvatar.svg'
 import LogoIcon from '@/shared/assets/images/logo-icon.png'
 import LogoText from '@/shared/assets/images/logo-text.png'
 import { ROUTES } from '@/shared/constants/routes'
 import { cn } from '@/shared/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/shared/ui'
 
 const NAV_ITEMS = [
   { label: '홈', path: ROUTES.HOME },
@@ -14,9 +25,22 @@ const NAV_ITEMS = [
 ] as const
 
 export default function Header() {
+  const location = useLocation()
+  const [isMyPageOpen, setIsMyPageOpen] = useState(false)
+
+  // 초대 페이지에서는 비로그인 사용자도 접근 가능
+  // useAuth로 로그인 상태 확인 후, 로그인 시에만 useUserProfile 호출
+  const isInvitePage = location.pathname.startsWith(ROUTES.INVITE_BASE)
+  const { data: authUser } = useAuth()
+  const isLoggedIn = !!authUser
+
+  // 초대 페이지 + 비로그인이면 프로필 API 호출 안함
+  const { data: user } = useUserProfile({ enabled: !isInvitePage || isLoggedIn })
+
   const handleNotificationClick = () => {
     alert('준비중입니다.')
   }
+
   return (
     <header className="h-gnb-height bg-white">
       <nav className="mx-auto flex h-full max-w-layout-max items-center justify-between px-layout-padding">
@@ -51,11 +75,29 @@ export default function Header() {
             <Bell className="size-full fill-grey-600 stroke-grey-600" />
           </button>
 
-          {/* 프로필 아바타 */}
-          <Avatar className="size-8">
-            <AvatarImage src="" alt="프로필" />
-            <AvatarFallback />
-          </Avatar>
+          {/* 프로필 아바타 + 마이페이지 드롭다운 */}
+          <Popover
+            open={isMyPageOpen}
+            onOpenChange={(open) => {
+              // 초대 페이지 + 비로그인이면 드롭다운 열지 않음
+              if (isInvitePage && !isLoggedIn) return
+              setIsMyPageOpen(open)
+            }}
+          >
+            <PopoverTrigger asChild>
+              <button type="button" className="cursor-pointer">
+                <Avatar className="size-8">
+                  <AvatarImage src={user?.profileImageUrl ?? ''} alt="프로필 이미지" />
+                  <AvatarFallback>
+                    <img src={UserAvatarIcon} alt="기본 프로필 이미지" className="size-5" />
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" sideOffset={16} className="w-auto border-0 p-0">
+              <MyPageDropdown onClose={() => setIsMyPageOpen(false)} />
+            </PopoverContent>
+          </Popover>
         </div>
       </nav>
     </header>
