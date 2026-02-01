@@ -120,9 +120,9 @@ export type CreateMeetingResponse = {
     time: string
     startDateTime: string
     endDateTime: string
-  }
+  } | null
   /** 장소 */
-  location: MeetingLocation
+  location: MeetingLocation | null
   /** 참가자 정보 */
   participants: {
     currentCount: number

@@ -184,6 +184,10 @@ export default function MeetingCreatePage() {
               <Search size={18} className="text-grey-600 mr-tiny" />
               <span className="typo-subtitle5">장소 검색</span>
             </Button>
+
+            {errors?.location && (
+              <p className="text-accent-300 text-body3 mt-xtiny">{errors.location}</p>
+            )}
           </Container.Content>
         </Container>
 

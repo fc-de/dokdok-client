@@ -12,7 +12,6 @@ const customTwMerge = extendTailwindMerge({
         'small',
         'base',
         'medium',
-        'small',
         'large',
         'xlarge',
         'layout-max',

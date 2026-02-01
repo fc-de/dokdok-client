@@ -29,7 +29,9 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
 
   // 마커 제거
   const clearMarkers = () => {
-    markersRef.current.forEach((marker) => marker.setMap(null))
+    markersRef.current.forEach((marker) => {
+      marker.setMap(null)
+    })
     markersRef.current = []
   }
 
