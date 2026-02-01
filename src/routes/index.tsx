@@ -4,19 +4,22 @@ import {
   BookDetailPage,
   BookListPage,
   ComponentGuidePage,
+  CreateGatheringPage,
   GatheringDetailPage,
   GatheringListPage,
   HomePage,
+  InvitePage,
   LoginPage,
   MeetingListPage,
   MeetingSettingPage,
   OnboardingPage,
   RecordListPage,
 } from '@/pages'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/shared/constants'
 import { AuthLayout, MainLayout, RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
+import { PublicRoute } from './PublicRoute'
 
 export const router = createBrowserRouter([
   {
@@ -26,13 +29,18 @@ export const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      // 인증 페이지 (GNB 없음)
+      // 비로그인 사용자만 접근 가능한 페이지
       {
-        element: <AuthLayout />,
+        element: <PublicRoute />,
         children: [
           {
-            path: ROUTES.LOGIN,
-            element: <LoginPage />,
+            element: <AuthLayout />,
+            children: [
+              {
+                path: ROUTES.LOGIN,
+                element: <LoginPage />,
+              },
+            ],
           },
         ],
       },
@@ -75,6 +83,10 @@ export const router = createBrowserRouter([
                 element: <GatheringListPage />,
               },
               {
+                path: ROUTES.GATHERING_CREATE,
+                element: <CreateGatheringPage />,
+              },
+              {
                 path: `${ROUTES.GATHERINGS}/:id`,
                 element: <GatheringDetailPage />,
               },
@@ -91,6 +103,16 @@ export const router = createBrowserRouter([
                 element: <RecordListPage />,
               },
             ],
+          },
+        ],
+      },
+      // 로그인/비로그인 모두 접근 가능한 페이지 (GNB 있음)
+      {
+        element: <MainLayout />,
+        children: [
+          {
+            path: `${ROUTES.INVITE_BASE}/:invitationCode`,
+            element: <InvitePage />,
           },
         ],
       },
