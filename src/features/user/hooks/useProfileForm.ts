@@ -112,15 +112,23 @@ export function useProfileForm(options: UseProfileFormOptions = {}) {
     if (nickname.length < 2) return 'tooShort'
     // 허용되지 않은 문자 포함
     if (!isNicknameValidFormat) return 'invalidFormat'
-    // 중복 체크 중
-    if (isCheckingNickname || nicknameCheck === undefined) return 'checking'
+    // 중복 체크가 필요한 경우에만 checking 상태 반환
+    if (shouldCheckNickname && (isCheckingNickname || nicknameCheck === undefined)) {
+      return 'checking'
+    }
+    // 중복 체크가 필요 없는 경우 (마이페이지에서 기존 닉네임과 동일)
+    if (!shouldCheckNickname) {
+      return debouncedNickname === initialNickname ? 'unchanged' : 'available'
+    }
     // 중복됨 / 사용 가능
-    return nicknameCheck.available ? 'available' : 'duplicate'
+    return nicknameCheck?.available ? 'available' : 'duplicate'
   }, [
     nickname,
     debouncedNickname,
+    initialNickname,
     isNicknameChanged,
     isNicknameValidFormat,
+    shouldCheckNickname,
     isCheckingNickname,
     nicknameCheck,
   ])
