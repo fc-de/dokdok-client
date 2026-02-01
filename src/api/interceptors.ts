@@ -16,6 +16,9 @@
 
 import type { AxiosError } from 'axios'
 
+import { ROUTES } from '@/shared/constants'
+import { queryClient } from '@/shared/lib/tanstack-query/queryClient'
+
 import { apiClient } from './client'
 import { ApiError } from './errors'
 import { logger } from './logger'
@@ -97,21 +100,18 @@ export const setupInterceptors = (): void => {
       // 서버에서 JSESSIONID 쿠키 기반 세션 인증을 사용하므로,
       // 401 응답은 세션이 만료되었거나 유효하지 않음을 의미합니다.
       if (error.response?.status === 401) {
-        const isAlreadyOnLogin = window.location.pathname === '/login'
-        const requestUrl = error.config?.url ?? ''
+        const currentPath = window.location.pathname
+        const isAlreadyOnLogin = currentPath === ROUTES.LOGIN
+        const isInvitePage = currentPath.startsWith(ROUTES.INVITE_BASE)
 
-        // 인증 상태 확인용 엔드포인트는 리다이렉트하지 않음
-        // 이 엔드포인트들은 호출자가 직접 401 응답을 처리함
-        const authProbeEndpoints = ['/api/auth/me', '/api/users/me']
-        const isAuthProbeRequest = authProbeEndpoints.some(
-          (endpoint) => requestUrl === endpoint || requestUrl.endsWith(endpoint),
-        )
-
-        const shouldRedirect = !isAlreadyOnLogin && !isAuthProbeRequest
-
-        if (shouldRedirect) {
-          // TODO: 로그아웃 알림 토스트 표시
-          window.location.href = '/login'
+        // 초대 페이지 또는 로그인 페이지에서는 리다이렉트하지 않음
+        const shouldSkipRedirect = isInvitePage || isAlreadyOnLogin
+        if (!shouldSkipRedirect) {
+          // React Query 캐시 전체 삭제 (인증 정보 포함)
+          // 세션이 만료되었으므로 모든 캐시된 데이터는 더 이상 유효하지 않음
+          queryClient.clear()
+          alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.')
+          window.location.href = ROUTES.LOGIN
         }
       }
 
