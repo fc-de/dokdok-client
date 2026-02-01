@@ -12,6 +12,7 @@ import { authQueryKeys } from './authQueryKeys'
  * @description
  * - 401 에러 시 재시도하지 않음 (로그인 페이지로 리다이렉트)
  * - staleTime: Infinity - 수동 갱신(setQueryData) 전까지 캐시 데이터를 신선하게 유지
+ * - refetchOnWindowFocus: 'always' - 창 포커스 시 항상 세션 유효성 확인
  */
 export function useAuth() {
   return useQuery<CurrentUser, ApiError>({
@@ -20,6 +21,6 @@ export function useAuth() {
     retry: false,
     staleTime: Infinity,
     gcTime: Infinity,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: 'always',
   })
 }

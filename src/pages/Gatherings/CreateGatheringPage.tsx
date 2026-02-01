@@ -136,7 +136,9 @@ export default function CreateGatheringPage() {
           {/* 성공 메시지 & 일러스트 */}
           <div className="flex flex-col gap-base items-center w-full">
             <div className="flex flex-col gap-xtiny items-center text-center w-full">
-              <p className="typo-subtitle1 text-primary-300">'{name}'</p>
+              <p className="typo-subtitle1 text-primary-300">
+                '{createdData?.gatheringName ?? name}'
+              </p>
               <h1 className="typo-heading2 text-black">모임이 만들어졌어요!</h1>
             </div>
             <div className="pl-xsmall">
