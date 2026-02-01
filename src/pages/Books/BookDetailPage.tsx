@@ -1,13 +1,11 @@
-import { ChevronLeft } from 'lucide-react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import BookInfo from '@/features/book/components/BookInfo'
 import BookLogList from '@/features/book/components/BookLogList'
 import { useBookDetail, useToggleBookReadingStatus } from '@/features/book/hooks'
-import { TextButton } from '@/shared/ui/TextButton'
+import SubPageHeader from '@/shared/components/SubPageHeader'
 
 export default function BookDetailPage() {
-  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const bookId = Number(id)
 
@@ -18,11 +16,7 @@ export default function BookDetailPage() {
 
   return (
     <>
-      <nav aria-label="내 책장 페이지로 이동">
-        <TextButton size={'medium'} icon={ChevronLeft} onClick={() => navigate('/books')}>
-          내 책장
-        </TextButton>
-      </nav>
+      <SubPageHeader label="내 책장" to="/books" />
       <BookInfo
         bookId={bookId}
         isRecording={isRecording}

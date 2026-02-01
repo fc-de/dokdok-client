@@ -28,7 +28,7 @@ const BookReview = ({ bookId }: BookReviewProps) => {
         </div>
       </div>
       {data ? (
-        <div className="mt-[2px]">
+        <div className="mt-xxtiny">
           <p className="text-grey-500 typo-caption1 mb-medium">
             {formatToShortDate(data.createdAt)} 작성
           </p>
