@@ -2,8 +2,7 @@ import { API_PATHS } from '@/api'
 
 export const MEETINGS_ENDPOINTS = {
   // 약속 승인 리스트 조회 (GET /api/gatherings/{gatheringId}/meetings/approvals)
-  APPROVALS: (gatheringId: number) =>
-    `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/approvals`,
+  APPROVALS: (gatheringId: number) => `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/approvals`,
 
   // 약속 상세 조회 (GET /api/meetings/{meetingId})
   DETAIL: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}`,
