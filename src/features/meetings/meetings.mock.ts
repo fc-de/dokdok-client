@@ -221,7 +221,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
     schedule: {
       startDateTime: '2026-02-01T14:00:00',
       endDateTime: '2026-02-01T16:00:00',
-      displayDate: '2월 1일 (토) 오후 2:00',
+      displayDate: '2월 1일 (토) 오후 2:00 ~ 2월 1일 (토) 오후 4:00',
     },
     location: {
       name: '강남 스터디 카페',
@@ -254,9 +254,9 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       ],
     },
     actionState: {
-      type: 'CAN_JOIN',
-      buttonLabel: '참가하기',
-      enabled: true,
+      type: 'DONE',
+      buttonLabel: '약속이 끝났어요',
+      enabled: false,
     },
   },
   11: {
@@ -273,9 +273,9 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       thumbnail: 'https://picsum.photos/seed/pragmatic/200/300',
     },
     schedule: {
-      startDateTime: '2026-01-11T14:00:00',
-      endDateTime: '2026-01-11T16:00:00',
-      displayDate: '1월 11일 (토) 오후 2:00',
+      startDateTime: '2026-02-11T14:00:00',
+      endDateTime: '2026-02-11T16:00:00',
+      displayDate: '2월 11일 (수) 오후 2:00 ~ 2월 11일 (수) 오후 4:00',
     },
     location: {
       name: '홍대 북카페',

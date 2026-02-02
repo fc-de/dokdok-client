@@ -15,8 +15,8 @@ export type {
   ConfirmMeetingResponse,
   GetMeetingApprovalsParams,
   GetMeetingDetailResponse,
-  MeddtingDetailActionStateType,
   MeetingApprovalItem as MeetingApprovalItemType,
+  MeetingDetailActionStateType,
   MeetingStatus,
   RejectMeetingResponse,
 } from './meetings.types'

@@ -78,7 +78,7 @@ type MeetingLocation = {
 /**
  * 약속 상세 응답 타입
  */
-export type MeddtingDetailActionStateType =
+export type MeetingDetailActionStateType =
   | 'CAN_EDIT'
   | 'EDIT_TIME_EXPIRED'
   | 'CAN_JOIN'
@@ -86,6 +86,12 @@ export type MeddtingDetailActionStateType =
   | 'RECRUITMENT_CLOSED'
   | 'DONE'
   | 'REJECTED'
+
+export type MeetingSchedule = {
+  startDateTime: string
+  endDateTime: string
+  displayDate: string
+}
 
 export type GetMeetingDetailResponse = {
   /** 약속 ID */
@@ -106,11 +112,7 @@ export type GetMeetingDetailResponse = {
     thumbnail: string
   }
   /** 일정 정보 */
-  schedule: {
-    startDateTime: string
-    endDateTime: string
-    displayDate: string
-  }
+  schedule: MeetingSchedule
   /** 장소 */
   location: MeetingLocation | null
   /** 참가자 정보 */
@@ -126,7 +128,7 @@ export type GetMeetingDetailResponse = {
   }
   /** 버튼 상태 */
   actionState: {
-    type: MeddtingDetailActionStateType
+    type: MeetingDetailActionStateType
     buttonLabel: string
     enabled: boolean
   }

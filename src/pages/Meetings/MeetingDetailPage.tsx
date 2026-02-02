@@ -3,11 +3,7 @@ import { useParams } from 'react-router-dom'
 
 import { MeetingDetailHeader, MeetingDetailInfo, useMeetingDetail } from '@/features/meetings'
 import { MeetingDetailButton } from '@/features/meetings/components/MeetingDetailButton'
-
-//상수로 분리해 관리 예정, 약속전 중 후로 변경해야 함
-function getStatusBadgeText(status: 'CONFIRMED' | 'PENDING') {
-  return status === 'CONFIRMED' ? '확정됨' : '확정 대기'
-}
+import { TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
   const { meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
@@ -22,15 +18,13 @@ export default function MeetingDetailPage() {
     )
   }
 
-  const statusBadgeText = meeting ? getStatusBadgeText(meeting.meetingStatus) : ''
-
   return (
     <>
       {/* 공통컴포넌트로 분리 예정 */}
-      <div className="sticky top-0 bg-white">
-        <p className="flex typo-body3 text-grey-600 gap-xtiny py-medium">
-          <ChevronLeft size={16} /> {meeting?.gathering.gatheringName ?? ''}
-        </p>
+      <div className="sticky top-0 bg-white py-medium">
+        <TextButton iconPosition="left" icon={ChevronLeft} size="medium">
+          {meeting?.gathering.gatheringName ?? ''}
+        </TextButton>
       </div>
       {/* 공통컴포넌트로 분리 예정 */}
 
@@ -43,7 +37,7 @@ export default function MeetingDetailPage() {
             </div>
           ) : meeting ? (
             <>
-              <MeetingDetailHeader statusBadgeText={statusBadgeText}>
+              <MeetingDetailHeader schedule={meeting.schedule}>
                 {meeting.meetingName}
               </MeetingDetailHeader>
 
@@ -53,6 +47,7 @@ export default function MeetingDetailPage() {
                 buttonLabel={meeting.actionState.buttonLabel}
                 isEnabled={meeting.actionState.enabled}
                 type={meeting.actionState.type}
+                meetingId={meeting.meetingId}
               />
             </>
           ) : null}

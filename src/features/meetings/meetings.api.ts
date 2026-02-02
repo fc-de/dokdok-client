@@ -5,6 +5,7 @@
 
 import { api, apiClient } from '@/api/client'
 import type { ApiResponse, PaginatedResponse } from '@/api/types'
+import { MEETINGS_ENDPOINTS } from '@/features/meetings/meetings.endpoints'
 import { getMockMeetingApprovals, getMockMeetingDetail } from '@/features/meetings/meetings.mock'
 import type {
   ConfirmMeetingResponse,
@@ -53,7 +54,7 @@ export const getMeetingApprovals = async (
 
   // 실제 API 호출 (로그인 완료 후 사용)
   return api.get<PaginatedResponse<MeetingApprovalItem>>(
-    `/api/gatherings/${gatheringId}/meetings/approvals`,
+    MEETINGS_ENDPOINTS.APPROVALS(gatheringId),
     {
       params: {
         status,
@@ -75,13 +76,10 @@ export const getMeetingApprovals = async (
  *
  * @returns 거부된 약속 정보와 서버 메시지
  *
- * @throws
- * - M009: 약속 상태를 변경할 수 없습니다.
- * - M001: 약속을 찾을 수 없습니다.
  */
 export const rejectMeeting = async (meetingId: number) => {
   const response = await apiClient.post<ApiResponse<RejectMeetingResponse>>(
-    `/api/meetings/${meetingId}/reject`
+    MEETINGS_ENDPOINTS.REJECT(meetingId)
   )
   return response.data
 }
@@ -96,13 +94,10 @@ export const rejectMeeting = async (meetingId: number) => {
  *
  * @returns 승인된 약속 정보와 서버 메시지
  *
- * @throws
- * - M009: 약속 상태를 변경할 수 없습니다.
- * - M001: 약속을 찾을 수 없습니다.
  */
 export const confirmMeeting = async (meetingId: number) => {
   const response = await apiClient.post<ApiResponse<ConfirmMeetingResponse>>(
-    `/api/meetings/${meetingId}/confirm`
+    MEETINGS_ENDPOINTS.CONFIRM(meetingId)
   )
   return response.data
 }
@@ -119,13 +114,9 @@ export const confirmMeeting = async (meetingId: number) => {
  *
  * @returns 삭제 성공 메시지
  *
- * @throws
- * - M015: 약속 시작 24시간 이내에는 삭제할 수 없습니다.
- * - ACCESS_DENIED: 접근 권한이 없습니다.
- * - M001: 약속을 찾을 수 없습니다.
  */
 export const deleteMeeting = async (meetingId: number) => {
-  const response = await apiClient.delete<ApiResponse<null>>(`/api/meetings/${meetingId}`)
+  const response = await apiClient.delete<ApiResponse<null>>(MEETINGS_ENDPOINTS.DELETE(meetingId))
   return response.data
 }
 
@@ -140,9 +131,6 @@ export const deleteMeeting = async (meetingId: number) => {
  *
  * @returns 약속 상세 정보
  *
- * @throws
- * - M001: 약속을 찾을 수 없습니다.
- * - ACCESS_DENIED: 접근 권한이 없습니다.
  */
 export const getMeetingDetail = async (meetingId: number): Promise<GetMeetingDetailResponse> => {
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
@@ -154,5 +142,35 @@ export const getMeetingDetail = async (meetingId: number): Promise<GetMeetingDet
   }
 
   // 실제 API 호출 (로그인 완료 후 사용)
-  return api.get<GetMeetingDetailResponse>(`/api/meetings/${meetingId}`)
+  return api.get<GetMeetingDetailResponse>(MEETINGS_ENDPOINTS.DETAIL(meetingId))
+}
+
+/**
+ * 약속 참가신청
+ *
+ * @description
+ * 약속에 참가신청합니다.
+ *
+ * @param meetingId - 약속 ID
+ *
+ */
+export const joinMeeting = async (meetingId: number) => {
+  const response = await apiClient.post<ApiResponse<number>>(MEETINGS_ENDPOINTS.JOIN(meetingId))
+  return response.data
+}
+
+/**
+ * 약속 참가취소
+ *
+ * @description
+ * 약속 참가를 취소합니다.
+ *
+ * @param meetingId - 약속 ID
+ *
+ */
+export const cancelJoinMeeting = async (meetingId: number) => {
+  const response = await apiClient.delete<ApiResponse<number>>(
+    MEETINGS_ENDPOINTS.CANCEL_JOIN(meetingId)
+  )
+  return response.data
 }

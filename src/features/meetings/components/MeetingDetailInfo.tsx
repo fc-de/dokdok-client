@@ -1,4 +1,5 @@
 import { MapPin } from 'lucide-react'
+import { useState } from 'react'
 
 import {
   Avatar,
@@ -10,6 +11,7 @@ import {
 } from '@/shared/ui'
 
 import type { GetMeetingDetailResponse } from '../meetings.types'
+import { MapModal } from './MapModal'
 
 const MAX_DISPLAYED_AVATARS = 4
 const LABEL_WIDTH = 'w-[68px]'
@@ -19,12 +21,17 @@ interface MeetingDetailInfoProps {
 }
 
 export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false)
+
   const host = meeting.participants.members.find((member) => member.role === 'HOST')
   const regularMembers = meeting.participants.members.filter((member) => member.role !== 'HOST')
   const displayedMembers = regularMembers.slice(0, MAX_DISPLAYED_AVATARS)
   const remainingMembers = regularMembers.slice(MAX_DISPLAYED_AVATARS)
   const hasRegularMembers = regularMembers.length > 0
   const hasRemainingMembers = remainingMembers.length > 0
+
+  // displayDate를 시작/종료 시간으로 분리
+  const [startDate, endDate] = meeting.schedule.displayDate.split(' ~ ')
 
   return (
     <div className="w-[300px] flex-none flex flex-col gap-base">
@@ -95,7 +102,8 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
         <dl className="flex gap-base">
           <dt className={`text-grey-600 typo-caption1 ${LABEL_WIDTH}`}>날짜 및 시간</dt>
           <dd className="text-black typo-body3">
-            <p>{meeting.schedule.displayDate}</p>
+            <p>{startDate}</p>
+            <p>~ {endDate}</p>
           </dd>
         </dl>
 
@@ -108,6 +116,7 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
                 size="medium"
                 icon={MapPin}
                 className="text-black typo-body3 [&_svg]:text-grey-600"
+                onClick={() => setIsMapModalOpen(true)}
               >
                 {meeting.location.name}
               </TextButton>
@@ -115,6 +124,15 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
           </dl>
         )}
       </div>
+
+      {/* 지도 모달 */}
+      {meeting.location && (
+        <MapModal
+          open={isMapModalOpen}
+          onOpenChange={setIsMapModalOpen}
+          locationName={meeting.location.name}
+        />
+      )}
     </div>
   )
 }
