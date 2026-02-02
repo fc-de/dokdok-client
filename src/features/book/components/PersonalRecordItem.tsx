@@ -42,7 +42,10 @@ const PersonalRecordItem = ({ record, onEdit }: PersonalRecordItemProps) => {
           <ExcerptBlock>
             <p className="typo-subtitle5 text-grey-800">{record.meta.excerpt}</p>
             {record.meta.page && (
-              <span className="typo-body1 text-grey-600">{record.meta.page}p</span>
+              <span className="typo-body1 text-grey-600">
+                {record.meta.page}
+                {record.meta.page.endsWith('p') ? '' : 'p'}
+              </span>
             )}
           </ExcerptBlock>
         )}

@@ -84,7 +84,7 @@ export type RecordSortType = 'LATEST' | 'OLDEST'
 
 /** 개인 회고 메타 정보 */
 export interface PersonalRecordMeta {
-  page?: number
+  page?: string
   excerpt?: string
 }
 
@@ -125,12 +125,19 @@ export interface MeetingTopic {
   comments: MeetingComment[]
 }
 
+/** 모임 공동 회고 - 소속 모임 정보 */
+export interface MeetingGathering {
+  gatheringId: number
+  gatheringName: string
+}
+
 /** 모임 공동 회고 */
 export interface MeetingGroupRecord {
   meetingId: number
   meetingName: string
   meetingDate: string
   meetingTime: string
+  gathering: MeetingGathering
   topics: MeetingTopic[]
 }
 
@@ -153,7 +160,7 @@ export interface RetrospectiveTopicGroup {
   topicId: number
   topicTitle: string
   confirmOrder: number
-  changedThoughts: RetrospectiveChangedThought[]
+  changedThoughts: RetrospectiveChangedThought
   othersPerspectives: RetrospectiveOthersPerspective[]
 }
 

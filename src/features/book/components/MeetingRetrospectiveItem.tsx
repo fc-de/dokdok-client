@@ -53,14 +53,10 @@ const MeetingRetrospectiveItem = ({ record, onEdit }: MeetingRetrospectiveItemPr
               </h4>
 
               {/* 생각 변화 */}
-              {topic.changedThoughts.length > 0 && (
+              {topic.changedThoughts && (
                 <div className="flex flex-col gap-small">
-                  {topic.changedThoughts.map((thought, idx) => (
-                    <div key={idx} className="flex flex-col gap-small">
-                      <p className="typo-body1 text-grey-700">{thought.keyIssue}</p>
-                      <p className="typo-body1 text-black">{thought.postOpinion}</p>
-                    </div>
-                  ))}
+                  <p className="typo-body1 text-grey-700">{topic.changedThoughts.keyIssue}</p>
+                  <p className="typo-body1 text-black">{topic.changedThoughts.postOpinion}</p>
                 </div>
               )}
             </div>

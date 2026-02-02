@@ -27,7 +27,7 @@ const MeetingGroupRecordItem = ({ record, onEdit }: MeetingGroupRecordItemProps)
       <div className="flex flex-col gap-xsmall">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-xsmall">
-            <Badge color={'yellow'}>{record.meetingName}</Badge>
+            <Badge color={'yellow'}>{record.gathering.gatheringName}</Badge>
             <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
               모임 회고
             </p>
