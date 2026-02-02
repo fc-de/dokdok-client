@@ -21,18 +21,19 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  *
  * @returns TanStack Query 결과 객체
  *
- * @example
- * const { data, isLoading, error } = useMeetingDetail(1)
- *
- * if (isLoading) return <div>로딩 중...</div>
- * if (error) return <div>에러 발생</div>
- * if (data) return <div>{data.meetingName}</div>
  */
 export const useMeetingDetail = (meetingId: number) => {
   const isValidMeetingId = !Number.isNaN(meetingId) && meetingId > 0
 
+  // 유효하지 않은 meetingId는 detail 키 대신 details 키 사용
+  // NaN이 null로 직렬화되어 캐시 충돌하는 것을 방지
+  const queryKey = isValidMeetingId
+    ? meetingQueryKeys.detail(meetingId)
+    : meetingQueryKeys.details()
+
   return useQuery<GetMeetingDetailResponse, ApiError>({
-    queryKey: meetingQueryKeys.detail(meetingId),
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
+    queryKey,
     queryFn: () => getMeetingDetail(meetingId),
     // meetingId가 유효할 때만 쿼리 실행
     enabled: isValidMeetingId,

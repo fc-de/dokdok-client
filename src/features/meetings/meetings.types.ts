@@ -91,7 +91,7 @@ export type MeetingSchedule = {
   startDateTime: string
   endDateTime: string
   displayDate: string
-}
+} | null
 
 export type GetMeetingDetailResponse = {
   /** 약속 ID */

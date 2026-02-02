@@ -77,6 +77,7 @@ export function MeetingDetailButton({
       {isEnabled && (
         <p className="text-grey-700 typo-body6 pt-tiny">
           {type === 'EDIT_TIME_EXPIRED' && '약속 24시간 전까지만 약속 정보를 수정할 수 있어요'}
+          {/* 백엔드 수정 이후 타입 추가 해야 함 (TODO) */}
           {/* {type === '' && '* 약속 24시간 전까지만 참가 신청 및 취소가 가능해요'} */}
         </p>
       )}

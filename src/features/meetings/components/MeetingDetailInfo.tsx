@@ -14,7 +14,7 @@ import type { GetMeetingDetailResponse } from '../meetings.types'
 import { MapModal } from './MapModal'
 
 const MAX_DISPLAYED_AVATARS = 4
-const LABEL_WIDTH = 'w-[68px]'
+const DT_VARIANTS = 'w-[68px] text-grey-600 typo-caption1'
 
 interface MeetingDetailInfoProps {
   meeting: GetMeetingDetailResponse
@@ -30,15 +30,20 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
   const hasRegularMembers = regularMembers.length > 0
   const hasRemainingMembers = remainingMembers.length > 0
 
-  // displayDate를 시작/종료 시간으로 분리
-  const [startDate, endDate] = meeting.schedule.displayDate.split(' ~ ')
+  // displayDate를 시작/종료 시간으로 분리 (schedule이 존재할 때만)
+  const scheduleData = meeting.schedule
+    ? (() => {
+        const [startDate, endDate] = meeting.schedule.displayDate.split(' ~ ')
+        return { startDate, endDate }
+      })()
+    : null
 
   return (
     <div className="w-[300px] flex-none flex flex-col gap-base">
       <div className="flex flex-col gap-medium">
         {/* 도서 */}
         <dl className="flex gap-base">
-          <dt className={`text-grey-600 typo-caption1 ${LABEL_WIDTH}`}>도서</dt>
+          <dt className={DT_VARIANTS}>도서</dt>
           <dd className="flex flex-col gap-xtiny">
             <p className="text-black typo-body3">{meeting.book.bookName}</p>
             <div className="w-[120px] h-[170px] overflow-hidden rounded">
@@ -53,7 +58,7 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
 
         {/* 참가인원 */}
         <dl className="flex gap-base">
-          <dt className={`text-grey-600 ${LABEL_WIDTH}`}>참가인원</dt>
+          <dt className={DT_VARIANTS}>참가인원</dt>
           <dd className="flex flex-col text-black typo-body3 gap-small">
             <p>
               {meeting.participants.currentCount}{' '}
@@ -104,17 +109,21 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
 
         {/* 날짜 및 시간 */}
         <dl className="flex gap-base">
-          <dt className={`text-grey-600 typo-caption1 ${LABEL_WIDTH}`}>날짜 및 시간</dt>
+          <dt className={DT_VARIANTS}>날짜 및 시간</dt>
           <dd className="text-black typo-body3">
-            <p>{startDate}</p>
-            <p>~ {endDate}</p>
+            {scheduleData && (
+              <>
+                <p>{scheduleData.startDate}</p>
+                <p>~ {scheduleData.endDate}</p>
+              </>
+            )}
           </dd>
         </dl>
 
         {/* 장소 */}
         {meeting.location && (
           <dl className="flex gap-base">
-            <dt className={`text-grey-600 typo-caption1 ${LABEL_WIDTH}`}>장소</dt>
+            <dt className={DT_VARIANTS}>장소</dt>
             <dd>
               <TextButton
                 size="medium"

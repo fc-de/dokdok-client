@@ -37,9 +37,9 @@ export default function MeetingDetailPage() {
             </div>
           ) : meeting ? (
             <>
-              <MeetingDetailHeader schedule={meeting.schedule}>
-                {meeting.meetingName}
-              </MeetingDetailHeader>
+              {/* 약속 일정이 아직 없을경우를 대비해 */}
+              {/* 스케줄 데이터와 무관한 약속전 중 후 상태 데이터 필요 함  */}
+              <MeetingDetailHeader>{meeting.meetingName}</MeetingDetailHeader>
 
               <MeetingDetailInfo meeting={meeting} />
 
