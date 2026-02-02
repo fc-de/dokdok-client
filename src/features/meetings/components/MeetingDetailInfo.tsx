@@ -41,8 +41,12 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
           <dt className={`text-grey-600 typo-caption1 ${LABEL_WIDTH}`}>도서</dt>
           <dd className="flex flex-col gap-xtiny">
             <p className="text-black typo-body3">{meeting.book.bookName}</p>
-            <div className="w-[120px]">
-              <img src={meeting.book.thumbnail} alt={meeting.book.bookName} />
+            <div className="w-[120px] h-[170px] overflow-hidden rounded">
+              <img
+                src={meeting.book.thumbnail}
+                alt={meeting.book.bookName}
+                className="object-cover w-full h-full"
+              />
             </div>
           </dd>
         </dl>
