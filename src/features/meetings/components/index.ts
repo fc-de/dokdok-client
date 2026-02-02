@@ -1,2 +1,4 @@
 export { default as MeetingApprovalItem } from './MeetingApprovalItem'
 export { default as MeetingApprovalList } from './MeetingApprovalList'
+export { MeetingDetailHeader } from './MeetingDetailHeader'
+export { MeetingDetailInfo } from './MeetingDetailInfo'

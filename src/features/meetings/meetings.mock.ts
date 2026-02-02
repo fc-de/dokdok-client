@@ -4,7 +4,10 @@
  */
 
 import type { PaginatedResponse } from '@/api/types'
-import type { MeetingApprovalItem } from '@/features/meetings/meetings.types'
+import type {
+  GetMeetingDetailResponse,
+  MeetingApprovalItem,
+} from '@/features/meetings/meetings.types'
 
 /**
  * 약속 승인 리스트 목데이터 (확정 대기)
@@ -172,7 +175,7 @@ const mockConfirmedMeetings: MeetingApprovalItem[] = [
 ]
 
 /**
- * 목데이터 반환 함수
+ * 약속 승인 리스트 목데이터 반환 함수
  *
  * @description
  * 실제 API 호출을 시뮬레이션하여 목데이터를 페이지네이션 형태로 반환합니다.
@@ -196,4 +199,168 @@ export const getMockMeetingApprovals = (
     pageSize: size,
     totalPages: Math.ceil(mockData.length / size),
   }
+}
+
+/**
+ * 약속 상세 목데이터
+ */
+const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
+  1: {
+    meetingId: 1,
+    meetingName: '1차 독서모임',
+    meetingStatus: 'PENDING',
+    gathering: {
+      gatheringId: 101,
+      gatheringName: '클린 코드 스터디',
+    },
+    book: {
+      bookId: 1001,
+      bookName: '클린 코드',
+      thumbnail: 'https://picsum.photos/seed/cleancode/200/300',
+    },
+    schedule: {
+      startDateTime: '2026-02-01T14:00:00',
+      endDateTime: '2026-02-01T16:00:00',
+      displayDate: '2월 1일 (토) 오후 2:00',
+    },
+    location: {
+      name: '강남 스터디 카페',
+      address: '서울특별시 강남구 테헤란로 123',
+      latitude: 37.5012,
+      longitude: 127.0396,
+    },
+    participants: {
+      currentCount: 3,
+      maxCount: 8,
+      members: [
+        {
+          userId: 1,
+          nickname: '독서왕김민수',
+          profileImageUrl: 'https://picsum.photos/seed/user1/100/100',
+          role: 'HOST',
+        },
+        {
+          userId: 2,
+          nickname: '코드리뷰어',
+          profileImageUrl: 'https://picsum.photos/seed/user2/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 3,
+          nickname: '객체지향전문가',
+          profileImageUrl: 'https://picsum.photos/seed/user3/100/100',
+          role: 'MEMBER',
+        },
+      ],
+    },
+    actionState: {
+      type: 'CAN_JOIN',
+      buttonLabel: '참가하기',
+      enabled: true,
+    },
+  },
+  11: {
+    meetingId: 11,
+    meetingName: '킥오프 모임',
+    meetingStatus: 'CONFIRMED',
+    gathering: {
+      gatheringId: 102,
+      gatheringName: '실용주의 프로그래머 독서모임',
+    },
+    book: {
+      bookId: 1002,
+      bookName: '실용주의 프로그래머',
+      thumbnail: 'https://picsum.photos/seed/pragmatic/200/300',
+    },
+    schedule: {
+      startDateTime: '2026-01-11T14:00:00',
+      endDateTime: '2026-01-11T16:00:00',
+      displayDate: '1월 11일 (토) 오후 2:00',
+    },
+    location: {
+      name: '홍대 북카페',
+      address: '서울특별시 마포구 와우산로 94',
+      latitude: 37.5563,
+      longitude: 126.9236,
+    },
+    participants: {
+      currentCount: 8,
+      maxCount: 8,
+      members: [
+        {
+          userId: 4,
+          nickname: '프로그래머박지성',
+          profileImageUrl: 'https://picsum.photos/seed/user4/100/100',
+          role: 'HOST',
+        },
+        {
+          userId: 5,
+          nickname: '성장하는개발자',
+          profileImageUrl: 'https://picsum.photos/seed/user5/100/100',
+          role: 'LEADER',
+        },
+        {
+          userId: 6,
+          nickname: '타입스크립트러버',
+          profileImageUrl: 'https://picsum.photos/seed/user6/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 7,
+          nickname: '아키텍트김철수',
+          profileImageUrl: 'https://picsum.photos/seed/user7/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 8,
+          nickname: '장인정신실천가',
+          profileImageUrl: 'https://picsum.photos/seed/user8/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 9,
+          nickname: '리팩터링마스터',
+          profileImageUrl: 'https://picsum.photos/seed/user9/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 10,
+          nickname: '알고리즘천재',
+          profileImageUrl: 'https://picsum.photos/seed/user10/100/100',
+          role: 'MEMBER',
+        },
+        {
+          userId: 11,
+          nickname: '패턴연구가',
+          profileImageUrl: 'https://picsum.photos/seed/user11/100/100',
+          role: 'MEMBER',
+        },
+      ],
+    },
+    actionState: {
+      type: 'RECRUITMENT_CLOSED',
+      buttonLabel: '모집 마감',
+      enabled: false,
+    },
+  },
+}
+
+/**
+ * 약속 상세 목데이터 반환 함수
+ *
+ * @description
+ * 실제 API 호출을 시뮬레이션하여 약속 상세 목데이터를 반환합니다.
+ *
+ * @param meetingId - 약속 ID
+ * @returns 약속 상세 정보
+ * @throws meetingId에 해당하는 데이터가 없으면 에러
+ */
+export const getMockMeetingDetail = (meetingId: number): GetMeetingDetailResponse => {
+  const detail = mockMeetingDetails[meetingId]
+
+  if (!detail) {
+    throw new Error(`Meeting with id ${meetingId} not found`)
+  }
+
+  return detail
 }

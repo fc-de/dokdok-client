@@ -14,6 +14,8 @@ export * from './meetings.api'
 export type {
   ConfirmMeetingResponse,
   GetMeetingApprovalsParams,
+  GetMeetingDetailResponse,
+  MeddtingDetailActionStateType,
   MeetingApprovalItem as MeetingApprovalItemType,
   MeetingStatus,
   RejectMeetingResponse,

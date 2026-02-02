@@ -91,11 +91,11 @@ export const router = createBrowserRouter([
                 element: <GatheringDetailPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:id${ROUTES.MEETINGS}/:id`,
+                path: `${ROUTES.GATHERINGS}/:gatheringId${ROUTES.MEETINGS}/:meetingId`,
                 element: <MeetingDetailPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:id${ROUTES.MEETING_SETTING}`,
+                path: `${ROUTES.GATHERINGS}/:gatheringId${ROUTES.MEETING_SETTING}`,
                 element: <MeetingSettingPage />,
               },
               {

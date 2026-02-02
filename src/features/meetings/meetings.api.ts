@@ -5,10 +5,11 @@
 
 import { api, apiClient } from '@/api/client'
 import type { ApiResponse, PaginatedResponse } from '@/api/types'
-import { getMockMeetingApprovals } from '@/features/meetings/meetings.mock'
+import { getMockMeetingApprovals, getMockMeetingDetail } from '@/features/meetings/meetings.mock'
 import type {
   ConfirmMeetingResponse,
   GetMeetingApprovalsParams,
+  GetMeetingDetailResponse,
   MeetingApprovalItem,
   RejectMeetingResponse,
 } from '@/features/meetings/meetings.types'
@@ -126,4 +127,32 @@ export const confirmMeeting = async (meetingId: number) => {
 export const deleteMeeting = async (meetingId: number) => {
   const response = await apiClient.delete<ApiResponse<null>>(`/api/meetings/${meetingId}`)
   return response.data
+}
+
+/**
+ * 약속 상세 조회
+ *
+ * @description
+ * 약속의 상세 정보를 조회합니다.
+ * 모임 정보, 책 정보, 일정, 장소, 참가자 목록 등을 포함합니다.
+ *
+ * @param meetingId - 약속 ID
+ *
+ * @returns 약속 상세 정보
+ *
+ * @throws
+ * - M001: 약속을 찾을 수 없습니다.
+ * - ACCESS_DENIED: 접근 권한이 없습니다.
+ */
+export const getMeetingDetail = async (meetingId: number): Promise<GetMeetingDetailResponse> => {
+  // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
+  // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
+  if (USE_MOCK_DATA) {
+    // 실제 API 호출을 시뮬레이션하기 위한 지연
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockMeetingDetail(meetingId)
+  }
+
+  // 실제 API 호출 (로그인 완료 후 사용)
+  return api.get<GetMeetingDetailResponse>(`/api/meetings/${meetingId}`)
 }

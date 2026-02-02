@@ -22,4 +22,8 @@ export const meetingQueryKeys = {
   approvalCounts: () => [...meetingQueryKeys.approvals(), 'count'] as const,
   approvalCount: (gatheringId: number, status: GetMeetingApprovalsParams['status']) =>
     [...meetingQueryKeys.approvalCounts(), gatheringId, status] as const,
+
+  // 약속 상세 관련
+  details: () => [...meetingQueryKeys.all, 'detail'] as const,
+  detail: (meetingId: number) => [...meetingQueryKeys.details(), meetingId] as const,
 }

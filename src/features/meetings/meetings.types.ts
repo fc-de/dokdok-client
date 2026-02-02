@@ -67,3 +67,67 @@ export type ConfirmMeetingResponse = {
   /** 확정 시각 (ISO 8601 형식) */
   confirmedAt: string
 }
+
+type MeetingLocation = {
+  name: string
+  address: string
+  latitude: number
+  longitude: number
+}
+
+/**
+ * 약속 상세 응답 타입
+ */
+export type MeddtingDetailActionStateType =
+  | 'CAN_EDIT'
+  | 'EDIT_TIME_EXPIRED'
+  | 'CAN_JOIN'
+  | 'CAN_CANCEL'
+  | 'RECRUITMENT_CLOSED'
+  | 'DONE'
+  | 'REJECTED'
+
+export type GetMeetingDetailResponse = {
+  /** 약속 ID */
+  meetingId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 상태 */
+  meetingStatus: MeetingStatus
+  /** 모임 정보 */
+  gathering: {
+    gatheringId: number
+    gatheringName: string
+  }
+  /** 책 정보 */
+  book: {
+    bookId: number
+    bookName: string
+    thumbnail: string
+  }
+  /** 일정 정보 */
+  schedule: {
+    startDateTime: string
+    endDateTime: string
+    displayDate: string
+  }
+  /** 장소 */
+  location: MeetingLocation | null
+  /** 참가자 정보 */
+  participants: {
+    currentCount: number
+    maxCount: number
+    members: Array<{
+      userId: number
+      nickname: string
+      profileImageUrl: string
+      role: 'LEADER' | 'MEMBER' | 'HOST'
+    }>
+  }
+  /** 버튼 상태 */
+  actionState: {
+    type: MeddtingDetailActionStateType
+    buttonLabel: string
+    enabled: boolean
+  }
+}
