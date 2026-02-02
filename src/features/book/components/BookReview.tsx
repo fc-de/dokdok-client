@@ -1,3 +1,6 @@
+import { useNavigate } from 'react-router-dom'
+
+import { ROUTES } from '@/shared/constants'
 import { formatToShortDate } from '@/shared/lib/date'
 import { Button } from '@/shared/ui/Button'
 import { Chip } from '@/shared/ui/Chip'
@@ -11,6 +14,7 @@ type BookReviewProps = {
 }
 
 const BookReview = ({ bookId }: BookReviewProps) => {
+  const navigate = useNavigate()
   const { data, isLoading } = useBookReview(bookId)
 
   //   if (isLoading) return <BookInfoSkeleton />
@@ -21,7 +25,11 @@ const BookReview = ({ bookId }: BookReviewProps) => {
       <div className="flex justify-between">
         <h3 className="typo-subtitle1">이 책에 대한 내 평가</h3>
         <div className="flex gap-small items-center">
-          <TextButton>지난 평가</TextButton>
+          {data && (
+            <TextButton onClick={() => navigate(ROUTES.BOOK_REVIEW_HISTORY(bookId))}>
+              지난 평가
+            </TextButton>
+          )}
           <Button variant={'secondary'} outline>
             평가하기
           </Button>
@@ -35,7 +43,10 @@ const BookReview = ({ bookId }: BookReviewProps) => {
           <div className="flex flex-col gap-small">
             <div>
               <p className="typo-subtitle3 text-grey-600 mb-tiny">별점</p>
-              <StarRate rating={data.rating} />
+              <div className="flex gap-xsmall items-center">
+                <StarRate rating={data.rating} />
+                <p className="subtitle3 text-grey-600">{data.rating.toFixed(1)}</p>
+              </div>
             </div>
             <div>
               <p className="typo-subtitle3 text-grey-600 mb-tiny">책 키워드</p>
@@ -64,8 +75,10 @@ const BookReview = ({ bookId }: BookReviewProps) => {
           </div>
         </div>
       ) : (
-        <div className="mt-medium py-base px-xsmall flex justify-center">
-          <p className="typo-subtitle2 text-grey-600">아직 이 책을 평가하지 않았어요</p>
+        <div className="py-base">
+          <p className="typo-subtitle2 text-grey-600 text-center">
+            아직 이 책을 평가하지 않았어요. <br />다 읽고 나서 이 책이 어땠는지 알려주세요!
+          </p>
         </div>
       )}
     </section>

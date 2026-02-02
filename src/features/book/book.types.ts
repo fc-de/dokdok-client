@@ -196,6 +196,35 @@ export interface MeetingPreOpinion {
   topics: PreOpinionTopic[]
 }
 
+// ============================================================
+// Book Review History (평가 히스토리) 관련 타입
+// ============================================================
+
+/** 책 평가 히스토리 항목 */
+export interface BookReviewHistoryItem {
+  bookReviewHistoryId: number
+  createdAt: string
+  rating: number
+  bookKeywords: ReviewKeyword[]
+  impressionKeywords: ReviewKeyword[]
+}
+
+/** 책 평가 히스토리 조회 요청 파라미터 */
+export interface GetBookReviewHistoryParams {
+  pageSize?: number
+  cursorHistoryId?: number
+}
+
+/** 책 평가 히스토리 조회 응답 */
+export interface GetBookReviewHistoryResponse {
+  items: BookReviewHistoryItem[]
+  pageSize: number
+  hasNext: boolean
+  nextCursor: {
+    historyId: number | null
+  }
+}
+
 /** 감상 기록 조회 요청 파라미터 */
 export interface GetBookRecordsParams {
   gatheringId?: number

@@ -4,12 +4,15 @@
  */
 
 import { api } from '@/api'
+import { ApiError, ErrorCode } from '@/api/errors'
 
 import type {
   BookDetail,
   BookReview,
   GetBookRecordsParams,
   GetBookRecordsResponse,
+  GetBookReviewHistoryParams,
+  GetBookReviewHistoryResponse,
   GetGatheringsParams,
   GetGatheringsResponse,
 } from './book.types'
@@ -146,9 +149,15 @@ export async function getBookReview(bookId: number): Promise<BookReview | null> 
     return normalizeBookReview(mockBookReview)
   }
 
-  const data = await api.get<Partial<BookReview>>(`/api/book/${bookId}/reviews/me`)
-
-  return normalizeBookReview(data)
+  try {
+    const data = await api.get<Partial<BookReview>>(`/api/book/${bookId}/reviews/me`)
+    return normalizeBookReview(data)
+  } catch (error) {
+    if (error instanceof ApiError && error.is(ErrorCode.BOOK_REVIEW_NOT_FOUND)) {
+      return null
+    }
+    throw error
+  }
 }
 
 function normalizeBookReview(data: Partial<BookReview> | null | undefined): BookReview | null {
@@ -212,7 +221,7 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
       recordContent:
         '이 부분을 읽으면서 선과 악을 나누는 이야기라기보다 "보여주는 나"와 "숨기는 나"에 대한 이야기처럼 느껴졌다.\n나는 그동안 어두운 쪽을 없애야 할 문제라고만 생각했지, 그게 이미 나의 일부일 수 있다는 생각은 잘 안 했던 것 같다.',
       meta: {
-        page: 4,
+        page: '4~6p',
         excerpt:
           '인간은 언제나 두 세계 사이에서 흔들린다. 하나는 이미 규칙이 정해진 안전한 세계이고, 다른 하나는 아직 이름 붙일 수 없는 혼란의 세계다.\n대부분의 사람들은 안전한 세계를 선택했다고 믿지만, 사실은 선택조차 하지 않은 채 그 안에 머문다.\n혼란을 두려워하기 때문이 아니라, 혼란 속에서 자신을 마주하는 일이 가장 어렵기 때문이다.',
       },
@@ -226,6 +235,10 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
       meetingName: '데미안을 읽어보아요',
       meetingDate: '2026-01-15',
       meetingTime: '19:00-20:00',
+      gathering: {
+        gatheringId: 1,
+        gatheringName: '책책책 책을 읽자',
+      },
       topics: [
         {
           topicId: 1,
@@ -288,28 +301,24 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
           topicId: 1,
           topicTitle: '가짜 욕망, 유사 욕망',
           confirmOrder: 1,
-          changedThoughts: [
-            {
-              keyIssue:
-                '모임 이후에는 가짜 욕망과 유사 욕망을 명확히 구분하려는 태도 자체가 현실적이지 않을 수 있겠다는 생각이 들었다.',
-              postOpinion:
-                '어떤 욕망은 그 당시에는 진짜처럼 느껴지지만 시간이 지나면서 다르게 보이기도 하고, 유사 욕망을 거쳐서야 진짜 욕망에 가까워지는 경우도 있다는 이야기를 들었다.',
-            },
-          ],
+          changedThoughts: {
+            keyIssue:
+              '모임 이후에는 가짜 욕망과 유사 욕망을 명확히 구분하려는 태도 자체가 현실적이지 않을 수 있겠다는 생각이 들었다.',
+            postOpinion:
+              '어떤 욕망은 그 당시에는 진짜처럼 느껴지지만 시간이 지나면서 다르게 보이기도 하고, 유사 욕망을 거쳐서야 진짜 욕망에 가까워지는 경우도 있다는 이야기를 들었다.',
+          },
           othersPerspectives: [],
         },
         {
           topicId: 2,
           topicTitle: '선과 악',
           confirmOrder: 2,
-          changedThoughts: [
-            {
-              keyIssue:
-                '토론을 거치면서 어느 쪽이 더 강한지를 따지는 질문 자체가 핵심은 아닐 수 있겠다는 생각이 들었다.',
-              postOpinion:
-                '데미안과 아브락사스의 개념을 중심으로 보면, 선과 악은 분리된 두 힘이라기보다 한 인간 안에서 동시에 작동하는 요소에 가깝다.',
-            },
-          ],
+          changedThoughts: {
+            keyIssue:
+              '토론을 거치면서 어느 쪽이 더 강한지를 따지는 질문 자체가 핵심은 아닐 수 있겠다는 생각이 들었다.',
+            postOpinion:
+              '데미안과 아브락사스의 개념을 중심으로 보면, 선과 악은 분리된 두 힘이라기보다 한 인간 안에서 동시에 작동하는 요소에 가깝다.',
+          },
           othersPerspectives: [
             {
               meetingMemberId: 10,
@@ -382,6 +391,81 @@ export async function getBookRecords(
   }
 
   return api.get<GetBookRecordsResponse>(`/api/book/${personalBookId}/records`, { params })
+}
+
+// ============================================================
+// Book Review History (평가 히스토리) API
+// ============================================================
+
+const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
+  items: [
+    {
+      bookReviewHistoryId: 2,
+      createdAt: '25.12.15 작성',
+      rating: 3.5,
+      bookKeywords: [
+        { id: 1, name: '관계', type: 'BOOK' },
+        { id: 2, name: '성장', type: 'BOOK' },
+      ],
+      impressionKeywords: [
+        { id: 10, name: '즐거운', type: 'IMPRESSION' },
+        { id: 11, name: '여운이 남는', type: 'IMPRESSION' },
+      ],
+    },
+    {
+      bookReviewHistoryId: 1,
+      createdAt: '25.12.08 작성',
+      rating: 4,
+      bookKeywords: [
+        { id: 3, name: '감동', type: 'BOOK' },
+      ],
+      impressionKeywords: [
+        { id: 12, name: '몰입되는', type: 'IMPRESSION' },
+      ],
+    },
+  ],
+  pageSize: 5,
+  hasNext: false,
+  nextCursor: {
+    historyId: null,
+  },
+}
+
+/**
+ * 책 평가 히스토리 조회
+ *
+ * 커서 기반 페이지네이션을 지원합니다.
+ *
+ * @param bookId - 조회할 책 ID
+ * @param params - 페이지네이션 파라미터
+ * @returns 평가 히스토리 목록
+ *
+ * @example
+ * ```typescript
+ * const history = await getBookReviewHistory(1)
+ * console.log(history.items[0].rating) // 4
+ * ```
+ */
+export async function getBookReviewHistory(
+  bookId: number,
+  params: GetBookReviewHistoryParams = {}
+): Promise<GetBookReviewHistoryResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return mockBookReviewHistoryResponse
+  }
+
+  try {
+    return await api.get<GetBookReviewHistoryResponse>(
+      `/api/book/${bookId}/reviews/history`,
+      { params }
+    )
+  } catch (error) {
+    if (error instanceof ApiError && error.is(ErrorCode.BOOK_REVIEW_NOT_FOUND)) {
+      return { items: [], hasNext: false }
+    }
+    throw error
+  }
 }
 
 /**

@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import {
   BookDetailPage,
   BookListPage,
+  BookReviewHistoryPage,
   ComponentGuidePage,
   CreateGatheringPage,
   GatheringDetailPage,
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.BOOKS}/:id`,
                 element: <BookDetailPage />,
+              },
+              {
+                path: `${ROUTES.BOOKS}/:id/reviews`,
+                element: <BookReviewHistoryPage />,
               },
               {
                 path: ROUTES.GATHERINGS,
