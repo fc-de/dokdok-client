@@ -23,7 +23,14 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
   const [sortType, setSortType] = useState<RecordSortType>('LATEST')
 
-  const { data: gatheringsData, isLoading: isGatheringsLoading } = useMyGatherings()
+  const {
+    data: gatheringsData,
+    isLoading: isGatheringsLoading,
+    fetchNextPage: fetchNextGatherings,
+    hasNextPage: hasNextGatherings,
+  } = useMyGatherings()
+
+  const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
   const { data: recordsData } = useBookRecords(bookId, {
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
     recordType: recordType || undefined,
@@ -50,7 +57,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
           <Button onClick={() => console.log('기록 추가', bookId)}>기록 추가하기</Button>
         </div>
         <div className="flex justify-between">
-          <div className="flex gap-xsmall">
+          <div className="flex flex-wrap gap-xsmall">
             <FilterDropdown
               placeholder="독서모임"
               value={selectedGathering}
@@ -60,14 +67,23 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               open={openDropdown === 'gathering'}
               onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
             >
-              {gatheringsData?.gatherings.map((gathering) => (
+              {gatherings.map((gathering) => (
                 <FilterDropdown.Option
                   key={gathering.gatheringId}
                   value={String(gathering.gatheringId)}
                 >
-                  {gathering.name}
+                  {gathering.gatheringName}
                 </FilterDropdown.Option>
               ))}
+              {hasNextGatherings && (
+                <button
+                  type="button"
+                  className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
+                  onClick={() => fetchNextGatherings()}
+                >
+                  더 보기
+                </button>
+              )}
             </FilterDropdown>
             <FilterDropdown
               placeholder="기록 유형"

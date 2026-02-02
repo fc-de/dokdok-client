@@ -49,27 +49,27 @@ export type GatheringUserRole = 'LEADER' | 'MEMBER'
 /** 모임 정보 */
 export interface Gathering {
   gatheringId: number
-  name: string
+  gatheringName: string
+  isFavorite: boolean
   gatheringStatus: GatheringStatus
+  totalMembers: number
+  totalMeetings: number
   currentUserRole: GatheringUserRole
-  joinedAt: string
+  daysFromJoined: number
 }
 
 /** 모임 목록 조회 요청 파라미터 */
 export interface GetGatheringsParams {
   pageSize?: number
-  cursorJoinedAt?: string
-  cursorId?: number
+  nextCursor?: string | null
 }
 
 /** 모임 목록 조회 응답 */
 export interface GetGatheringsResponse {
-  gatherings: Gathering[]
-  nextCursor: {
-    cursorJoinedAt: string | null
-    cursorId: number | null
-  }
+  items: Gathering[]
+  pageSize: number
   hasNext: boolean
+  nextCursor: string | null
 }
 
 // ============================================================

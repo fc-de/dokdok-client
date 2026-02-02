@@ -46,34 +46,41 @@ const mockBookReview: BookReview = {
 }
 
 const mockGatheringsResponse: GetGatheringsResponse = {
-  gatherings: [
+  items: [
     {
       gatheringId: 1,
-      name: '책읽는 직장인들',
+      gatheringName: '책책책 책을 읽자',
+      isFavorite: false,
       gatheringStatus: 'ACTIVE',
+      totalMembers: 5,
+      totalMeetings: 3,
       currentUserRole: 'LEADER',
-      joinedAt: '2025-12-01T10:00:00',
+      daysFromJoined: 30,
     },
     {
       gatheringId: 2,
-      name: '주말 독서 모임',
+      gatheringName: '주말 독서 모임 어쩌구저쩌구 되게 길다면 어떨까',
+      isFavorite: true,
       gatheringStatus: 'ACTIVE',
+      totalMembers: 8,
+      totalMeetings: 2,
       currentUserRole: 'MEMBER',
-      joinedAt: '2025-11-15T14:30:00',
+      daysFromJoined: 45,
     },
     {
       gatheringId: 3,
-      name: '고전 문학 탐독',
+      gatheringName: '고전 문학 탐독',
+      isFavorite: false,
       gatheringStatus: 'INACTIVE',
+      totalMembers: 3,
+      totalMeetings: 1,
       currentUserRole: 'MEMBER',
-      joinedAt: '2025-10-20T09:00:00',
+      daysFromJoined: 60,
     },
   ],
-  nextCursor: {
-    cursorJoinedAt: null,
-    cursorId: null,
-  },
+  pageSize: 10,
   hasNext: false,
+  nextCursor: null,
 }
 
 /** 목데이터 응답 지연 시뮬레이션 (ms) */
@@ -198,7 +205,14 @@ export async function getMyGatherings(
     return mockGatheringsResponse
   }
 
-  return api.get<GetGatheringsResponse>('/api/gatherings', { params })
+  try {
+    return await api.get<GetGatheringsResponse>('/api/gatherings', { params })
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      return { items: [], pageSize: params.pageSize ?? 10, hasNext: false, nextCursor: null }
+    }
+    throw error
+  }
 }
 
 // ============================================================
@@ -416,12 +430,8 @@ const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
       bookReviewHistoryId: 1,
       createdAt: '25.12.08 작성',
       rating: 4,
-      bookKeywords: [
-        { id: 3, name: '감동', type: 'BOOK' },
-      ],
-      impressionKeywords: [
-        { id: 12, name: '몰입되는', type: 'IMPRESSION' },
-      ],
+      bookKeywords: [{ id: 3, name: '감동', type: 'BOOK' }],
+      impressionKeywords: [{ id: 12, name: '몰입되는', type: 'IMPRESSION' }],
     },
   ],
   pageSize: 5,
@@ -456,13 +466,17 @@ export async function getBookReviewHistory(
   }
 
   try {
-    return await api.get<GetBookReviewHistoryResponse>(
-      `/api/book/${bookId}/reviews/history`,
-      { params }
-    )
+    return await api.get<GetBookReviewHistoryResponse>(`/api/book/${bookId}/reviews/history`, {
+      params,
+    })
   } catch (error) {
     if (error instanceof ApiError && error.is(ErrorCode.BOOK_REVIEW_NOT_FOUND)) {
-      return { items: [], hasNext: false }
+      return {
+        items: [],
+        pageSize: params.pageSize ?? 10,
+        hasNext: false,
+        nextCursor: { historyId: null },
+      }
     }
     throw error
   }
