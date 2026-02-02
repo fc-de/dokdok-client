@@ -44,7 +44,6 @@ export function useKakaoPlaceSearch({ onSearchSuccess }: UseKakaoPlaceSearchOpti
       } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
         setPlaces([])
         onSearchSuccess?.([])
-        alert('검색 결과가 존재하지 않습니다.')
       } else {
         setPlaces([])
         onSearchSuccess?.([])
