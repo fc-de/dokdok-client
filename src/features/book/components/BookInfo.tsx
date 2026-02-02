@@ -60,7 +60,7 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
           <div className="flex justify-between">
             <h2 className="typo-heading2">{data?.title}</h2>
             <div className="flex gap-xsmall items-center">
-              <p className="typo-body3 text-grey-600">기록 중</p>
+              <p className="typo-body3 text-grey-600">{isRecording ? '기록 중' : '기록 완료'}</p>
               <Switch checked={isRecording} onCheckedChange={onToggleRecording} />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import type { RecordSortType, RecordType } from '@/features/book/book.types'
+import BookLogCreateModal from '@/features/book/components/BookLogCreateModal'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
@@ -17,11 +18,13 @@ type BookLogListProps = {
 
 type OpenDropdown = 'gathering' | 'recordType' | null
 
+
 const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
   const [sortType, setSortType] = useState<RecordSortType>('LATEST')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const {
     data: gatheringsData,
@@ -54,7 +57,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
         <div className="flex justify-between mb-base">
           <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-          <Button onClick={() => console.log('기록 추가', bookId)}>기록 추가하기</Button>
+          <Button onClick={() => setIsCreateModalOpen(true)}>기록 추가하기</Button>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-wrap gap-xsmall">
@@ -166,6 +169,11 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
           )}
         </section>
       </div>
+      <BookLogCreateModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
+        bookId={bookId}
+      />
     </section>
   )
 }

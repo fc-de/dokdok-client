@@ -29,7 +29,7 @@ const MeetingGroupRecordItem = ({ record, onEdit }: MeetingGroupRecordItemProps)
           <div className="flex items-center gap-xsmall">
             <Badge color={'yellow'}>{record.gathering.gatheringName}</Badge>
             <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
-              모임 회고
+              약속 회고
             </p>
             <span className="typo-caption1 text-grey-600">
               {formatToDateWithDayAndTime(record.meetingDate, record.meetingTime)}

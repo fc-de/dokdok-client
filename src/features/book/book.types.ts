@@ -225,6 +225,16 @@ export interface GetBookReviewHistoryResponse {
   }
 }
 
+/** 감상 기록 생성 요청 바디 */
+export interface CreateBookRecordBody {
+  recordType: RecordType
+  recordContent: string
+  meta?: {
+    page?: string
+    excerpt?: string
+  }
+}
+
 /** 감상 기록 조회 요청 파라미터 */
 export interface GetBookRecordsParams {
   gatheringId?: number

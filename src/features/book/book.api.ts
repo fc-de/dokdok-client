@@ -9,12 +9,14 @@ import { ApiError, ErrorCode } from '@/api/errors'
 import type {
   BookDetail,
   BookReview,
+  CreateBookRecordBody,
   GetBookRecordsParams,
   GetBookRecordsResponse,
   GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
   GetGatheringsParams,
   GetGatheringsResponse,
+  PersonalRecord,
 } from './book.types'
 
 // ============================================================
@@ -485,6 +487,37 @@ export async function getBookReviewHistory(
 /**
  * 목데이터 필터링 헬퍼 함수
  */
+/**
+ * 감상 기록 생성
+ *
+ * @param personalBookId - 개인 책 ID
+ * @param body - 기록 생성 요청 바디
+ * @returns 생성된 감상 기록
+ *
+ * @example
+ * ```typescript
+ * await createBookRecord(1, { recordType: 'MEMO', recordContent: '메모 내용' })
+ * ```
+ */
+export async function createBookRecord(
+  personalBookId: number,
+  body: CreateBookRecordBody
+): Promise<PersonalRecord> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return {
+      recordId: Date.now(),
+      recordType: body.recordType,
+      recordContent: body.recordContent,
+      meta: body.meta ?? {},
+      bookId: personalBookId,
+      createdAt: new Date().toISOString(),
+    }
+  }
+
+  return api.post<PersonalRecord>(`/api/book/${personalBookId}/records`, body)
+}
+
 function filterMockBookRecords(
   data: GetBookRecordsResponse,
   params: GetBookRecordsParams
