@@ -113,63 +113,63 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       {/* 감상 기록 헤더 - sticky */}
       <div className="sticky top-[108px] z-30 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
-        <div className="flex justify-between mb-base">
-          <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-          <Button onClick={handleCreateRecord}>기록 추가하기</Button>
-        </div>
-        <div className="flex justify-between">
-          <div className="flex flex-wrap gap-xsmall">
-            <FilterDropdown
-              placeholder="독서모임"
-              value={selectedGathering}
-              onChange={handleGatheringChange}
-              color="yellow"
-              disabled={isGatheringsLoading || gatherings.length === 0}
-              open={openDropdown === 'gathering'}
-              onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
-            >
-              {gatherings.map((gathering) => (
-                <FilterDropdown.Option
-                  key={gathering.gatheringId}
-                  value={String(gathering.gatheringId)}
-                >
-                  {gathering.gatheringName}
-                </FilterDropdown.Option>
-              ))}
-              {hasNextGatherings && (
-                <button
-                  type="button"
-                  className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
-                  onClick={() => fetchNextGatherings()}
-                >
-                  더 보기
-                </button>
-              )}
-            </FilterDropdown>
-            <FilterDropdown
-              placeholder="기록 유형"
-              value={recordType}
-              onChange={handleRecordTypeChange}
-              color={recordType === 'QUOTE' ? 'purple' : 'primary'}
-              open={openDropdown === 'recordType'}
-              onOpenChange={(open) => setOpenDropdown(open ? 'recordType' : null)}
-            >
-              <FilterDropdown.Option value="MEMO">메모</FilterDropdown.Option>
-              <FilterDropdown.Option value="QUOTE">발췌</FilterDropdown.Option>
-            </FilterDropdown>
+          <div className="flex justify-between mb-base">
+            <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
+            <Button onClick={handleCreateRecord}>기록 추가하기</Button>
           </div>
-          <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
-            <TabsList size="small" className="gap-0">
-              <TabsTrigger value="LATEST" size="small">
-                최신순
-              </TabsTrigger>
-              <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-              <TabsTrigger value="OLDEST" size="small">
-                오래된순
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+          <div className="flex justify-between">
+            <div className="flex flex-wrap gap-xsmall">
+              <FilterDropdown
+                placeholder="독서모임"
+                value={selectedGathering}
+                onChange={handleGatheringChange}
+                color="yellow"
+                disabled={isGatheringsLoading || gatherings.length === 0}
+                open={openDropdown === 'gathering'}
+                onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
+              >
+                {gatherings.map((gathering) => (
+                  <FilterDropdown.Option
+                    key={gathering.gatheringId}
+                    value={String(gathering.gatheringId)}
+                  >
+                    {gathering.gatheringName}
+                  </FilterDropdown.Option>
+                ))}
+                {hasNextGatherings && (
+                  <button
+                    type="button"
+                    className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
+                    onClick={() => fetchNextGatherings()}
+                  >
+                    더 보기
+                  </button>
+                )}
+              </FilterDropdown>
+              <FilterDropdown
+                placeholder="기록 유형"
+                value={recordType}
+                onChange={handleRecordTypeChange}
+                color={recordType === 'QUOTE' ? 'purple' : 'primary'}
+                open={openDropdown === 'recordType'}
+                onOpenChange={(open) => setOpenDropdown(open ? 'recordType' : null)}
+              >
+                <FilterDropdown.Option value="MEMO">메모</FilterDropdown.Option>
+                <FilterDropdown.Option value="QUOTE">발췌</FilterDropdown.Option>
+              </FilterDropdown>
+            </div>
+            <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
+              <TabsList size="small" className="gap-0">
+                <TabsTrigger value="LATEST" size="small">
+                  최신순
+                </TabsTrigger>
+                <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
+                <TabsTrigger value="OLDEST" size="small">
+                  오래된순
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       </div>
 
@@ -202,7 +202,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                         key={`group-${item.data.meetingId}`}
                         record={item.data}
                         onEdit={
-                          isRecording ? () => console.log('edit group', item.data.meetingId) : undefined
+                          isRecording
+                            ? () => console.log('edit group', item.data.meetingId)
+                            : undefined
                         }
                       />
                     )
@@ -223,7 +225,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                       <MeetingPreOpinionItem
                         key={`pre-opinion-${idx}`}
                         record={item.data}
-                        onEdit={isRecording ? () => console.log('edit pre-opinion', idx) : undefined}
+                        onEdit={
+                          isRecording ? () => console.log('edit pre-opinion', idx) : undefined
+                        }
                       />
                     )
                 }

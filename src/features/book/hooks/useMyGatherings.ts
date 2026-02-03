@@ -41,10 +41,8 @@ export const gatheringKeys = {
 export function useMyGatherings(params?: Omit<GetGatheringsParams, 'nextCursor'>) {
   return useInfiniteQuery({
     queryKey: gatheringKeys.list(params),
-    queryFn: ({ pageParam }) =>
-      getMyGatherings({ ...params, nextCursor: pageParam }),
+    queryFn: ({ pageParam }) => getMyGatherings({ ...params, nextCursor: pageParam }),
     initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) =>
-      lastPage.hasNext ? lastPage.nextCursor : undefined,
+    getNextPageParam: (lastPage) => (lastPage.hasNext ? lastPage.nextCursor : undefined),
   })
 }

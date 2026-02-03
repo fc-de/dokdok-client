@@ -33,7 +33,11 @@ const PersonalRecordItem = ({ record, onEdit }: PersonalRecordItemProps) => {
             {formatToDateTimeWithDay(record.createdAt)}
           </span>
         </div>
-        {onEdit && <TextButton size={'medium'} onClick={onEdit}>수정하기</TextButton>}
+        {onEdit && (
+          <TextButton size={'medium'} onClick={onEdit}>
+            수정하기
+          </TextButton>
+        )}
       </div>
 
       <div className="flex flex-col gap-medium">
