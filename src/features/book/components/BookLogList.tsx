@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import type { RecordSortType, RecordType } from '@/features/book/book.types'
-import BookLogCreateModal from '@/features/book/components/BookLogCreateModal'
+import type { PersonalRecord, RecordSortType, RecordType } from '@/features/book/book.types'
+import BookLogModal from '@/features/book/components/BookLogModal'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
@@ -24,7 +24,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
   const [sortType, setSortType] = useState<RecordSortType>('LATEST')
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
+  const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
 
   const {
     data: gatheringsData,
@@ -50,6 +52,18 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     if (value) setSelectedGathering('')
   }
 
+  const handleCreateRecord = () => {
+    setModalMode('create')
+    setEditingRecord(null)
+    setIsModalOpen(true)
+  }
+
+  const handleEditRecord = (record: PersonalRecord) => {
+    setModalMode('edit')
+    setEditingRecord(record)
+    setIsModalOpen(true)
+  }
+
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
@@ -57,7 +71,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
         <div className="flex justify-between mb-base">
           <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-          <Button onClick={() => setIsCreateModalOpen(true)}>기록 추가하기</Button>
+          <Button onClick={handleCreateRecord}>기록 추가하기</Button>
         </div>
         <div className="flex justify-between">
           <div className="flex flex-wrap gap-xsmall">
@@ -66,7 +80,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               value={selectedGathering}
               onChange={handleGatheringChange}
               color="yellow"
-              disabled={isGatheringsLoading}
+              disabled={isGatheringsLoading || gatherings.length === 0}
               open={openDropdown === 'gathering'}
               onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
             >
@@ -135,7 +149,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                 <PersonalRecordItem
                   key={record.recordId}
                   record={record}
-                  onEdit={isRecording ? () => console.log('edit', record.recordId) : undefined}
+                  onEdit={isRecording ? () => handleEditRecord(record) : undefined}
                 />
               ))}
               {recordsData?.meetingGroupRecords.map((record) => (
@@ -169,10 +183,12 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
           )}
         </section>
       </div>
-      <BookLogCreateModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
+      <BookLogModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
         bookId={bookId}
+        mode={modalMode}
+        record={editingRecord ?? undefined}
       />
     </section>
   )

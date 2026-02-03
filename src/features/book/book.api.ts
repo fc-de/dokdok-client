@@ -17,6 +17,7 @@ import type {
   GetGatheringsParams,
   GetGatheringsResponse,
   PersonalRecord,
+  UpdateBookRecordBody,
 } from './book.types'
 
 // ============================================================
@@ -518,6 +519,62 @@ export async function createBookRecord(
   return api.post<PersonalRecord>(`/api/book/${personalBookId}/records`, body)
 }
 
+/**
+ * 감상 기록 수정
+ *
+ * @param personalBookId - 개인 책 ID
+ * @param recordId - 기록 ID
+ * @param body - 기록 수정 요청 바디
+ * @returns 수정된 감상 기록
+ *
+ * @example
+ * ```typescript
+ * await updateBookRecord(1, 5, { recordType: 'MEMO', recordContent: '수정된 내용' })
+ * ```
+ */
+export async function updateBookRecord(
+  personalBookId: number,
+  recordId: number,
+  body: UpdateBookRecordBody
+): Promise<PersonalRecord> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return {
+      recordId,
+      recordType: body.recordType,
+      recordContent: body.recordContent,
+      meta: body.meta ?? {},
+      bookId: personalBookId,
+      createdAt: new Date().toISOString(),
+    }
+  }
+
+  return api.put<PersonalRecord>(`/api/book/${personalBookId}/records/${recordId}`, body)
+}
+
+/**
+ * 감상 기록 삭제
+ *
+ * @param personalBookId - 개인 책 ID
+ * @param recordId - 기록 ID
+ *
+ * @example
+ * ```typescript
+ * await deleteBookRecord(1, 5)
+ * ```
+ */
+export async function deleteBookRecord(
+  personalBookId: number,
+  recordId: number
+): Promise<void> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return
+  }
+
+  return api.delete(`/api/book/${personalBookId}/records/${recordId}`)
+}
+
 function filterMockBookRecords(
   data: GetBookRecordsResponse,
   params: GetBookRecordsParams
@@ -529,10 +586,24 @@ function filterMockBookRecords(
   let meetingPersonalRecords = [...data.meetingPersonalRecords]
   let meetingPreOpinions = [...(data.meetingPreOpinions ?? [])]
 
-  // 모임 필터 - 모임 선택 시 개인 기록 제외, 모임 기록만 표시
+  // 모임 필터 - 모임 선택 시 개인 기록 제외, 해당 모임 기록만 표시
   if (gatheringId !== undefined) {
     personalRecords = []
-    // 실제 API에서는 gatheringId로 필터링되겠지만, 목데이터는 그대로 표시
+    meetingGroupRecords = meetingGroupRecords.filter(
+      (record) => record.gathering.gatheringId === gatheringId
+    )
+    meetingPersonalRecords = meetingPersonalRecords.filter((record) => {
+      const matching = data.meetingGroupRecords.find(
+        (g) => g.gathering.gatheringId === gatheringId
+      )
+      return matching && record.gatheringName === matching.gathering.gatheringName
+    })
+    meetingPreOpinions = meetingPreOpinions.filter((record) => {
+      const matching = data.meetingGroupRecords.find(
+        (g) => g.gathering.gatheringId === gatheringId
+      )
+      return matching && record.gatheringName === matching.gathering.gatheringName
+    })
   }
 
   // 기록 유형 필터 - 개인 기록만 필터링, 모임 기록 제외
