@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { createBookReview } from '../book.api'
 import type { CreateBookReviewBody } from '../book.types'
+import { bookReviewKeys } from './useBookReview'
+import { bookReviewHistoryKeys } from './useBookReviewHistory'
 
 /**
  * 책 평가 생성 훅
@@ -29,9 +31,9 @@ export function useCreateBookReview(bookId: number) {
     mutationFn: (body: CreateBookReviewBody) => createBookReview(bookId, body),
     onSuccess: () => {
       // 책 평가 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: ['bookReview', bookId] })
+      queryClient.invalidateQueries({ queryKey: bookReviewKeys.detail(bookId) })
       // 책 평가 히스토리 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: ['bookReviewHistory', bookId] })
+      queryClient.invalidateQueries({ queryKey: bookReviewHistoryKeys.list(bookId) })
     },
   })
 }

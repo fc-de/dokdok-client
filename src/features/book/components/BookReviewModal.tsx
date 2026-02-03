@@ -14,6 +14,7 @@ import {
   ModalTitle,
 } from '@/shared/ui/Modal'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
+import { useGlobalModalStore } from '@/store'
 
 import { useCreateBookReview } from '../hooks'
 
@@ -45,8 +46,13 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
     null
   )
 
-  const { data: keywordsData, isLoading: isLoadingKeywords } = useKeywords()
+  const {
+    data: keywordsData,
+    isLoading: isLoadingKeywords,
+    isError: isKeywordsError,
+  } = useKeywords()
   const { mutate: submitReview, isPending } = useCreateBookReview(bookId)
+  const { openError } = useGlobalModalStore()
 
   // 책 키워드 카테고리 (level 1)
   const bookCategories = useMemo(
@@ -135,7 +141,29 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
           setSelectedBookCategoryId(null)
           setSelectedImpressionCategoryId(null)
         },
+        onError: (error) => {
+          openError('평가 저장 실패', error.message)
+        },
       }
+    )
+  }
+
+  if (isKeywordsError) {
+    return (
+      <Modal open={open} onOpenChange={onOpenChange}>
+        <ModalContent variant="normal">
+          <ModalHeader>
+            <ModalTitle>책 평가하기</ModalTitle>
+          </ModalHeader>
+          <ModalBody>
+            <div className="flex items-center justify-center py-xlarge">
+              <p className="typo-body2 text-grey-600">
+                키워드를 불러오지 못했습니다. 다시 시도해주세요.
+              </p>
+            </div>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     )
   }
 

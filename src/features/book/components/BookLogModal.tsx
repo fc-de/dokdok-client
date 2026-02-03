@@ -123,6 +123,7 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
     setPageNumber('')
     setThought('')
     setRecordType('MEMO')
+    setTypeDropdownOpen(false)
   }
 
   const handleTypeChange = (type: RecordType) => {
@@ -131,6 +132,7 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
   }
 
   const handleSave = () => {
+    if (mode === 'edit' && !record) return
     const body: CreateBookRecordBody | UpdateBookRecordBody =
       recordType === 'MEMO'
         ? { recordType: 'MEMO', recordContent: memoContent }
@@ -160,6 +162,7 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
   }
 
   const handleDelete = () => {
+    if (mode === 'edit' && !record) return
     if (confirm('정말 삭제하시겠습니까?')) {
       deleteRecord(undefined, {
         onSuccess: () => {
@@ -289,11 +292,15 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
         </ModalBody>
         <ModalFooter>
           {mode === 'edit' && (
-            <Button variant="danger" onClick={handleDelete} disabled={isPending}>
+            <Button
+              variant="danger"
+              onClick={handleDelete}
+              disabled={isPending || (mode === 'edit' && !record)}
+            >
               삭제하기
             </Button>
           )}
-          <Button onClick={handleSave} disabled={isPending}>
+          <Button onClick={handleSave} disabled={isPending || (mode === 'edit' && !record)}>
             {mode === 'create' ? '저장하기' : '수정하기'}
           </Button>
         </ModalFooter>
