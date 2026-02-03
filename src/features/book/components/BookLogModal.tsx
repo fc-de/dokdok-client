@@ -23,6 +23,7 @@ import {
   ModalTitle,
 } from '@/shared/ui/Modal'
 import { Textarea } from '@/shared/ui/Textarea'
+import { useGlobalModalStore } from '@/store'
 
 type BookLogModalProps = {
   open: boolean
@@ -93,6 +94,7 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
   const [pageNumber, setPageNumber] = useState(initialState.pageNumber)
   const [thought, setThought] = useState(initialState.thought)
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false)
+  const { openConfirm } = useGlobalModalStore()
 
   // 모달이 열릴 때마다 props 기반으로 state 재설정
   useEffect(() => {
@@ -161,9 +163,13 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
     }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (mode === 'edit' && !record) return
-    if (confirm('정말 삭제하시겠습니까?')) {
+    const confirmed = await openConfirm('감상 기록 삭제하기', '정말로 이 감상 기록을 삭제할까요?', {
+      confirmText: '삭제',
+      variant: 'danger',
+    })
+    if (confirmed) {
       deleteRecord(undefined, {
         onSuccess: () => {
           onOpenChange(false)
