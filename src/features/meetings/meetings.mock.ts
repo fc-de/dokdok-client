@@ -209,6 +209,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
     meetingId: 1,
     meetingName: '1차 독서모임',
     meetingStatus: 'PENDING',
+    progressStatus: 'POST',
     gathering: {
       gatheringId: 101,
       gatheringName: '클린 코드 스터디',
@@ -237,7 +238,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
           userId: 1,
           nickname: '독서왕김민수',
           profileImageUrl: 'https://picsum.photos/seed/user1/100/100',
-          role: 'HOST',
+          role: 'LEADER',
         },
         {
           userId: 2,
@@ -258,11 +259,16 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       buttonLabel: '약속이 끝났어요',
       enabled: false,
     },
+    confirmedTopicExpand: true,
+    confirmedTopicDate: '2026-01-20T14:00:00',
   },
   11: {
     meetingId: 11,
+    progressStatus: 'PRE',
     meetingName: '킥오프 모임',
     meetingStatus: 'CONFIRMED',
+    confirmedTopicExpand: false,
+    confirmedTopicDate: null,
     gathering: {
       gatheringId: 102,
       gatheringName: '실용주의 프로그래머 독서모임',
@@ -291,7 +297,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
           userId: 4,
           nickname: '프로그래머박지성',
           profileImageUrl: 'https://picsum.photos/seed/user4/100/100',
-          role: 'HOST',
+          role: 'LEADER',
         },
         {
           userId: 5,
