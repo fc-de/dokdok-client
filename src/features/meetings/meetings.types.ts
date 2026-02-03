@@ -68,6 +68,9 @@ export type ConfirmMeetingResponse = {
   confirmedAt: string
 }
 
+/**
+ * 약속 장소 타입
+ */
 type MeetingLocation = {
   name: string
   address: string
@@ -76,7 +79,68 @@ type MeetingLocation = {
 }
 
 /**
- * 약속 상세 응답 타입
+ * 약속 생성 요청 타입
+ */
+export type CreateMeetingRequest = {
+  /** 모임 ID */
+  gatheringId: number
+  /** 책 ID */
+  bookId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 시작 일시 (ISO 8601 형식) */
+  meetingStartDate: string
+  /** 약속 종료 일시 (ISO 8601 형식) */
+  meetingEndDate: string
+  /** 최대 참가 인원 */
+  maxParticipants: number
+  /** 장소 (선택 사항) */
+  location: MeetingLocation | null
+}
+
+/**
+ * 약속 생성 응답 타입
+ */
+export type CreateMeetingResponse = {
+  /** 약속 ID */
+  meetingId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 상태 */
+  meetingStatus: MeetingStatus
+  /** 모임 정보 */
+  gathering: {
+    gatheringId: number
+    gatheringName: string
+  }
+  /** 책 정보 */
+  book: {
+    bookId: number
+    bookName: string
+  }
+  /** 일정 정보 */
+  schedule: {
+    date: string
+    time: string
+    startDateTime: string
+    endDateTime: string
+  } | null
+  /** 장소 */
+  location: MeetingLocation | null
+  /** 참가자 정보 */
+  participants: {
+    currentCount: number
+    maxCount: number
+    members: Array<{
+      userId: number
+      nickname: string
+      profileImageUrl: string
+    }>
+  }
+}
+
+/**
+ * 약속 상세 조회 액션 상태 타입
  */
 export type MeetingDetailActionStateType =
   | 'CAN_EDIT'
@@ -87,12 +151,18 @@ export type MeetingDetailActionStateType =
   | 'DONE'
   | 'REJECTED'
 
+/**
+ * 약속 일정 타입
+ */
 export type MeetingSchedule = {
   startDateTime: string
   endDateTime: string
   displayDate: string
 } | null
 
+/**
+ * 약속 상세 조회 응답 타입
+ */
 export type GetMeetingDetailResponse = {
   /** 약속 ID */
   meetingId: number

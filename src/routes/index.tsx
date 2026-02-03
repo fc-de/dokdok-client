@@ -10,6 +10,7 @@ import {
   HomePage,
   InvitePage,
   LoginPage,
+  MeetingCreatePage,
   MeetingDetailPage,
   MeetingSettingPage,
   OnboardingPage,
@@ -97,6 +98,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId${ROUTES.MEETINGS}/setting`,
                 element: <MeetingSettingPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id${ROUTES.MEETING_CREATE}`,
+                element: <MeetingCreatePage />,
               },
               {
                 path: ROUTES.RECORDS,
