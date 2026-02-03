@@ -42,18 +42,10 @@ type InputProps = React.ComponentProps<'input'> & {
  * <Input maxLength={50} helperText="최대 50자까지 입력 가능합니다" />
  * ```
  */
-function Input({
-  className,
-  type,
-  label,
-  error,
-  errorMessage,
-  helperText,
-  maxLength,
-  disabled,
-  value,
-  ...props
-}: InputProps) {
+const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
+  { className, type, label, error, errorMessage, helperText, maxLength, disabled, value, ...props },
+  ref
+) {
   const currentLength = typeof value === 'string' ? value.length : 0
   const showCount = maxLength !== undefined
   const showFooter = error || helperText || showCount
@@ -62,6 +54,7 @@ function Input({
     <div className="flex flex-col w-full">
       {label && <p className="text-left text-black typo-subtitle3 mb-medium">{label}</p>}
       <input
+        ref={ref}
         type={type}
         disabled={disabled}
         maxLength={maxLength}
@@ -87,6 +80,6 @@ function Input({
       )}
     </div>
   )
-}
+})
 
 export { Input }

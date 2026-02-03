@@ -13,6 +13,8 @@ export * from './meetings.api'
 // Types
 export type {
   ConfirmMeetingResponse,
+  CreateMeetingRequest,
+  CreateMeetingResponse,
   GetMeetingApprovalsParams,
   MeetingApprovalItem as MeetingApprovalItemType,
   MeetingStatus,
