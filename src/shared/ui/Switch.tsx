@@ -23,7 +23,7 @@ const Switch = React.forwardRef<
       ref={ref}
       data-slot="switch"
       className={cn(
-        'peer inline-flex shrink-0 items-center w-10 h-6 p-[3px] rounded-base transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
+        'peer inline-flex shrink-0 items-center cursor-pointer w-10 h-6 p-[3px] rounded-base transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
         'data-[state=checked]:bg-primary-300 data-[state=unchecked]:bg-grey-400',
         className
       )}

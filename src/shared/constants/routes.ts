@@ -9,6 +9,7 @@ export const ROUTES = {
   // Books
   BOOKS: '/books',
   BOOK_DETAIL: (id: number | string) => `/books/${id}`,
+  BOOK_REVIEW_HISTORY: (id: number | string) => `/books/${id}/reviews`,
   BOOK_SEARCH: '/books/search',
 
   // Gatherings
