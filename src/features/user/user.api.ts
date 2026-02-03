@@ -1,15 +1,10 @@
 import { apiClient, ApiError, type ApiResponse, ErrorCode } from '@/api'
 
 import { USER_ENDPOINTS } from './user.endpoints'
-import type { User, UserUpdateInput } from './user.types'
+import type { User } from './user.types'
 
 export const fetchCurrentUserProfile = async () => {
   const { data } = await apiClient.get<ApiResponse<User>>(USER_ENDPOINTS.ME)
-  return data.data
-}
-
-export const updateUser = async (input: UserUpdateInput) => {
-  const { data } = await apiClient.patch<ApiResponse<User>>(USER_ENDPOINTS.ME, input)
   return data.data
 }
 
@@ -47,4 +42,30 @@ export const checkNickname = async (nickname: string) => {
     }
     throw error
   }
+}
+
+export const updateNickname = async (nickname: string) => {
+  const { data } = await apiClient.patch<ApiResponse<User>>(USER_ENDPOINTS.ME, { nickname })
+  return data.data
+}
+
+export const updateProfileImage = async (profileImage: File) => {
+  const formData = new FormData()
+  formData.append('profileImage', profileImage)
+
+  const { data } = await apiClient.patch<ApiResponse<User>>(
+    USER_ENDPOINTS.PROFILE_IMAGE,
+    formData,
+    {
+      headers: {
+        'Content-Type': undefined,
+      },
+    }
+  )
+  return data.data
+}
+
+export const deleteProfileImage = async () => {
+  const { data } = await apiClient.delete<ApiResponse<null>>(USER_ENDPOINTS.PROFILE_IMAGE)
+  return data
 }

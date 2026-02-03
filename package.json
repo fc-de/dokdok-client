@@ -13,7 +13,7 @@
     "preview": "vite preview"
   },
   "engines": {
-    "node": ">=20.19 <21"
+    "node": ">=20.20.0 <21"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.3.1",
