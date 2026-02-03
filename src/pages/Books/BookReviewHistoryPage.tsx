@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useParams } from 'react-router-dom'
 
 import ReviewHistoryCard from '@/features/book/components/ReviewHistoryCard'
@@ -21,10 +22,10 @@ export default function BookReviewHistoryPage() {
         <h2 className="typo-heading2 text-grey-800 mb-large">지난 평가</h2>
         {isLoading && <div className="mt-medium">로딩중...</div>}
         {historyData?.items.map((item, idx) => (
-          <>
-            <ReviewHistoryCard key={item.bookReviewHistoryId} item={item} />
+          <Fragment key={item.bookReviewHistoryId}>
+            <ReviewHistoryCard item={item} />
             {historyData?.items.length !== idx + 1 && <Division />}
-          </>
+          </Fragment>
         ))}
         {!isLoading && historyData?.items.length === 0 && (
           <div className="mt-medium py-base flex justify-center">
