@@ -1,6 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
-import type { PersonalRecord, RecordSortType, RecordType } from '@/features/book/book.types'
+import type {
+  MeetingGroupRecord,
+  MeetingPersonalRecord,
+  MeetingPreOpinion,
+  PersonalRecord,
+  RecordSortType,
+  RecordType,
+} from '@/features/book/book.types'
 import BookLogModal from '@/features/book/components/BookLogModal'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
@@ -18,6 +25,11 @@ type BookLogListProps = {
 
 type OpenDropdown = 'gathering' | 'recordType' | null
 
+type RecordItem =
+  | { type: 'personal'; date: Date; data: PersonalRecord }
+  | { type: 'meetingGroup'; date: Date; data: MeetingGroupRecord }
+  | { type: 'meetingPersonal'; date: Date; data: MeetingPersonalRecord }
+  | { type: 'meetingPreOpinion'; date: Date; data: MeetingPreOpinion }
 
 const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [selectedGathering, setSelectedGathering] = useState('')
@@ -41,6 +53,38 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     recordType: recordType || undefined,
     sort: sortType,
   })
+
+  // 모든 레코드를 통합하여 날짜순으로 정렬
+  const allRecords = useMemo((): RecordItem[] => {
+    if (!recordsData) return []
+
+    const records: RecordItem[] = []
+
+    recordsData.personalRecords.forEach((record) => {
+      records.push({ type: 'personal', date: new Date(record.createdAt), data: record })
+    })
+
+    recordsData.meetingGroupRecords.forEach((record) => {
+      records.push({ type: 'meetingGroup', date: new Date(record.meetingDate), data: record })
+    })
+
+    recordsData.meetingPersonalRecords.forEach((record) => {
+      records.push({ type: 'meetingPersonal', date: new Date(record.createdAt), data: record })
+    })
+
+    recordsData.meetingPreOpinions?.forEach((record) => {
+      records.push({ type: 'meetingPreOpinion', date: new Date(record.sharedAt), data: record })
+    })
+
+    // 정렬: LATEST면 최신순(내림차순), OLDEST면 오래된순(오름차순)
+    records.sort((a, b) => {
+      return sortType === 'LATEST'
+        ? b.date.getTime() - a.date.getTime()
+        : a.date.getTime() - b.date.getTime()
+    })
+
+    return records
+  }, [recordsData, sortType])
 
   const handleGatheringChange = (value: string) => {
     setSelectedGathering(value)
@@ -132,10 +176,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
         <section className="max-w-[1200px] mx-auto py-xlarge">
-          {!recordsData?.personalRecords.length &&
-          !recordsData?.meetingGroupRecords.length &&
-          !recordsData?.meetingPersonalRecords.length &&
-          !recordsData?.meetingPreOpinions?.length ? (
+          {allRecords.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-base text-center">
               <p className="typo-subtitle2 text-grey-600">
                 아직 감상 기록이 없어요.
@@ -145,40 +186,48 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
             </div>
           ) : (
             <div className="flex flex-col gap-xlarge">
-              {recordsData?.personalRecords.map((record) => (
-                <PersonalRecordItem
-                  key={record.recordId}
-                  record={record}
-                  onEdit={isRecording ? () => handleEditRecord(record) : undefined}
-                />
-              ))}
-              {recordsData?.meetingGroupRecords.map((record) => (
-                <MeetingGroupRecordItem
-                  key={record.meetingId}
-                  record={record}
-                  onEdit={
-                    isRecording ? () => console.log('edit group', record.meetingId) : undefined
-                  }
-                />
-              ))}
-              {recordsData?.meetingPersonalRecords.map((record) => (
-                <MeetingRetrospectiveItem
-                  key={`retrospective-${record.retrospectiveId}`}
-                  record={record}
-                  onEdit={
-                    isRecording
-                      ? () => console.log('edit retrospective', record.retrospectiveId)
-                      : undefined
-                  }
-                />
-              ))}
-              {recordsData?.meetingPreOpinions?.map((record, idx) => (
-                <MeetingPreOpinionItem
-                  key={`pre-opinion-${idx}`}
-                  record={record}
-                  onEdit={isRecording ? () => console.log('edit pre-opinion', idx) : undefined}
-                />
-              ))}
+              {allRecords.map((item, idx) => {
+                switch (item.type) {
+                  case 'personal':
+                    return (
+                      <PersonalRecordItem
+                        key={`personal-${item.data.recordId}`}
+                        record={item.data}
+                        onEdit={isRecording ? () => handleEditRecord(item.data) : undefined}
+                      />
+                    )
+                  case 'meetingGroup':
+                    return (
+                      <MeetingGroupRecordItem
+                        key={`group-${item.data.meetingId}`}
+                        record={item.data}
+                        onEdit={
+                          isRecording ? () => console.log('edit group', item.data.meetingId) : undefined
+                        }
+                      />
+                    )
+                  case 'meetingPersonal':
+                    return (
+                      <MeetingRetrospectiveItem
+                        key={`retrospective-${item.data.retrospectiveId}`}
+                        record={item.data}
+                        onEdit={
+                          isRecording
+                            ? () => console.log('edit retrospective', item.data.retrospectiveId)
+                            : undefined
+                        }
+                      />
+                    )
+                  case 'meetingPreOpinion':
+                    return (
+                      <MeetingPreOpinionItem
+                        key={`pre-opinion-${idx}`}
+                        record={item.data}
+                        onEdit={isRecording ? () => console.log('edit pre-opinion', idx) : undefined}
+                      />
+                    )
+                }
+              })}
             </div>
           )}
         </section>

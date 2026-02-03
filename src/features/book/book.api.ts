@@ -63,7 +63,7 @@ const mockGatheringsResponse: GetGatheringsResponse = {
     },
     {
       gatheringId: 2,
-      gatheringName: '주말 독서 모임 어쩌구저쩌구 되게 길다면 어떨까',
+      gatheringName: '주말 독서 모임 어쩌구저쩌구',
       isFavorite: true,
       gatheringStatus: 'ACTIVE',
       totalMembers: 8,
@@ -564,10 +564,7 @@ export async function updateBookRecord(
  * await deleteBookRecord(1, 5)
  * ```
  */
-export async function deleteBookRecord(
-  personalBookId: number,
-  recordId: number
-): Promise<void> {
+export async function deleteBookRecord(personalBookId: number, recordId: number): Promise<void> {
   if (USE_MOCK) {
     await delay(MOCK_DELAY)
     return
@@ -615,7 +612,7 @@ function filterMockBookRecords(
   data: GetBookRecordsResponse,
   params: GetBookRecordsParams
 ): GetBookRecordsResponse {
-  const { gatheringId, recordType } = params
+  const { gatheringId, recordType, sort = 'LATEST' } = params
 
   let personalRecords = [...data.personalRecords]
   let meetingGroupRecords = [...data.meetingGroupRecords]
@@ -629,15 +626,11 @@ function filterMockBookRecords(
       (record) => record.gathering.gatheringId === gatheringId
     )
     meetingPersonalRecords = meetingPersonalRecords.filter((record) => {
-      const matching = data.meetingGroupRecords.find(
-        (g) => g.gathering.gatheringId === gatheringId
-      )
+      const matching = data.meetingGroupRecords.find((g) => g.gathering.gatheringId === gatheringId)
       return matching && record.gatheringName === matching.gathering.gatheringName
     })
     meetingPreOpinions = meetingPreOpinions.filter((record) => {
-      const matching = data.meetingGroupRecords.find(
-        (g) => g.gathering.gatheringId === gatheringId
-      )
+      const matching = data.meetingGroupRecords.find((g) => g.gathering.gatheringId === gatheringId)
       return matching && record.gatheringName === matching.gathering.gatheringName
     })
   }
@@ -649,6 +642,25 @@ function filterMockBookRecords(
     meetingPersonalRecords = []
     meetingPreOpinions = []
   }
+
+  // 정렬 처리
+  const sortMultiplier = sort === 'LATEST' ? -1 : 1
+
+  personalRecords.sort((a, b) => {
+    return sortMultiplier * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  })
+
+  meetingGroupRecords.sort((a, b) => {
+    return sortMultiplier * (new Date(a.meetingDate).getTime() - new Date(b.meetingDate).getTime())
+  })
+
+  meetingPersonalRecords.sort((a, b) => {
+    return sortMultiplier * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+  })
+
+  meetingPreOpinions.sort((a, b) => {
+    return sortMultiplier * (new Date(a.sharedAt).getTime() - new Date(b.sharedAt).getTime())
+  })
 
   return {
     personalRecords,
