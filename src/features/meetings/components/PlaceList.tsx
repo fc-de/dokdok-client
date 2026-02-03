@@ -16,7 +16,12 @@ export type PlaceListProps = {
   onPlaceHoverEnd?: () => void
 }
 
-export function PlaceList({ places, onPlaceClick, onPlaceHover, onPlaceHoverEnd }: PlaceListProps) {
+export default function PlaceList({
+  places,
+  onPlaceClick,
+  onPlaceHover,
+  onPlaceHoverEnd,
+}: PlaceListProps) {
   if (places.length === 0) {
     return (
       <div className="w-[300px] flex items-center justify-center">

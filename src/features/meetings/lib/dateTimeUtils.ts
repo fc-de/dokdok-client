@@ -1,10 +1,9 @@
 /**
- * @file timeUtils.ts
- * @description 약속 생성 시 시간 선택 유틸리티 함수
+ * @file dateTimeUtils.ts
+ * @description 날짜/시간 조작 및 생성 유틸리티 함수
  */
 
 import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
 
 /**
  * 시간 선택 옵션 타입
@@ -33,7 +32,7 @@ export type TimeOption = {
  * //   { label: '23:30', value: '23:30' }
  * // ]
  */
-export const generateTimeOptions = (): TimeOption[] => {
+export function generateTimeOptions(): TimeOption[] {
   const options: TimeOption[] = []
 
   for (let hour = 0; hour < 24; hour++) {
@@ -58,11 +57,15 @@ export const generateTimeOptions = (): TimeOption[] => {
  * @description
  * 날짜(Date)와 시간(HH:mm)을 결합하여 ISO 8601 형식 문자열로 변환합니다.
  *
+ * @param date - 날짜 객체
+ * @param time - 시간 문자열 (HH:mm 형식)
+ * @returns ISO 8601 형식 문자열 (YYYY-MM-DDTHH:mm:00)
+ *
  * @example
  * const dateTime = combineDateAndTime(new Date('2025-02-01'), '14:00')
  * // → '2025-02-01T14:00:00'
  */
-export const combineDateAndTime = (date: Date, time: string): string => {
+export function combineDateAndTime(date: Date, time: string): string {
   return `${format(date, 'yyyy-MM-dd')}T${time}:00`
 }
 
@@ -72,11 +75,14 @@ export const combineDateAndTime = (date: Date, time: string): string => {
  * @description
  * ISO 8601 형식 문자열에서 시간(HH:mm)만 추출합니다.
  *
+ * @param dateTime - ISO 8601 형식 문자열
+ * @returns 시간 문자열 (HH:mm 형식) 또는 빈 문자열
+ *
  * @example
  * const time = extractTime('2025-02-01T14:00:00')
  * // → '14:00'
  */
-export const extractTime = (dateTime: string): string => {
+export function extractTime(dateTime: string): string {
   if (!dateTime) return ''
 
   const timePart = dateTime.split('T')[1]
@@ -84,26 +90,4 @@ export const extractTime = (dateTime: string): string => {
 
   // HH:mm:ss에서 HH:mm만 추출
   return timePart.substring(0, 5)
-}
-
-/**
- * 선택된 일정을 한글 형식으로 포맷팅
- *
- * @description
- * 시작/종료 날짜와 시간을 'YYYY.MM.DD(요일) HH:mm ~ YYYY.MM.DD(요일) HH:mm' 형식으로 변환합니다.
- */
-export const formatScheduleRange = (
-  startDate: Date | null,
-  startTime: string | null,
-  endDate: Date | null,
-  endTime: string | null
-): string | null => {
-  if (!startDate || !startTime || !endDate || !endTime) {
-    return null
-  }
-
-  const startDateStr = format(startDate, 'yyyy.MM.dd(E)', { locale: ko })
-  const endDateStr = format(endDate, 'yyyy.MM.dd(E)', { locale: ko })
-
-  return `${startDateStr} ${startTime} ~ ${endDateStr} ${endTime}`
 }
