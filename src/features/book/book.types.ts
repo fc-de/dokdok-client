@@ -259,3 +259,9 @@ export interface GetBookRecordsResponse {
   meetingPersonalRecords: MeetingPersonalRecord[]
   meetingPreOpinions: MeetingPreOpinion[]
 }
+
+/** 책 평가 생성 요청 바디 */
+export interface CreateBookReviewBody {
+  rating: number
+  keywordIds: number[]
+}

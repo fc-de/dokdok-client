@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/constants'
@@ -8,6 +9,7 @@ import { TextButton } from '@/shared/ui/TextButton'
 
 import { StarRate } from '../../../shared/components/StarRate'
 import { useBookReview } from '../hooks'
+import { BookReviewModal } from './BookReviewModal'
 
 type BookReviewProps = {
   bookId: number
@@ -16,6 +18,7 @@ type BookReviewProps = {
 const BookReview = ({ bookId }: BookReviewProps) => {
   const navigate = useNavigate()
   const { data, isLoading } = useBookReview(bookId)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   //   if (isLoading) return <BookInfoSkeleton />
   if (isLoading) return <div>로딩중...</div>
@@ -30,7 +33,7 @@ const BookReview = ({ bookId }: BookReviewProps) => {
               지난 평가
             </TextButton>
           )}
-          <Button variant={'secondary'} outline>
+          <Button variant={'secondary'} outline onClick={() => setIsModalOpen(true)}>
             평가하기
           </Button>
         </div>
@@ -81,6 +84,8 @@ const BookReview = ({ bookId }: BookReviewProps) => {
           </p>
         </div>
       )}
+
+      <BookReviewModal bookId={bookId} open={isModalOpen} onOpenChange={setIsModalOpen} />
     </section>
   )
 }

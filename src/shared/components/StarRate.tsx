@@ -8,6 +8,10 @@ export interface StarRateProps extends HTMLAttributes<HTMLDivElement> {
   rating: number
   /** 별 크기 (px) */
   size?: number
+  /** 클릭 가능 여부 */
+  interactive?: boolean
+  /** 별점 변경 콜백 (interactive=true일 때만 사용) */
+  onRatingChange?: (rating: number) => void
 }
 
 interface SingleStarProps {
@@ -48,9 +52,17 @@ function SingleStar({ fillRatio, size }: SingleStarProps) {
  * <StarRate rating={3.5} />
  * <StarRate rating={4} size={24} />
  * <StarRate rating={2.5} size={16} />
+ * <StarRate rating={rating} interactive onRatingChange={setRating} />
  * ```
  */
-function StarRate({ rating, size = 20, className, ...props }: StarRateProps) {
+function StarRate({
+  rating,
+  size = 20,
+  interactive = false,
+  onRatingChange,
+  className,
+  ...props
+}: StarRateProps) {
   // rating을 0.5 단위로 반올림하고 0~5 범위로 제한
   const normalizedRating = Math.min(5, Math.max(0, Math.round(rating * 2) / 2))
 
@@ -64,10 +76,28 @@ function StarRate({ rating, size = 20, className, ...props }: StarRateProps) {
     }
   })
 
+  const handleStarClick = (starIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
+    if (!interactive || !onRatingChange) return
+
+    // 별의 왼쪽 절반을 클릭하면 0.5, 오른쪽 절반을 클릭하면 1.0
+    const rect = event.currentTarget.getBoundingClientRect()
+    const clickX = event.clientX - rect.left
+    const isLeftHalf = clickX < rect.width / 2
+
+    const newRating = isLeftHalf ? starIndex - 0.5 : starIndex
+    onRatingChange(newRating)
+  }
+
   return (
-    <div data-slot="star-rate" className={cn('flex items-center', className)} {...props}>
+    <div
+      data-slot="star-rate"
+      className={cn('flex items-center', interactive && 'cursor-pointer', className)}
+      {...props}
+    >
       {stars.map((fillRatio, index) => (
-        <SingleStar key={index} fillRatio={fillRatio} size={size} />
+        <div key={index} onClick={(e) => handleStarClick(index + 1, e)}>
+          <SingleStar fillRatio={fillRatio} size={size} />
+        </div>
       ))}
     </div>
   )

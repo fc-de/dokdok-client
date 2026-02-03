@@ -10,6 +10,7 @@ import type {
   BookDetail,
   BookReview,
   CreateBookRecordBody,
+  CreateBookReviewBody,
   GetBookRecordsParams,
   GetBookRecordsResponse,
   GetBookReviewHistoryParams,
@@ -573,6 +574,41 @@ export async function deleteBookRecord(
   }
 
   return api.delete(`/api/book/${personalBookId}/records/${recordId}`)
+}
+
+/**
+ * 책 평가 생성
+ *
+ * @param bookId - 평가할 책 ID
+ * @param body - 평가 생성 요청 바디
+ * @returns 생성된 책 평가 정보
+ *
+ * @example
+ * ```typescript
+ * await createBookReview(1, { rating: 4.5, keywordIds: [3, 7] })
+ * ```
+ */
+export async function createBookReview(
+  bookId: number,
+  body: CreateBookReviewBody
+): Promise<BookReview> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return {
+      reviewId: Date.now(),
+      bookId,
+      userId: 1,
+      rating: body.rating,
+      keywords: body.keywordIds.map((id) => ({
+        id,
+        name: `키워드${id}`,
+        type: id % 2 === 0 ? 'BOOK' : 'IMPRESSION',
+      })),
+      createdAt: new Date().toISOString(),
+    }
+  }
+
+  return api.post<BookReview>(`/api/book/${bookId}/reviews`, body)
 }
 
 function filterMockBookRecords(
