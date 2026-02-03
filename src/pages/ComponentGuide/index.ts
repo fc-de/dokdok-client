@@ -1,1 +1,1 @@
-export { default as ComponentGuidePage } from './ComponentGuidePage';
+export { default as ComponentGuidePage } from './ComponentGuidePage'

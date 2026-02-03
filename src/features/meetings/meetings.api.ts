@@ -147,9 +147,6 @@ export const deleteMeeting = async (meetingId: number) => {
  * - B001: 책을 찾을 수 없습니다.
  */
 export const createMeeting = async (data: CreateMeetingRequest) => {
-  const response = await apiClient.post<ApiResponse<CreateMeetingResponse>>(
-    '/api/meetings',
-    data
-  )
+  const response = await apiClient.post<ApiResponse<CreateMeetingResponse>>('/api/meetings', data)
   return response.data
 }

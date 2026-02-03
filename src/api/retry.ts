@@ -141,7 +141,7 @@ const shouldRetry = (error: AxiosError, config: RetryConfig): boolean => {
  */
 export const setupRetryInterceptor = (
   axiosInstance: AxiosInstance,
-  config: Partial<RetryConfig> = {},
+  config: Partial<RetryConfig> = {}
 ): void => {
   const retryConfig: RetryConfig = { ...DEFAULT_RETRY_CONFIG, ...config }
 

@@ -43,18 +43,7 @@ type InputProps = React.ComponentProps<'input'> & {
  * ```
  */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
-  {
-    className,
-    type,
-    label,
-    error,
-    errorMessage,
-    helperText,
-    maxLength,
-    disabled,
-    value,
-    ...props
-  },
+  { className, type, label, error, errorMessage, helperText, maxLength, disabled, value, ...props },
   ref
 ) {
   const currentLength = typeof value === 'string' ? value.length : 0

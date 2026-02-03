@@ -74,7 +74,7 @@ export const setupInterceptors = (): void => {
       // 요청 생성 중 에러 발생 시 로깅
       logger.error(error)
       return Promise.reject(error)
-    },
+    }
   )
 
   // ========================================
@@ -104,7 +104,7 @@ export const setupInterceptors = (): void => {
         // 이 엔드포인트들은 호출자가 직접 401 응답을 처리함
         const authProbeEndpoints = ['/api/auth/me', '/api/users/me']
         const isAuthProbeRequest = authProbeEndpoints.some(
-          (endpoint) => requestUrl === endpoint || requestUrl.endsWith(endpoint),
+          (endpoint) => requestUrl === endpoint || requestUrl.endsWith(endpoint)
         )
 
         const shouldRedirect = !isAlreadyOnLogin && !isAuthProbeRequest
@@ -121,9 +121,9 @@ export const setupInterceptors = (): void => {
       // AxiosError를 ApiError로 변환하여 reject
       // 이를 통해 사용처에서 error.is(ErrorCode.XXX)로 에러 유형 판단 가능
       return Promise.reject(
-        new ApiError(code ?? 'UNKNOWN', message ?? error.message, error.response?.status ?? 500),
+        new ApiError(code ?? 'UNKNOWN', message ?? error.message, error.response?.status ?? 500)
       )
-    },
+    }
   )
 
   // ========================================

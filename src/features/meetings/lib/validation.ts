@@ -11,10 +11,7 @@
  *
  * @returns 유효하면 true, 아니면 false
  */
-export const isStartBeforeEnd = (
-  startDateTime: string,
-  endDateTime: string
-): boolean => {
+export const isStartBeforeEnd = (startDateTime: string, endDateTime: string): boolean => {
   if (!startDateTime || !endDateTime) return false
 
   const startDate = new Date(startDateTime)

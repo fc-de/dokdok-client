@@ -52,7 +52,11 @@ type GlobalModalStore = ModalState & {
   /** Error 모달 열기 */
   openError: (title: string, description: string, onClose?: () => void) => void
   /** Confirm 모달 열기 (Promise 반환) */
-  openConfirm: (title: string, description: string, options?: ConfirmModalOptions) => Promise<boolean>
+  openConfirm: (
+    title: string,
+    description: string,
+    options?: ConfirmModalOptions
+  ) => Promise<boolean>
   /** 모달 닫기 */
   close: () => void
 }

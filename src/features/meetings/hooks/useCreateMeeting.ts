@@ -38,11 +38,7 @@ import { meetingQueryKeys } from './meetingQueryKeys'
 export const useCreateMeeting = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<
-    ApiResponse<CreateMeetingResponse>,
-    ApiError,
-    CreateMeetingRequest
-  >({
+  return useMutation<ApiResponse<CreateMeetingResponse>, ApiError, CreateMeetingRequest>({
     mutationFn: (data: CreateMeetingRequest) => createMeeting(data),
     onSuccess: () => {
       // 약속 승인 관련 모든 캐시 무효화 (리스트 + 카운트)
