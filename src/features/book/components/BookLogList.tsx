@@ -223,13 +223,15 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                   case 'meetingPreOpinion':
                     return (
                       <MeetingPreOpinionItem
-                        key={`pre-opinion-${idx}`}
+                        key={`pre-opinion-${item.data.gatheringName}-${item.data.sharedAt}`}
                         record={item.data}
                         onEdit={
                           isRecording ? () => console.log('edit pre-opinion', idx) : undefined
                         }
                       />
                     )
+                  default:
+                    return null
                 }
               })}
             </div>

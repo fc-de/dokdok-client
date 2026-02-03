@@ -61,6 +61,12 @@ function BookLogCreateModal({ open, onOpenChange, bookId }: BookLogCreateModalPr
     setPageNumber('')
     setThought('')
     setRecordType('MEMO')
+    setTypeDropdownOpen(false)
+  }
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) resetForm()
+    onOpenChange(nextOpen)
   }
 
   const handleSave = () => {
@@ -88,7 +94,7 @@ function BookLogCreateModal({ open, onOpenChange, bookId }: BookLogCreateModalPr
   const focusClass = recordType === 'QUOTE' ? 'focus:border-purple-200' : ''
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
+    <Modal open={open} onOpenChange={handleOpenChange}>
       <ModalContent variant="wide">
         <ModalHeader>
           <ModalTitle>감상 기록</ModalTitle>

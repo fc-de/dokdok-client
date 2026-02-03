@@ -26,7 +26,7 @@ import type {
 // ============================================================
 
 /** 목데이터 사용 여부 플래그 */
-const USE_MOCK = true
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 const mockBookDetail: BookDetail = {
   bookId: 1,
@@ -486,9 +486,6 @@ export async function getBookReviewHistory(
   }
 }
 
-/**
- * 목데이터 필터링 헬퍼 함수
- */
 /**
  * 감상 기록 생성
  *

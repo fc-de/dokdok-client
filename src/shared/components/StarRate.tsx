@@ -1,5 +1,5 @@
 import { Star } from 'lucide-react'
-import type { HTMLAttributes } from 'react'
+import type { HTMLAttributes, MouseEvent } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -76,7 +76,7 @@ function StarRate({
     }
   })
 
-  const handleStarClick = (starIndex: number, event: React.MouseEvent<HTMLDivElement>) => {
+  const handleStarClick = (starIndex: number, event: MouseEvent<HTMLDivElement>) => {
     if (!interactive || !onRatingChange) return
 
     // 별의 왼쪽 절반을 클릭하면 0.5, 오른쪽 절반을 클릭하면 1.0

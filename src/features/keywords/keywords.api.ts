@@ -12,7 +12,7 @@ import type { GetKeywordsResponse } from './keywords.types'
 // ============================================================
 
 /** 목데이터 사용 여부 플래그 */
-const USE_MOCK = true
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 const mockKeywordsResponse: GetKeywordsResponse = {
   keywords: [

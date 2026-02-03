@@ -11,10 +11,11 @@ type BookInfoProps = {
 }
 
 const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => {
-  const { data, isLoading } = useBookDetail(bookId)
+  const { data, isLoading, isError } = useBookDetail(bookId)
 
   //   if (isLoading) return <BookInfoSkeleton />
   if (isLoading) return <div>로딩중...</div>
+  if (isError || !data) return <div>책 정보를 불러올 수 없습니다.</div>
 
   return (
     <div className="py-xlarge flex gap-[54px]">
