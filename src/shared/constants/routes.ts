@@ -21,11 +21,12 @@ export const ROUTES = {
   INVITE: (invitationCode: string) => `/invite/${invitationCode}`,
 
   // Meetings
-  MEETINGS: '/meetings',
-  MEETING_DETAIL: (id: number | string) => `/meetings/${id}`,
-  MEETING_CREATE: '/meetings/create',
-  MEETING_UPDATE: '/meetings/update',
-  MEETING_SETTING: '/meetings/setting',
+  MEETING_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}`,
+  MEETING_CREATE: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/create`,
+  MEETING_UPDATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/update`,
+  MEETING_SETTING: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/setting`,
 
   // Records
   RECORDS: '/records',

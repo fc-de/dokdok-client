@@ -69,14 +69,18 @@ export type ConfirmMeetingResponse = {
 }
 
 /**
- * 약속 생성 요청 타입
+ * 약속 장소 타입
  */
-type MeetingLocation = {
+export type MeetingLocation = {
   name: string
   address: string
   latitude: number
   longitude: number
 }
+
+/**
+ * 약속 생성 요청 타입
+ */
 export type CreateMeetingRequest = {
   /** 모임 ID */
   gatheringId: number
@@ -120,7 +124,7 @@ export type CreateMeetingResponse = {
     time: string
     startDateTime: string
     endDateTime: string
-  } | null
+  }
   /** 장소 */
   location: MeetingLocation | null
   /** 참가자 정보 */
@@ -132,5 +136,79 @@ export type CreateMeetingResponse = {
       nickname: string
       profileImageUrl: string
     }>
+  }
+}
+
+/**
+ * 약속 일정 타입
+ */
+export type MeetingSchedule = {
+  startDateTime: string
+  endDateTime: string
+  displayDate: string
+}
+
+/**
+ * 약속 상세 조회 액션 상태 타입
+ */
+export type MeetingDetailActionStateType =
+  | 'CAN_EDIT'
+  | 'EDIT_TIME_EXPIRED'
+  | 'CAN_JOIN'
+  | 'CAN_CANCEL'
+  | 'RECRUITMENT_CLOSED'
+  | 'DONE'
+  | 'REJECTED'
+  | 'CANCEL_TIME_EXPIRED'
+  | 'JOIN_TIME_EXPIRED'
+
+export type MeetingProgressStatus = 'PRE' | 'ONGOING' | 'POST'
+/**
+ * 약속 상세 조회 응답 타입
+ */
+export type GetMeetingDetailResponse = {
+  /** 약속 ID */
+  meetingId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 승인 상태 */
+  meetingStatus: MeetingStatus
+  /** 약속 진행 상태 */
+  progressStatus: MeetingProgressStatus
+  /** 주제 확정 여부 */
+  confirmedTopicExpand: boolean
+  /** 주제 확정 일시 */
+  confirmedTopicDate: string | null
+  /** 모임 정보 */
+  gathering: {
+    gatheringId: number
+    gatheringName: string
+  }
+  /** 책 정보 */
+  book: {
+    bookId: number
+    bookName: string
+    thumbnail: string
+  }
+  /** 일정 정보 */
+  schedule: MeetingSchedule
+  /** 장소 */
+  location: MeetingLocation | null
+  /** 참가자 정보 */
+  participants: {
+    currentCount: number
+    maxCount: number
+    members: Array<{
+      userId: number
+      nickname: string
+      profileImageUrl: string
+      role: 'LEADER' | 'MEMBER'
+    }>
+  }
+  /** 버튼 상태 */
+  actionState: {
+    type: MeetingDetailActionStateType
+    buttonLabel: string
+    enabled: boolean
   }
 }

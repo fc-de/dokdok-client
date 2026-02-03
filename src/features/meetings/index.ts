@@ -12,11 +12,20 @@ export * from './meetings.api'
 
 // Types
 export type {
+  KakaoPlace,
+  KakaoSearchMeta,
+  KakaoSearchParams,
+  KakaoSearchResponse,
+} from './kakaoMap.types'
+export type {
   ConfirmMeetingResponse,
   CreateMeetingRequest,
   CreateMeetingResponse,
   GetMeetingApprovalsParams,
+  GetMeetingDetailResponse,
   MeetingApprovalItem as MeetingApprovalItemType,
+  MeetingDetailActionStateType,
+  MeetingLocation,
   MeetingStatus,
   RejectMeetingResponse,
 } from './meetings.types'
