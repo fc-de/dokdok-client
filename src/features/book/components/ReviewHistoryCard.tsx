@@ -1,3 +1,4 @@
+import { formatToShortDate } from '@/shared/lib/date'
 import { Chip } from '@/shared/ui/Chip'
 
 import { StarRate } from '../../../shared/components/StarRate'
@@ -20,7 +21,9 @@ type ReviewHistoryCardProps = {
 const ReviewHistoryCard = ({ item }: ReviewHistoryCardProps) => {
   return (
     <div className="py-large px-medium">
-      <p className="text-grey-700 typo-subtitle3 mb-medium">{item.createdAt}</p>
+      <p className="text-grey-700 typo-subtitle3 mb-medium">
+        {formatToShortDate(item.createdAt)} 작성
+      </p>
       <div className="flex flex-col gap-small">
         <div>
           <p className="typo-subtitle3 text-grey-600 mb-tiny">별점</p>

@@ -419,7 +419,7 @@ const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
   items: [
     {
       bookReviewHistoryId: 2,
-      createdAt: '25.12.15 작성',
+      createdAt: '2025-12-15T10:30:00',
       rating: 3.5,
       bookKeywords: [
         { id: 1, name: '관계', type: 'BOOK' },
@@ -432,7 +432,7 @@ const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
     },
     {
       bookReviewHistoryId: 1,
-      createdAt: '25.12.08 작성',
+      createdAt: '2025-12-08T14:20:00',
       rating: 4,
       bookKeywords: [{ id: 3, name: '감동', type: 'BOOK' }],
       impressionKeywords: [{ id: 12, name: '몰입되는', type: 'IMPRESSION' }],
