@@ -54,6 +54,16 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
   const { mutate: submitReview, isPending } = useCreateBookReview(bookId)
   const { openError } = useGlobalModalStore()
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      setRating(0)
+      setSelectedKeywordIds([])
+      setSelectedBookCategoryId(null)
+      setSelectedImpressionCategoryId(null)
+    }
+    onOpenChange(nextOpen)
+  }
+
   // 책 키워드 카테고리 (level 1)
   const bookCategories = useMemo(
     () =>
@@ -126,7 +136,7 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
 
   const handleSubmit = () => {
     if (rating === 0) {
-      alert('별점을 선택해주세요.')
+      openError('별점 필요', '별점을 선택해주세요.')
       return
     }
 
@@ -150,7 +160,7 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
 
   if (isKeywordsError) {
     return (
-      <Modal open={open} onOpenChange={onOpenChange}>
+      <Modal open={open} onOpenChange={handleOpenChange}>
         <ModalContent variant="normal">
           <ModalHeader>
             <ModalTitle>책 평가하기</ModalTitle>

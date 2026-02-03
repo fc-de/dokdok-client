@@ -75,10 +75,10 @@ function BookLogCreateModal({ open, onOpenChange, bookId }: BookLogCreateModalPr
         ? { recordType: 'MEMO', recordContent: memoContent }
         : {
             recordType: 'QUOTE',
-            recordContent: quoteContent,
+            recordContent: thought,
             meta: {
               page: pageNumber || undefined,
-              excerpt: thought || undefined,
+              excerpt: quoteContent || undefined,
             },
           }
 
