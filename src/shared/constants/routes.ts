@@ -21,7 +21,6 @@ export const ROUTES = {
   INVITE: (invitationCode: string) => `/invite/${invitationCode}`,
 
   // Meetings
-  MEETINGS: '/meetings',
   MEETING_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}`,
   MEETING_CREATE: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/create`,

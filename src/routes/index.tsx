@@ -92,15 +92,15 @@ export const router = createBrowserRouter([
                 element: <GatheringDetailPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:gatheringId${ROUTES.MEETINGS}/:meetingId`,
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:gatheringId${ROUTES.MEETINGS}/setting`,
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/setting`,
                 element: <MeetingSettingPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:id${ROUTES.MEETING_CREATE}`,
+                path: `${ROUTES.GATHERINGS}/:id/meetings/create`,
                 element: <MeetingCreatePage />,
               },
               {

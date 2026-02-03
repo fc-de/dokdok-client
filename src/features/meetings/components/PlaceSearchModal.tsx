@@ -20,7 +20,7 @@ import {
 import { useKakaoMap } from '../hooks/useKakaoMap'
 import { useKakaoPlaceSearch } from '../hooks/useKakaoPlaceSearch'
 import type { KakaoPlace } from '../kakaoMap.types'
-import { PlaceList } from './PlaceList'
+import PlaceList from './PlaceList'
 
 declare global {
   interface Window {
@@ -43,7 +43,11 @@ export type PlaceSearchModalProps = {
   }) => void
 }
 
-export function PlaceSearchModal({ open, onOpenChange, onSelectPlace }: PlaceSearchModalProps) {
+export default function PlaceSearchModal({
+  open,
+  onOpenChange,
+  onSelectPlace,
+}: PlaceSearchModalProps) {
   // 지도 관리
   const { mapElement, isInitialized, initializeMap, renderMarkers, setCenter, cleanup } =
     useKakaoMap()

@@ -1,8 +1,12 @@
 import { ChevronLeft } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 
-import { MeetingDetailHeader, MeetingDetailInfo, useMeetingDetail } from '@/features/meetings'
-import { MeetingDetailButton } from '@/features/meetings/components/MeetingDetailButton'
+import {
+  MeetingDetailButton,
+  MeetingDetailHeader,
+  MeetingDetailInfo,
+  useMeetingDetail,
+} from '@/features/meetings'
 import { TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
@@ -37,9 +41,9 @@ export default function MeetingDetailPage() {
             </div>
           ) : meeting ? (
             <>
-              {/* 약속 일정이 아직 없을경우를 대비해 */}
-              {/* 스케줄 데이터와 무관한 약속전 중 후 상태 데이터 필요 함  */}
-              <MeetingDetailHeader>{meeting.meetingName}</MeetingDetailHeader>
+              <MeetingDetailHeader progressStatus={meeting.progressStatus}>
+                {meeting.meetingName}
+              </MeetingDetailHeader>
 
               <MeetingDetailInfo meeting={meeting} />
 
