@@ -38,22 +38,30 @@ function SelectTrigger({
   label,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & { label?: string }) {
+  const trigger = (
+    <SelectPrimitive.Trigger
+      data-slot="select-trigger"
+      className={cn(
+        "border-grey-300 data-[state=open]:border-primary-300 flex w-full md:max-w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-small border bg-transparent px-small py-xsmall typo-subtitle5 *:data-[slot=select-value]:typo-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[slot=select-value]:text-black *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 [&_svg]:transition-transform data-[state=open]:[&_svg]:rotate-180 data-placeholder:text-grey-600",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        <ChevronDownIcon className="size-4" />
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+  )
+
+  if (!label) {
+    return trigger
+  }
+
   return (
     <div className="flex flex-col justify-end">
-      {label && <p className="text-left typo-body4 text-grey-600 mb-tiny">{label}</p>}
-      <SelectPrimitive.Trigger
-        data-slot="select-trigger"
-        className={cn(
-          "border-primary-300 text-black flex w-[265px] h-[53px] items-center justify-between gap-xsmall rounded-base border bg-transparent px-small py-xsmall typo-subtitle5 whitespace-nowrap outline-none disabled:cursor-not-allowed disabled:opacity-50 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-xsmall [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-          className
-        )}
-        {...props}
-      >
-        {children}
-        <SelectPrimitive.Icon asChild>
-          <ChevronDownIcon className="size-4 text-primary-300" />
-        </SelectPrimitive.Icon>
-      </SelectPrimitive.Trigger>
+      <p className="text-left typo-body4 text-grey-600 mb-tiny">{label}</p>
+      {trigger}
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
 import * as React from 'react'
+import type { Matcher } from 'react-day-picker'
 
 import { cn } from '@/shared/lib/utils'
 import { Calendar } from '@/shared/ui/Calendar'
@@ -11,6 +12,8 @@ type DatePickerProps = {
   onChange: (date: Date | null) => void
   placeholder?: string
   className?: string
+  disabled?: Matcher | Matcher[]
+  isDisabled?: boolean
 }
 
 /**
@@ -27,7 +30,10 @@ type DatePickerProps = {
  * ```
  */
 
-function DatePicker({ value, onChange, placeholder = '날짜 선택', className }: DatePickerProps) {
+const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function DatePicker(
+  { value, onChange, placeholder = '날짜 선택', className, disabled, isDisabled = false },
+  ref
+) {
   const [date, setDate] = React.useState<Date | null>(value)
 
   React.useEffect(() => {
@@ -43,26 +49,34 @@ function DatePicker({ value, onChange, placeholder = '날짜 선택', className 
     <Popover>
       <PopoverTrigger asChild>
         <button
+          ref={ref}
           type="button"
           data-empty={!date}
+          disabled={isDisabled}
           className={cn(
-            'flex w-[265px] justify-start text-left font-normal rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-base py-medium gap-small typo-body1 transition-colors text-black items-center text-black',
+            'flex w-full md:max-w-[265px] justify-start text-left rounded-small border border-grey-300 data-[state=open]:border-primary-300 [&_svg]:text-grey-600 data-[state=open]:[&_svg]:text-primary-300 px-medium py-xsmall gap-small typo-subtitle5 transition-colors text-black items-center  disabled:opacity-50 disabled:cursor-not-allowed',
             className
           )}
         >
-          <CalendarDays />
+          <CalendarDays size={20} />
           {date ? (
             format(date, 'yyyy.MM.dd')
           ) : (
-            <span className="typo-body1 text-grey-600">{placeholder}</span>
+            <span className="typo-subtitle5 text-grey-600">{placeholder}</span>
           )}
         </button>
       </PopoverTrigger>
       <PopoverContent className="p-0 border-none w-fit" align="start">
-        <Calendar mode="single" selected={date ?? undefined} onSelect={handleSelect} required />
+        <Calendar
+          mode="single"
+          selected={date ?? undefined}
+          onSelect={handleSelect}
+          required
+          disabled={disabled}
+        />
       </PopoverContent>
     </Popover>
   )
-}
+})
 
 export { DatePicker }
