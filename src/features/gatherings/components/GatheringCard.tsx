@@ -10,7 +10,11 @@ interface GatheringCardProps {
   onClick: () => void
 }
 
-export default function GatheringCard({ gathering, onFavoriteToggle, onClick }: GatheringCardProps) {
+export default function GatheringCard({
+  gathering,
+  onFavoriteToggle,
+  onClick,
+}: GatheringCardProps) {
   const {
     gatheringId,
     gatheringName,

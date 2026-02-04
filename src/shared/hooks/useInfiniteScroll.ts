@@ -41,10 +41,7 @@ interface UseInfiniteScrollOptions {
  * )
  * ```
  */
-export const useInfiniteScroll = (
-  fetchNextPage: () => void,
-  options: UseInfiniteScrollOptions
-) => {
+export const useInfiniteScroll = (fetchNextPage: () => void, options: UseInfiniteScrollOptions) => {
   const {
     hasNextPage,
     isFetchingNextPage,
