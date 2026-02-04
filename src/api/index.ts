@@ -3,4 +3,9 @@ export { API_BASE, API_PATHS } from './endpoints'
 export type { ErrorCodeType } from './errors'
 export { ApiError, ErrorCode, ErrorMessage } from './errors'
 export { setupInterceptors } from './interceptors'
-export type { ApiErrorResponse, ApiResponse, PaginatedResponse } from './types'
+export type {
+  ApiErrorResponse,
+  ApiResponse,
+  CursorPaginatedResponse,
+  PaginatedResponse,
+} from './types'

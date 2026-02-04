@@ -1,4 +1,7 @@
 export * from './gatheringQueryKeys'
 export * from './useCreateGathering'
+export * from './useFavoriteGatherings'
 export * from './useGatheringByInviteCode'
+export * from './useGatherings'
 export * from './useJoinGathering'
+export * from './useToggleFavorite'

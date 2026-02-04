@@ -4,8 +4,11 @@ import { GATHERINGS_ENDPOINTS } from './gatherings.endpoints'
 import type {
   CreateGatheringRequest,
   CreateGatheringResponse,
+  FavoriteGatheringListResponse,
   GatheringByInviteCodeResponse,
   GatheringJoinResponse,
+  GatheringListResponse,
+  GetGatheringsParams,
 } from './gatherings.types'
 
 /**
@@ -46,6 +49,49 @@ export const getGatheringByInviteCode = async (invitationCode: string) => {
 export const joinGathering = async (invitationCode: string) => {
   const response = await apiClient.post<ApiResponse<GatheringJoinResponse>>(
     GATHERINGS_ENDPOINTS.JOIN_REQUEST(invitationCode)
+  )
+  return response.data
+}
+
+/**
+ * 내 모임 전체 목록 조회 (커서 기반 무한 스크롤)
+ *
+ * @param params - 조회 파라미터
+ * @param params.pageSize - 페이지 크기 (기본: 9)
+ * @param params.cursorJoinedAt - 마지막 항목의 가입일시 (ISO 8601)
+ * @param params.cursorId - 마지막 항목의 ID
+ * @returns 모임 목록 및 페이지네이션 정보
+ */
+export const getGatherings = async (params?: GetGatheringsParams) => {
+  const response = await apiClient.get<ApiResponse<GatheringListResponse>>(
+    GATHERINGS_ENDPOINTS.BASE,
+    {
+      params,
+    }
+  )
+  return response.data
+}
+
+/**
+ * 즐겨찾기 모임 목록 조회
+ *
+ * @returns 즐겨찾기 모임 목록 (최대 4개)
+ */
+export const getFavoriteGatherings = async () => {
+  const response = await apiClient.get<ApiResponse<FavoriteGatheringListResponse>>(
+    GATHERINGS_ENDPOINTS.FAVORITES
+  )
+  return response.data
+}
+
+/**
+ * 모임 즐겨찾기 토글
+ *
+ * @param gatheringId - 모임 ID
+ */
+export const toggleFavorite = async (gatheringId: number) => {
+  const response = await apiClient.patch<ApiResponse<null>>(
+    GATHERINGS_ENDPOINTS.TOGGLE_FAVORITE(gatheringId)
   )
   return response.data
 }

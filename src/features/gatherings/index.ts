@@ -1,6 +1,9 @@
 // Hooks
 export * from './hooks'
 
+// Components
+export * from './components'
+
 // API
 export * from './gatherings.api'
 
@@ -8,8 +11,15 @@ export * from './gatherings.api'
 export type {
   CreateGatheringRequest,
   CreateGatheringResponse,
+  FavoriteGatheringListResponse,
   GatheringBase,
   GatheringByInviteCodeResponse,
+  GatheringCursor,
   GatheringJoinResponse,
+  GatheringListItem,
+  GatheringListResponse,
   GatheringMemberStatus,
+  GatheringStatus,
+  GatheringUserRole,
+  GetGatheringsParams,
 } from './gatherings.types'
