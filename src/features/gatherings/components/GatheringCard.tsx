@@ -1,4 +1,5 @@
 import { Star } from 'lucide-react'
+import type { MouseEvent } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -27,7 +28,7 @@ export default function GatheringCard({
 
   const isLeader = currentUserRole === 'LEADER'
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = (e: MouseEvent) => {
     e.stopPropagation()
     onFavoriteToggle(gatheringId)
   }
@@ -36,6 +37,14 @@ export default function GatheringCard({
     <div
       className="relative flex h-35 cursor-pointer flex-col justify-between rounded-base border border-grey-300 bg-white p-medium transition-colors hover:border-grey-400"
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick()
+        }
+      }}
     >
       {/* 상단 영역: 배지 + 모임 이름 */}
       <div className="flex flex-col gap-xsmall">

@@ -31,7 +31,7 @@ export default function GatheringListPage() {
   } = useGatherings()
 
   // 즐겨찾기 모임 목록
-  const { data: favoritesData } = useFavoriteGatherings()
+  const { data: favoritesData, isLoading: isFavoritesLoading } = useFavoriteGatherings()
 
   // 즐겨찾기 토글
   const { mutate: toggleFavorite } = useToggleFavorite()
@@ -136,7 +136,11 @@ export default function GatheringListPage() {
 
       {activeTab === 'favorites' && (
         <>
-          {favorites.length === 0 ? (
+          {isFavoritesLoading ? (
+            <div className="flex h-35 items-center justify-center">
+              <p className="text-grey-600 typo-subtitle2">로딩 중...</p>
+            </div>
+          ) : favorites.length === 0 ? (
             <EmptyState type="favorites" />
           ) : (
             <div className="grid grid-cols-3 gap-small">

@@ -54,6 +54,9 @@ export const useInfiniteScroll = (fetchNextPage: () => void, options: UseInfinit
   const observerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    // 비브라우저 환경 또는 IntersectionObserver 미지원 환경 체크
+    if (typeof window === 'undefined' || typeof IntersectionObserver === 'undefined') return
+
     // 비활성화 상태이거나 로딩 중이거나 다음 페이지가 없으면 옵저버 설정 안함
     if (!observerRef.current || !enabled || isLoading || !hasNextPage) return
 
