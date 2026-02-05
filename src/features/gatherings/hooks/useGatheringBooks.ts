@@ -27,7 +27,10 @@ interface UseGatheringBooksOptions {
  * const books = data?.pages.flatMap(page => page.items) ?? []
  * ```
  */
-export const useGatheringBooks = ({ gatheringId, size = DEFAULT_PAGE_SIZE }: UseGatheringBooksOptions) => {
+export const useGatheringBooks = ({
+  gatheringId,
+  size = DEFAULT_PAGE_SIZE,
+}: UseGatheringBooksOptions) => {
   return useInfiniteQuery({
     queryKey: [...gatheringQueryKeys.books(gatheringId), size],
     queryFn: async ({ pageParam }) => {

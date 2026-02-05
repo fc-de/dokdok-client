@@ -8,7 +8,7 @@ export type MeetingDisplayStatus = 'UPCOMING' | 'IN_PROGRESS' | 'DONE'
  */
 export const getMeetingDisplayStatus = (
   startDateTime: string,
-  endDateTime: string,
+  endDateTime: string
 ): MeetingDisplayStatus => {
   const now = new Date()
   const start = new Date(startDateTime)

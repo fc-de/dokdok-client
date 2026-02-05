@@ -52,10 +52,7 @@ export default function GatheringMeetingSection({
     filter: activeTab,
   })
 
-  const rawMeetings = useMemo(
-    () => data?.pages.flatMap((page) => page.items) ?? [],
-    [data?.pages]
-  )
+  const rawMeetings = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
 
   // 정렬된 약속 목록
   const allMeetings = useMemo(() => sortMeetings(rawMeetings), [rawMeetings])
