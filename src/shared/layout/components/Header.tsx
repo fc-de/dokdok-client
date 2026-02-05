@@ -42,7 +42,7 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 h-gnb-height bg-white">
+    <header className="sticky top-0 z-20 h-gnb-height bg-white">
       <nav className="mx-auto flex h-full max-w-layout-max items-center justify-between px-layout-padding">
         {/* 좌측: 로고 + 네비게이션 */}
         <div className="flex items-center gap-11.75">
