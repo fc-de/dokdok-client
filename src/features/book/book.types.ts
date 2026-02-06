@@ -4,7 +4,7 @@
  */
 
 /** 책 읽기 상태 */
-export type BookReadingStatus = 'READING' | 'COMPLETED' | 'PENDING'
+export type BookReadingStatus = 'READING' | 'COMPLETED'
 
 /** 책 상세 정보 */
 export interface BookDetail {
@@ -14,6 +14,51 @@ export interface BookDetail {
   authors: string
   bookReadingStatus: BookReadingStatus
   thumbnail: string
+}
+
+// ============================================================
+// Book List (책 목록) 관련 타입
+// ============================================================
+
+/** 책 목록 아이템 */
+export interface BookListItem {
+  bookId: number
+  title: string
+  publisher: string
+  authors: string
+  bookReadingStatus: BookReadingStatus
+  thumbnail: string
+  rating: number
+  gatheringNames: string[]
+}
+
+/** 책 목록 조회 요청 파라미터 */
+export interface GetBooksParams {
+  status?: BookReadingStatus
+  gatheringId?: number
+  ratingMin?: number
+  ratingMax?: number
+  sort?: RecordSortType
+  pageSize?: number
+  cursorAddedAt?: string
+  cursorBookId?: number
+}
+
+/** 책 목록 조회 커서 */
+export interface BookListCursor {
+  addedAt: string
+  bookId: number
+}
+
+/** 책 목록 조회 응답 */
+export interface GetBooksResponse {
+  items: BookListItem[]
+  pageSize: number
+  hasNext: boolean
+  nextCursor: BookListCursor | null
+  totalCount: number
+  readingCount: number
+  completedCount: number
 }
 
 /** 리뷰 키워드 종류 */
