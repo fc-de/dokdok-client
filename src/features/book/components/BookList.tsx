@@ -15,6 +15,12 @@ import BookCard from './BookCard'
 
 type BookListProps = {
   status?: BookReadingStatus
+  /** 편집 모드 여부 */
+  isEditMode?: boolean
+  /** 선택된 책 ID 목록 */
+  selectedBookIds?: Set<number>
+  /** 선택 토글 핸들러 */
+  onSelectToggle?: (bookId: number) => void
 }
 
 /**
@@ -33,9 +39,21 @@ type BookListProps = {
  *
  * // 읽기 완료된 책만
  * <BookList status="COMPLETED" />
+ *
+ * // 편집 모드
+ * <BookList
+ *   isEditMode
+ *   selectedBookIds={selectedIds}
+ *   onSelectToggle={(id) => toggleSelection(id)}
+ * />
  * ```
  */
-function BookList({ status }: BookListProps) {
+function BookList({
+  status,
+  isEditMode = false,
+  selectedBookIds,
+  onSelectToggle,
+}: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
   const [rating, setRating] = useState<StarRatingRange | null>(null)
@@ -172,6 +190,9 @@ function BookList({ status }: BookListProps) {
                 key={book.bookId}
                 book={book}
                 selectedGatheringName={selectedGatheringName}
+                isEditMode={isEditMode}
+                isSelected={selectedBookIds?.has(book.bookId)}
+                onSelectToggle={onSelectToggle}
               />
             ))}
           </div>

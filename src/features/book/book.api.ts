@@ -608,6 +608,25 @@ export async function deleteBookRecord(personalBookId: number, recordId: number)
 }
 
 /**
+ * 책 삭제
+ *
+ * @param bookId - 삭제할 책 ID
+ *
+ * @example
+ * ```typescript
+ * await deleteBook(1)
+ * ```
+ */
+export async function deleteBook(bookId: number): Promise<void> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return
+  }
+
+  return api.delete(`/api/book/${bookId}`)
+}
+
+/**
  * 책 평가 생성
  *
  * @param bookId - 평가할 책 ID
