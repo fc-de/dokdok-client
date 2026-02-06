@@ -10,6 +10,7 @@ import {
   useGatheringDetail,
   useToggleFavorite,
 } from '@/features/gatherings'
+import { ROUTES } from '@/shared/constants'
 import { useScrollCollapse } from '@/shared/hooks'
 import { useGlobalModalStore } from '@/store/globalModalStore'
 
@@ -66,7 +67,12 @@ export default function GatheringDetailPage() {
   useEffect(() => {
     if (error) {
       openError('오류', '모임 정보를 불러오는데 실패했습니다.', () => {
-        navigate(-1)
+        // 브라우저 히스토리가 없으면 모임 목록으로 이동
+        if (window.history.length > 1) {
+          navigate(-1)
+        } else {
+          navigate(ROUTES.GATHERINGS, { replace: true })
+        }
       })
     }
   }, [error, navigate, openError])

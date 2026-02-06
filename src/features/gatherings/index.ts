@@ -33,6 +33,6 @@ export type {
   GetGatheringBooksParams,
   GetGatheringMeetingsParams,
   GetGatheringsParams,
-  MeetingCursor,
   MeetingFilter,
+  MeetingTabCountsResponse,
 } from './gatherings.types'

@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
 import type { GatheringMeetingItem, GatheringUserRole, MeetingFilter } from '../gatherings.types'
 import { useGatheringMeetings } from '../hooks/useGatheringMeetings'
+import { useMeetingTabCounts } from '../hooks/useMeetingTabCounts'
 import { getMeetingDisplayStatus, sortMeetings } from '../lib/meetingStatus'
 import EmptyState from './EmptyState'
 import GatheringMeetingCard from './GatheringMeetingCard'
@@ -46,13 +47,16 @@ export default function GatheringMeetingSection({
   const { data: currentUser } = useUserProfile()
   const currentUserNickname = currentUser?.nickname ?? ''
 
+  // 탭별 카운트 조회 (서버 API)
+  const { data: tabCounts } = useMeetingTabCounts(gatheringId)
+
   // 약속 목록 조회
   const { data, isLoading } = useGatheringMeetings({
     gatheringId,
     filter: activeTab,
   })
 
-  const rawMeetings = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+  const rawMeetings = useMemo(() => data?.items ?? [], [data?.items])
 
   // 정렬된 약속 목록
   const allMeetings = useMemo(() => sortMeetings(rawMeetings), [rawMeetings])
@@ -73,30 +77,6 @@ export default function GatheringMeetingSection({
 
     return { ongoingMeetings: ongoing, otherMeetings: others }
   }, [allMeetings])
-
-  // 탭별 카운트 계산
-  const tabCounts = useMemo(() => {
-    const counts: Record<MeetingFilter, number> = {
-      ALL: rawMeetings.length,
-      UPCOMING: 0,
-      DONE: 0,
-      JOINED: 0, // TODO: 실제 참여 여부 데이터 필요
-    }
-
-    rawMeetings.forEach((meeting) => {
-      const status = getMeetingDisplayStatus(meeting.startDateTime, meeting.endDateTime)
-      if (status === 'UPCOMING' || status === 'IN_PROGRESS') {
-        counts.UPCOMING++
-      } else {
-        counts.DONE++
-      }
-    })
-
-    // TODO: JOINED 카운트는 실제 참여 여부 데이터로 계산 필요
-    counts.JOINED = Math.floor(rawMeetings.length / 2)
-
-    return counts
-  }, [rawMeetings])
 
   // 페이지네이션 계산 (약속 중 제외한 목록만 페이지네이션)
   const totalPages = Math.ceil(otherMeetings.length / ITEMS_PER_PAGE)
@@ -121,6 +101,21 @@ export default function GatheringMeetingSection({
     navigate(ROUTES.MEETING_CREATE(gatheringId))
   }
 
+  // 탭별 카운트 (서버 데이터 또는 0)
+  const getTabCount = (filter: MeetingFilter): number => {
+    if (!tabCounts) return 0
+    switch (filter) {
+      case 'ALL':
+        return tabCounts.all
+      case 'UPCOMING':
+        return tabCounts.upcoming
+      case 'DONE':
+        return tabCounts.done
+      case 'JOINED':
+        return tabCounts.joined
+    }
+  }
+
   return (
     <section ref={sectionRef} className="flex flex-col gap-medium">
       {/* 섹션 헤더: 약속 + 탭들 + 버튼들 (한 줄) */}
@@ -139,7 +134,7 @@ export default function GatheringMeetingSection({
                 <TabsTrigger
                   key={filter}
                   value={filter}
-                  badge={tabCounts[filter]}
+                  badge={getTabCount(filter)}
                   className="typo-subtitle3"
                 >
                   {FILTER_LABELS[filter]}

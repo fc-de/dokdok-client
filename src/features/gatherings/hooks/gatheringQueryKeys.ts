@@ -15,6 +15,8 @@ export const gatheringQueryKeys = {
     [...gatheringQueryKeys.detail(gatheringId), 'meetings'] as const,
   meetingsByFilter: (gatheringId: number, filter: MeetingFilter) =>
     [...gatheringQueryKeys.meetings(gatheringId), filter] as const,
+  meetingTabCounts: (gatheringId: number) =>
+    [...gatheringQueryKeys.meetings(gatheringId), 'tabCounts'] as const,
   // 모임 책장 관련 키
   books: (gatheringId: number) => [...gatheringQueryKeys.detail(gatheringId), 'books'] as const,
 } as const

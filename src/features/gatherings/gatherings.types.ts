@@ -1,4 +1,5 @@
 import type { CursorPaginatedResponse, PaginatedResponse } from '@/api'
+import type { MeetingStatus } from '@/features/meetings'
 
 /** 모임 기본 정보 (공통) */
 export interface GatheringBase {
@@ -159,22 +160,11 @@ export interface GatheringMeetingItem {
   /** 종료 일시 (ISO 8601) */
   endDateTime: string
   /** 약속 상태 */
-  meetingStatus: 'PENDING' | 'CONFIRMED'
+  meetingStatus: MeetingStatus
 }
 
-/** 약속 목록 커서 */
-export interface MeetingCursor {
-  /** 약속 ID */
-  meetingId: number
-  /** 시작 일시 (ISO 8601) */
-  startDateTime: string
-}
-
-/** 모임 약속 목록 응답 (커서 기반) */
-export type GatheringMeetingListResponse = CursorPaginatedResponse<
-  GatheringMeetingItem,
-  MeetingCursor
->
+/** 모임 약속 목록 응답 (페이지 기반) */
+export type GatheringMeetingListResponse = PaginatedResponse<GatheringMeetingItem>
 
 /** 모임 약속 목록 조회 파라미터 */
 export interface GetGatheringMeetingsParams {
@@ -182,12 +172,22 @@ export interface GetGatheringMeetingsParams {
   gatheringId: number
   /** 필터 */
   filter?: MeetingFilter
-  /** 커서 - 시작 일시 (ISO 8601) */
-  startDateTime?: string
-  /** 커서 - 약속 ID */
-  meetingId?: number
+  /** 페이지 번호 (0부터 시작) */
+  page?: number
   /** 페이지 크기 */
   size?: number
+}
+
+/** 약속 탭별 카운트 응답 */
+export interface MeetingTabCountsResponse {
+  /** 전체 확정된 약속 수 */
+  all: number
+  /** 다가오는 약속 수 (3일 이내) */
+  upcoming: number
+  /** 완료된 약속 수 */
+  done: number
+  /** 내가 참여한 완료 약속 수 */
+  joined: number
 }
 
 // ========== 모임 책장 ==========

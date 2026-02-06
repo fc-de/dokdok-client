@@ -14,6 +14,7 @@ import type {
   GetGatheringBooksParams,
   GetGatheringMeetingsParams,
   GetGatheringsParams,
+  MeetingTabCountsResponse,
 } from './gatherings.types'
 
 /**
@@ -115,7 +116,7 @@ export const getGatheringDetail = async (gatheringId: number) => {
 }
 
 /**
- * 모임 약속 목록 조회 (커서 기반 무한 스크롤)
+ * 모임 약속 목록 조회 (페이지 기반)
  *
  * @param params - 조회 파라미터
  * @returns 약속 목록 및 페이지네이션 정보
@@ -140,6 +141,20 @@ export const getGatheringBooks = async (params: GetGatheringBooksParams) => {
   const response = await apiClient.get<ApiResponse<GatheringBookListResponse>>(
     GATHERINGS_ENDPOINTS.BOOKS(gatheringId),
     { params: queryParams }
+  )
+  return response.data
+}
+
+/**
+ * 모임 약속 탭별 카운트 조회
+ *
+ * @param gatheringId - 모임 ID
+ * @returns 탭별 약속 카운트
+ */
+export const getMeetingTabCounts = async (gatheringId: number) => {
+  const response = await apiClient.get<ApiResponse<MeetingTabCountsResponse>>(
+    GATHERINGS_ENDPOINTS.MEETING_TAB_COUNTS,
+    { params: { gatheringId } }
   )
   return response.data
 }

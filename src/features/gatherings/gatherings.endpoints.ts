@@ -16,4 +16,6 @@ export const GATHERINGS_ENDPOINTS = {
   MEETINGS: (gatheringId: number) => `${API_PATHS.GATHERINGS}/${gatheringId}/meetings`,
   /** 모임 책장 조회 */
   BOOKS: (gatheringId: number) => `${API_PATHS.GATHERINGS}/${gatheringId}/books`,
+  /** 약속 탭별 카운트 조회 */
+  MEETING_TAB_COUNTS: `${API_PATHS.MEETINGS}/tab-counts`,
 } as const
