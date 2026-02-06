@@ -94,7 +94,7 @@ export const useLikeTopic = () => {
     },
 
     // 성공/실패 여부와 상관없이 서버 데이터와 동기화
-    onSettled: (_, __, variables) => {
+    onSettled: (_data, _error, variables) => {
       const { gatheringId, meetingId } = variables
 
       queryClient.invalidateQueries({
