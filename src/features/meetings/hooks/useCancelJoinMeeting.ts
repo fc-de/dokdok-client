@@ -24,8 +24,7 @@ export const useCancelJoinMeeting = () => {
 
   return useMutation<ApiResponse<number>, ApiError, number>({
     mutationFn: (meetingId: number) => cancelJoinMeeting(meetingId),
-    onSuccess: (data, variables) => {
-      void data // 사용하지 않는 파라미터
+    onSuccess: (_data, variables) => {
       // 약속 상세 캐시 무효화
       queryClient.invalidateQueries({
         queryKey: meetingQueryKeys.detail(variables),
