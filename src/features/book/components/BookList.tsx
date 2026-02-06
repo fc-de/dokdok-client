@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import {
   FilterDropdown,
@@ -21,6 +21,8 @@ type BookListProps = {
   selectedBookIds?: Set<number>
   /** 선택 토글 핸들러 */
   onSelectToggle?: (bookId: number) => void
+  /** 필터링된 책 목록이 변경될 때 호출되는 콜백 */
+  onFilteredBooksChange?: (bookIds: number[]) => void
 }
 
 /**
@@ -48,7 +50,13 @@ type BookListProps = {
  * />
  * ```
  */
-function BookList({ status, isEditMode = false, selectedBookIds, onSelectToggle }: BookListProps) {
+function BookList({
+  status,
+  isEditMode = false,
+  selectedBookIds,
+  onSelectToggle,
+  onFilteredBooksChange,
+}: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
   const [rating, setRating] = useState<StarRatingRange | null>(null)
@@ -104,8 +112,16 @@ function BookList({ status, isEditMode = false, selectedBookIds, onSelectToggle 
     setSelectedGathering(value)
   }
 
-  // 모든 페이지의 책 목록 합치기
-  const books = data?.pages.flatMap((page) => page.items) ?? []
+  // 모든 페이지의 책 목록 합치기 (참조 안정성을 위해 메모이제이션)
+  const books = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+
+  // 필터링된 책 ID 목록
+  const bookIds = useMemo(() => books.map((book) => book.bookId), [books])
+
+  // 필터링된 책 목록이 변경될 때 부모에 알림
+  useEffect(() => {
+    onFilteredBooksChange?.(bookIds)
+  }, [bookIds, onFilteredBooksChange])
 
   if (isError) {
     return (

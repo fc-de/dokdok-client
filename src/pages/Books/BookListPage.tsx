@@ -18,6 +18,9 @@ export default function BookListPage() {
   // 도서 검색 모달 상태
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
+  // 현재 탭에서 필터링된 책 ID 목록 (BookList에서 전달받음)
+  const [filteredBookIds, setFilteredBookIds] = useState<number[]>([])
+
   // 탭에 따른 status 매핑
   const currentStatus =
     activeTab === 'all' ? undefined : activeTab === 'reading' ? 'READING' : 'COMPLETED'
@@ -30,9 +33,6 @@ export default function BookListPage() {
   const totalCount = firstPage?.totalCount ?? 0
   const readingCount = firstPage?.readingCount ?? 0
   const completedCount = firstPage?.completedCount ?? 0
-
-  // 현재 탭의 책 목록
-  const currentTabBooks = data?.pages.flatMap((page) => page.items) ?? []
 
   // 선택 토글
   const handleSelectToggle = (bookId: number) => {
@@ -47,14 +47,14 @@ export default function BookListPage() {
     })
   }
 
-  // 전체 선택 (현재 탭 기준)
+  // 전체 선택 (현재 화면에 표시된 책 기준)
   const handleSelectAll = () => {
-    if (selectedBookIds.size === currentTabBooks.length) {
+    if (selectedBookIds.size === filteredBookIds.length && filteredBookIds.length > 0) {
       // 전체 해제
       setSelectedBookIds(new Set())
     } else {
       // 전체 선택
-      setSelectedBookIds(new Set(currentTabBooks.map((book) => book.bookId)))
+      setSelectedBookIds(new Set(filteredBookIds))
     }
   }
 
@@ -96,7 +96,9 @@ export default function BookListPage() {
     // 성공한 항목만 선택에서 제거
     setSelectedBookIds((prev) => {
       const next = new Set(prev)
-      succeededIds.forEach((id) => next.delete(id))
+      succeededIds.forEach((id) => {
+        next.delete(id)
+      })
       return next
     })
 
@@ -123,7 +125,7 @@ export default function BookListPage() {
   }
 
   const isAllSelected =
-    currentTabBooks.length > 0 && selectedBookIds.size === currentTabBooks.length
+    filteredBookIds.length > 0 && selectedBookIds.size === filteredBookIds.length
 
   return (
     <div>
@@ -176,6 +178,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
+            onFilteredBooksChange={setFilteredBookIds}
           />
         </TabsContent>
         <TabsContent value="reading">
@@ -184,6 +187,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
+            onFilteredBooksChange={setFilteredBookIds}
           />
         </TabsContent>
         <TabsContent value="completed">
@@ -192,6 +196,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
+            onFilteredBooksChange={setFilteredBookIds}
           />
         </TabsContent>
       </Tabs>
