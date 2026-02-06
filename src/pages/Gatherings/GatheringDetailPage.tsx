@@ -19,7 +19,8 @@ export default function GatheringDetailPage() {
   const navigate = useNavigate()
   const { openAlert, openError } = useGlobalModalStore()
 
-  const gatheringId = id ? Number(id) : 0
+  const parsedId = id ? Number(id) : NaN
+  const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
 
   // 스크롤 상태 (헤더 접힘 여부)
   const isHeaderCollapsed = useScrollCollapse({ collapseThreshold: 100, expandThreshold: 20 })
@@ -47,7 +48,7 @@ export default function GatheringDetailPage() {
 
   // 설정 버튼 핸들러
   const handleSettingsClick = useCallback(() => {
-    navigate(`/gatherings/${gatheringId}/settings`)
+    navigate(ROUTES.GATHERING_SETTING(gatheringId))
   }, [navigate, gatheringId])
 
   // 초대 링크 복사 핸들러
@@ -63,7 +64,16 @@ export default function GatheringDetailPage() {
     }
   }, [gathering, openAlert])
 
-  // 에러 처리
+  // 유효하지 않은 ID 처리
+  useEffect(() => {
+    if (gatheringId === 0) {
+      openError('오류', '잘못된 모임 ID입니다.', () => {
+        navigate(ROUTES.GATHERINGS, { replace: true })
+      })
+    }
+  }, [gatheringId, navigate, openError])
+
+  // API 에러 처리
   useEffect(() => {
     if (error) {
       openError('오류', '모임 정보를 불러오는데 실패했습니다.', () => {

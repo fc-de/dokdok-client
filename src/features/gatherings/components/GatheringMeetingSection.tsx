@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useUserProfile } from '@/features/user'
@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/Button'
 import { Pagination } from '@/shared/ui/Pagination'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
-import type { GatheringMeetingItem, GatheringUserRole, MeetingFilter } from '../gatherings.types'
+import type { GatheringUserRole, MeetingFilter } from '../gatherings.types'
 import { useGatheringMeetings } from '../hooks/useGatheringMeetings'
 import { useMeetingTabCounts } from '../hooks/useMeetingTabCounts'
 import { getMeetingDisplayStatus, sortMeetings } from '../lib/meetingStatus'
@@ -30,7 +30,7 @@ const FILTER_LABELS: Record<MeetingFilter, string> = {
 }
 
 /** 페이지당 표시할 약속 수 */
-const ITEMS_PER_PAGE = 4
+const PAGE_SIZE = 5
 
 export default function GatheringMeetingSection({
   gatheringId,
@@ -50,40 +50,29 @@ export default function GatheringMeetingSection({
   // 탭별 카운트 조회 (서버 API)
   const { data: tabCounts } = useMeetingTabCounts(gatheringId)
 
-  // 약속 목록 조회
+  // 약속 목록 조회 (서버 페이지네이션)
   const { data, isLoading } = useGatheringMeetings({
     gatheringId,
     filter: activeTab,
+    page: currentPage,
+    size: PAGE_SIZE,
   })
 
-  const rawMeetings = useMemo(() => data?.items ?? [], [data?.items])
+  // 서버에서 받은 데이터
+  const meetings = data?.items ?? []
+  const totalPages = data?.totalPages ?? 0
+  const totalCount = data?.totalCount ?? 0
 
-  // 정렬된 약속 목록
-  const allMeetings = useMemo(() => sortMeetings(rawMeetings), [rawMeetings])
-
-  // 약속 중인 약속은 페이지 상관 없이 항상 상단에 고정
-  const { ongoingMeetings, otherMeetings } = useMemo(() => {
-    const ongoing: GatheringMeetingItem[] = []
-    const others: GatheringMeetingItem[] = []
-
-    allMeetings.forEach((meeting) => {
-      const status = getMeetingDisplayStatus(meeting.startDateTime, meeting.endDateTime)
-      if (status === 'IN_PROGRESS') {
-        ongoing.push(meeting)
-      } else {
-        others.push(meeting)
-      }
-    })
-
-    return { ongoingMeetings: ongoing, otherMeetings: others }
-  }, [allMeetings])
-
-  // 페이지네이션 계산 (약속 중 제외한 목록만 페이지네이션)
-  const totalPages = Math.ceil(otherMeetings.length / ITEMS_PER_PAGE)
-  const paginatedMeetings = useMemo(() => {
-    const start = currentPage * ITEMS_PER_PAGE
-    return otherMeetings.slice(start, start + ITEMS_PER_PAGE)
-  }, [otherMeetings, currentPage])
+  // 정렬 후 진행 중 약속을 상단에 배치
+  const sortedMeetings = sortMeetings(meetings)
+  const displayMeetings = sortedMeetings.sort((a, b) => {
+    const statusA = getMeetingDisplayStatus(a.startDateTime, a.endDateTime)
+    const statusB = getMeetingDisplayStatus(b.startDateTime, b.endDateTime)
+    // 진행 중인 약속을 맨 앞으로
+    if (statusA === 'IN_PROGRESS' && statusB !== 'IN_PROGRESS') return -1
+    if (statusA !== 'IN_PROGRESS' && statusB === 'IN_PROGRESS') return 1
+    return 0
+  })
 
   // 탭 변경 시 페이지 초기화
   const handleTabChange = (filter: MeetingFilter) => {
@@ -160,21 +149,11 @@ export default function GatheringMeetingSection({
       {/* 약속 목록 */}
       {isLoading ? (
         <div className="py-xlarge text-center text-grey-600 typo-body3">로딩 중...</div>
-      ) : allMeetings.length === 0 ? (
+      ) : totalCount === 0 ? (
         <EmptyState type="meetings" />
       ) : (
         <div className="flex flex-col gap-xsmall">
-          {/* 약속 중인 약속 - 항상 상단에 고정 */}
-          {ongoingMeetings.map((meeting) => (
-            <GatheringMeetingCard
-              key={meeting.meetingId}
-              meeting={meeting}
-              gatheringId={gatheringId}
-              isHost={meeting.meetingLeaderName === currentUserNickname}
-            />
-          ))}
-          {/* 예정/종료 약속 - 페이지네이션 적용 */}
-          {paginatedMeetings.map((meeting) => (
+          {displayMeetings.map((meeting) => (
             <GatheringMeetingCard
               key={meeting.meetingId}
               meeting={meeting}
