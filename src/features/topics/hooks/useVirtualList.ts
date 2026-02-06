@@ -13,11 +13,7 @@ type UseVirtualListOptions = {
  * TanStack Virtual을 사용한 리스트 가상화 훅 (window 스크롤)
  * 대량의 리스트를 효율적으로 렌더링하기 위해 화면에 보이는 아이템만 DOM에 렌더링합니다.
  */
-export function useVirtualList({
-  count,
-  estimateSize = 150,
-  overscan = 5,
-}: UseVirtualListOptions) {
+export function useVirtualList({ count, estimateSize = 150, overscan = 5 }: UseVirtualListOptions) {
   const virtualizer = useWindowVirtualizer({
     count,
     estimateSize: () => estimateSize,

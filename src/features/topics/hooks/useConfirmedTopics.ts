@@ -39,7 +39,12 @@ export const useConfirmedTopics = (
     GetConfirmedTopicsResponse,
     ApiError,
     InfiniteData<GetConfirmedTopicsResponse>,
-    readonly ['topics', 'confirmed', 'list', { gatheringId: number; meetingId: number; pageSize?: number }],
+    readonly [
+      'topics',
+      'confirmed',
+      'list',
+      { gatheringId: number; meetingId: number; pageSize?: number },
+    ],
     ConfirmedTopicCursor | null
   >({
     queryKey: ['topics', 'confirmed', 'list', { gatheringId, meetingId, pageSize }] as const,

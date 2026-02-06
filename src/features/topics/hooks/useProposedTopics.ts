@@ -39,7 +39,12 @@ export const useProposedTopics = (
     GetProposedTopicsResponse,
     ApiError,
     InfiniteData<GetProposedTopicsResponse>,
-    readonly ['topics', 'proposed', 'list', { gatheringId: number; meetingId: number; pageSize?: number }],
+    readonly [
+      'topics',
+      'proposed',
+      'list',
+      { gatheringId: number; meetingId: number; pageSize?: number },
+    ],
     ProposedTopicCursor | null
   >({
     queryKey: ['topics', 'proposed', 'list', { gatheringId, meetingId, pageSize }] as const,
