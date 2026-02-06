@@ -128,21 +128,24 @@ export default function BookListPage() {
   }
 
   // 필터링된 책 목록 변경 핸들러 (필터 변경 시 selectedBookIds도 정리)
-  const handleFilteredBooksChange = useCallback((bookIds: number[]) => {
-    setFilteredBookIds(bookIds)
+  const handleFilteredBooksChange = useCallback(
+    (bookIds: number[]) => {
+      setFilteredBookIds(bookIds)
 
-    // 편집 모드일 때만 selectedBookIds 정리
-    if (isEditMode) {
-      const filteredSet = new Set(bookIds)
-      setSelectedBookIds((prev) => {
-        const cleaned = new Set([...prev].filter((id) => filteredSet.has(id)))
-        if (cleaned.size !== prev.size) {
-          return cleaned
-        }
-        return prev
-      })
-    }
-  }, [isEditMode])
+      // 편집 모드일 때만 selectedBookIds 정리
+      if (isEditMode) {
+        const filteredSet = new Set(bookIds)
+        setSelectedBookIds((prev) => {
+          const cleaned = new Set([...prev].filter((id) => filteredSet.has(id)))
+          if (cleaned.size !== prev.size) {
+            return cleaned
+          }
+          return prev
+        })
+      }
+    },
+    [isEditMode]
+  )
 
   // 멤버십 기반 전체 선택 여부 확인
   const isAllSelected =
