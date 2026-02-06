@@ -21,15 +21,11 @@ export default function BookListPage() {
   // 현재 탭에서 필터링된 책 ID 목록 (BookList에서 전달받음)
   const [filteredBookIds, setFilteredBookIds] = useState<number[]>([])
 
-  // 탭에 따른 status 매핑
-  const currentStatus =
-    activeTab === 'all' ? undefined : activeTab === 'reading' ? 'READING' : 'COMPLETED'
-
-  // 현재 탭의 책 목록 조회 (전체선택용)
-  const { data } = useBooks({ status: currentStatus })
+  // 카운트 전용 쿼리 (탭과 무관하게 전체 데이터에서 카운트 조회)
+  const { data: countData } = useBooks()
 
   // 첫 페이지에서 카운트 정보 가져오기
-  const firstPage = data?.pages[0]
+  const firstPage = countData?.pages[0]
   const totalCount = firstPage?.totalCount ?? 0
   const readingCount = firstPage?.readingCount ?? 0
   const completedCount = firstPage?.completedCount ?? 0
@@ -105,8 +101,7 @@ export default function BookListPage() {
       return next
     })
 
-    // 모두 성공했거나 선택된 항목이 없으면 편집 모드 종료
-    if (failedCount === 0 || succeededIds.size === bookIds.length) {
+    if (failedCount === 0) {
       setIsEditMode(false)
     }
   }
