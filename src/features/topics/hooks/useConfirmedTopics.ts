@@ -13,6 +13,7 @@ import type {
   GetConfirmedTopicsParams,
   GetConfirmedTopicsResponse,
 } from '../topics.types'
+import { topicQueryKeys } from './topicQueryKeys'
 
 /**
  * 확정된 주제 조회 훅 (무한 스크롤)
@@ -39,15 +40,10 @@ export const useConfirmedTopics = (
     GetConfirmedTopicsResponse,
     ApiError,
     InfiniteData<GetConfirmedTopicsResponse>,
-    readonly [
-      'topics',
-      'confirmed',
-      'list',
-      { gatheringId: number; meetingId: number; pageSize?: number },
-    ],
+    ReturnType<typeof topicQueryKeys.confirmedList>,
     ConfirmedTopicCursor | null
   >({
-    queryKey: ['topics', 'confirmed', 'list', { gatheringId, meetingId, pageSize }] as const,
+    queryKey: topicQueryKeys.confirmedList({ gatheringId, meetingId, pageSize }),
     queryFn: ({ pageParam }: { pageParam: ConfirmedTopicCursor | null }) =>
       getConfirmedTopics({
         gatheringId,

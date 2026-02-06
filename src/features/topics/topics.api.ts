@@ -35,7 +35,7 @@ const USE_MOCK_DATA = true
  * @param params - 조회 파라미터
  * @param params.gatheringId - 모임 식별자
  * @param params.meetingId - 약속 식별자
- * @param params.pageSize - 페이지 크기 (기본값: 10)
+ * @param params.pageSize - 페이지 크기 (기본값: 5)
  * @param params.cursorLikeCount - 커서: 이전 페이지 마지막 항목의 좋아요 수
  * @param params.cursorTopicId - 커서: 이전 페이지 마지막 항목의 주제 ID
  *
@@ -80,7 +80,7 @@ export const getProposedTopics = async (
  * @param params - 조회 파라미터
  * @param params.gatheringId - 모임 식별자
  * @param params.meetingId - 약속 식별자
- * @param params.pageSize - 페이지 크기 (기본값: 10)
+ * @param params.pageSize - 페이지 크기 (기본값: 5)
  * @param params.cursorConfirmOrder - 커서: 이전 페이지 마지막 항목의 확정 순서
  * @param params.cursorTopicId - 커서: 이전 페이지 마지막 항목의 주제 ID
  *

@@ -13,6 +13,7 @@ import type {
   GetProposedTopicsResponse,
   ProposedTopicCursor,
 } from '../topics.types'
+import { topicQueryKeys } from './topicQueryKeys'
 
 /**
  * 제안된 주제 조회 훅 (무한 스크롤)
@@ -39,15 +40,10 @@ export const useProposedTopics = (
     GetProposedTopicsResponse,
     ApiError,
     InfiniteData<GetProposedTopicsResponse>,
-    readonly [
-      'topics',
-      'proposed',
-      'list',
-      { gatheringId: number; meetingId: number; pageSize?: number },
-    ],
+    ReturnType<typeof topicQueryKeys.proposedList>,
     ProposedTopicCursor | null
   >({
-    queryKey: ['topics', 'proposed', 'list', { gatheringId, meetingId, pageSize }] as const,
+    queryKey: topicQueryKeys.proposedList({ gatheringId, meetingId, pageSize }),
     queryFn: ({ pageParam }: { pageParam: ProposedTopicCursor | null }) =>
       getProposedTopics({
         gatheringId,

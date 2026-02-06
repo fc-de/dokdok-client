@@ -51,6 +51,7 @@ export default function TopicCard({
 
     deleteMutation.mutate(
       { gatheringId, meetingId, topicId },
+      // TODO: 토스트 컴포넌트로 교체 예정
       {
         onSuccess: () => {
           openAlert('삭제 완료', '주제가 삭제되었습니다.')
@@ -69,7 +70,15 @@ export default function TopicCard({
 
     if (likeMutation.isPending) return
 
-    likeMutation.mutate({ gatheringId, meetingId, topicId })
+    likeMutation.mutate(
+      { gatheringId, meetingId, topicId },
+      {
+        onError: (error) => {
+          // TODO: 토스트 컴포넌트로 교체 예정
+          alert(`좋아요 처리 중 오류가 발생했습니다: ${error.userMessage}`)
+        },
+      }
+    )
   }
   return (
     <Card className="p-medium flex flex-col gap-small">

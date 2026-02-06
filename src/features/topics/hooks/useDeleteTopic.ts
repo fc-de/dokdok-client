@@ -9,6 +9,7 @@ import { ApiError } from '@/api/errors'
 
 import { deleteTopic } from '../topics.api'
 import type { DeleteTopicParams } from '../topics.types'
+import { topicQueryKeys } from './topicQueryKeys'
 
 /**
  * 주제 삭제 mutation 훅
@@ -41,12 +42,10 @@ export const useDeleteTopic = () => {
     onSuccess: (_, variables) => {
       // 제안된 주제 무효화
       queryClient.invalidateQueries({
-        queryKey: [
-          'topics',
-          'proposed',
-          'list',
-          { gatheringId: variables.gatheringId, meetingId: variables.meetingId },
-        ],
+        queryKey: topicQueryKeys.proposedList({
+          gatheringId: variables.gatheringId,
+          meetingId: variables.meetingId,
+        }),
       })
     },
   })
