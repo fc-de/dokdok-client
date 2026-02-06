@@ -1,4 +1,5 @@
 import { ChevronLeft } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import {
@@ -7,12 +8,62 @@ import {
   MeetingDetailInfo,
   useMeetingDetail,
 } from '@/features/meetings'
-import { TextButton } from '@/shared/ui'
+import type {
+  GetConfirmedTopicsResponse,
+  GetProposedTopicsResponse,
+  TopicStatus,
+} from '@/features/topics'
+import {
+  ConfirmedTopicList,
+  ProposedTopicList,
+  TopicHeader,
+  useConfirmedTopics,
+  useProposedTopics,
+} from '@/features/topics'
+import { Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
-  const { meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
+  const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
+
+  const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
 
   const { data: meeting, isLoading, error } = useMeetingDetail(Number(meetingId))
+
+  // 제안된 주제 조회 (무한 스크롤)
+  const {
+    data: proposedTopicsInfiniteData,
+    isLoading: isProposedLoading,
+    error: proposedError,
+    fetchNextPage: fetchNextProposedPage,
+    hasNextPage: hasNextProposedPage,
+    isFetchingNextPage: isFetchingNextProposedPage,
+  } = useProposedTopics({
+    gatheringId: Number(gatheringId),
+    meetingId: Number(meetingId),
+  })
+
+  // 확정된 주제 조회 (무한 스크롤)
+  const {
+    data: confirmedTopicsInfiniteData,
+    isLoading: isConfirmedLoading,
+    error: confirmedError,
+    fetchNextPage: fetchNextConfirmedPage,
+    hasNextPage: hasNextConfirmedPage,
+    isFetchingNextPage: isFetchingNextConfirmedPage,
+  } = useConfirmedTopics({
+    gatheringId: Number(gatheringId),
+    meetingId: Number(meetingId),
+  })
+
+  // 에러 처리
+  useEffect(() => {
+    if (proposedError) {
+      alert(`제안된 주제 조회 실패: ${proposedError.userMessage}`)
+    }
+    if (confirmedError) {
+      alert(`확정된 주제 조회 실패: ${confirmedError.userMessage}`)
+    }
+  }, [proposedError, confirmedError])
 
   if (error) {
     return (
@@ -58,10 +109,86 @@ export default function MeetingDetailPage() {
         </div>
         {/* 약속 로딩 적용 */}
 
-        <div className="flex-1">
-          {/* 주제 로딩 적용 */}
+        <div className="flex flex-col flex-1 gap-base">
           <p className="text-black typo-heading3">주제</p>
-          {/* 주제 로딩 적용 */}
+
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) => setActiveTab(value as TopicStatus)}
+            className="gap-medium"
+          >
+            <TabsList className="border-b border-grey-300" size="medium">
+              <TabsTrigger
+                className="typo-subtitle2"
+                value="PROPOSED"
+                badge={(proposedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
+                size="medium"
+              >
+                제안
+              </TabsTrigger>
+              <TabsTrigger
+                className="typo-subtitle2"
+                value="CONFIRMED"
+                badge={(confirmedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
+                size="medium"
+              >
+                확정된 주제
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="PROPOSED">
+              {isProposedLoading ? (
+                <div className="flex items-center justify-center h-[200px]">
+                  <p className="text-grey-500 typo-body2">로딩 중...</p>
+                </div>
+              ) : proposedTopicsInfiniteData ? (
+                <div className="flex flex-col gap-base">
+                  <TopicHeader
+                    activeTab="PROPOSED"
+                    confirmedTopic={meeting?.confirmedTopicExpand ?? false}
+                    actions={proposedTopicsInfiniteData.pages[0].actions}
+                    confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                  />
+                  <ProposedTopicList
+                    topics={proposedTopicsInfiniteData.pages.flatMap(
+                      (page: GetProposedTopicsResponse) => page.items
+                    )}
+                    hasNextPage={hasNextProposedPage}
+                    isFetchingNextPage={isFetchingNextProposedPage}
+                    onLoadMore={fetchNextProposedPage}
+                    pageSize={5}
+                    gatheringId={Number(gatheringId)}
+                    meetingId={Number(meetingId)}
+                  />
+                </div>
+              ) : null}
+            </TabsContent>
+
+            <TabsContent value="CONFIRMED">
+              {isConfirmedLoading ? (
+                <div className="flex items-center justify-center h-[200px]">
+                  <p className="text-grey-500 typo-body2">로딩 중...</p>
+                </div>
+              ) : confirmedTopicsInfiniteData ? (
+                <div className="flex flex-col gap-base">
+                  <TopicHeader
+                    activeTab="CONFIRMED"
+                    confirmedTopic={meeting?.confirmedTopicExpand ?? false}
+                    actions={confirmedTopicsInfiniteData.pages[0].actions}
+                    confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                  />
+                  <ConfirmedTopicList
+                    topics={confirmedTopicsInfiniteData.pages.flatMap(
+                      (page: GetConfirmedTopicsResponse) => page.items
+                    )}
+                    hasNextPage={hasNextConfirmedPage}
+                    isFetchingNextPage={isFetchingNextConfirmedPage}
+                    onLoadMore={fetchNextConfirmedPage}
+                    pageSize={5}
+                  />
+                </div>
+              ) : null}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </>

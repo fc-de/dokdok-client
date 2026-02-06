@@ -1,0 +1,108 @@
+import { format } from 'date-fns'
+import { Check } from 'lucide-react'
+
+import { Button } from '@/shared/ui'
+
+type ProposedHeaderProps = {
+  activeTab: 'PROPOSED'
+  actions: { canConfirm: boolean; canSuggest: boolean }
+  confirmedTopic: boolean
+  confirmedTopicDate: string | null
+}
+
+type ConfirmedHeaderProps = {
+  activeTab: 'CONFIRMED'
+  actions: { canViewPreOpinions: boolean; canWritePreOpinions: boolean }
+  confirmedTopic: boolean
+  confirmedTopicDate: string | null
+}
+
+type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
+
+export default function TopicHeader({
+  activeTab,
+  actions,
+  confirmedTopic,
+  confirmedTopicDate,
+}: TopicHeaderProps) {
+  return (
+    <>
+      {/* 제안탭 */}
+      {activeTab === 'PROPOSED' && (
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-tiny">
+            {confirmedTopic && confirmedTopicDate ? (
+              // 주제 확정됨
+              <>
+                <p className="text-black typo-subtitle3">
+                  주제 제안이 마감되었어요. 확정된 주제를 확인해보세요!
+                </p>
+                <p className="typo-body4 text-grey-600">
+                  {format(confirmedTopicDate, 'yyyy.MM.dd HH:mm')} 마감
+                </p>
+              </>
+            ) : (
+              // 주제 제안 중
+              <>
+                <p className="text-black typo-subtitle3">
+                  약속에서 나누고 싶은 주제를 제안해보세요
+                </p>
+                <p className="typo-body4 text-grey-600">
+                  주제를 미리 정하면 우리 모임이 훨씬 풍성하고 즐거워질 거예요
+                </p>
+              </>
+            )}
+          </div>
+
+          <div className="flex gap-xsmall">
+            {actions.canConfirm && (
+              <Button variant="secondary" outline>
+                주제 확정하기
+              </Button>
+            )}
+
+            {actions.canSuggest && <Button>제안하기</Button>}
+          </div>
+        </div>
+      )}
+
+      {/* 제안탭 */}
+
+      {/* 확정탭 */}
+      {activeTab === 'CONFIRMED' && (
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-tiny">
+            {confirmedTopic ? (
+              // 주제 확정됨
+              <>
+                <p className="flex items-center text-black typo-subtitle3 gap-tiny">
+                  <Check size="20" /> 주제가 확정되었어요!
+                </p>
+                <p className="typo-body4 text-grey-600">
+                  나의 생각을 미리 정리해서 공유하면 다른 멤버들의 의견도 바로 확인할 수 있어요
+                </p>
+              </>
+            ) : (
+              // 주제 제안 중
+              <>
+                <p className="text-black typo-subtitle3">약속장이 주제를 선정하고 있어요</p>
+                <p className="typo-body4 text-grey-600">
+                  주제가 확정되면 사전 의견을 남길 수 있는 창이 열려요
+                </p>
+              </>
+            )}
+          </div>
+
+          <div className="flex gap-xsmall">
+            <Button variant="secondary" outline disabled={!actions.canViewPreOpinions}>
+              사전 의견 확인하기
+            </Button>
+
+            <Button disabled={!actions.canWritePreOpinions}>사전 의견 작성하기</Button>
+          </div>
+        </div>
+      )}
+      {/* 확정탭 */}
+    </>
+  )
+}
