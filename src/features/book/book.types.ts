@@ -310,3 +310,47 @@ export interface CreateBookReviewBody {
   rating: number
   keywordIds: number[]
 }
+
+// ============================================================
+// Book Search (도서 검색) 관련 타입
+// ============================================================
+
+/** 검색된 도서 아이템 */
+export interface SearchBookItem {
+  title: string
+  contents: string
+  authors: string[]
+  publisher: string
+  isbn: string
+  thumbnail: string
+}
+
+/** 도서 검색 요청 파라미터 */
+export interface SearchBooksParams {
+  query: string
+  page?: number
+  pageSize?: number
+}
+
+/** 도서 검색 커서 */
+export interface SearchBooksCursor {
+  page: number
+}
+
+/** 도서 검색 응답 */
+export interface SearchBooksResponse {
+  items: SearchBookItem[]
+  pageSize: number
+  hasNext: boolean
+  nextCursor: SearchBooksCursor | null
+  totalCount: number
+}
+
+/** 책 등록 요청 바디 */
+export interface CreateBookBody {
+  title: string
+  authors: string
+  publisher: string
+  isbn: string
+  thumbnail: string
+}

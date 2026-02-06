@@ -8,6 +8,7 @@ export {
   BookLogModal,
   BookReview as BookReviewComponent,
   BookReviewModal,
+  BookSearchModal,
   ExcerptBlock,
   MeetingGroupRecordItem,
   MeetingPreOpinionItem,

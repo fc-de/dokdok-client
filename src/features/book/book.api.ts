@@ -10,6 +10,7 @@ import type {
   BookDetail,
   BookListItem,
   BookReview,
+  CreateBookBody,
   CreateBookRecordBody,
   CreateBookReviewBody,
   GetBookRecordsParams,
@@ -21,6 +22,8 @@ import type {
   GetGatheringsParams,
   GetGatheringsResponse,
   PersonalRecord,
+  SearchBooksParams,
+  SearchBooksResponse,
   UpdateBookRecordBody,
 } from './book.types'
 
@@ -807,4 +810,50 @@ function filterMockBookRecords(
     meetingPersonalRecords,
     meetingPreOpinions,
   }
+}
+
+// ============================================================
+// Book Search (도서 검색) API
+// ============================================================
+
+/**
+ * 도서 검색
+ *
+ * 외부 API를 통해 도서를 검색합니다.
+ * 페이지 기반 페이지네이션을 지원합니다.
+ *
+ * @param params - 검색 파라미터 (query, page)
+ * @returns 검색된 도서 목록 및 페이지네이션 정보
+ *
+ * @example
+ * ```typescript
+ * const result = await searchBooks({ query: '데미안' })
+ * console.log(result.items) // 검색된 도서 목록
+ * ```
+ */
+export async function searchBooks(params: SearchBooksParams): Promise<SearchBooksResponse> {
+  return api.get<SearchBooksResponse>('/api/book/search', { params })
+}
+
+/**
+ * 책 등록
+ *
+ * 검색한 도서를 내 책장에 등록합니다.
+ *
+ * @param body - 책 등록 요청 바디
+ * @returns 등록된 책 상세 정보
+ *
+ * @example
+ * ```typescript
+ * const book = await createBook({
+ *   title: '데미안',
+ *   authors: '헤르만 헤세',
+ *   publisher: '민음사',
+ *   isbn: '9788937460449',
+ *   thumbnail: 'https://...',
+ * })
+ * ```
+ */
+export async function createBook(body: CreateBookBody): Promise<BookDetail> {
+  return api.post<BookDetail>('/api/book', body)
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { BookList, useBooks, useDeleteBook } from '@/features/book'
+import { BookList, BookSearchModal, useBooks, useDeleteBook } from '@/features/book'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -12,6 +12,9 @@ export default function BookListPage() {
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedBookIds, setSelectedBookIds] = useState<Set<number>>(new Set())
+
+  // 도서 검색 모달 상태
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
   // 첫 페이지에서 카운트 정보 가져오기
   const firstPage = data?.pages[0]
@@ -118,7 +121,7 @@ export default function BookListPage() {
                 >
                   편집하기
                 </Button>
-                <Button>책 추가하기</Button>
+                <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
               </>
             )}
           </div>
@@ -147,6 +150,11 @@ export default function BookListPage() {
           />
         </TabsContent>
       </Tabs>
+
+      <BookSearchModal
+        open={isSearchModalOpen}
+        onOpenChange={setIsSearchModalOpen}
+      />
     </div>
   )
 }
