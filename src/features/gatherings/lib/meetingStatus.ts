@@ -46,8 +46,10 @@ export const sortMeetings = (meetings: GatheringMeetingItem[]): GatheringMeeting
       // 예정: 가까운 미래 순 (오름차순)
       return startA.getTime() - startB.getTime()
     } else {
-      // 종료: 최근 종료 순 (내림차순)
-      return startB.getTime() - startA.getTime()
+      // 종료: 최근 종료 순 (내림차순) - endDateTime 기준
+      const endA = new Date(a.endDateTime)
+      const endB = new Date(b.endDateTime)
+      return endB.getTime() - endA.getTime()
     }
   })
 }

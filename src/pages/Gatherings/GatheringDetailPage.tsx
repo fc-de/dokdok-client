@@ -18,7 +18,7 @@ export default function GatheringDetailPage() {
   const navigate = useNavigate()
   const { openAlert, openError } = useGlobalModalStore()
 
-  const gatheringId = Number(id)
+  const gatheringId = id ? Number(id) : 0
 
   // 스크롤 상태 (헤더 접힘 여부)
   const isHeaderCollapsed = useScrollCollapse({ collapseThreshold: 100, expandThreshold: 20 })
