@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { BookList, BookSearchModal, useBooks, useDeleteBook } from '@/features/book'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
@@ -47,9 +47,12 @@ export default function BookListPage() {
     })
   }
 
-  // 전체 선택 (현재 화면에 표시된 책 기준)
+  // 전체 선택 (현재 화면에 표시된 책 기준, 멤버십 기반)
   const handleSelectAll = () => {
-    if (selectedBookIds.size === filteredBookIds.length && filteredBookIds.length > 0) {
+    const allSelected =
+      filteredBookIds.length > 0 && filteredBookIds.every((id) => selectedBookIds.has(id))
+
+    if (allSelected) {
       // 전체 해제
       setSelectedBookIds(new Set())
     } else {
@@ -124,8 +127,26 @@ export default function BookListPage() {
     setSelectedBookIds(new Set())
   }
 
+  // 필터링된 책 목록 변경 핸들러 (필터 변경 시 selectedBookIds도 정리)
+  const handleFilteredBooksChange = useCallback((bookIds: number[]) => {
+    setFilteredBookIds(bookIds)
+
+    // 편집 모드일 때만 selectedBookIds 정리
+    if (isEditMode) {
+      const filteredSet = new Set(bookIds)
+      setSelectedBookIds((prev) => {
+        const cleaned = new Set([...prev].filter((id) => filteredSet.has(id)))
+        if (cleaned.size !== prev.size) {
+          return cleaned
+        }
+        return prev
+      })
+    }
+  }, [isEditMode])
+
+  // 멤버십 기반 전체 선택 여부 확인
   const isAllSelected =
-    filteredBookIds.length > 0 && selectedBookIds.size === filteredBookIds.length
+    filteredBookIds.length > 0 && filteredBookIds.every((id) => selectedBookIds.has(id))
 
   return (
     <div>
@@ -178,7 +199,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
-            onFilteredBooksChange={setFilteredBookIds}
+            onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>
         <TabsContent value="reading">
@@ -187,7 +208,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
-            onFilteredBooksChange={setFilteredBookIds}
+            onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>
         <TabsContent value="completed">
@@ -196,7 +217,7 @@ export default function BookListPage() {
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
-            onFilteredBooksChange={setFilteredBookIds}
+            onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>
       </Tabs>
