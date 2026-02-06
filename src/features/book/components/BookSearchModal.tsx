@@ -5,7 +5,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { ApiError } from '@/api/errors'
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
+import { useGlobalModalStore } from '@/store'
 
 import type { SearchBookItem } from '../book.types'
 import { useCreateBook } from '../hooks/useCreateBook'
@@ -39,6 +41,7 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
+  const { openError } = useGlobalModalStore()
 
   // 디바운싱: 입력 후 300ms 후에 검색
   useEffect(() => {
@@ -71,17 +74,25 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
   const handleSelectBook = async (book: SearchBookItem) => {
     if (isRegistering) return
 
-    await registerBook({
-      title: book.title,
-      authors: book.authors.join(', '),
-      publisher: book.publisher,
-      isbn: book.isbn,
-      thumbnail: book.thumbnail,
-    })
+    try {
+      await registerBook({
+        title: book.title,
+        authors: book.authors.join(', '),
+        publisher: book.publisher,
+        isbn: book.isbn,
+        thumbnail: book.thumbnail,
+      })
 
-    onOpenChange(false)
-    onSuccess?.()
-    resetState()
+      onOpenChange(false)
+      onSuccess?.()
+      resetState()
+    } catch (error) {
+      if (error instanceof ApiError) {
+        openError('오류', error.userMessage)
+      } else {
+        openError('오류', '책 등록 중 오류가 발생했습니다.')
+      }
+    }
   }
 
   // 모달 닫을 때 상태 초기화
@@ -117,7 +128,7 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
             <div className="flex flex-col">
               {books.map((book) => (
                 <BookSearchItem
-                  key={book.isbn}
+                  key={`${book.isbn}-${book.title}`}
                   book={book}
                   onClick={() => handleSelectBook(book)}
                   disabled={isRegistering}

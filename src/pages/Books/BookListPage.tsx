@@ -5,9 +5,11 @@ import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/
 import { useGlobalModalStore } from '@/store'
 
 export default function BookListPage() {
-  const { data } = useBooks()
   const { mutateAsync: deleteBook } = useDeleteBook()
   const { openConfirm } = useGlobalModalStore()
+
+  // 현재 활성 탭 상태
+  const [activeTab, setActiveTab] = useState<'all' | 'reading' | 'completed'>('all')
 
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false)
@@ -16,14 +18,21 @@ export default function BookListPage() {
   // 도서 검색 모달 상태
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
 
+  // 탭에 따른 status 매핑
+  const currentStatus =
+    activeTab === 'all' ? undefined : activeTab === 'reading' ? 'READING' : 'COMPLETED'
+
+  // 현재 탭의 책 목록 조회 (전체선택용)
+  const { data } = useBooks({ status: currentStatus })
+
   // 첫 페이지에서 카운트 정보 가져오기
   const firstPage = data?.pages[0]
   const totalCount = firstPage?.totalCount ?? 0
   const readingCount = firstPage?.readingCount ?? 0
   const completedCount = firstPage?.completedCount ?? 0
 
-  // 전체 책 목록
-  const allBooks = data?.pages.flatMap((page) => page.items) ?? []
+  // 현재 탭의 책 목록
+  const currentTabBooks = data?.pages.flatMap((page) => page.items) ?? []
 
   // 선택 토글
   const handleSelectToggle = (bookId: number) => {
@@ -38,14 +47,14 @@ export default function BookListPage() {
     })
   }
 
-  // 전체 선택
+  // 전체 선택 (현재 탭 기준)
   const handleSelectAll = () => {
-    if (selectedBookIds.size === allBooks.length) {
+    if (selectedBookIds.size === currentTabBooks.length) {
       // 전체 해제
       setSelectedBookIds(new Set())
     } else {
       // 전체 선택
-      setSelectedBookIds(new Set(allBooks.map((book) => book.bookId)))
+      setSelectedBookIds(new Set(currentTabBooks.map((book) => book.bookId)))
     }
   }
 
@@ -64,9 +73,37 @@ export default function BookListPage() {
 
     if (!confirmed) return
 
-    await Promise.all([...selectedBookIds].map((id) => deleteBook(id)))
-    setSelectedBookIds(new Set())
-    setIsEditMode(false)
+    const bookIds = [...selectedBookIds]
+    const results = await Promise.allSettled(bookIds.map((id) => deleteBook(id)))
+
+    // 성공한 ID만 선택 해제
+    const succeededIds = new Set(
+      results
+        .map((result, index) => (result.status === 'fulfilled' ? bookIds[index] : null))
+        .filter((id): id is number => id !== null)
+    )
+
+    const failedCount = results.filter((r) => r.status === 'rejected').length
+
+    if (failedCount > 0) {
+      await openConfirm(
+        '삭제 실패',
+        `${bookIds.length}권 중 ${failedCount}권 삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.`,
+        { confirmText: '확인' }
+      )
+    }
+
+    // 성공한 항목만 선택에서 제거
+    setSelectedBookIds((prev) => {
+      const next = new Set(prev)
+      succeededIds.forEach((id) => next.delete(id))
+      return next
+    })
+
+    // 모두 성공했거나 선택된 항목이 없으면 편집 모드 종료
+    if (failedCount === 0 || succeededIds.size === bookIds.length) {
+      setIsEditMode(false)
+    }
   }
 
   // 편집 모드 토글
@@ -78,12 +115,20 @@ export default function BookListPage() {
     setIsEditMode(!isEditMode)
   }
 
-  const isAllSelected = allBooks.length > 0 && selectedBookIds.size === allBooks.length
+  // 탭 변경 핸들러
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as 'all' | 'reading' | 'completed')
+    // 탭 변경 시 선택 초기화
+    setSelectedBookIds(new Set())
+  }
+
+  const isAllSelected =
+    currentTabBooks.length > 0 && selectedBookIds.size === currentTabBooks.length
 
   return (
     <div>
       <h1 className="typo-heading1 text-black mt-xlarge mb-medium">내 책장</h1>
-      <Tabs defaultValue="all">
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
         <div className="flex justify-between items-center">
           <TabsList size="large">
             <TabsTrigger value="all" badge={totalCount}>
