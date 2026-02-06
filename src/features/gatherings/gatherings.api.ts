@@ -5,10 +5,16 @@ import type {
   CreateGatheringRequest,
   CreateGatheringResponse,
   FavoriteGatheringListResponse,
+  GatheringBookListResponse,
   GatheringByInviteCodeResponse,
+  GatheringDetailResponse,
   GatheringJoinResponse,
   GatheringListResponse,
+  GatheringMeetingListResponse,
+  GetGatheringBooksParams,
+  GetGatheringMeetingsParams,
   GetGatheringsParams,
+  MeetingTabCountsResponse,
 } from './gatherings.types'
 
 /**
@@ -92,6 +98,63 @@ export const getFavoriteGatherings = async () => {
 export const toggleFavorite = async (gatheringId: number) => {
   const response = await apiClient.patch<ApiResponse<null>>(
     GATHERINGS_ENDPOINTS.TOGGLE_FAVORITE(gatheringId)
+  )
+  return response.data
+}
+
+/**
+ * 모임 상세 조회
+ *
+ * @param gatheringId - 모임 ID
+ * @returns 모임 상세 정보
+ */
+export const getGatheringDetail = async (gatheringId: number) => {
+  const response = await apiClient.get<ApiResponse<GatheringDetailResponse>>(
+    GATHERINGS_ENDPOINTS.DETAIL(gatheringId)
+  )
+  return response.data
+}
+
+/**
+ * 모임 약속 목록 조회 (페이지 기반)
+ *
+ * @param params - 조회 파라미터
+ * @returns 약속 목록 및 페이지네이션 정보
+ */
+export const getGatheringMeetings = async (params: GetGatheringMeetingsParams) => {
+  const { gatheringId, ...queryParams } = params
+  const response = await apiClient.get<ApiResponse<GatheringMeetingListResponse>>(
+    GATHERINGS_ENDPOINTS.MEETINGS(gatheringId),
+    { params: queryParams }
+  )
+  return response.data
+}
+
+/**
+ * 모임 책장 조회 (페이지 기반)
+ *
+ * @param params - 조회 파라미터
+ * @returns 책 목록 및 페이지네이션 정보
+ */
+export const getGatheringBooks = async (params: GetGatheringBooksParams) => {
+  const { gatheringId, ...queryParams } = params
+  const response = await apiClient.get<ApiResponse<GatheringBookListResponse>>(
+    GATHERINGS_ENDPOINTS.BOOKS(gatheringId),
+    { params: queryParams }
+  )
+  return response.data
+}
+
+/**
+ * 모임 약속 탭별 카운트 조회
+ *
+ * @param gatheringId - 모임 ID
+ * @returns 탭별 약속 카운트
+ */
+export const getMeetingTabCounts = async (gatheringId: number) => {
+  const response = await apiClient.get<ApiResponse<MeetingTabCountsResponse>>(
+    GATHERINGS_ENDPOINTS.MEETING_TAB_COUNTS,
+    { params: { gatheringId } }
   )
   return response.data
 }
