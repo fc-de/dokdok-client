@@ -2,10 +2,8 @@ import { Card } from '@/shared/ui'
 
 export default function EmptyTopicList() {
   return (
-    <div className="flex items-center justify-center h-[200px]">
-      <Card className="p-base w-full">
-        <p className="text-grey-500 typo-body2 text-center">확정된 주제가 없습니다.</p>
-      </Card>
-    </div>
+    <Card className="p-base w-full flex items-center justify-center h-[160px]">
+      <p className="text-grey-600 typo-subtitle3 text-center">아직 확정된 주제가 없어요</p>
+    </Card>
   )
 }
