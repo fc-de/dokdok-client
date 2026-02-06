@@ -48,12 +48,7 @@ type BookListProps = {
  * />
  * ```
  */
-function BookList({
-  status,
-  isEditMode = false,
-  selectedBookIds,
-  onSelectToggle,
-}: BookListProps) {
+function BookList({ status, isEditMode = false, selectedBookIds, onSelectToggle }: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
   const [rating, setRating] = useState<StarRatingRange | null>(null)
@@ -79,14 +74,7 @@ function BookList({
   )?.gatheringName
 
   // 책 목록 조회 (필터 적용, 무한스크롤)
-  const {
-    data,
-    isLoading,
-    isError,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useBooks({
+  const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooks({
     status,
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
     ratingMin: rating?.min,

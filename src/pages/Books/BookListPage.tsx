@@ -151,10 +151,7 @@ export default function BookListPage() {
         </TabsContent>
       </Tabs>
 
-      <BookSearchModal
-        open={isSearchModalOpen}
-        onOpenChange={setIsSearchModalOpen}
-      />
+      <BookSearchModal open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen} />
     </div>
   )
 }
