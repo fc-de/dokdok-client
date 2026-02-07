@@ -5,12 +5,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ApiError } from '@/api/errors'
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
-import { useGlobalModalStore } from '@/store'
 
 import type { SearchBookItem } from '../book.types'
-import { useCreateBook } from '../hooks/useCreateBook'
 import { useSearchBooks } from '../hooks/useSearchBooks'
 
 export interface BookSearchModalProps {
@@ -18,8 +15,10 @@ export interface BookSearchModalProps {
   open: boolean
   /** 모달 열림 상태 변경 핸들러 */
   onOpenChange: (open: boolean) => void
-  /** 책 등록 성공 콜백 */
-  onSuccess?: () => void
+  /** 책 선택 시 호출되는 핸들러 */
+  onSelectBook: (book: SearchBookItem) => void | Promise<void>
+  /** 책 선택 처리 중 여부 (true일 경우 중복 선택 방지) */
+  isPending?: boolean
 }
 
 /**
@@ -33,15 +32,22 @@ export interface BookSearchModalProps {
  * <BookSearchModal
  *   open={isOpen}
  *   onOpenChange={setIsOpen}
- *   onSuccess={() => console.log('등록 완료')}
+ *   onSelectBook={async (book) => {
+ *     await registerBook({ title: book.title, ... })
+ *   }}
+ *   isPending={isRegistering}
  * />
  * ```
  */
-export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookSearchModalProps) {
+export default function BookSearchModal({
+  open,
+  onOpenChange,
+  onSelectBook,
+  isPending,
+}: BookSearchModalProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const listRef = useRef<HTMLDivElement>(null)
-  const { openError } = useGlobalModalStore()
 
   // 디바운싱: 입력 후 300ms 후에 검색
   useEffect(() => {
@@ -55,9 +61,6 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
   // 도서 검색
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSearchBooks(debouncedQuery)
 
-  // 책 등록
-  const { mutateAsync: registerBook, isPending: isRegistering } = useCreateBook()
-
   const books = data?.pages.flatMap((page) => page.items) ?? []
 
   // 무한스크롤 처리
@@ -70,29 +73,13 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
-  // 책 선택 시 등록
+  // 책 선택
   const handleSelectBook = async (book: SearchBookItem) => {
-    if (isRegistering) return
+    if (isPending) return
 
-    try {
-      await registerBook({
-        title: book.title,
-        authors: book.authors.join(', '),
-        publisher: book.publisher,
-        isbn: book.isbn,
-        thumbnail: book.thumbnail,
-      })
-
-      onOpenChange(false)
-      onSuccess?.()
-      resetState()
-    } catch (error) {
-      if (error instanceof ApiError) {
-        openError('오류', error.userMessage)
-      } else {
-        openError('오류', '책 등록 중 오류가 발생했습니다.')
-      }
-    }
+    await onSelectBook(book)
+    onOpenChange(false)
+    resetState()
   }
 
   // 모달 닫을 때 상태 초기화
@@ -131,7 +118,7 @@ export default function BookSearchModal({ open, onOpenChange, onSuccess }: BookS
                   key={`${book.isbn}-${book.title}`}
                   book={book}
                   onClick={() => handleSelectBook(book)}
-                  disabled={isRegistering}
+                  disabled={isPending}
                 />
               ))}
               {isFetchingNextPage && (

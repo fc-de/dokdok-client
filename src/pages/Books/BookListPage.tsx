@@ -1,11 +1,13 @@
 import { useCallback, useState } from 'react'
 
-import { BookList, BookSearchModal, useBooks, useDeleteBook } from '@/features/book'
+import type { SearchBookItem } from '@/features/book'
+import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 export default function BookListPage() {
   const { mutateAsync: deleteBook } = useDeleteBook()
+  const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
   const { openConfirm } = useGlobalModalStore()
 
   // 현재 활성 탭 상태
@@ -220,7 +222,20 @@ export default function BookListPage() {
         </TabsContent>
       </Tabs>
 
-      <BookSearchModal open={isSearchModalOpen} onOpenChange={setIsSearchModalOpen} />
+      <BookSearchModal
+        open={isSearchModalOpen}
+        onOpenChange={setIsSearchModalOpen}
+        onSelectBook={async (book: SearchBookItem) => {
+          await createBook({
+            title: book.title,
+            authors: book.authors.join(', '),
+            publisher: book.publisher,
+            isbn: book.isbn,
+            thumbnail: book.thumbnail,
+          })
+        }}
+        isPending={isCreating}
+      />
     </div>
   )
 }
