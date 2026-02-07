@@ -3,6 +3,8 @@ import * as React from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
+import { FilledInfoIcon } from '../assets/icon/FilledInfo'
+
 type ContainerProps = {
   className?: string
   children?: React.ReactNode
@@ -13,6 +15,7 @@ type TitleProps = {
   children: string
   required?: boolean
   errorMessage?: string
+  infoMessage?: string
 }
 
 type ContentProps = {
@@ -37,27 +40,35 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
   )
 })
 
-function Title({ className, children, required, errorMessage }: TitleProps) {
+function Title({ className, children, required, errorMessage, infoMessage }: TitleProps) {
   return (
-    <div className="flex justify-between">
-      <div className="flex items-center gap-xsmall">
-        <h3 className={cn('typo-heading3', className)}>
-          {children}
-          {required && (
-            <span
-              className="leading-none align-top ml-xtiny text-primary-300 text-caption2"
-              aria-hidden="true"
-            >
-              *
-            </span>
-          )}
-        </h3>
-      </div>
-      {errorMessage && (
-        <span className="flex items-center typo-body3 text-accent-300 gap-tiny">
-          <Info size="16" /> {errorMessage}
-        </span>
+    <div className="flex flex-col gap-medium">
+      {infoMessage && (
+        <div className="flex gap-tiny text-purple-200">
+          <FilledInfoIcon size={18} />
+          {infoMessage}
+        </div>
       )}
+      <div className="flex justify-between">
+        <div className="flex items-center gap-xsmall">
+          <h3 className={cn('typo-heading3', className)}>
+            {children}
+            {required && (
+              <span
+                className="leading-none align-top ml-xtiny text-primary-300 text-caption2"
+                aria-hidden="true"
+              >
+                *
+              </span>
+            )}
+          </h3>
+        </div>
+        {errorMessage && (
+          <span className="flex items-center typo-body3 text-accent-300 gap-tiny">
+            <Info size="16" /> {errorMessage}
+          </span>
+        )}
+      </div>
     </div>
   )
 }

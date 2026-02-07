@@ -17,6 +17,7 @@ import {
   OnboardingPage,
   RecordListPage,
 } from '@/pages'
+import PreOpinionWritePage from '@/pages/PreOpinions/PreOpinionWritePage'
 import { ROUTES } from '@/shared/constants'
 import { AuthLayout, MainLayout, RootLayout } from '@/shared/layout'
 
@@ -99,6 +100,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/pre-opinions/new`,
+                element: <PreOpinionWritePage />,
               },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/setting`,
