@@ -8,16 +8,22 @@ import { ApiError, ErrorCode } from '@/api/errors'
 
 import type {
   BookDetail,
+  BookListItem,
   BookReview,
+  CreateBookBody,
   CreateBookRecordBody,
   CreateBookReviewBody,
   GetBookRecordsParams,
   GetBookRecordsResponse,
   GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
+  GetBooksParams,
+  GetBooksResponse,
   GetGatheringsParams,
   GetGatheringsResponse,
   PersonalRecord,
+  SearchBooksParams,
+  SearchBooksResponse,
   UpdateBookRecordBody,
 } from './book.types'
 
@@ -36,6 +42,40 @@ const mockBookDetail: BookDetail = {
   bookReadingStatus: 'READING',
   thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791189327156.jpg',
 }
+
+const mockBookListItems: BookListItem[] = [
+  {
+    bookId: 1,
+    title: '우리에게는 매일 철학이 필요하다',
+    publisher: '피터 홀린스',
+    authors: '피터 홀린스',
+    bookReadingStatus: 'READING',
+    thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791189327156.jpg',
+    rating: 0.5,
+    gatheringNames: ['책책책 책을 읽자', 'FCDE'],
+  },
+  {
+    bookId: 2,
+    title: '데미안',
+    publisher: '민음사',
+    authors: '헤르만 헤세',
+    bookReadingStatus: 'READING',
+    thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937460449.jpg',
+    rating: 4.5,
+    gatheringNames: ['주말 독서 모임'],
+  },
+  {
+    bookId: 3,
+    title: '1984',
+    publisher: '민음사',
+    authors: '조지 오웰',
+    bookReadingStatus: 'COMPLETED',
+    thumbnail:
+      'https://i.namu.wiki/i/OuId9i6YhTdBIk5XDIZWVre8GtdOv_OaaXSL_WlGUvPisTnbN2jwn0lf_b8sJp_bjBLoKgl6Fa4-enbgZJIRLA.webp',
+    rating: 5,
+    gatheringNames: [],
+  },
+]
 
 const mockBookReview: BookReview = {
   reviewId: 1,
@@ -571,6 +611,25 @@ export async function deleteBookRecord(personalBookId: number, recordId: number)
 }
 
 /**
+ * 책 삭제
+ *
+ * @param bookId - 삭제할 책 ID
+ *
+ * @example
+ * ```typescript
+ * await deleteBook(1)
+ * ```
+ */
+export async function deleteBook(bookId: number): Promise<void> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return
+  }
+
+  return api.delete(`/api/book/${bookId}`)
+}
+
+/**
  * 책 평가 생성
  *
  * @param bookId - 평가할 책 ID
@@ -603,6 +662,92 @@ export async function createBookReview(
   }
 
   return api.post<BookReview>(`/api/book/${bookId}/reviews`, body)
+}
+
+// ============================================================
+// Book List (책 목록) API
+// ============================================================
+
+/**
+ * 책 목록 조회
+ *
+ * 커서 기반 페이지네이션을 지원하며, 상태별 필터링이 가능합니다.
+ *
+ * @param params - 조회 파라미터 (status, pageSize, cursorAddedAt, cursorBookId)
+ * @returns 책 목록 및 페이지네이션 정보
+ *
+ * @example
+ * ```typescript
+ * // 전체 책 목록 조회
+ * const result = await getBooks()
+ *
+ * // 읽는 중인 책만 조회
+ * const readingBooks = await getBooks({ status: 'READING' })
+ *
+ * // 다음 페이지 조회
+ * const nextPage = await getBooks({
+ *   cursorAddedAt: result.nextCursor?.addedAt,
+ *   cursorBookId: result.nextCursor?.bookId,
+ * })
+ * ```
+ */
+export async function getBooks(params: GetBooksParams = {}): Promise<GetBooksResponse> {
+  if (USE_MOCK) {
+    await delay(MOCK_DELAY)
+    return filterMockBooks(params)
+  }
+
+  return api.get<GetBooksResponse>('/api/book', { params })
+}
+
+function filterMockBooks(params: GetBooksParams): GetBooksResponse {
+  const { status, gatheringId, ratingMin, ratingMax, sort = 'LATEST' } = params
+
+  let filteredItems = [...mockBookListItems]
+
+  // 상태 필터
+  if (status) {
+    filteredItems = filteredItems.filter((item) => item.bookReadingStatus === status)
+  }
+
+  // 모임 필터 - gatheringId가 있으면 해당 모임 이름을 가진 책만 필터링
+  if (gatheringId !== undefined) {
+    const gathering = mockGatheringsResponse.items.find((g) => g.gatheringId === gatheringId)
+    if (gathering) {
+      filteredItems = filteredItems.filter((item) =>
+        item.gatheringNames.includes(gathering.gatheringName)
+      )
+    }
+  }
+
+  // 별점 필터 - 선택한 범위 내의 별점만 필터링 (정수 기준)
+  if (ratingMin !== undefined && ratingMax !== undefined && ratingMin > 0) {
+    filteredItems = filteredItems.filter((item) => {
+      const floorRating = Math.floor(item.rating)
+      return floorRating >= ratingMin && floorRating <= ratingMax
+    })
+  }
+
+  // 정렬 처리 (bookId 기준으로 시뮬레이션)
+  const sortMultiplier = sort === 'LATEST' ? -1 : 1
+  filteredItems.sort((a, b) => sortMultiplier * (a.bookId - b.bookId))
+
+  const readingCount = mockBookListItems.filter(
+    (item) => item.bookReadingStatus === 'READING'
+  ).length
+  const completedCount = mockBookListItems.filter(
+    (item) => item.bookReadingStatus === 'COMPLETED'
+  ).length
+
+  return {
+    items: filteredItems,
+    pageSize: params.pageSize ?? 10,
+    hasNext: false,
+    nextCursor: null,
+    totalCount: mockBookListItems.length,
+    readingCount,
+    completedCount,
+  }
 }
 
 function filterMockBookRecords(
@@ -665,4 +810,50 @@ function filterMockBookRecords(
     meetingPersonalRecords,
     meetingPreOpinions,
   }
+}
+
+// ============================================================
+// Book Search (도서 검색) API
+// ============================================================
+
+/**
+ * 도서 검색
+ *
+ * 외부 API를 통해 도서를 검색합니다.
+ * 페이지 기반 페이지네이션을 지원합니다.
+ *
+ * @param params - 검색 파라미터 (query, page)
+ * @returns 검색된 도서 목록 및 페이지네이션 정보
+ *
+ * @example
+ * ```typescript
+ * const result = await searchBooks({ query: '데미안' })
+ * console.log(result.items) // 검색된 도서 목록
+ * ```
+ */
+export async function searchBooks(params: SearchBooksParams): Promise<SearchBooksResponse> {
+  return api.get<SearchBooksResponse>('/api/book/search', { params })
+}
+
+/**
+ * 책 등록
+ *
+ * 검색한 도서를 내 책장에 등록합니다.
+ *
+ * @param body - 책 등록 요청 바디
+ * @returns 등록된 책 상세 정보
+ *
+ * @example
+ * ```typescript
+ * const book = await createBook({
+ *   title: '데미안',
+ *   authors: '헤르만 헤세',
+ *   publisher: '민음사',
+ *   isbn: '9788937460449',
+ *   thumbnail: 'https://...',
+ * })
+ * ```
+ */
+export async function createBook(body: CreateBookBody): Promise<BookDetail> {
+  return api.post<BookDetail>('/api/book', body)
 }

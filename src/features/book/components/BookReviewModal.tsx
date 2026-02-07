@@ -84,3 +84,5 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
     </Modal>
   )
 }
+
+export default BookReviewModal
