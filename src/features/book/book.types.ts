@@ -53,8 +53,7 @@ export interface BookListCursor {
 }
 
 /** 책 목록 조회 응답 */
-export interface GetBooksResponse
-  extends CursorPaginatedResponse<BookListItem, BookListCursor> {
+export interface GetBooksResponse extends CursorPaginatedResponse<BookListItem, BookListCursor> {
   totalCount: number
   readingCount: number
   completedCount: number
@@ -328,8 +327,10 @@ export interface SearchBooksCursor {
 }
 
 /** 도서 검색 응답 */
-export interface SearchBooksResponse
-  extends CursorPaginatedResponse<SearchBookItem, SearchBooksCursor> {
+export interface SearchBooksResponse extends CursorPaginatedResponse<
+  SearchBookItem,
+  SearchBooksCursor
+> {
   totalCount: number
 }
 
