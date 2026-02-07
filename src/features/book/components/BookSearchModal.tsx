@@ -77,9 +77,12 @@ export default function BookSearchModal({
   const handleSelectBook = async (book: SearchBookItem) => {
     if (isPending) return
 
-    await onSelectBook(book)
-    onOpenChange(false)
-    resetState()
+    try {
+      await onSelectBook(book)
+      handleOpenChange(false)
+    } catch {
+      // 에러는 onSelectBook 호출부에서 처리됨
+    }
   }
 
   // 모달 닫을 때 상태 초기화
@@ -88,14 +91,14 @@ export default function BookSearchModal({
     setDebouncedQuery('')
   }
 
-  const handleClose = () => {
-    onOpenChange(false)
-    resetState()
+  const handleOpenChange = (nextOpen: boolean) => {
+    onOpenChange(nextOpen)
+    if (!nextOpen) resetState()
   }
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent variant="wide" onEscapeKeyDown={handleClose} onPointerDownOutside={handleClose}>
+    <Modal open={open} onOpenChange={handleOpenChange}>
+      <ModalContent variant="wide">
         <ModalHeader>
           <ModalTitle>도서 검색</ModalTitle>
         </ModalHeader>

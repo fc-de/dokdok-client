@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { SearchBookItem } from '@/features/book'
 import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
@@ -16,6 +16,12 @@ export default function BookListPage() {
   // 편집 모드 상태
   const [isEditMode, setIsEditMode] = useState(false)
   const [selectedBookIds, setSelectedBookIds] = useState<Set<number>>(new Set())
+
+  // 편집 모드 ref (콜백 안정성을 위해)
+  const isEditModeRef = useRef(isEditMode)
+  useEffect(() => {
+    isEditModeRef.current = isEditMode
+  }, [isEditMode])
 
   // 도서 검색 모달 상태
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
@@ -125,24 +131,21 @@ export default function BookListPage() {
   }
 
   // 필터링된 책 목록 변경 핸들러 (필터 변경 시 selectedBookIds도 정리)
-  const handleFilteredBooksChange = useCallback(
-    (bookIds: number[]) => {
-      setFilteredBookIds(bookIds)
+  const handleFilteredBooksChange = useCallback((bookIds: number[]) => {
+    setFilteredBookIds(bookIds)
 
-      // 편집 모드일 때만 selectedBookIds 정리
-      if (isEditMode) {
-        const filteredSet = new Set(bookIds)
-        setSelectedBookIds((prev) => {
-          const cleaned = new Set([...prev].filter((id) => filteredSet.has(id)))
-          if (cleaned.size !== prev.size) {
-            return cleaned
-          }
-          return prev
-        })
-      }
-    },
-    [isEditMode]
-  )
+    // 편집 모드일 때만 selectedBookIds 정리
+    if (isEditModeRef.current) {
+      const filteredSet = new Set(bookIds)
+      setSelectedBookIds((prev) => {
+        const cleaned = new Set([...prev].filter((id) => filteredSet.has(id)))
+        if (cleaned.size !== prev.size) {
+          return cleaned
+        }
+        return prev
+      })
+    }
+  }, [])
 
   // 멤버십 기반 전체 선택 여부 확인
   const isAllSelected =
@@ -226,13 +229,20 @@ export default function BookListPage() {
         open={isSearchModalOpen}
         onOpenChange={setIsSearchModalOpen}
         onSelectBook={async (book: SearchBookItem) => {
-          await createBook({
-            title: book.title,
-            authors: book.authors.join(', '),
-            publisher: book.publisher,
-            isbn: book.isbn,
-            thumbnail: book.thumbnail,
-          })
+          try {
+            await createBook({
+              title: book.title,
+              authors: book.authors.join(', '),
+              publisher: book.publisher,
+              isbn: book.isbn,
+              thumbnail: book.thumbnail,
+            })
+          } catch (error) {
+            openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
+              confirmText: '확인',
+            })
+            throw error
+          }
         }}
         isPending={isCreating}
       />
