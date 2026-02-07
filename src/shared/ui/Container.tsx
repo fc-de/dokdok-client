@@ -16,6 +16,7 @@ type TitleProps = {
   required?: boolean
   errorMessage?: string
   infoMessage?: string
+  badge?: React.ReactNode
 }
 
 type ContentProps = {
@@ -40,7 +41,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
   )
 })
 
-function Title({ className, children, required, errorMessage, infoMessage }: TitleProps) {
+function Title({ className, children, required, errorMessage, infoMessage, badge }: TitleProps) {
   return (
     <div className="flex flex-col gap-medium">
       {infoMessage && (
@@ -62,6 +63,7 @@ function Title({ className, children, required, errorMessage, infoMessage }: Tit
               </span>
             )}
           </h3>
+          {badge}
         </div>
         {errorMessage && (
           <span className="flex items-center typo-body3 text-accent-300 gap-tiny">

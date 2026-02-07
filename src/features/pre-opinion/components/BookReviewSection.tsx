@@ -37,10 +37,10 @@ const BookReviewSection = ({ bookId, onChange }: BookReviewSectionProps) => {
   }
 
   return (
-    <Container>
+    <Container className="gap-small">
       <Container.Title
         infoMessage="내 책장의 기록을 자동으로 불러왔어요. 여기서 수정하는 내용은 내 책장에도 똑같이 반영돼요!"
-        className="typo-subtitle3"
+        className="typo-subtitle3 pl-xxtiny"
       >
         이 책은 어떠셨나요?
       </Container.Title>

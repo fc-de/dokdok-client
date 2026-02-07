@@ -4,14 +4,16 @@ import { useMeetingDetail } from '@/features/meetings'
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
 import PreOpinionQuestionSection from '@/features/pre-opinion/components/PreOpinionQuestionSection'
 import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionWriteHeader'
+import { usePreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { Card } from '@/shared/ui'
 
 export default function PreOpinionWritePage() {
   const { meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
-  const { data: meeting, isLoading } = useMeetingDetail(Number(meetingId))
+  const { data: meeting, isLoading: isMeetingLoading } = useMeetingDetail(Number(meetingId))
+  const { data: preOpinion, isLoading: isPreOpinionLoading } = usePreOpinion(Number(meetingId))
 
-  if (isLoading || !meeting) {
+  if (isMeetingLoading || isPreOpinionLoading || !meeting || !preOpinion) {
     return (
       <>
         <SubPageHeader />
@@ -25,7 +27,10 @@ export default function PreOpinionWritePage() {
   return (
     <>
       <SubPageHeader />
-      <PreOpinionWriteHeader />
+      <PreOpinionWriteHeader
+        book={preOpinion.book}
+        updatedAt={preOpinion.preOpinion.updatedAt}
+      />
 
       <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
         <section className="max-w-[1200px] mx-auto py-large flex flex-col gap-base">
@@ -35,7 +40,7 @@ export default function PreOpinionWritePage() {
             </p>
           </Card>
           <BookReviewSection bookId={meeting.book.bookId} />
-          <PreOpinionQuestionSection />
+          <PreOpinionQuestionSection topics={preOpinion.preOpinion.topics} />
         </section>
       </div>
     </>

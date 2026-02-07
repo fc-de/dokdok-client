@@ -1,9 +1,32 @@
 import { useEffect, useRef, useState } from 'react'
 
+import type { PreOpinionBook } from '@/features/pre-opinion/preOpinion.types'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui'
 
-const PreOpinionWriteHeader = () => {
+import { formatUpdatedAt } from '../lib/date'
+
+interface PreOpinionWriteHeaderProps {
+  book: PreOpinionBook
+  updatedAt: string | null
+}
+
+/**
+ * 사전 의견 작성 페이지 헤더
+ *
+ * @description
+ * 책 제목, 저자, 마지막 저장 시각을 표시하고
+ * 스크롤 시 sticky로 고정되며 하단 그림자가 생깁니다.
+ *
+ * @example
+ * ```tsx
+ * <PreOpinionWriteHeader
+ *   book={{ bookId: 1, title: '데미안', author: '헤르만 헤세' }}
+ *   updatedAt="2026-02-06T09:12:30"
+ * />
+ * ```
+ */
+const PreOpinionWriteHeader = ({ book, updatedAt }: PreOpinionWriteHeaderProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
 
@@ -36,12 +59,14 @@ const PreOpinionWriteHeader = () => {
             <div className="flex flex-col gap-xtiny">
               <h3 className="typo-heading3 text-black">사전 의견 작성하기</h3>
               <p className="text-grey-600">
-                {'데미안'} · {'헤르만 헤세'}
+                {book.title} · {book.author}
               </p>
             </div>
             <div className="flex items-center">
-              <p className="typo-body6 text-grey-600">{'2025. 12.31 18:36 마지막 저장'}</p>
-              <Button className="ml-large mr-xsmall" variant={'secondary'} outline>
+              {updatedAt && (
+                <p className="typo-body6 text-grey-600 mr-large">{formatUpdatedAt(updatedAt)}</p>
+              )}
+              <Button className="mr-xsmall" variant={'secondary'} outline>
                 저장하기
               </Button>
               <Button>공유하기</Button>
