@@ -3,6 +3,8 @@
  * @description Book 도메인 관련 타입 정의
  */
 
+import type { CursorPaginatedResponse } from '@/api/types'
+
 /** 책 읽기 상태 */
 export type BookReadingStatus = 'READING' | 'COMPLETED'
 
@@ -51,11 +53,8 @@ export interface BookListCursor {
 }
 
 /** 책 목록 조회 응답 */
-export interface GetBooksResponse {
-  items: BookListItem[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: BookListCursor | null
+export interface GetBooksResponse
+  extends CursorPaginatedResponse<BookListItem, BookListCursor> {
   totalCount: number
   readingCount: number
   completedCount: number
@@ -110,12 +109,7 @@ export interface GetGatheringsParams {
 }
 
 /** 모임 목록 조회 응답 */
-export interface GetGatheringsResponse {
-  items: Gathering[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: string | null
-}
+export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 
 // ============================================================
 // Book Records (감상 기록) 관련 타입
@@ -261,14 +255,10 @@ export interface GetBookReviewHistoryParams {
 }
 
 /** 책 평가 히스토리 조회 응답 */
-export interface GetBookReviewHistoryResponse {
-  items: BookReviewHistoryItem[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: {
-    historyId: number | null
-  }
-}
+export type GetBookReviewHistoryResponse = CursorPaginatedResponse<
+  BookReviewHistoryItem,
+  { historyId: number | null }
+>
 
 /** 감상 기록 생성 요청 바디 */
 export interface CreateBookRecordBody {
@@ -338,11 +328,8 @@ export interface SearchBooksCursor {
 }
 
 /** 도서 검색 응답 */
-export interface SearchBooksResponse {
-  items: SearchBookItem[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: SearchBooksCursor | null
+export interface SearchBooksResponse
+  extends CursorPaginatedResponse<SearchBookItem, SearchBooksCursor> {
   totalCount: number
 }
 
