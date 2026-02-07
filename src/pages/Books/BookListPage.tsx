@@ -199,6 +199,7 @@ export default function BookListPage() {
         </div>
         <TabsContent value="all">
           <BookList
+            isActive={activeTab === 'all'}
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
@@ -208,6 +209,7 @@ export default function BookListPage() {
         <TabsContent value="reading">
           <BookList
             status="READING"
+            isActive={activeTab === 'reading'}
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
@@ -217,6 +219,7 @@ export default function BookListPage() {
         <TabsContent value="completed">
           <BookList
             status="COMPLETED"
+            isActive={activeTab === 'completed'}
             isEditMode={isEditMode}
             selectedBookIds={selectedBookIds}
             onSelectToggle={handleSelectToggle}
@@ -237,11 +240,10 @@ export default function BookListPage() {
               isbn: book.isbn,
               thumbnail: book.thumbnail,
             })
-          } catch (error) {
+          } catch {
             openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
               confirmText: '확인',
             })
-            throw error
           }
         }}
         isPending={isCreating}

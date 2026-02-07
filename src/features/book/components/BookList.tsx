@@ -15,6 +15,8 @@ import BookCard from './BookCard'
 
 type BookListProps = {
   status?: BookReadingStatus
+  /** 현재 활성 탭인지 여부 (비활성 탭에서 onFilteredBooksChange 호출 방지) */
+  isActive?: boolean
   /** 편집 모드 여부 */
   isEditMode?: boolean
   /** 선택된 책 ID 목록 */
@@ -52,6 +54,7 @@ type BookListProps = {
  */
 function BookList({
   status,
+  isActive = true,
   isEditMode = false,
   selectedBookIds,
   onSelectToggle,
@@ -118,10 +121,12 @@ function BookList({
   // 필터링된 책 ID 목록
   const bookIds = useMemo(() => books.map((book) => book.bookId), [books])
 
-  // 필터링된 책 목록이 변경될 때 부모에 알림
+  // 필터링된 책 목록이 변경될 때 부모에 알림 (활성 탭일 때만)
   useEffect(() => {
-    onFilteredBooksChange?.(bookIds)
-  }, [bookIds, onFilteredBooksChange])
+    if (isActive) {
+      onFilteredBooksChange?.(bookIds)
+    }
+  }, [bookIds, onFilteredBooksChange, isActive])
 
   if (isError) {
     return (
