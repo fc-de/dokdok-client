@@ -50,7 +50,7 @@ const PreOpinionWriteHeader = ({ book, updatedAt }: PreOpinionWriteHeaderProps) 
       <div ref={sentinelRef} className="h-0" aria-hidden />
       <div
         className={cn(
-          'sticky top-[108px] z-30 bg-white w-screen ml-[calc(-50vw+50%)] transition-shadow duration-200',
+          'sticky top-[123px] z-30 bg-white w-screen ml-[calc(-50vw+50%)] transition-shadow duration-200',
           isStuck && '[box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)]'
         )}
       >
