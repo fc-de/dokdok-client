@@ -195,12 +195,14 @@ export default function MeetingDetailPage() {
           </Tabs>
         </div>
       </div>
-      <ConfirmTopicModal
-        open={isConfirmTopicOpen}
-        onOpenChange={setIsConfirmTopicOpen}
-        gatheringId={Number(gatheringId)}
-        meetingId={Number(meetingId)}
-      />
+      {isConfirmTopicOpen && (
+        <ConfirmTopicModal
+          open={isConfirmTopicOpen}
+          onOpenChange={setIsConfirmTopicOpen}
+          gatheringId={Number(gatheringId)}
+          meetingId={Number(meetingId)}
+        />
+      )}
     </>
   )
 }

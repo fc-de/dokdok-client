@@ -44,14 +44,13 @@ export default function ConfirmTopicModal({
 
   const topics = topicsInfiniteData?.pages.flatMap((page) => page.items) ?? []
 
-  const handleToggle = (id: string) => {
-    setSelectedTopicIds((prev) =>
-      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
-    )
+  const resetSelected = () => {
+    setSelectedTopicIds([])
   }
 
-  const handleClearAll = () => {
-    setSelectedTopicIds([])
+  const handleClose = () => {
+    resetSelected()
+    onOpenChange(false)
   }
 
   const handleConfirm = async () => {
@@ -71,8 +70,7 @@ export default function ConfirmTopicModal({
       },
       {
         onSuccess: () => {
-          setSelectedTopicIds([])
-          onOpenChange(false)
+          handleClose()
         },
         onError: (error) => {
           openError('확정 실패', error.userMessage)
@@ -82,8 +80,8 @@ export default function ConfirmTopicModal({
   }
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
-      <ModalContent variant="wide">
+    <Modal open={open} onOpenChange={handleClose}>
+      <ModalContent variant="wide" onInteractOutside={(e) => e.preventDefault()}>
         <ModalHeader className="items-start">
           <ModalTitle>
             <div className="flex flex-col gap-base">
@@ -91,7 +89,7 @@ export default function ConfirmTopicModal({
               <div className="flex justify-between items-center">
                 <p className="typo-subtitle4 text-grey-600">확정할 주제를 순서대로 선택해주세요</p>
                 {selectedTopicIds.length > 0 && (
-                  <TextButton className="-mr-base" onClick={handleClearAll}>
+                  <TextButton className="-mr-base" onClick={resetSelected}>
                     전체해제
                   </TextButton>
                 )}
@@ -118,7 +116,6 @@ export default function ConfirmTopicModal({
                   createdByNickname={topic.createdByInfo.nickname}
                   topicId={topic.topicId}
                   isSelected={selectedTopicIds.includes(topic.topicId.toString())}
-                  onClick={() => handleToggle(topic.topicId.toString())}
                 />
               ))}
             </NumberedCheckboxGroup>

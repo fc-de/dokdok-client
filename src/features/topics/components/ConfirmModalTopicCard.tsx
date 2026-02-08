@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 import { cn } from '@/shared/lib/utils'
 import { Badge, Card } from '@/shared/ui'
 import { NumberedCheckbox } from '@/shared/ui/NumberedCheckbox'
@@ -9,7 +11,6 @@ type ConfirmModalTopicCardProps = {
   createdByNickname: string
   topicId: number
   isSelected: boolean
-  onClick: () => void
 }
 
 export default function ConfirmModalTopicCard({
@@ -19,15 +20,16 @@ export default function ConfirmModalTopicCard({
   createdByNickname,
   topicId,
   isSelected,
-  onClick,
 }: ConfirmModalTopicCardProps) {
+  const checkboxRef = useRef<HTMLButtonElement>(null)
+
   return (
-    <div className="cursor-pointer" onClick={onClick}>
+    <div className="cursor-pointer" onClick={() => checkboxRef.current?.click()}>
       <Card
         className={cn('flex gap-small items-start p-medium', isSelected && 'border-primary-200')}
       >
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
-          <NumberedCheckbox id={topicId.toString()} />
+          <NumberedCheckbox id={topicId.toString()} ref={checkboxRef} />
         </div>
         <div className="flex flex-col gap-small flex-1">
           <div className="flex justify-between items-start">
