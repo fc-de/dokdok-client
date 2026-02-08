@@ -89,7 +89,7 @@ export default function GatheringListPage() {
       {/* 탭 + 버튼 영역 */}
       <div className="flex items-center justify-between">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)}>
-          <TabsList size="large" className="gap-medium">
+          <TabsList size="large">
             <TabsTrigger value="all" badge={totalCount}>
               전체
             </TabsTrigger>
