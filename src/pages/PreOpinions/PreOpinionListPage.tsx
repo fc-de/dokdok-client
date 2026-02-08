@@ -13,7 +13,7 @@ import { useGlobalModalStore } from '@/store'
 export default function PreOpinionListPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
   const navigate = useNavigate()
-  const { openError } = useGlobalModalStore()
+  const openError = useGlobalModalStore((state) => state.openError)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null)
