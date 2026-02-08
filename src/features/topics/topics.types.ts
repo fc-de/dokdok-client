@@ -198,3 +198,30 @@ export type LikeTopicResponse = {
   /** 새로운 좋아요 수 */
   newCount: number
 }
+
+/**
+ * 주제 확정 요청 파라미터
+ */
+export type ConfirmTopicsParams = {
+  /** 모임 식별자 */
+  gatheringId: number
+  /** 약속 식별자 */
+  meetingId: number
+  /** 확정할 주제 ID 목록 (순서대로) */
+  topicIds: number[]
+}
+
+/**
+ * 주제 확정 응답
+ */
+export type ConfirmTopicsResponse = {
+  /** 약속 식별자 */
+  meetingId: number
+  /** 주제 상태 */
+  topicStatus: TopicStatus
+  /** 확정된 주제 목록 */
+  topics: Array<{
+    topicId: number
+    confirmOrder: number
+  }>
+}

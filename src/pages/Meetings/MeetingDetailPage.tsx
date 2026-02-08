@@ -15,6 +15,7 @@ import type {
 } from '@/features/topics'
 import {
   ConfirmedTopicList,
+  ConfirmTopicModal,
   ProposedTopicList,
   TopicHeader,
   useConfirmedTopics,
@@ -26,6 +27,7 @@ export default function MeetingDetailPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
 
   const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
+  const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
 
   const { data: meeting, isLoading, error } = useMeetingDetail(Number(meetingId))
 
@@ -109,7 +111,7 @@ export default function MeetingDetailPage() {
         </div>
         {/* 약속 로딩 적용 */}
 
-        <div className="flex flex-col flex-1 gap-base">
+        <div className="flex flex-col flex-1 gap-base pb-base">
           <p className="text-black typo-heading3">주제</p>
 
           <Tabs
@@ -147,6 +149,8 @@ export default function MeetingDetailPage() {
                     confirmedTopic={meeting?.confirmedTopicExpand ?? false}
                     actions={proposedTopicsInfiniteData.pages[0].actions}
                     confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                    proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
+                    onOpenChange={setIsConfirmTopicOpen}
                   />
                   <ProposedTopicList
                     topics={proposedTopicsInfiniteData.pages.flatMap(
@@ -191,6 +195,12 @@ export default function MeetingDetailPage() {
           </Tabs>
         </div>
       </div>
+      <ConfirmTopicModal
+        open={isConfirmTopicOpen}
+        onOpenChange={setIsConfirmTopicOpen}
+        gatheringId={Number(gatheringId)}
+        meetingId={Number(meetingId)}
+      />
     </>
   )
 }

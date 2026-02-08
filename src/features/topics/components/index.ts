@@ -1,4 +1,6 @@
 export { default as ConfirmedTopicList } from './ConfirmedTopicList'
+export { default as ConfirmModalTopicCard } from './ConfirmModalTopicCard'
+export { default as ConfirmTopicModal } from './ConfirmTopicModal'
 export { default as DefaultTopicCard } from './DefaultTopicCard'
 export { default as EmptyTopicList } from './EmptyTopicList'
 export { default as ProposedTopicList } from './ProposedTopicList'

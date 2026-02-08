@@ -7,8 +7,10 @@ import { api } from '@/api/client'
 import { PAGE_SIZES } from '@/shared/constants'
 
 import { TOPICS_ENDPOINTS } from './topics.endpoints'
-import { getMockConfirmedTopics, getMockProposedTopics } from './topics.mock'
+import { getMockConfirmedTopics, getMockConfirmTopics, getMockProposedTopics } from './topics.mock'
 import type {
+  ConfirmTopicsParams,
+  ConfirmTopicsResponse,
   DeleteTopicParams,
   GetConfirmedTopicsParams,
   GetConfirmedTopicsResponse,
@@ -175,4 +177,34 @@ export const likeTopicToggle = async (params: LikeTopicParams): Promise<LikeTopi
 
   // 실제 API 호출 (로그인 완료 후 사용)
   return api.post<LikeTopicResponse>(TOPICS_ENDPOINTS.LIKE_TOGGLE(gatheringId, meetingId, topicId))
+}
+
+/**
+ * 주제 확정
+ *
+ * @description
+ * 선택한 주제들을 순서대로 확정합니다.
+ *
+ * @param params - 확정 파라미터
+ * @param params.gatheringId - 모임 식별자
+ * @param params.meetingId - 약속 식별자
+ * @param params.topicIds - 확정할 주제 ID 목록 (순서대로)
+ *
+ * @returns 확정된 주제 정보
+ */
+export const confirmTopics = async (params: ConfirmTopicsParams): Promise<ConfirmTopicsResponse> => {
+  const { gatheringId, meetingId, topicIds } = params
+
+  // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
+  // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
+  if (USE_MOCK_DATA) {
+    // 실제 API 호출을 시뮬레이션하기 위한 지연
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockConfirmTopics(meetingId, topicIds)
+  }
+
+  // 실제 API 호출 (로그인 완료 후 사용)
+  return api.post<ConfirmTopicsResponse>(TOPICS_ENDPOINTS.CONFIRM(gatheringId, meetingId), {
+    topicIds,
+  })
 }
