@@ -23,7 +23,7 @@ export default function GatheringDetailInfo({
   const leader = members.find((m) => m.role === 'LEADER')
   const otherMembers = members.filter((m) => m.role !== 'LEADER')
   const visibleMembers = otherMembers.slice(0, MAX_VISIBLE_MEMBERS)
-  const remainingCount = totalMembers - 1 - visibleMembers.length // 모임장 제외한 나머지 인원
+  const remainingCount = totalMembers - 1 - visibleMembers.length
 
   return (
     <section className="flex flex-col gap-1.5 transition-all duration-300">

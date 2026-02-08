@@ -31,9 +31,11 @@ export const useToggleFavorite = () => {
     },
     onMutate: async (gatheringId) => {
       // 진행 중인 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: gatheringQueryKeys.lists() })
-      await queryClient.cancelQueries({ queryKey: gatheringQueryKeys.favorites() })
-      await queryClient.cancelQueries({ queryKey: gatheringQueryKeys.detail(gatheringId) })
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.lists() }),
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.favorites() }),
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.detail(gatheringId) }),
+      ])
 
       // 이전 데이터 스냅샷
       const previousLists = queryClient.getQueryData(gatheringQueryKeys.lists())

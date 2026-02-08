@@ -26,7 +26,7 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
     scrollContainerRef.current?.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' })
   }
 
-  const handleScrollRight = () => {
+  const handleScrollRight = async () => {
     const container = scrollContainerRef.current
     if (!container) return
 
@@ -34,7 +34,7 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
     const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 10
 
     if (isAtEnd && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
+      await fetchNextPage()
     }
 
     container.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' })

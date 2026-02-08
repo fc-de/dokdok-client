@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useUserProfile } from '@/features/user'
@@ -7,7 +7,7 @@ import { Button, Pagination, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
 import type { GatheringUserRole, MeetingFilter } from '../gatherings.types'
 import { useGatheringMeetings, useMeetingTabCounts } from '../hooks'
-import { getMeetingDisplayStatus, sortMeetings } from '../lib/meetingStatus'
+import { sortMeetings } from '../lib/meetingStatus'
 import EmptyState from './EmptyState'
 import GatheringMeetingCard from './GatheringMeetingCard'
 
@@ -33,7 +33,6 @@ export default function GatheringMeetingSection({
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<MeetingFilter>('ALL')
   const [currentPage, setCurrentPage] = useState(0)
-  const sectionRef = useRef<HTMLElement>(null)
 
   const isLeader = currentUserRole === 'LEADER'
 
@@ -57,16 +56,8 @@ export default function GatheringMeetingSection({
   const totalPages = data?.totalPages ?? 0
   const totalCount = data?.totalCount ?? 0
 
-  // 정렬 후 진행 중 약속을 상단에 배치
-  const sortedMeetings = sortMeetings(meetings)
-  const displayMeetings = sortedMeetings.sort((a, b) => {
-    const statusA = getMeetingDisplayStatus(a.startDateTime, a.endDateTime)
-    const statusB = getMeetingDisplayStatus(b.startDateTime, b.endDateTime)
-    // 진행 중인 약속을 맨 앞으로
-    if (statusA === 'IN_PROGRESS' && statusB !== 'IN_PROGRESS') return -1
-    if (statusA !== 'IN_PROGRESS' && statusB === 'IN_PROGRESS') return 1
-    return 0
-  })
+  // 정렬: 진행 중 → 예정 → 종료 (sortMeetings에서 처리)
+  const displayMeetings = sortMeetings(meetings)
 
   // 탭 변경 시 페이지 초기화
   const handleTabChange = (filter: MeetingFilter) => {
@@ -100,7 +91,7 @@ export default function GatheringMeetingSection({
   }
 
   return (
-    <section ref={sectionRef} className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium">
       {/* 섹션 헤더: 약속 + 탭들 + 버튼들 (한 줄) */}
       <div className="flex items-center justify-between h-9">
         <div className="flex items-center gap-large">
