@@ -35,7 +35,7 @@ export const useGatherings = () => {
     PageParam
   >({
     queryKey: gatheringQueryKeys.lists(),
-    queryFn: async ({ pageParam }) => {
+    queryFn: async ({ pageParam }: { pageParam: PageParam }) => {
       const isFirstPage = !pageParam
       const response = await getGatherings({
         pageSize: isFirstPage ? INITIAL_PAGE_SIZE : NEXT_PAGE_SIZE,
@@ -44,8 +44,8 @@ export const useGatherings = () => {
       })
       return response.data
     },
-    initialPageParam: undefined,
-    getNextPageParam: (lastPage): PageParam => {
+    initialPageParam: undefined as PageParam,
+    getNextPageParam: (lastPage: GatheringListResponse): PageParam => {
       if (!lastPage.hasNext || !lastPage.nextCursor) return undefined
       return lastPage.nextCursor
     },
