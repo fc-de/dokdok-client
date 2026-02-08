@@ -35,7 +35,7 @@ export type ProposedTopicItem = {
   meetingId: number
   /** 주제 제목 */
   title: string
-  /** 주제 설명 */
+  /** 주제 설명 (Todo : 없을떄 null인지 빈값인지 체크해야함)*/
   description: string
   /** 주제 타입 */
   topicType: TopicType
@@ -64,7 +64,7 @@ export type ConfirmedTopicItem = {
   topicId: number
   /** 주제 제목 */
   title: string
-  /** 주제 설명 */
+  /** 주제 설명 (Todo : 없을떄 null인지 빈값인지 체크해야함)*/
   description: string
   /** 주제 타입 */
   topicType: TopicType
