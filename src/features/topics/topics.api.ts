@@ -192,7 +192,9 @@ export const likeTopicToggle = async (params: LikeTopicParams): Promise<LikeTopi
  *
  * @returns 확정된 주제 정보
  */
-export const confirmTopics = async (params: ConfirmTopicsParams): Promise<ConfirmTopicsResponse> => {
+export const confirmTopics = async (
+  params: ConfirmTopicsParams
+): Promise<ConfirmTopicsResponse> => {
   const { gatheringId, meetingId, topicIds } = params
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
