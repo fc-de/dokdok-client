@@ -1,2 +1,8 @@
 export { default as EmptyState } from './EmptyState'
+export { default as GatheringBookCard } from './GatheringBookCard'
+export { default as GatheringBookshelfSection } from './GatheringBookshelfSection'
 export { default as GatheringCard } from './GatheringCard'
+export { default as GatheringDetailHeader } from './GatheringDetailHeader'
+export { default as GatheringDetailInfo } from './GatheringDetailInfo'
+export { default as GatheringMeetingCard } from './GatheringMeetingCard'
+export { default as GatheringMeetingSection } from './GatheringMeetingSection'
