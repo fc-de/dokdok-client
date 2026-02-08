@@ -29,6 +29,8 @@ export const ROUTES = {
   MEETING_UPDATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/update`,
   MEETING_SETTING: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/setting`,
+  PRE_OPINIONS: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions`,
 
   // Records
   RECORDS: '/records',

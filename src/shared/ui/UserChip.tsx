@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './Avatar'
 export interface UserChipProps {
   name: string
   imageUrl?: string
+  variant?: 'leader' | 'host' | 'member'
   selected?: boolean
   removable?: boolean
   disabled?: boolean
@@ -30,6 +31,7 @@ export interface UserChipProps {
 export function UserChip({
   name,
   imageUrl,
+  variant,
   selected = false,
   removable = false,
   disabled = false,
@@ -65,7 +67,7 @@ export function UserChip({
       )}
     >
       <div className="flex items-center gap-small">
-        <Avatar>
+        <Avatar variant={variant}>
           {disabled && <div className="absolute inset-0 bg-white/70" />}
           <AvatarImage src={imageUrl} />
           <AvatarFallback>{name.slice(0, 1)}</AvatarFallback>
