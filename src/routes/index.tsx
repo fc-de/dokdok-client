@@ -15,11 +15,12 @@ import {
   MeetingDetailPage,
   MeetingSettingPage,
   OnboardingPage,
+  PreOpinionListPage,
   RecordListPage,
 } from '@/pages'
 import PreOpinionWritePage from '@/pages/PreOpinions/PreOpinionWritePage'
 import { ROUTES } from '@/shared/constants'
-import { AuthLayout, MainLayout, RootLayout } from '@/shared/layout'
+import { AuthLayout, FullWidthLayout, MainLayout, RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
 import { PublicRoute } from './PublicRoute'
@@ -93,10 +94,22 @@ export const router = createBrowserRouter([
                 path: ROUTES.GATHERING_CREATE,
                 element: <CreateGatheringPage />,
               },
+            ],
+          },
+          // 전체 너비 레이아웃 페이지 (GNB 있음, 컨텐츠 패딩 없음)
+          {
+            element: <FullWidthLayout />,
+            children: [
               {
                 path: `${ROUTES.GATHERINGS}/:id`,
                 element: <GatheringDetailPage />,
               },
+            ],
+          },
+          // 메인 페이지들 계속 (GNB 있음)
+          {
+            element: <MainLayout />,
+            children: [
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
@@ -104,6 +117,10 @@ export const router = createBrowserRouter([
               {
                 path: ROUTES.PRE_OPINION_WRITE(':gatheringId', ':meetingId'),
                 element: <PreOpinionWritePage />,
+              },
+              {
+                path: ROUTES.PRE_OPINIONS(':gatheringId', ':meetingId'),
+                element: <PreOpinionListPage />,
               },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/setting`,

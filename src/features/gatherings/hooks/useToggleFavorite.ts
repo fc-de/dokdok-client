@@ -1,9 +1,13 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { type InfiniteData, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
 
 import { toggleFavorite } from '../gatherings.api'
-import type { FavoriteGatheringListResponse, GatheringListResponse } from '../gatherings.types'
+import type {
+  FavoriteGatheringListResponse,
+  GatheringDetailResponse,
+  GatheringListResponse,
+} from '../gatherings.types'
 import { gatheringQueryKeys } from './gatheringQueryKeys'
 
 /**
@@ -15,6 +19,7 @@ import { gatheringQueryKeys } from './gatheringQueryKeys'
 interface ToggleFavoriteContext {
   previousLists: unknown
   previousFavorites: unknown
+  previousDetail: unknown
 }
 
 export const useToggleFavorite = () => {
@@ -26,15 +31,19 @@ export const useToggleFavorite = () => {
     },
     onMutate: async (gatheringId) => {
       // 진행 중인 쿼리 취소
-      await queryClient.cancelQueries({ queryKey: gatheringQueryKeys.lists() })
-      await queryClient.cancelQueries({ queryKey: gatheringQueryKeys.favorites() })
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.lists() }),
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.favorites() }),
+        queryClient.cancelQueries({ queryKey: gatheringQueryKeys.detail(gatheringId) }),
+      ])
 
       // 이전 데이터 스냅샷
       const previousLists = queryClient.getQueryData(gatheringQueryKeys.lists())
       const previousFavorites = queryClient.getQueryData(gatheringQueryKeys.favorites())
+      const previousDetail = queryClient.getQueryData(gatheringQueryKeys.detail(gatheringId))
 
       // Optimistic update - 목록에서 isFavorite 토글
-      queryClient.setQueryData<{ pages: GatheringListResponse[]; pageParams: unknown[] }>(
+      queryClient.setQueryData<InfiniteData<GatheringListResponse>>(
         gatheringQueryKeys.lists(),
         (old) => {
           if (!old) return old
@@ -67,10 +76,19 @@ export const useToggleFavorite = () => {
         }
       )
 
-      return { previousLists, previousFavorites }
+      // Optimistic update - 상세 페이지
+      queryClient.setQueryData<GatheringDetailResponse>(
+        gatheringQueryKeys.detail(gatheringId),
+        (old) => {
+          if (!old) return old
+          return { ...old, isFavorite: !old.isFavorite }
+        }
+      )
+
+      return { previousLists, previousFavorites, previousDetail }
     },
-    onError: (error, id, context) => {
-      console.error('Failed to toggle favorite:', { error, gatheringId: id })
+    onError: (error, gatheringId, context) => {
+      console.error('Failed to toggle favorite:', { error, gatheringId })
       // 에러 시 롤백
       if (context?.previousLists) {
         queryClient.setQueryData(gatheringQueryKeys.lists(), context.previousLists)
@@ -78,10 +96,14 @@ export const useToggleFavorite = () => {
       if (context?.previousFavorites) {
         queryClient.setQueryData(gatheringQueryKeys.favorites(), context.previousFavorites)
       }
+      if (context?.previousDetail) {
+        queryClient.setQueryData(gatheringQueryKeys.detail(gatheringId), context.previousDetail)
+      }
     },
-    onSettled: () => {
+    onSettled: (_data, _error, gatheringId) => {
       // 즐겨찾기 목록만 최신 데이터로 갱신 (전체 목록은 optimistic update로 충분)
       queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.favorites() })
+      queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.detail(gatheringId) })
     },
   })
 }
