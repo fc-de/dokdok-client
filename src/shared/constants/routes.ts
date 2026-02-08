@@ -32,6 +32,10 @@ export const ROUTES = {
   PRE_OPINIONS: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions`,
 
+  // Topics
+  TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
+
   // Records
   RECORDS: '/records',
   RECORD_DETAIL: (id: number | string) => `/records/${id}`,

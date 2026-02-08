@@ -17,6 +17,7 @@ import {
   OnboardingPage,
   PreOpinionListPage,
   RecordListPage,
+  TopicCreatePage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants'
 import { AuthLayout, FullWidthLayout, MainLayout, RootLayout } from '@/shared/layout'
@@ -112,6 +113,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/topic-create`,
+                element: <TopicCreatePage />,
               },
               {
                 path: ROUTES.PRE_OPINIONS(':gatheringId', ':meetingId'),
