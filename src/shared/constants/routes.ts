@@ -16,6 +16,7 @@ export const ROUTES = {
   GATHERINGS: '/gatherings',
   GATHERING_DETAIL: (id: number | string) => `/gatherings/${id}`,
   GATHERING_CREATE: '/gatherings/create',
+  GATHERING_SETTING: (id: number | string) => `/gatherings/${id}/settings`,
 
   // Invite
   INVITE_BASE: '/invite',
