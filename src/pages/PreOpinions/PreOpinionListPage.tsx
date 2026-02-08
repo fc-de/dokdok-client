@@ -42,7 +42,7 @@ export default function PreOpinionListPage() {
 
     observer.observe(sentinel)
     return () => observer.disconnect()
-  }, [])
+  }, [isLoading])
 
   // 선택된 멤버 ID: 유저가 선택한 값이 있으면 사용, 없으면 첫 번째 제출한 멤버를 기본값으로
   const activeMemberId = useMemo(() => {
@@ -58,7 +58,7 @@ export default function PreOpinionListPage() {
   return (
     <>
       <div ref={sentinelRef} className="h-0" />
-      <SubPageHeader className={isStuck ? 'shadow-[var(--shadow-drop)]' : ''} />
+      <SubPageHeader className={isStuck ? 'shadow-drop' : ''} />
       <h3 className="typo-heading3 text-black mt-large mb-[27px]">사전 의견</h3>
       <div className="flex gap-xlarge">
         {/* 왼쪽: 멤버 리스트 */}

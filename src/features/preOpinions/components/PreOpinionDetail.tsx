@@ -47,7 +47,7 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
   }
 
   return (
-    <div className="flex flex-col gap-xlarge flex-1">
+    <div className="flex flex-col gap-xlarge flex-1 mb-[100px]">
       {/* 회원 정보 섹션 */}
       {memberInfo && (
         <div className="flex justify-between items-center">
