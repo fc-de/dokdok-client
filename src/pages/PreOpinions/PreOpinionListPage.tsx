@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ErrorCode } from '@/api'
 import {
   PreOpinionDetail,
   PreOpinionMemberList,
@@ -24,7 +23,7 @@ export default function PreOpinionListPage() {
   })
 
   useEffect(() => {
-    if (error?.is(ErrorCode.BOOK_REVIEW_ACCESS_DENIED_NOT_WRITTEN)) {
+    if (error) {
       openError('조회 불가', error.userMessage, () => navigate(-1))
     }
   }, [error, openError, navigate])
