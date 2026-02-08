@@ -21,6 +21,10 @@ export const ROUTES = {
   INVITE_BASE: '/invite',
   INVITE: (invitationCode: string) => `/invite/${invitationCode}`,
 
+  // Pre-opinions
+  PRE_OPINION_WRITE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions/new`,
+
   // Meetings
   MEETING_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}`,

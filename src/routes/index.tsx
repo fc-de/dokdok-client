@@ -102,7 +102,7 @@ export const router = createBrowserRouter([
                 element: <MeetingDetailPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/pre-opinions/new`,
+                path: ROUTES.PRE_OPINION_WRITE(':gatheringId', ':meetingId'),
                 element: <PreOpinionWritePage />,
               },
               {
