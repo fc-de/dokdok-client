@@ -19,7 +19,7 @@ export type PreOpinionKeyword = {
 /** 책 평가 정보 */
 export type BookReviewSummary = {
   rating: number
-  keywords: PreOpinionKeyword[]
+  keywordInfo: PreOpinionKeyword[]
 }
 
 /** 멤버 정보 */

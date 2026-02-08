@@ -74,11 +74,11 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
           </div>
 
           {/* 책 키워드 */}
-          {bookReview.keywords.filter((k) => k.type === 'BOOK').length > 0 && (
+          {bookReview.keywordInfo.filter((k) => k.type === 'BOOK').length > 0 && (
             <div>
               <p className="typo-body4 text-grey-600 mb-tiny">책 키워드</p>
               <div className="flex gap-tiny flex-wrap">
-                {bookReview.keywords
+                {bookReview.keywordInfo
                   .filter((k) => k.type === 'BOOK')
                   .map((keyword) => (
                     <Chip key={keyword.id} variant="success">
@@ -90,11 +90,11 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
           )}
 
           {/* 감상 키워드 */}
-          {bookReview.keywords.filter((k) => k.type === 'IMPRESSION').length > 0 && (
+          {bookReview.keywordInfo.filter((k) => k.type === 'IMPRESSION').length > 0 && (
             <div>
               <p className="typo-body4 text-grey-600 mb-tiny">감상 키워드</p>
               <div className="flex gap-tiny flex-wrap">
-                {bookReview.keywords
+                {bookReview.keywordInfo
                   .filter((k) => k.type === 'IMPRESSION')
                   .map((keyword) => (
                     <Chip key={keyword.id} className="bg-blue-100 text-blue-200">

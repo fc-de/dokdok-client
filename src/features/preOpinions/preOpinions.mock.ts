@@ -38,7 +38,7 @@ const mockPreOpinionAnswers: PreOpinionAnswersData = {
       isSubmitted: true,
       bookReview: {
         rating: 4.5,
-        keywords: [
+        keywordInfo: [
           { id: 3, name: '성장', type: 'BOOK' },
           { id: 7, name: '여운이 남는', type: 'IMPRESSION' },
         ],
@@ -64,7 +64,7 @@ const mockPreOpinionAnswers: PreOpinionAnswersData = {
       isSubmitted: true,
       bookReview: {
         rating: 3.0,
-        keywords: [
+        keywordInfo: [
           { id: 5, name: '관계', type: 'BOOK' },
           { id: 7, name: '여운이 남는', type: 'IMPRESSION' },
         ],
