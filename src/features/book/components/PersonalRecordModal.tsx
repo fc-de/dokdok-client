@@ -6,11 +6,7 @@ import type {
   RecordType,
   UpdateBookRecordBody,
 } from '@/features/book/book.types'
-import {
-  useCreateBookRecord,
-  useDeleteBookRecord,
-  useUpdateBookRecord,
-} from '@/features/book/hooks'
+import { useCreateBookRecord, useUpdateBookRecord } from '@/features/book/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
@@ -23,9 +19,8 @@ import {
   ModalTitle,
 } from '@/shared/ui/Modal'
 import { Textarea } from '@/shared/ui/Textarea'
-import { useGlobalModalStore } from '@/store'
 
-type BookLogModalProps = {
+type PersonalRecordModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   bookId: number
@@ -50,13 +45,13 @@ const THOUGHT_MAX_LENGTH = 2000
  * @example
  * ```tsx
  * // 생성 모드
- * <BookLogModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="create" />
+ * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="create" />
  *
  * // 수정 모드
- * <BookLogModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="edit" record={record} />
+ * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="edit" record={record} />
  * ```
  */
-function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModalProps) {
+function PersonalRecordModal({ open, onOpenChange, bookId, mode, record }: PersonalRecordModalProps) {
   // 초기값 계산 함수
   const getInitialState = () => {
     if (mode === 'edit' && record) {
@@ -94,7 +89,6 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
   const [pageNumber, setPageNumber] = useState(initialState.pageNumber)
   const [thought, setThought] = useState(initialState.thought)
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false)
-  const { openConfirm } = useGlobalModalStore()
 
   // 모달이 열릴 때마다 props 기반으로 state 재설정
   useEffect(() => {
@@ -114,11 +108,6 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
     bookId,
     record?.recordId ?? 0
   )
-  const { mutate: deleteRecord, isPending: isDeleting } = useDeleteBookRecord(
-    bookId,
-    record?.recordId ?? 0
-  )
-
   const resetForm = () => {
     setMemoContent('')
     setQuoteContent('')
@@ -163,24 +152,9 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
     }
   }
 
-  const handleDelete = async () => {
-    if (mode === 'edit' && !record) return
-    const confirmed = await openConfirm('감상 기록 삭제하기', '정말로 이 감상 기록을 삭제할까요?', {
-      confirmText: '삭제',
-      variant: 'danger',
-    })
-    if (confirmed) {
-      deleteRecord(undefined, {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-      })
-    }
-  }
-
   const config = RECORD_TYPE_CONFIG[recordType]
   const focusClass = recordType === 'QUOTE' ? 'focus:border-purple-200' : ''
-  const isPending = mode === 'create' ? isCreating : isUpdating || isDeleting
+  const isPending = mode === 'create' ? isCreating : isUpdating
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -297,17 +271,8 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
           )}
         </ModalBody>
         <ModalFooter>
-          {mode === 'edit' && (
-            <Button
-              variant="danger"
-              onClick={handleDelete}
-              disabled={isPending || (mode === 'edit' && !record)}
-            >
-              삭제하기
-            </Button>
-          )}
           <Button onClick={handleSave} disabled={isPending || (mode === 'edit' && !record)}>
-            {mode === 'create' ? '저장하기' : '수정하기'}
+            {mode === 'create' ? '저장하기' : '수정완료'}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -315,4 +280,4 @@ function BookLogModal({ open, onOpenChange, bookId, mode, record }: BookLogModal
   )
 }
 
-export default BookLogModal
+export default PersonalRecordModal

@@ -1,13 +1,14 @@
 import type { MeetingGroupRecord } from '@/features/book/book.types'
+import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { Division } from '@/shared/components/Division'
 import { formatToDateWithDayAndTime } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui/Badge'
 import { FoldedCard } from '@/shared/ui/FoldedCard'
-import { TextButton } from '@/shared/ui/TextButton'
 
 type MeetingGroupRecordItemProps = {
   record: MeetingGroupRecord
   onEdit?: () => void
+  onDelete?: () => void
 }
 
 /**
@@ -20,7 +21,7 @@ type MeetingGroupRecordItemProps = {
  * <MeetingGroupRecordItem record={meetingGroupRecord} />
  * ```
  */
-const MeetingGroupRecordItem = ({ record, onEdit }: MeetingGroupRecordItemProps) => {
+const MeetingGroupRecordItem = ({ record, onEdit, onDelete }: MeetingGroupRecordItemProps) => {
   return (
     <FoldedCard>
       {/* 모임 헤더 */}
@@ -35,7 +36,7 @@ const MeetingGroupRecordItem = ({ record, onEdit }: MeetingGroupRecordItemProps)
               {formatToDateWithDayAndTime(record.meetingDate, record.meetingTime)}
             </span>
           </div>
-          {onEdit && <TextButton size={'medium'}>수정하기</TextButton>}
+          {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
         </div>
       </div>
 

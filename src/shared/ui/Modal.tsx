@@ -48,7 +48,7 @@ function ModalClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Cl
 
 const modalContentVariants = cva(
   [
-    'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
+    'fixed left-1/2 top-1/2 z-150 -translate-x-1/2 -translate-y-1/2',
     'flex flex-col bg-white rounded-small',
     'h-[625px]',
     'data-[state=open]:animate-in data-[state=closed]:animate-out',
@@ -98,7 +98,7 @@ function ModalContent({ className, variant, children, ...props }: ModalContentPr
       <DialogPrimitive.Overlay
         data-slot="modal-overlay"
         className={cn(
-          'fixed inset-0 z-50 bg-black/60',
+          'fixed inset-0 z-150 bg-black/60',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0'
         )}

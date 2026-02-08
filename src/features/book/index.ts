@@ -5,7 +5,6 @@ export {
   BookInfo,
   BookList,
   BookLogList,
-  BookLogModal,
   BookReview as BookReviewComponent,
   BookReviewModal,
   BookSearchModal,
@@ -14,6 +13,7 @@ export {
   MeetingPreOpinionItem,
   MeetingRetrospectiveItem,
   PersonalRecordItem,
+  PersonalRecordModal,
   ReviewHistoryCard,
 } from './components'
 export * from './hooks'

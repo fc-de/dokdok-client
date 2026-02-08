@@ -1,5 +1,7 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 
+import { deleteBookRecord } from '@/features/book/book.api'
 import type {
   MeetingGroupRecord,
   MeetingPersonalRecord,
@@ -8,12 +10,12 @@ import type {
   RecordSortType,
   RecordType,
 } from '@/features/book/book.types'
-import BookLogModal from '@/features/book/components/BookLogModal'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
-import { useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
+import { bookRecordsKeys, useBookRecords, useMyGatherings } from '@/features/book/hooks'
 import { Button } from '@/shared/ui/Button'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
@@ -39,6 +41,14 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
+
+  const queryClient = useQueryClient()
+  const { mutate: deletePersonalRecord } = useMutation({
+    mutationFn: (recordId: number) => deleteBookRecord(bookId, recordId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+    },
+  })
 
   const {
     data: gatheringsData,
@@ -111,7 +121,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[108px] z-30 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
+      <div className="sticky top-[108px] z-100 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
@@ -194,6 +204,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                         key={`personal-${item.data.recordId}`}
                         record={item.data}
                         onEdit={isRecording ? () => handleEditRecord(item.data) : undefined}
+                        onDelete={
+                          isRecording ? () => deletePersonalRecord(item.data.recordId) : undefined
+                        }
                       />
                     )
                   case 'meetingGroup':
@@ -201,9 +214,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                       <MeetingGroupRecordItem
                         key={`group-${item.data.meetingId}`}
                         record={item.data}
-                        onEdit={
+                        onDelete={
                           isRecording
-                            ? () => console.log('edit group', item.data.meetingId)
+                            ? () => console.log('delete group', item.data.meetingId)
                             : undefined
                         }
                       />
@@ -213,9 +226,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                       <MeetingRetrospectiveItem
                         key={`retrospective-${item.data.retrospectiveId}`}
                         record={item.data}
-                        onEdit={
+                        onDelete={
                           isRecording
-                            ? () => console.log('edit retrospective', item.data.retrospectiveId)
+                            ? () => console.log('delete retrospective', item.data.retrospectiveId)
                             : undefined
                         }
                       />
@@ -225,8 +238,8 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                       <MeetingPreOpinionItem
                         key={`pre-opinion-${item.data.gatheringName}-${item.data.sharedAt}`}
                         record={item.data}
-                        onEdit={
-                          isRecording ? () => console.log('edit pre-opinion', idx) : undefined
+                        onDelete={
+                          isRecording ? () => console.log('delete pre-opinion', idx) : undefined
                         }
                       />
                     )
@@ -238,7 +251,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
           )}
         </section>
       </div>
-      <BookLogModal
+      <PersonalRecordModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         bookId={bookId}

@@ -1,14 +1,15 @@
 import type { PersonalRecord } from '@/features/book/book.types'
+import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { formatToDateTimeWithDay } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui/Badge'
 import { FoldedCard } from '@/shared/ui/FoldedCard'
-import { TextButton } from '@/shared/ui/TextButton'
 
 import ExcerptBlock from './ExcerptBlock'
 
 type PersonalRecordItemProps = {
   record: PersonalRecord
   onEdit?: () => void
+  onDelete?: () => void
 }
 
 /**
@@ -21,7 +22,7 @@ type PersonalRecordItemProps = {
  * <PersonalRecordItem record={personalRecord} onEdit={() => handleEdit(record.id)} />
  * ```
  */
-const PersonalRecordItem = ({ record, onEdit }: PersonalRecordItemProps) => {
+const PersonalRecordItem = ({ record, onEdit, onDelete }: PersonalRecordItemProps) => {
   const isMemo = record.recordType === 'MEMO'
 
   return (
@@ -33,11 +34,7 @@ const PersonalRecordItem = ({ record, onEdit }: PersonalRecordItemProps) => {
             {formatToDateTimeWithDay(record.createdAt)}
           </span>
         </div>
-        {onEdit && (
-          <TextButton size={'medium'} onClick={onEdit}>
-            수정하기
-          </TextButton>
-        )}
+        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
       </div>
 
       <div className="flex flex-col gap-medium">
