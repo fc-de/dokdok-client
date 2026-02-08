@@ -1,23 +1,33 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { ErrorCode } from '@/api'
 import {
   PreOpinionDetail,
   PreOpinionMemberList,
   usePreOpinionAnswers,
 } from '@/features/preOpinions'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { useGlobalModalStore } from '@/store'
 
 export default function PreOpinionListPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
+  const navigate = useNavigate()
+  const { openError } = useGlobalModalStore()
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null)
 
-  const { data, isLoading } = usePreOpinionAnswers({
+  const { data, isLoading, error } = usePreOpinionAnswers({
     gatheringId: Number(gatheringId),
     meetingId: Number(meetingId),
   })
+
+  useEffect(() => {
+    if (error?.is(ErrorCode.BOOK_REVIEW_ACCESS_DENIED_NOT_WRITTEN)) {
+      openError('조회 불가', error.userMessage, () => navigate(-1))
+    }
+  }, [error, openError, navigate])
 
   useEffect(() => {
     const sentinel = sentinelRef.current
@@ -38,10 +48,10 @@ export default function PreOpinionListPage() {
   const activeMemberId = useMemo(() => {
     if (selectedMemberId !== null) return selectedMemberId
     const firstSubmitted = data?.members.find((m) => m.isSubmitted)
-    return firstSubmitted?.memberInfo.memberId ?? null
+    return firstSubmitted?.memberInfo.userId ?? null
   }, [selectedMemberId, data])
 
-  const selectedMember = data?.members.find((m) => m.memberInfo.memberId === activeMemberId)
+  const selectedMember = data?.members.find((m) => m.memberInfo.userId === activeMemberId)
 
   if (isLoading) return <div>로딩중...</div>
 
@@ -62,7 +72,12 @@ export default function PreOpinionListPage() {
 
         {/* 오른쪽: 선택된 멤버의 의견 상세 */}
         {selectedMember && data ? (
-          <PreOpinionDetail member={selectedMember} topics={data.topics} />
+          <PreOpinionDetail
+            member={selectedMember}
+            topics={data.topics}
+            gatheringId={Number(gatheringId)}
+            meetingId={Number(meetingId)}
+          />
         ) : (
           <div className="flex-1 flex items-center justify-center">
             <p className="typo-body2 text-grey-500">멤버를 선택해주세요</p>

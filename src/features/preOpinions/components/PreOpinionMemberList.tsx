@@ -34,15 +34,15 @@ function PreOpinionMemberList({
     <div className="flex flex-col gap-xsmall">
       {members.map((member) => (
         <UserChip
-          key={member.memberInfo.memberId}
+          key={member.memberInfo.userId}
           name={member.memberInfo.nickname}
           imageUrl={member.memberInfo.profileImage}
           variant={ROLE_TO_AVATAR_VARIANT[member.memberInfo.role]}
-          selected={selectedMemberId === member.memberInfo.memberId}
+          selected={selectedMemberId === member.memberInfo.userId}
           disabled={!member.isSubmitted}
           onClick={() => {
             if (member.isSubmitted) {
-              onSelectMember(member.memberInfo.memberId)
+              onSelectMember(member.memberInfo.userId)
             }
           }}
         />

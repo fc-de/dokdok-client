@@ -24,7 +24,7 @@ export type BookReviewSummary = {
 
 /** 멤버 정보 */
 export type PreOpinionMemberInfo = {
-  memberId: number
+  userId: number
   nickname: string
   profileImage: string
   role: MemberRole
@@ -62,6 +62,12 @@ export type PreOpinionAnswersData = {
 
 /** 사전 의견 목록 조회 파라미터 */
 export type GetPreOpinionAnswersParams = {
+  gatheringId: number
+  meetingId: number
+}
+
+/** 내 사전 의견 삭제 파라미터 */
+export type DeleteMyPreOpinionAnswerParams = {
   gatheringId: number
   meetingId: number
 }

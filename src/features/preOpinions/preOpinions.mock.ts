@@ -30,7 +30,7 @@ const mockPreOpinionAnswers: PreOpinionAnswersData = {
   members: [
     {
       memberInfo: {
-        memberId: 1,
+        userId: 1,
         nickname: '독서왕',
         profileImage: 'https://picsum.photos/seed/user1/100/100',
         role: 'GATHERING_LEADER',
@@ -56,7 +56,7 @@ const mockPreOpinionAnswers: PreOpinionAnswersData = {
     },
     {
       memberInfo: {
-        memberId: 3,
+        userId: 10,
         nickname: '밤독서',
         profileImage: 'https://picsum.photos/seed/user3/100/100',
         role: 'MEETING_LEADER',
@@ -82,7 +82,7 @@ const mockPreOpinionAnswers: PreOpinionAnswersData = {
     },
     {
       memberInfo: {
-        memberId: 2,
+        userId: 2,
         nickname: '페이지러버',
         profileImage: 'https://picsum.photos/seed/user2/100/100',
         role: 'MEMBER',

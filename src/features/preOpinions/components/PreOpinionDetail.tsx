@@ -2,13 +2,17 @@ import { useAuth } from '@/features/auth'
 import { StarRate } from '@/shared/components/StarRate'
 import { Avatar, AvatarFallback, AvatarImage, Badge, TextButton } from '@/shared/ui'
 import { Chip } from '@/shared/ui/Chip'
+import { useGlobalModalStore } from '@/store'
 
+import { useDeleteMyPreOpinionAnswer } from '../hooks/useDeleteMyPreOpinionAnswer'
 import { ROLE_TO_AVATAR_VARIANT } from '../preOpinions.constants'
 import type { PreOpinionMember, PreOpinionTopic } from '../preOpinions.types'
 
 type PreOpinionDetailProps = {
   member: PreOpinionMember
   topics: PreOpinionTopic[]
+  gatheringId: number
+  meetingId: number
 }
 
 /**
@@ -22,10 +26,25 @@ type PreOpinionDetailProps = {
  * <PreOpinionDetail member={selectedMember} topics={topics} />
  * ```
  */
-function PreOpinionDetail({ member, topics }: PreOpinionDetailProps) {
+function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinionDetailProps) {
   const { data: currentUser } = useAuth()
+  const { openConfirm, openError } = useGlobalModalStore()
   const { bookReview, topicOpinions, memberInfo } = member
-  const isMyOpinion = currentUser?.userId === memberInfo?.memberId
+  const isMyOpinion = currentUser?.userId === memberInfo?.userId
+  const deleteMutation = useDeleteMyPreOpinionAnswer({ gatheringId, meetingId })
+
+  const handleDelete = async () => {
+    const confirmed = await openConfirm(
+      '내 의견 삭제하기',
+      '내 의견을 삭제하면 다른 멤버들의 의견을 보는 권한도 함께 사라져요.\n삭제를 진행할까요?',
+      { confirmText: '삭제', variant: 'danger' }
+    )
+    if (!confirmed) return
+
+    deleteMutation.mutate(undefined, {
+      onError: (error) => openError('에러', error.userMessage),
+    })
+  }
 
   return (
     <div className="flex flex-col gap-xlarge flex-1">
@@ -39,7 +58,7 @@ function PreOpinionDetail({ member, topics }: PreOpinionDetailProps) {
             </Avatar>
             <h4 className="typo-heading3 text-black">{memberInfo.nickname} 님의 의견</h4>
           </div>
-          {isMyOpinion && <TextButton>내 의견 삭제하기</TextButton>}
+          {isMyOpinion && <TextButton onClick={() => handleDelete()}>내 의견 삭제하기</TextButton>}
         </div>
       )}
       {/* 책 평가 섹션 */}
