@@ -45,12 +45,20 @@ export default function TopicCreatePage() {
   const handleSubmit = () => {
     if (!validateForm()) return
 
-    if (!gatheringId || !meetingId) return
+    const parsedGatheringId = Number(gatheringId)
+    const parsedMeetingId = Number(meetingId)
+    if (
+      Number.isNaN(parsedGatheringId) ||
+      parsedGatheringId <= 0 ||
+      Number.isNaN(parsedMeetingId) ||
+      parsedMeetingId <= 0
+    )
+      return
 
     createMutation.mutate(
       {
-        gatheringId: Number(gatheringId),
-        meetingId: Number(meetingId),
+        gatheringId: parsedGatheringId,
+        meetingId: parsedMeetingId,
         body: {
           title: title.trim(),
           description: description.trim() || null,
