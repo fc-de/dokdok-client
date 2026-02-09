@@ -14,3 +14,6 @@ export * from './topics.mock'
 
 // Types
 export * from './topics.types'
+
+// Constants
+export * from './topics.constants'
