@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import type { GatheringMember } from '@/features/gatherings'
+import type { GatheringMember, MemberCardAction } from '@/features/gatherings'
 import {
   MAX_DESCRIPTION_LENGTH,
   MAX_NAME_LENGTH,
@@ -32,7 +32,8 @@ type MemberTab = 'PENDING' | 'ACTIVE'
 
 export default function GatheringSettingPage() {
   const { id } = useParams<{ id: string }>()
-  const gatheringId = Number(id)
+  const parsedId = id ? Number(id) : NaN
+  const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
   const navigate = useNavigate()
   const { openConfirm, openError, openAlert } = useGlobalModalStore()
 
@@ -163,7 +164,7 @@ export default function GatheringSettingPage() {
     )
   }
 
-  const handleMemberAction = (action: 'approve' | 'reject' | 'remove', member: GatheringMember) => {
+  const handleMemberAction = (action: MemberCardAction, member: GatheringMember) => {
     switch (action) {
       case 'approve':
         handleApprove(member)
@@ -185,7 +186,7 @@ export default function GatheringSettingPage() {
     )
   }
 
-  if (!gathering) return null
+  if (!gathering || gathering.currentUserRole !== 'LEADER') return null
 
   return (
     <div className="flex flex-col gap-xlarge pb-medium">

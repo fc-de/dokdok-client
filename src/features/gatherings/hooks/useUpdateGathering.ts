@@ -21,6 +21,7 @@ export const useUpdateGathering = () => {
     mutationFn: ({ gatheringId, data }) => updateGathering(gatheringId, data),
     onSuccess: (_, { gatheringId }) => {
       queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.detail(gatheringId) })
+      queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.lists() })
     },
   })
 }

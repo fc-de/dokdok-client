@@ -2,7 +2,7 @@ import { Button } from '@/shared/ui/Button'
 
 import type { GatheringMember } from '../gatherings.types'
 
-type MemberCardAction = 'approve' | 'reject' | 'remove'
+export type MemberCardAction = 'approve' | 'reject' | 'remove'
 
 interface MemberCardProps {
   member: GatheringMember

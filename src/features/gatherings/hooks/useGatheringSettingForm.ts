@@ -25,7 +25,7 @@ export const useGatheringSettingForm = (gathering: GatheringDetailResponse | und
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gatheringId])
 
-  const isValid = name.trim().length > 0 && name.length <= MAX_NAME_LENGTH
+  const isValid = name.trim().length > 0 && name.trim().length <= MAX_NAME_LENGTH
 
   const getFormData = useCallback(
     () => ({

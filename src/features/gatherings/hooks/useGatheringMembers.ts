@@ -3,11 +3,7 @@ import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
 import { PAGE_SIZES } from '@/shared/constants'
 
 import { getGatheringMembers } from '../gatherings.api'
-import type {
-  GatheringMemberListCursor,
-  GatheringMemberListResponse,
-  MemberStatusFilter,
-} from '../gatherings.types'
+import type { GatheringMemberListResponse, MemberStatusFilter } from '../gatherings.types'
 import { gatheringQueryKeys } from './gatheringQueryKeys'
 
 /** 페이지 파라미터 타입: undefined = 첫 페이지, number = 다음 커서 ID */
@@ -40,7 +36,8 @@ export const useGatheringMembers = (gatheringId: number, status: MemberStatusFil
     initialPageParam: undefined as PageParam,
     getNextPageParam: (lastPage: GatheringMemberListResponse): PageParam => {
       if (!lastPage.hasNext || !lastPage.nextCursor) return undefined
-      return (lastPage.nextCursor as GatheringMemberListCursor).gatheringMemberId
+      return lastPage.nextCursor.gatheringMemberId
     },
+    enabled: gatheringId > 0,
   })
 }
