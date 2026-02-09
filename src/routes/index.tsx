@@ -8,6 +8,7 @@ import {
   CreateGatheringPage,
   GatheringDetailPage,
   GatheringListPage,
+  GatheringSettingPage,
   HomePage,
   InvitePage,
   LoginPage,
@@ -108,6 +109,10 @@ export const router = createBrowserRouter([
           {
             element: <MainLayout />,
             children: [
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings`,
+                element: <GatheringSettingPage />,
+              },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,

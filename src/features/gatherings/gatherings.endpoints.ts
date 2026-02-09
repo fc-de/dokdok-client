@@ -18,4 +18,12 @@ export const GATHERINGS_ENDPOINTS = {
   BOOKS: (gatheringId: number) => `${API_PATHS.GATHERINGS}/${gatheringId}/books`,
   /** 약속 탭별 카운트 조회 */
   MEETING_TAB_COUNTS: `${API_PATHS.MEETINGS}/tab-counts`,
+  /** 멤버 목록 조회 */
+  MEMBERS: (gatheringId: number) => `${API_PATHS.GATHERINGS}/${gatheringId}/members`,
+  /** 가입 요청 승인/거절 */
+  HANDLE_JOIN_REQUEST: (gatheringId: number, memberId: number) =>
+    `${API_PATHS.GATHERINGS}/${gatheringId}/join-requests/${memberId}`,
+  /** 멤버 삭제(강퇴) */
+  REMOVE_MEMBER: (gatheringId: number, userId: number) =>
+    `${API_PATHS.GATHERINGS}/${gatheringId}/members/${userId}`,
 } as const
