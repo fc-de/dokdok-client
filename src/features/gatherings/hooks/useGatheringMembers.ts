@@ -38,9 +38,7 @@ export const useGatheringMembers = (gatheringId: number, status: MemberStatusFil
       return response.data
     },
     initialPageParam: undefined as PageParam,
-    getNextPageParam: (
-      lastPage: GatheringMemberListResponse,
-    ): PageParam => {
+    getNextPageParam: (lastPage: GatheringMemberListResponse): PageParam => {
       if (!lastPage.hasNext || !lastPage.nextCursor) return undefined
       return (lastPage.nextCursor as GatheringMemberListCursor).gatheringMemberId
     },

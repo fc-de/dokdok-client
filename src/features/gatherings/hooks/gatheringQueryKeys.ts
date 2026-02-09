@@ -18,8 +18,7 @@ export const gatheringQueryKeys = {
   meetingTabCounts: (gatheringId: number) =>
     [...gatheringQueryKeys.meetings(gatheringId), 'tabCounts'] as const,
   // 모임 멤버 관련 키
-  members: (gatheringId: number) =>
-    [...gatheringQueryKeys.detail(gatheringId), 'members'] as const,
+  members: (gatheringId: number) => [...gatheringQueryKeys.detail(gatheringId), 'members'] as const,
   membersByStatus: (gatheringId: number, status: MemberStatusFilter) =>
     [...gatheringQueryKeys.members(gatheringId), status] as const,
   // 모임 책장 관련 키

@@ -32,7 +32,7 @@ export const useGatheringSettingForm = (gathering: GatheringDetailResponse | und
       gatheringName: name.trim(),
       description: description.trim() || undefined,
     }),
-    [name, description],
+    [name, description]
   )
 
   return {
