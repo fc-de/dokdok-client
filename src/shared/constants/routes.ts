@@ -16,6 +16,7 @@ export const ROUTES = {
   GATHERINGS: '/gatherings',
   GATHERING_DETAIL: (id: number | string) => `/gatherings/${id}`,
   GATHERING_CREATE: '/gatherings/create',
+  GATHERING_SETTING: (id: number | string) => `/gatherings/${id}/settings`,
 
   // Invite
   INVITE_BASE: '/invite',
@@ -28,6 +29,12 @@ export const ROUTES = {
   MEETING_UPDATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/update`,
   MEETING_SETTING: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/setting`,
+  PRE_OPINIONS: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions`,
+
+  // Topics
+  TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
 
   // Records
   RECORDS: '/records',

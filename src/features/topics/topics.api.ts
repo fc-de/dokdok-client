@@ -11,6 +11,8 @@ import { getMockConfirmedTopics, getMockConfirmTopics, getMockProposedTopics } f
 import type {
   ConfirmTopicsParams,
   ConfirmTopicsResponse,
+  CreateTopicParams,
+  CreateTopicResponse,
   DeleteTopicParams,
   GetConfirmedTopicsParams,
   GetConfirmedTopicsResponse,
@@ -143,6 +145,39 @@ export const deleteTopic = async (params: DeleteTopicParams): Promise<void> => {
 
   // 실제 API 호출 (로그인 완료 후 사용)
   return api.delete<void>(TOPICS_ENDPOINTS.DELETE(gatheringId, meetingId, topicId))
+}
+
+/**
+ * 주제 제안
+ *
+ * @description
+ * 약속에 새로운 주제를 제안합니다.
+ *
+ * @param params - 제안 파라미터
+ * @param params.gatheringId - 모임 식별자
+ * @param params.meetingId - 약속 식별자
+ * @param params.body - 요청 바디 (제목, 설명, 주제 타입)
+ *
+ * @returns 생성된 주제 정보
+ */
+export const createTopic = async (params: CreateTopicParams): Promise<CreateTopicResponse> => {
+  const { gatheringId, meetingId, body } = params
+
+  // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
+  // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
+  if (USE_MOCK_DATA) {
+    // 실제 API 호출을 시뮬레이션하기 위한 지연
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return {
+      topicId: Math.floor(Math.random() * 1000),
+      title: body.title,
+      description: body.description || null,
+      topicType: body.topicType,
+    }
+  }
+
+  // 실제 API 호출 (로그인 완료 후 사용)
+  return api.post<CreateTopicResponse>(TOPICS_ENDPOINTS.CREATE(gatheringId, meetingId), body)
 }
 
 /**
