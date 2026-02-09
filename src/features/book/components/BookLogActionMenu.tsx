@@ -53,7 +53,7 @@ function BookLogActionMenu({ onEdit, onDelete }: BookLogActionMenuProps) {
           <EllipsisVertical className="size-5" />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-auto py-tiny px-0 flex flex-col">
+      <PopoverContent align="end" className="w-auto py-tiny px-0 flex flex-col z-10">
         {onEdit && (
           <TextButton onClick={handleEdit} className="typo-subtitle5 text-black">
             <div className="flex items-center gap-xsmall px-large py-[10px]">

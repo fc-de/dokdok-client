@@ -121,7 +121,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[108px] z-100 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
+      <div className="sticky top-[108px] z-20 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
