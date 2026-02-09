@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import { Check } from 'lucide-react'
 
 import { Button } from '@/shared/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 
 type ProposedHeaderProps = {
   activeTab: 'PROPOSED'
@@ -89,9 +90,23 @@ export default function TopicHeader(props: TopicHeaderProps) {
           </div>
 
           <div className="flex gap-xsmall">
-            <Button variant="secondary" outline disabled={!props.actions.canViewPreOpinions}>
-              사전 의견 확인하기
-            </Button>
+            {props.actions.canViewPreOpinions ? (
+              <Button variant="secondary" outline>
+                사전 의견 확인하기
+              </Button>
+            ) : (
+              <Tooltip dismissable>
+                <TooltipTrigger asChild>
+                  <Button variant="secondary" outline disabled>
+                    사전 의견 확인하기
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>내 의견을 먼저 공유해야 다른</p>
+                  <p>멤버들의 의견도 확인할 수 있어요!</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
             <Button disabled={!props.actions.canWritePreOpinions}>사전 의견 작성하기</Button>
           </div>

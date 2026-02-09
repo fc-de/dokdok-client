@@ -1,6 +1,7 @@
 export { default as MapModal } from './MapModal'
 export { default as MeetingApprovalItem } from './MeetingApprovalItem'
 export { default as MeetingApprovalList } from './MeetingApprovalList'
+export { default as MeetingApprovalListSkeleton } from './MeetingApprovalListSkeleton'
 export { default as MeetingDetailButton } from './MeetingDetailButton'
 export { MeetingDetailHeader } from './MeetingDetailHeader'
 export { MeetingDetailInfo } from './MeetingDetailInfo'

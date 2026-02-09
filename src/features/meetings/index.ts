@@ -28,4 +28,6 @@ export type {
   MeetingLocation,
   MeetingStatus,
   RejectMeetingResponse,
+  UpdateMeetingRequest,
+  UpdateMeetingResponse,
 } from './meetings.types'

@@ -94,7 +94,7 @@ export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) 
               거절
             </Button>
             <Button variant="primary" size="small" onClick={handleApprove} disabled={isPending}>
-              수락
+              승인
             </Button>
           </>
         ) : (

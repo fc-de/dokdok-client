@@ -3,6 +3,8 @@
  * @description Meeting API 관련 타입 정의
  */
 
+import type { CreateBookBody } from '@/features/book'
+
 /**
  * 약속 상태 타입
  */
@@ -84,14 +86,8 @@ export type MeetingLocation = {
 export type CreateMeetingRequest = {
   /** 모임 ID */
   gatheringId: number
-  /** 책 ID */
-  bookId: string
-  /** 책 이름 */
-  bookName: string
-  /** 책 썸네일 */
-  bookThumbnail: string
-  /** 책 저자 */
-  bookAuthors: string
+  /** 책 정보 */
+  book: CreateBookBody
   /** 약속 이름 */
   meetingName: string
   /** 약속 시작 일시 (ISO 8601 형식) */
@@ -123,6 +119,9 @@ export type CreateMeetingResponse = {
   book: {
     bookId: number
     bookName: string
+    thumbnail: string
+    authors: string
+    publisher: string
   }
   /** 일정 정보 */
   schedule: {
@@ -143,6 +142,40 @@ export type CreateMeetingResponse = {
       profileImageUrl: string
     }>
   }
+}
+
+/**
+ * 약속 수정 요청 타입
+ */
+export type UpdateMeetingRequest = {
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 시작 일시 (ISO 8601 형식) */
+  startDate: string
+  /** 약속 종료 일시 (ISO 8601 형식) */
+  endDate: string
+  /** 장소 (선택 사항) */
+  location: MeetingLocation | null
+  /** 최대 참가 인원 */
+  maxParticipants: number
+}
+
+/**
+ * 약속 수정 응답 타입
+ */
+export type UpdateMeetingResponse = {
+  /** 약속 ID */
+  meetingId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 시작 일시 (ISO 8601 형식) */
+  startDate: string
+  /** 약속 종료 일시 (ISO 8601 형식) */
+  endDate: string
+  /** 장소 (선택 사항) */
+  location: MeetingLocation | null
+  /** 최대 참가 인원 */
+  maxParticipants: number
 }
 
 /**
@@ -196,6 +229,7 @@ export type GetMeetingDetailResponse = {
     bookName: string
     thumbnail: string
     authors: string
+    publisher: string
   }
   /** 일정 정보 */
   schedule: MeetingSchedule

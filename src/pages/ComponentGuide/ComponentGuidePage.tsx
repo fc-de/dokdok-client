@@ -43,6 +43,7 @@ import {
   TopicTypeSelectItem,
   UserChip,
 } from '@/shared/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 
 function ComponentGuidePage() {
   const [selectedSection, setSelectedSection] = useState<string>('button')
@@ -72,6 +73,7 @@ function ComponentGuidePage() {
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
     { id: 'pagination', name: 'Pagination', category: '내비게이션' },
     { id: 'modal', name: 'Modal', category: '오버레이' },
+    { id: 'tooltip', name: 'Tooltip', category: '오버레이' },
   ]
 
   const filteredSections = sections.filter(
@@ -156,6 +158,7 @@ function ComponentGuidePage() {
           {selectedSection === 'tabs' && <TabsSection />}
           {selectedSection === 'pagination' && <PaginationSection />}
           {selectedSection === 'modal' && <ModalSection />}
+          {selectedSection === 'tooltip' && <TooltipSection />}
         </div>
       </main>
     </div>
@@ -1795,6 +1798,127 @@ function StarRatingFilterSection() {
           <p>• 범위 선택: 최솟값과 최댓값을 선택하여 범위를 지정합니다</p>
           <p>• 같은 별을 다시 클릭하면 선택이 해제됩니다</p>
           <p>• 적용 버튼을 눌러야 실제 값이 변경됩니다</p>
+        </div>
+      </Showcase>
+    </Section>
+  )
+}
+
+function TooltipSection() {
+  return (
+    <Section title="Tooltip" description="hover 또는 제어 가능한 툴팁 컴포넌트">
+      <Showcase
+        title="기본 사용 (Hover)"
+        description="요소에 마우스를 올리면 표시됩니다"
+        code={`<Tooltip>
+  <TooltipTrigger asChild>
+    <Button>버튼</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>툴팁 내용</p>
+  </TooltipContent>
+</Tooltip>`}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button>마우스를 올려보세요</Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>이것은 기본 툴팁입니다</p>
+          </TooltipContent>
+        </Tooltip>
+      </Showcase>
+
+      <Showcase
+        title="여러 위치"
+        description="side prop으로 툴팁 위치를 조절할 수 있습니다"
+        code={`<TooltipContent side="top">위</TooltipContent>
+<TooltipContent side="right">오른쪽</TooltipContent>
+<TooltipContent side="bottom">아래</TooltipContent>
+<TooltipContent side="left">왼쪽</TooltipContent>`}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary">위</Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>위에 표시됩니다</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary">오른쪽</Button>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            <p>오른쪽에 표시됩니다</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary">아래</Button>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">
+            <p>아래에 표시됩니다</p>
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary">왼쪽</Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>왼쪽에 표시됩니다</p>
+          </TooltipContent>
+        </Tooltip>
+      </Showcase>
+
+      <Showcase
+        title="닫을 수 있는 툴팁 (Dismissable)"
+        description="항상 열려있고 X 버튼으로만 닫을 수 있습니다. 한 번 닫으면 hover로 다시 열리지 않습니다."
+        code={`<Tooltip dismissable>
+  <TooltipTrigger asChild>
+    <Button>버튼</Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>X 버튼으로만 닫을 수 있습니다</p>
+  </TooltipContent>
+</Tooltip>`}
+      >
+        <Tooltip dismissable>
+          <TooltipTrigger asChild>
+            <Button>툴팁이 열려있습니다</Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>내 의견을 먼저 공유해야 다른 멤버들의 의견도 확인할 수 있어요!</p>
+          </TooltipContent>
+        </Tooltip>
+      </Showcase>
+
+      <Showcase
+        title="간격 조절"
+        description="sideOffset prop으로 트리거 요소와의 거리를 조절합니다"
+        code={`<TooltipContent sideOffset={20}>
+  <p>간격이 넓습니다</p>
+</TooltipContent>`}
+      >
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="secondary">간격 넓음</Button>
+          </TooltipTrigger>
+          <TooltipContent sideOffset={20}>
+            <p>트리거와 거리가 멉니다</p>
+          </TooltipContent>
+        </Tooltip>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• 기본 툴팁: hover 시 자동으로 표시/숨김</p>
+          <p>• dismissable 툴팁: Tooltip에 dismissable prop 추가</p>
+          <p>• dismissable 모드: 항상 열려있고 X 버튼으로만 닫힘</p>
+          <p>• 한 번 닫으면 트리거에 hover해도 다시 열리지 않음</p>
+          <p>• 외부 클릭, ESC 키, 스크롤로 닫히지 않음 (dismissable 모드)</p>
+          <p>• asChild prop을 사용하여 자식 요소에 직접 이벤트 연결</p>
+          <p>• TooltipProvider는 App.tsx에서 전역으로 설정됨</p>
         </div>
       </Showcase>
     </Section>

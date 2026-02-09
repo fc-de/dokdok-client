@@ -1,7 +1,5 @@
 import { MapPin } from 'lucide-react'
-import { useState } from 'react'
 
-import MapModal from '@/features/meetings/components/MapModal'
 import {
   Avatar,
   AvatarFallback,
@@ -21,8 +19,6 @@ interface MeetingDetailInfoProps {
 }
 
 export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false)
-
   const leader = meeting.participants.members.find((member) => member.role === 'LEADER')
   const members = meeting.participants.members.filter((member) => member.role === 'MEMBER')
   const displayedMembers = members.slice(0, MAX_DISPLAYED_AVATARS)
@@ -31,6 +27,8 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
   const hasRemainingMembers = remainingMembers.length > 0
 
   const [startDate, endDate] = meeting.schedule.displayDate.split(' ~ ')
+
+  const location = meeting.location
 
   return (
     <div className="w-[300px] flex-none flex flex-col gap-base">
@@ -117,28 +115,25 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
         <dl className="flex gap-base">
           <dt className={DT_VARIANTS}>장소</dt>
           <dd>
-            {meeting.location && (
+            {location && (
               <TextButton
                 size="medium"
                 icon={MapPin}
                 className="text-black typo-body3 [&_svg]:text-grey-600"
-                onClick={() => setIsMapModalOpen(true)}
+                onClick={() => {
+                  window.open(
+                    `https://map.kakao.com/link/map/${location.name},${location.latitude},${location.longitude}`,
+                    '_blank',
+                    'noopener,noreferrer'
+                  )
+                }}
               >
-                {meeting.location.name}
+                {location.name}
               </TextButton>
             )}
           </dd>
         </dl>
       </div>
-
-      {/* 지도 모달 */}
-      {meeting.location && (
-        <MapModal
-          open={isMapModalOpen}
-          onOpenChange={setIsMapModalOpen}
-          location={meeting.location}
-        />
-      )}
     </div>
   )
 }
