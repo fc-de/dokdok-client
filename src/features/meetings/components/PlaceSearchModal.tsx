@@ -123,7 +123,7 @@ export default function PlaceSearchModal({
             </Button>
           </div>
 
-          <div className="flex gap-base h-100">
+          <div className="flex gap-base h-95">
             {/* 지도 영역 */}
             <div className="relative flex-1">
               <div ref={mapElement} className="w-full h-full rounded-small bg-grey-100" />

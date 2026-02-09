@@ -85,7 +85,13 @@ export type CreateMeetingRequest = {
   /** 모임 ID */
   gatheringId: number
   /** 책 ID */
-  bookId: number
+  bookId: string
+  /** 책 이름 */
+  bookName: string
+  /** 책 썸네일 */
+  bookThumbnail: string
+  /** 책 저자 */
+  bookAuthors: string
   /** 약속 이름 */
   meetingName: string
   /** 약속 시작 일시 (ISO 8601 형식) */
@@ -99,7 +105,7 @@ export type CreateMeetingRequest = {
 }
 
 /**
- * 약속 생성 응답 타입
+ * 약속 생성 응답 타입 Todo:실제 응답값이랑 비교해봐야 함
  */
 export type CreateMeetingResponse = {
   /** 약속 ID */
@@ -189,6 +195,7 @@ export type GetMeetingDetailResponse = {
     bookId: number
     bookName: string
     thumbnail: string
+    authors: string
   }
   /** 일정 정보 */
   schedule: MeetingSchedule

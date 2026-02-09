@@ -39,7 +39,7 @@ export default function PlaceList({
           onClick={() => onPlaceClick(place)}
           onMouseEnter={() => onPlaceHover?.(place, index)}
           onMouseLeave={onPlaceHoverEnd}
-          className="text-left transition-colors bg-white border p-small rounded-small border-grey-300 hover:bg-grey-50"
+          className="text-left transition-colors bg-white border p-small rounded-small border-grey-300 hover:bg-grey-50 cursor-pointer"
         >
           <p className="text-black typo-subtitle5 mb-xtiny">{place.place_name}</p>
           <p className="typo-body4 text-grey-600 line-clamp-2">

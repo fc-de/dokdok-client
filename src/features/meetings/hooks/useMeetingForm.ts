@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 
+import { type SearchBookItem } from '@/features/book'
 import {
   combineDateAndTime,
   formatScheduleRange,
@@ -25,8 +26,11 @@ export const useMeetingForm = ({ gatheringMaxCount }: UseMeetingFormParams) => {
   const [latitude, setLatitude] = useState<number | null>(null)
   const [longitude, setLongitude] = useState<number | null>(null)
   const [meetingName, setMeetingName] = useState<string | null>(null)
-  const [bookId, setBookId] = useState<number | null>(null)
+  const [bookId, setBookId] = useState<string | null>(null)
   const [bookName, setBookName] = useState<string | null>(null)
+  const [bookThumbnail, setBookThumbnail] = useState<string | null>(null)
+  const [bookAuthors, setBookAuthors] = useState<string | null>(null)
+
   const [maxParticipants, setMaxParticipants] = useState<string | null>(null)
 
   // 날짜/시간 상태
@@ -50,7 +54,7 @@ export const useMeetingForm = ({ gatheringMaxCount }: UseMeetingFormParams) => {
   const validateForm = (): boolean => {
     const newError: ValidationErrors = {}
 
-    if (!bookId || !bookName) {
+    if (!bookId || !bookName || !bookThumbnail || !bookAuthors) {
       newError.bookId = '* 도서를 선택해주세요.'
     }
 
@@ -165,6 +169,21 @@ export const useMeetingForm = ({ gatheringMaxCount }: UseMeetingFormParams) => {
   }
 
   /**
+   * 도서 정보 변경 (에러 초기화 포함)
+   */
+  const handleBookChange = (
+    book: Pick<SearchBookItem, 'isbn' | 'title' | 'thumbnail' | 'authors'>
+  ) => {
+    setBookId(book.isbn)
+    setBookName(book.title)
+    setBookThumbnail(book.thumbnail)
+    setBookAuthors(book.authors.join(', '))
+    if (errors?.bookId) {
+      clearError('bookId')
+    }
+  }
+
+  /**
    * 시작 날짜 변경 (에러 초기화 포함)
    */
   const handleStartDateChange = (date: Date | null) => {
@@ -226,6 +245,8 @@ export const useMeetingForm = ({ gatheringMaxCount }: UseMeetingFormParams) => {
       meetingName,
       bookId,
       bookName,
+      bookThumbnail,
+      bookAuthors,
       locationName,
       locationAddress,
       latitude,
@@ -259,6 +280,9 @@ export const useMeetingForm = ({ gatheringMaxCount }: UseMeetingFormParams) => {
       setMeetingName,
       setBookId,
       setBookName,
+      setBookThumbnail,
+      setBookAuthors,
+      setBook: handleBookChange,
       setMaxParticipants: handleMaxParticipantsChange,
       setStartDate: handleStartDateChange,
       setStartTime: handleStartTimeChange,

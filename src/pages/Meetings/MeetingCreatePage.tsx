@@ -1,7 +1,9 @@
 import { ChevronLeft, Search } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { BookSearchModal, type SearchBookItem } from '@/features/book'
+import { useGatheringDetail } from '@/features/gatherings'
 import {
   combineDateAndTime,
   type CreateMeetingRequest,
@@ -9,6 +11,7 @@ import {
   useCreateMeeting,
   useMeetingForm,
 } from '@/features/meetings'
+import { ROUTES } from '@/shared/constants'
 import { Button, Card, Container, DatePicker, Input, Select } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -17,10 +20,43 @@ export default function MeetingCreatePage() {
   const { openError, openAlert } = useGlobalModalStore()
   const createMutation = useCreateMeeting()
   const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false)
+  const [isBookSearchOpen, setIsBookSearchOpen] = useState(false)
 
-  // 임시: 모임 정보 (실제로는 API에서 가져와야 함)
-  const gatheringId = 1 // TODO: 실제 모임 ID로 교체
-  const gatheringMaxCount = 16 // TODO: API에서 가져오기
+  const { id } = useParams<{ id: string }>()
+  const parsedId = id ? Number(id) : NaN
+  const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
+
+  // 모임 상세 조회
+  const {
+    data: gathering,
+    error: gatheringError,
+    isLoading: isGatheringLoading,
+  } = useGatheringDetail(gatheringId)
+
+  // 유효하지 않은 ID 처리
+  useEffect(() => {
+    if (gatheringId === 0) {
+      openError('오류', '잘못된 모임 ID입니다.', () => {
+        navigate(ROUTES.GATHERINGS, { replace: true })
+      })
+    }
+  }, [gatheringId, navigate, openError])
+
+  // API 에러 처리
+  useEffect(() => {
+    if (gatheringError) {
+      openError('오류', '모임 정보를 불러오는데 실패했습니다.', () => {
+        // 브라우저 히스토리가 없으면 홈을 이동
+        if (window.history.length > 1) {
+          navigate(-1)
+        } else {
+          navigate(ROUTES.HOME, { replace: true })
+        }
+      })
+    }
+  }, [gatheringError, navigate, openError])
+
+  const gatheringMaxCount = gathering?.totalMembers || 1
 
   // 폼 로직 및 유효성 검사 (커스텀 훅으로 분리)
   const {
@@ -40,6 +76,8 @@ export default function MeetingCreatePage() {
     meetingName,
     bookId,
     bookName,
+    bookThumbnail,
+    bookAuthors,
     maxParticipants,
     startDate,
     startTime,
@@ -51,7 +89,6 @@ export default function MeetingCreatePage() {
     longitude,
   } = formData
 
-  //setBookId, setBookName
   const {
     setMeetingName,
     setMaxParticipants,
@@ -63,9 +100,14 @@ export default function MeetingCreatePage() {
     setLocationName,
     setLatitude,
     setLongitude,
+    setBook,
   } = handlers
 
   const { bookButtonRef, startDateRef, endDateRef, maxParticipantsRef } = refs
+
+  const handleBookSelection = (book: SearchBookItem) => {
+    setBook(book)
+  }
 
   // 제출 핸들러
   const handleSubmit = async () => {
@@ -76,7 +118,16 @@ export default function MeetingCreatePage() {
     }
 
     // validation 통과 후 필수 값 타입 가드
-    if (!bookId || !bookName || !startDate || !startTime || !endDate || !endTime) {
+    if (
+      !bookId ||
+      !bookName ||
+      !bookThumbnail ||
+      !bookAuthors ||
+      !startDate ||
+      !startTime ||
+      !endDate ||
+      !endTime
+    ) {
       return
     }
 
@@ -88,6 +139,9 @@ export default function MeetingCreatePage() {
     const requestData: CreateMeetingRequest = {
       gatheringId,
       bookId,
+      bookAuthors,
+      bookName,
+      bookThumbnail,
       meetingName: trimmedMeetingName || bookName, // 약속명이 없으면 책 이름 사용
       meetingStartDate: startDateTime,
       meetingEndDate: endDateTime,
@@ -99,9 +153,10 @@ export default function MeetingCreatePage() {
     }
 
     createMutation.mutate(requestData, {
+      // TODO : 토스트로 교체
       onSuccess: async () => {
         await openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.')
-        navigate('/') //이동경로 수정해야 함
+        navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
       },
       onError: (error) => {
         openError('약속 생성 실패', error.userMessage)
@@ -122,7 +177,7 @@ export default function MeetingCreatePage() {
             className="w-fit"
             size="small"
             onClick={handleSubmit}
-            disabled={createMutation.isPending}
+            disabled={createMutation.isPending || isGatheringLoading}
           >
             {createMutation.isPending ? '...' : '만들기'}
           </Button>
@@ -151,15 +206,33 @@ export default function MeetingCreatePage() {
             도서
           </Container.Title>
           <Container.Content>
-            <Button
-              ref={bookButtonRef}
-              outline
-              variant="secondary"
-              className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
-            >
-              <Search size={18} className="text-grey-600 mr-tiny" />
-              <span className="typo-subtitle5">도서 검색</span>
-            </Button>
+            <div className="flex flex-col gap-medium">
+              {bookThumbnail && bookName && bookAuthors && (
+                <Card className="rounded-small py-base px-medium bg-gray-100 border-none flex gap-small items-center">
+                  <div className="w-[70px] h-[100px] overflow-hidden rounded">
+                    <img
+                      src={bookThumbnail}
+                      alt={bookName}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-xtiny">
+                    <p className="typo-subtitle5 text-black">{bookName}</p>
+                    <p className="typo-body4 text-grey-800">{bookAuthors}</p>
+                  </div>
+                </Card>
+              )}
+              <Button
+                ref={bookButtonRef}
+                outline
+                variant="secondary"
+                className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
+                onClick={() => setIsBookSearchOpen(true)}
+              >
+                <Search size={18} className="text-grey-600 mr-tiny" />
+                <span className="typo-subtitle5">도서 검색</span>
+              </Button>
+            </div>
             {errors?.bookId && (
               <p className="mt-tiny text-accent-300 text-body3">{errors.bookId}</p>
             )}
@@ -169,7 +242,7 @@ export default function MeetingCreatePage() {
         <Container>
           <Container.Title className="typo-subtitle3">장소</Container.Title>
           <Container.Content>
-            {locationAddress && (
+            {locationAddress && locationName && (
               <Card className="border-none p-base bg-grey-100 rounded-small text-grey-700 typo-body1 mb-xsmall">
                 <p className="text-black typo-subtitle5 mb-xtiny">{locationName}</p>
                 <p className="typo-body3 text-grey-600">{locationAddress}</p>
@@ -190,17 +263,6 @@ export default function MeetingCreatePage() {
             )}
           </Container.Content>
         </Container>
-
-        <PlaceSearchModal
-          open={isPlaceSearchOpen}
-          onOpenChange={setIsPlaceSearchOpen}
-          onSelectPlace={(place) => {
-            setLocationName(place.name)
-            setLocationAddress(place.address)
-            setLatitude(place.latitude)
-            setLongitude(place.longitude)
-          }}
-        />
 
         <Container>
           <Container.Title required className="typo-subtitle3">
@@ -302,6 +364,26 @@ export default function MeetingCreatePage() {
             />
           </Container.Content>
         </Container>
+
+        {isPlaceSearchOpen && (
+          <PlaceSearchModal
+            open={isPlaceSearchOpen}
+            onOpenChange={setIsPlaceSearchOpen}
+            onSelectPlace={(place) => {
+              setLocationName(place.name)
+              setLocationAddress(place.address)
+              setLatitude(place.latitude)
+              setLongitude(place.longitude)
+            }}
+          />
+        )}
+        {isBookSearchOpen && (
+          <BookSearchModal
+            open={isBookSearchOpen}
+            onOpenChange={setIsBookSearchOpen}
+            onSelectBook={handleBookSelection}
+          />
+        )}
       </div>
     </>
   )
