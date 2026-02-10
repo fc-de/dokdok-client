@@ -31,7 +31,7 @@ export function loadKakaoSdk(): Promise<void> {
       window.kakao.maps.load(() => resolve())
     }
 
-    script.onerror = (_scriptEvent) => {
+    script.onerror = () => {
       // 실패 시 Promise 초기화하여 재시도 가능하게
       kakaoSdkPromise = null
 
