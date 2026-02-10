@@ -10,9 +10,14 @@ import type { KakaoPlace } from '../kakaoMap.types'
 export type UseKakaoPlaceSearchOptions = {
   /** 검색 성공 콜백 */
   onSearchSuccess?: (places: KakaoPlace[]) => void
+  /** 검색 오류 콜백 */
+  onSearchError?: (message: string) => void
 }
 
-export function useKakaoPlaceSearch({ onSearchSuccess }: UseKakaoPlaceSearchOptions = {}) {
+export function useKakaoPlaceSearch({
+  onSearchSuccess,
+  onSearchError,
+}: UseKakaoPlaceSearchOptions = {}) {
   const [places, setPlaces] = useState<KakaoPlace[]>([])
   const [error, setError] = useState<string | null>(null)
 
@@ -48,12 +53,12 @@ export function useKakaoPlaceSearch({ onSearchSuccess }: UseKakaoPlaceSearchOpti
         setPlaces([])
         onSearchSuccess?.([])
       } else {
-        // Status.ERROR: 일반적인 검색 오류 (400 Bad Request 등)
-        const message = '검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요. (400 Bad Request)'
+        // Status.ERROR: 네트워크 오류, 서버 오류 등 다양한 원인으로 발생
+        const message = '검색 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.'
         setError(message)
         setPlaces([])
-        onSearchSuccess?.([])
-        console.error('[카카오 장소 검색] 오류 발생 - status:', status, '\n', message)
+        onSearchError?.(message)
+        console.error('[카카오 장소 검색] 오류 발생 - status:', status)
       }
     })
 

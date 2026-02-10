@@ -65,6 +65,7 @@ export default function MeetingCreatePage() {
 
   // API 에러 처리 (gatheringError 우선)
   useEffect(() => {
+    if (gatheringId === 0) return
     if (!gatheringError && !meetingError) return
 
     const message = gatheringError
@@ -79,7 +80,7 @@ export default function MeetingCreatePage() {
         navigate(ROUTES.HOME, { replace: true })
       }
     })
-  }, [gatheringError, meetingError, navigate, openError])
+  }, [gatheringId, gatheringError, meetingError, navigate, openError])
 
   const gatheringMaxCount = gathering?.totalMembers || 1
 

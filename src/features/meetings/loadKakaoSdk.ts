@@ -28,7 +28,14 @@ export function loadKakaoSdk(): Promise<void> {
     script.async = true
 
     script.onload = () => {
-      window.kakao.maps.load(() => resolve())
+      try {
+        window.kakao.maps.load(() => resolve())
+      } catch (err) {
+        kakaoSdkPromise = null
+        const message = '카카오 지도 SDK 초기화에 실패했습니다.'
+        console.error('[카카오 지도]', message, err)
+        reject(new Error(message))
+      }
     }
 
     script.onerror = () => {
@@ -38,6 +45,14 @@ export function loadKakaoSdk(): Promise<void> {
       // fetch로 실제 HTTP 상태 코드 확인 후 카카오 공식 상태 메시지 사용
       fetch(script.src)
         .then((res) => {
+          if (res.ok) {
+            const message =
+              '카카오 지도 SDK 로드에 실패했습니다. 일시적인 네트워크 오류일 수 있으니 잠시 후 다시 시도해주세요.'
+            console.error('[카카오 지도] SDK 로드 실패 (진단 불일치):', message)
+            reject(new Error(message))
+            return
+          }
+
           const kakaoStatusMessages: Record<number, string> = {
             400: '잘못된 요청입니다. API에 필요한 필수 파라미터를 확인해주세요. (400 Bad Request)',
             401: '인증 오류입니다. 앱키(VITE_KAKAO_MAP_KEY)가 올바른지 확인해주세요. (401 Unauthorized)',
