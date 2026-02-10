@@ -97,6 +97,7 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
     mapRef.current = map
 
     infowindowRef.current = new kakao.maps.InfoWindow({ zIndex: 1 })
+    setError(null)
     setIsInitialized(true)
 
     // Portal/Modal에서 사이즈 계산 이슈 방지
