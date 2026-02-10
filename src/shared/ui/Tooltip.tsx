@@ -156,11 +156,8 @@ function TooltipContent({
   const { dismissable, close } = React.useContext(TooltipContext)
 
   const handleDismiss = () => {
-    if (onDismiss) {
-      onDismiss()
-    } else {
-      close()
-    }
+    close()
+    onDismiss?.()
   }
 
   return (

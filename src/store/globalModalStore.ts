@@ -48,7 +48,7 @@ export type ConfirmModalOptions = {
 /** 전역 모달 스토어 타입 */
 type GlobalModalStore = ModalState & {
   /** Alert 모달 열기 */
-  openAlert: (title: string, description: string) => void
+  openAlert: (title: string, description: string, onClose?: () => void) => void
   /** Error 모달 열기 */
   openError: (title: string, description: string, onClose?: () => void) => void
   /** Confirm 모달 열기 (Promise 반환) */
@@ -72,7 +72,7 @@ const initialState: ModalState = {
 export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
   ...initialState,
 
-  openAlert: (title: string, description: string) => {
+  openAlert: (title: string, description: string, onClose?: () => void) => {
     set({
       isOpen: true,
       type: 'alert',
@@ -82,7 +82,10 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
         {
           text: '확인',
           variant: 'primary',
-          onClick: () => get().close(),
+          onClick: () => {
+            get().close()
+            onClose?.()
+          },
         },
       ],
     })

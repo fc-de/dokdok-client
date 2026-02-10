@@ -11,6 +11,8 @@ import { Pagination } from '@/shared/ui/Pagination'
 export type MeetingApprovalListProps = {
   /** 약속 승인 리스트 데이터 */
   data: PaginatedResponse<MeetingApprovalItemType>
+  /** 모임 ID */
+  gatheringId: number
   /** 현재 페이지 */
   currentPage: number
   /** 페이지 변경 핸들러 */
@@ -19,6 +21,7 @@ export type MeetingApprovalListProps = {
 
 export default function MeetingApprovalList({
   data,
+  gatheringId,
   currentPage,
   onPageChange,
 }: MeetingApprovalListProps) {
@@ -38,7 +41,7 @@ export default function MeetingApprovalList({
     <div className="flex flex-col gap-medium">
       <ul>
         {items.map((item) => (
-          <MeetingApprovalItem key={item.meetingId} item={item} />
+          <MeetingApprovalItem key={item.meetingId} item={item} gatheringId={gatheringId} />
         ))}
       </ul>
 

@@ -2,7 +2,7 @@ import { ChevronLeft, Search } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { BookSearchModal, type SearchBookItem } from '@/features/book'
+import { BookSearchModal } from '@/features/book'
 import { useGatheringDetail } from '@/features/gatherings'
 import {
   combineDateAndTime,
@@ -21,7 +21,9 @@ import { useGlobalModalStore } from '@/store'
 // TODO : 책이름이 24자 이상일경우
 export default function MeetingCreatePage() {
   const navigate = useNavigate()
-  const { openError, openAlert } = useGlobalModalStore()
+  const openError = useGlobalModalStore((state) => state.openError)
+  const openAlert = useGlobalModalStore((state) => state.openAlert)
+  const openConfirm = useGlobalModalStore((state) => state.openConfirm)
   const createMutation = useCreateMeeting()
   const updateMutation = useUpdateMeeting()
   const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false)
@@ -62,32 +64,23 @@ export default function MeetingCreatePage() {
     }
   }, [gatheringId, navigate, openError])
 
-  // API 에러 처리
+  // API 에러 처리 (gatheringError 우선)
   useEffect(() => {
-    if (gatheringError) {
-      openError('오류', '모임 정보를 불러오는데 실패했습니다.', () => {
-        // 브라우저 히스토리가 없으면 홈을 이동
-        if (window.history.length > 1) {
-          navigate(-1)
-        } else {
-          navigate(ROUTES.HOME, { replace: true })
-        }
-      })
-    }
-  }, [gatheringError, navigate, openError])
+    if (!gatheringError && !meetingError) return
 
-  // 약속 조회 에러 처리
-  useEffect(() => {
-    if (meetingError) {
-      openError('오류', '약속 정보를 불러오는데 실패했습니다.', () => {
-        if (window.history.length > 1) {
-          navigate(-1)
-        } else {
-          navigate(ROUTES.HOME, { replace: true })
-        }
-      })
-    }
-  }, [meetingError, navigate, openError])
+    const message = gatheringError
+      ? '모임 정보를 불러오는데 실패했습니다.'
+      : '약속 정보를 불러오는데 실패했습니다.'
+
+    openError('오류', message, () => {
+      // 브라우저 히스토리가 없으면 홈으로 이동
+      if (window.history.length > 1) {
+        navigate(-1)
+      } else {
+        navigate(ROUTES.HOME, { replace: true })
+      }
+    })
+  }, [gatheringError, meetingError, navigate, openError])
 
   const gatheringMaxCount = gathering?.totalMembers || 1
 
@@ -139,67 +132,54 @@ export default function MeetingCreatePage() {
 
   const { bookButtonRef, startDateRef, endDateRef, maxParticipantsRef } = refs
 
-  const handleBookSelection = (book: SearchBookItem) => {
-    setBook(book)
-  }
-
-  // 제출 핸들러
-  const handleSubmit = async () => {
-    // 유효성 검사
-    const isValid = validateForm()
-    if (!isValid) {
+  // 수정 처리
+  const handleUpdate = (id: number) => {
+    if (!startDate || !startTime || !endDate || !endTime || !bookName) {
       return
     }
 
-    // validation 통과 후 필수 값 타입 가드
+    const updateData: UpdateMeetingRequest = {
+      meetingName: meetingName?.trim() || bookName,
+      startDate: combineDateAndTime(startDate, startTime),
+      endDate: combineDateAndTime(endDate, endTime),
+      maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
+      location:
+        locationName && locationAddress && latitude !== null && longitude !== null
+          ? { name: locationName, address: locationAddress, latitude, longitude }
+          : null,
+    }
+
+    updateMutation.mutate(
+      { meetingId: id, data: updateData },
+      {
+        onSuccess: () => {
+          openAlert('약속 수정 완료', '약속이 성공적으로 수정되었습니다.', () => {
+            navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+          })
+        },
+        onError: (error) => {
+          openError('약속 수정 실패', error.userMessage)
+        },
+      }
+    )
+  }
+
+  // 생성 처리
+  const handleCreate = () => {
     if (
+      !startDate ||
+      !startTime ||
+      !endDate ||
+      !endTime ||
       !bookId ||
       !bookName ||
       !bookThumbnail ||
       !bookAuthors ||
-      !bookPublisher ||
-      !startDate ||
-      !startTime ||
-      !endDate ||
-      !endTime
+      !bookPublisher
     ) {
       return
     }
 
-    const startDateTime = combineDateAndTime(startDate, startTime)
-    const endDateTime = combineDateAndTime(endDate, endTime)
-
-    const trimmedMeetingName = meetingName?.trim() || null
-
-    // 수정 모드
-    if (isEditMode && meetingId) {
-      const updateData: UpdateMeetingRequest = {
-        meetingName: trimmedMeetingName || bookName,
-        startDate: startDateTime,
-        endDate: endDateTime,
-        maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
-        location:
-          locationName && locationAddress && latitude !== null && longitude !== null
-            ? { name: locationName, address: locationAddress, latitude, longitude }
-            : null,
-      }
-
-      updateMutation.mutate(
-        { meetingId, data: updateData },
-        {
-          onSuccess: async () => {
-            await openAlert('약속 수정 완료', '약속이 성공적으로 수정되었습니다.')
-            navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
-          },
-          onError: (error) => {
-            openError('약속 수정 실패', error.userMessage)
-          },
-        }
-      )
-      return
-    }
-
-    // 생성 모드
     const createData: CreateMeetingRequest = {
       gatheringId,
       book: {
@@ -209,9 +189,9 @@ export default function MeetingCreatePage() {
         isbn: bookId,
         thumbnail: bookThumbnail,
       },
-      meetingName: trimmedMeetingName || bookName,
-      meetingStartDate: startDateTime,
-      meetingEndDate: endDateTime,
+      meetingName: meetingName?.trim() || bookName,
+      meetingStartDate: combineDateAndTime(startDate, startTime),
+      meetingEndDate: combineDateAndTime(endDate, endTime),
       maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
       location:
         locationName && locationAddress && latitude !== null && longitude !== null
@@ -220,14 +200,32 @@ export default function MeetingCreatePage() {
     }
 
     createMutation.mutate(createData, {
-      onSuccess: async () => {
-        await openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.')
-        navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+      onSuccess: () => {
+        openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.', () => {
+          navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+        })
       },
       onError: (error) => {
         openError('약속 생성 실패', error.userMessage)
       },
     })
+  }
+
+  // 제출 핸들러: 유효성 검사 → confirm 모달 → 생성/수정 처리
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+
+    const confirmed = await openConfirm(
+      isEditMode ? '약속 수정' : '약속 생성',
+      isEditMode ? '약속을 수정하시겠습니까?' : '약속을 생성하시겠습니까?'
+    )
+    if (!confirmed) return
+
+    if (isEditMode && meetingId) {
+      handleUpdate(meetingId)
+    } else {
+      handleCreate()
+    }
   }
 
   const isSubmitting = isEditMode ? updateMutation.isPending : createMutation.isPending
@@ -458,7 +456,7 @@ export default function MeetingCreatePage() {
           <BookSearchModal
             open={isBookSearchOpen}
             onOpenChange={setIsBookSearchOpen}
-            onSelectBook={handleBookSelection}
+            onSelectBook={(book) => setBook(book)}
           />
         )}
       </div>

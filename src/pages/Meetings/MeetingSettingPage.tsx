@@ -16,7 +16,9 @@ type MeetingTab = Extract<MeetingStatus, 'PENDING' | 'CONFIRMED'>
 
 export default function MeetingSettingPage() {
   const { gatheringId: gatheringIdParam } = useParams<{ gatheringId: string }>()
-  const gatheringId = Number(gatheringIdParam)
+  const parsedId = gatheringIdParam ? Number(gatheringIdParam) : NaN
+  const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
+
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<MeetingTab>('PENDING')
   const [pendingPage, setPendingPage] = useState(0)
@@ -49,14 +51,13 @@ export default function MeetingSettingPage() {
     size: PAGE_SIZES.MEETING_APPROVALS,
   })
 
-  // 에러 발생 시 모달 표시
+  // 에러 발생 시 모달 표시 (동시 에러 발생 시 첫 번째 에러만 처리)
   useEffect(() => {
     if (isPendingError) {
       openError('에러', pendingError.userMessage, () => {
         navigate('/', { replace: true })
       })
-    }
-    if (isConfirmedError) {
+    } else if (isConfirmedError) {
       openError('에러', confirmedError.userMessage, () => {
         navigate('/', { replace: true })
       })
@@ -99,12 +100,13 @@ export default function MeetingSettingPage() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="PENDING">
-              {isPendingLoading ? (
+              {isPendingLoading || isPendingError ? (
                 <MeetingApprovalListSkeleton />
               ) : (
                 pendingData && (
                   <MeetingApprovalList
                     data={pendingData}
+                    gatheringId={gatheringId}
                     currentPage={pendingPage}
                     onPageChange={setPendingPage}
                   />
@@ -112,12 +114,13 @@ export default function MeetingSettingPage() {
               )}
             </TabsContent>
             <TabsContent value="CONFIRMED">
-              {isConfirmedLoading ? (
+              {isConfirmedLoading || isConfirmedError ? (
                 <MeetingApprovalListSkeleton />
               ) : (
                 confirmedData && (
                   <MeetingApprovalList
                     data={confirmedData}
+                    gatheringId={gatheringId}
                     currentPage={confirmedPage}
                     onPageChange={setConfirmedPage}
                   />

@@ -16,6 +16,8 @@ import { useGlobalModalStore } from '@/store'
 export type MeetingApprovalItemProps = {
   /** 약속 승인 아이템 데이터 */
   item: MeetingApprovalItemType
+  /** 모임 ID */
+  gatheringId: number
 }
 
 /**
@@ -24,13 +26,13 @@ export type MeetingApprovalItemProps = {
  * @description
  * 약속 승인 리스트의 개별 아이템을 렌더링합니다.
  */
-export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
+export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprovalItemProps) {
   const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus, meetingId } =
     item
 
   const confirmMutation = useConfirmMeeting()
-  const rejectMutation = useRejectMeeting()
-  const deleteMutation = useDeleteMeeting()
+  const rejectMutation = useRejectMeeting(gatheringId)
+  const deleteMutation = useDeleteMeeting(gatheringId)
   const isPending =
     confirmMutation.isPending || rejectMutation.isPending || deleteMutation.isPending
   const { openConfirm, openError } = useGlobalModalStore()
