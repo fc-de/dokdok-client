@@ -18,7 +18,10 @@ export default function LandingLayout() {
   }, [])
 
   return (
-    <div className="w-full bg-repeat-x" style={{ backgroundImage: `url(${LandingBg})` }}>
+    <div
+      className="w-full min-w-lending-max bg-repeat-x"
+      style={{ backgroundImage: `url(${LandingBg})` }}
+    >
       <header
         className={`sticky top-0 z-20 h-gnb-height bg-white transition-shadow ${isScrolled ? 'shadow-drop' : ''}`}
       >
@@ -30,7 +33,7 @@ export default function LandingLayout() {
           <Button onClick={() => navigate(ROUTES.LOGIN)}>로그인</Button>
         </nav>
       </header>
-      <main className="mx-auto max-w-layout-max">
+      <main className="mx-auto w-lending-max">
         <Outlet />
       </main>
     </div>

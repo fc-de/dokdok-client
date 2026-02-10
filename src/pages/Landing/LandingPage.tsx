@@ -2,23 +2,13 @@ import { useNavigate } from 'react-router-dom'
 
 import LandingImage from '@/shared/assets/images/landing.png'
 import { ROUTES } from '@/shared/constants'
+import { Button } from '@/shared/ui'
 export default function LandingPage() {
   const navigate = useNavigate()
   return (
     <div className="relative">
       <img src={LandingImage} alt="독크독크 소개 이미지" aria-hidden="true" />
-      <button
-        className="absolute top-[8%] left-[45%] w-[10%] h-[1.5%] text-[0px] cursor-pointer"
-        onClick={() => navigate(ROUTES.LOGIN)}
-      >
-        바로 시작하기
-      </button>
-      <button
-        className="absolute bottom-[9.8%] left-[15%] w-[10%] h-[1.5%] text-[0px] cursor-pointer"
-        onClick={() => navigate(ROUTES.LOGIN)}
-      >
-        바로 시작하기
-      </button>
+
       <section className="sr-only">
         <h2>대화로 넓히고 기록으로 깊어지는 독서생활</h2>
         <p>독크독크</p>
@@ -26,6 +16,15 @@ export default function LandingPage() {
           독서모임에서 나눈 이야기, 그날의 감정과 관점 변화까지 책 한 권 안에 차곡차곡 남겨보세요.
         </p>
       </section>
+
+      <Button
+        variant="cta"
+        className="absolute top-[413px] left-[608px] typo-subtitle2 cursor-pointer"
+        size="medium"
+        onClick={() => navigate(ROUTES.LOGIN)}
+      >
+        바로 시작하기
+      </Button>
 
       <section className="sr-only">
         <section>
@@ -101,6 +100,14 @@ export default function LandingPage() {
           <h2>책 한 권을 둘러싼 시간과 생각, 하나의 흐름으로 남겨보세요</h2>
         </section>
       </section>
+      <Button
+        variant="cta"
+        className="absolute bottom-[497px] left-[173px] typo-subtitle2 cursor-pointer"
+        size="medium"
+        onClick={() => navigate(ROUTES.LOGIN)}
+      >
+        바로 시작하기
+      </Button>
 
       <footer className="sr-only">
         <p>© 독크독크. All rights reserved.</p>
