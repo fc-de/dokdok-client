@@ -6,6 +6,7 @@
 import { useRef, useState } from 'react'
 
 import type { KakaoPlace } from '../kakaoMap.types'
+import { loadKakaoSdk } from '../loadKakaoSdk'
 
 export type UseKakaoMapOptions = {
   /** 초기 중심 좌표 */
@@ -17,6 +18,7 @@ export type UseKakaoMapOptions = {
 export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOptions = {}) {
   const [mapElement, setMapElement] = useState<HTMLDivElement | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapRef = useRef<any>(null)
@@ -57,7 +59,7 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
   }
 
   // 지도 수동 초기화
-  const initializeMap = () => {
+  const initializeMap = async () => {
     if (!mapElement) {
       console.warn('Map element not ready')
       return false
@@ -69,10 +71,20 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
       return true
     }
 
+    try {
+      await loadKakaoSdk()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '카카오 지도 SDK 로드에 실패했습니다.'
+      setError(message)
+      return false
+    }
+
     const kakao = window.kakao
 
     if (!kakao?.maps) {
-      console.error('Kakao Maps SDK not loaded')
+      const message = '카카오 지도 SDK가 로드되지 않았습니다.'
+      console.error('[카카오 지도]', message)
+      setError(message)
       return false
     }
 
@@ -103,6 +115,7 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
     mapRef.current = null
     infowindowRef.current = null
     setIsInitialized(false)
+    setError(null)
   }
 
   // 장소 목록에 대한 마커 렌더링
@@ -154,6 +167,7 @@ export function useKakaoMap({ initialCenter, initialLevel = 3 }: UseKakaoMapOpti
   return {
     mapElement: setMapElement,
     isInitialized,
+    error,
     initializeMap,
     renderMarkers,
     closeInfoWindow,

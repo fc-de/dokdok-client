@@ -43,6 +43,7 @@ export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprov
     if (!confirmed) return
 
     confirmMutation.mutate(meetingId, {
+      //Todo : 동시간에 승인할 수 없다고 별도로 알려주면 좋을듯
       onError: (error) => openError('에러', error.userMessage),
     })
   }

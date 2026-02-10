@@ -18,7 +18,6 @@ import { ROUTES } from '@/shared/constants'
 import { Button, Card, Container, DatePicker, Input, Select } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
-// TODO : 책이름이 24자 이상일경우
 export default function MeetingCreatePage() {
   const navigate = useNavigate()
   const openError = useGlobalModalStore((state) => state.openError)
@@ -139,7 +138,7 @@ export default function MeetingCreatePage() {
     }
 
     const updateData: UpdateMeetingRequest = {
-      meetingName: meetingName?.trim() || bookName,
+      meetingName: (meetingName?.trim() || bookName).slice(0, 24),
       startDate: combineDateAndTime(startDate, startTime),
       endDate: combineDateAndTime(endDate, endTime),
       maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
@@ -189,7 +188,7 @@ export default function MeetingCreatePage() {
         isbn: bookId,
         thumbnail: bookThumbnail,
       },
-      meetingName: meetingName?.trim() || bookName,
+      meetingName: (meetingName?.trim() || bookName).slice(0, 24),
       meetingStartDate: combineDateAndTime(startDate, startTime),
       meetingEndDate: combineDateAndTime(endDate, endTime),
       maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
