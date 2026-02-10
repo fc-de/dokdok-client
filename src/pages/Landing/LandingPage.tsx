@@ -55,7 +55,7 @@ export default function LandingPage() {
           </dl>
 
           <dl>
-            <dt>한 번의 모임으로 끝나지 않는독서 경험</dt>
+            <dt>한 번의 모임으로 끝나지 않는 독서 경험</dt>
             <dd>모임에서 나눈 이야기와 그로 인해 바뀐 나의 생각이 다음 독서로 이어집니다.</dd>
           </dl>
         </section>
@@ -98,7 +98,7 @@ export default function LandingPage() {
         </section>
 
         <section>
-          <h2>책 한 권을 둘러싼 시간과 생각,하나의 흐름으로 남겨보세요</h2>
+          <h2>책 한 권을 둘러싼 시간과 생각, 하나의 흐름으로 남겨보세요</h2>
         </section>
       </section>
 
