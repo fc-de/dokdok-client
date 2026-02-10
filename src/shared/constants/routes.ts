@@ -6,6 +6,8 @@ export const ROUTES = {
   HOME: '/',
   HOME_ALIAS: '/home',
 
+  LANDING: '/landing',
+
   // Books
   BOOKS: '/books',
   BOOK_DETAIL: (id: number | string) => `/books/${id}`,

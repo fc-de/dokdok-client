@@ -10,6 +10,7 @@ import {
   GatheringListPage,
   HomePage,
   InvitePage,
+  LandingPage,
   LoginPage,
   MeetingCreatePage,
   MeetingDetailPage,
@@ -20,7 +21,7 @@ import {
   TopicCreatePage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants'
-import { AuthLayout, FullWidthLayout, MainLayout, RootLayout } from '@/shared/layout'
+import { AuthLayout, FullWidthLayout, LandingLayout, MainLayout, RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
 import { PublicRoute } from './PublicRoute'
@@ -29,6 +30,15 @@ export const router = createBrowserRouter([
   {
     path: '/component-guide',
     element: <ComponentGuidePage />,
+  },
+  {
+    element: <LandingLayout />,
+    children: [
+      {
+        path: ROUTES.LANDING,
+        element: <LandingPage />,
+      },
+    ],
   },
   {
     element: <RootLayout />,
