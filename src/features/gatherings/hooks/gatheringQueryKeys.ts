@@ -1,4 +1,4 @@
-import type { MeetingFilter } from '../gatherings.types'
+import type { MeetingFilter, MemberStatusFilter } from '../gatherings.types'
 
 /**
  * 모임 관련 Query Key를 일관되게 관리하기 위한 팩토리 함수
@@ -17,6 +17,10 @@ export const gatheringQueryKeys = {
     [...gatheringQueryKeys.meetings(gatheringId), filter] as const,
   meetingTabCounts: (gatheringId: number) =>
     [...gatheringQueryKeys.meetings(gatheringId), 'tabCounts'] as const,
+  // 모임 멤버 관련 키
+  members: (gatheringId: number) => [...gatheringQueryKeys.detail(gatheringId), 'members'] as const,
+  membersByStatus: (gatheringId: number, status: MemberStatusFilter) =>
+    [...gatheringQueryKeys.members(gatheringId), status] as const,
   // 모임 책장 관련 키
   books: (gatheringId: number) => [...gatheringQueryKeys.detail(gatheringId), 'books'] as const,
 } as const
