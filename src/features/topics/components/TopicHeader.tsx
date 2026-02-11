@@ -1,6 +1,8 @@
 import { format } from 'date-fns'
 import { Check } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
+import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui'
 
 type ProposedHeaderProps = {
@@ -10,6 +12,8 @@ type ProposedHeaderProps = {
   confirmedTopicDate: string | null
   proposedTopicsCount: number
   onOpenChange: (open: boolean) => void
+  gatheringId: number
+  meetingId: number
 }
 
 type ConfirmedHeaderProps = {
@@ -22,6 +26,7 @@ type ConfirmedHeaderProps = {
 type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
 
 export default function TopicHeader(props: TopicHeaderProps) {
+  const navigate = useNavigate()
   return (
     <>
       {/* 제안탭 */}
@@ -58,7 +63,13 @@ export default function TopicHeader(props: TopicHeaderProps) {
               </Button>
             )}
 
-            {props.actions.canSuggest && <Button>제안하기</Button>}
+            {props.actions.canSuggest && (
+              <Button
+                onClick={() => navigate(ROUTES.TOPICS_CREATE(props.gatheringId, props.meetingId))}
+              >
+                제안하기
+              </Button>
+            )}
           </div>
         </div>
       )}

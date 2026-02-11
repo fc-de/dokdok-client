@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useRef } from 'react'
 
+import { Spinner } from '@/shared/ui'
+
 import { useGatheringBooks } from '../hooks/useGatheringBooks'
 import EmptyState from './EmptyState'
 import GatheringBookCard from './GatheringBookCard'
@@ -44,7 +46,9 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
     return (
       <section className="flex flex-col gap-medium">
         <h2 className="typo-heading3 text-black">모임 책장</h2>
-        <div className="py-8 text-center text-grey-600 typo-body3">로딩 중...</div>
+        <div className="flex items-center justify-center">
+          <Spinner />
+        </div>
       </section>
     )
   }
