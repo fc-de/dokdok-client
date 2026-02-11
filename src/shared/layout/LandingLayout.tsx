@@ -33,7 +33,9 @@ export default function LandingLayout() {
             <img src={LogoIcon} alt="" className="h-5.25 w-6.75" />
             <img src={LogoText} alt="독크독크" className="h-5.25 w-19" />
           </h1>
-          {!isPending && !isLoggedIn && <Button onClick={() => navigate(ROUTES.LOGIN)}>로그인</Button>}
+          {!isPending && !isLoggedIn && (
+            <Button onClick={() => navigate(ROUTES.LOGIN)}>로그인</Button>
+          )}
         </nav>
       </header>
       <main className="mx-auto w-lending-max">
