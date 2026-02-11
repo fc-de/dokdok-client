@@ -5,6 +5,7 @@
 
 import type {
   ConfirmedTopicItem,
+  ConfirmTopicsResponse,
   GetConfirmedTopicsResponse,
   GetProposedTopicsResponse,
   ProposedTopicItem,
@@ -435,7 +436,7 @@ export const getMockProposedTopics = (
     nextCursor,
     totalCount: cursorLikeCount === undefined ? mockProposedTopics.length : undefined,
     actions: {
-      canConfirm: false,
+      canConfirm: true,
       canSuggest: true,
     },
   }
@@ -487,5 +488,25 @@ export const getMockConfirmedTopics = (
       canViewPreOpinions: true,
       canWritePreOpinions: false,
     },
+  }
+}
+
+/**
+ * 주제 확정 목데이터 반환 함수
+ *
+ * @description
+ * 실제 API 호출을 시뮬레이션하여 주제 확정 응답 목데이터를 반환합니다.
+ */
+export const getMockConfirmTopics = (
+  meetingId: number,
+  topicIds: number[]
+): ConfirmTopicsResponse => {
+  return {
+    meetingId,
+    topicStatus: 'CONFIRMED',
+    topics: topicIds.map((topicId, index) => ({
+      topicId,
+      confirmOrder: index + 1,
+    })),
   }
 }

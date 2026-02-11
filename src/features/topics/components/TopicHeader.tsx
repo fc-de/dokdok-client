@@ -8,6 +8,8 @@ type ProposedHeaderProps = {
   actions: { canConfirm: boolean; canSuggest: boolean }
   confirmedTopic: boolean
   confirmedTopicDate: string | null
+  proposedTopicsCount: number
+  onOpenChange: (open: boolean) => void
 }
 
 type ConfirmedHeaderProps = {
@@ -50,8 +52,8 @@ export default function TopicHeader(props: TopicHeaderProps) {
           </div>
 
           <div className="flex gap-xsmall">
-            {props.actions.canConfirm && (
-              <Button variant="secondary" outline>
+            {props.actions.canConfirm && props.proposedTopicsCount > 0 && (
+              <Button variant="secondary" outline onClick={() => props.onOpenChange(true)}>
                 주제 확정하기
               </Button>
             )}
