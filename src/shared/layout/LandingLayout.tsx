@@ -22,7 +22,7 @@ export default function LandingLayout() {
 
   return (
     <div
-      className="w-full min-w-lending-max bg-repeat-x"
+      className="w-full min-w-landing-max bg-repeat-x"
       style={{ backgroundImage: `url(${LandingBg})` }}
     >
       <header
@@ -38,7 +38,7 @@ export default function LandingLayout() {
           )}
         </nav>
       </header>
-      <main className="mx-auto w-lending-max">
+      <main className="mx-auto w-landing-max">
         <Outlet />
       </main>
     </div>
