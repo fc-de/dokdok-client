@@ -1,13 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 
 import LandingImage from '@/shared/assets/images/landing.png'
+import LandingImageWebP from '@/shared/assets/images/landing.webp'
 import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui'
 export default function LandingPage() {
   const navigate = useNavigate()
   return (
     <div className="relative">
-      <img src={LandingImage} alt="독크독크 소개 이미지" aria-hidden="true" />
+      <picture>
+        <source srcSet={LandingImageWebP} type="image/webp" />
+        <img src={LandingImage} alt="독크독크 소개 이미지" aria-hidden="true" />
+      </picture>
 
       <section className="sr-only">
         <h2>대화로 넓히고 기록으로 깊어지는 독서생활</h2>

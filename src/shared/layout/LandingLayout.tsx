@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
+import { useAuth } from '@/features/auth'
 import LandingBg from '@/shared/assets/images/landing-bg.png'
 import LogoIcon from '@/shared/assets/images/logo-icon.png'
 import LogoText from '@/shared/assets/images/logo-text.png'
@@ -10,6 +11,8 @@ import { Button } from '@/shared/ui'
 export default function LandingLayout() {
   const navigate = useNavigate()
   const [isScrolled, setIsScrolled] = useState(false)
+  const { data: user, isPending } = useAuth()
+  const isLoggedIn = !!user
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0)
@@ -30,7 +33,7 @@ export default function LandingLayout() {
             <img src={LogoIcon} alt="" className="h-5.25 w-6.75" />
             <img src={LogoText} alt="독크독크" className="h-5.25 w-19" />
           </h1>
-          <Button onClick={() => navigate(ROUTES.LOGIN)}>로그인</Button>
+          {!isPending && !isLoggedIn && <Button onClick={() => navigate(ROUTES.LOGIN)}>로그인</Button>}
         </nav>
       </header>
       <main className="mx-auto w-lending-max">
