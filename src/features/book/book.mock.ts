@@ -35,9 +35,9 @@ const mockBookDetail: BookDetail = {
 const mockBookListItems: BookListItem[] = [
   {
     bookId: 1,
-    title: '우리에게는 매일 철학이 필요하다',
-    publisher: '피터 홀린스',
-    authors: '피터 홀린스',
+    title: '물고기는 존재하지 않는다',
+    publisher: '곰 출판',
+    authors: '룰루 밀러',
     bookReadingStatus: 'READING',
     thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791189327156.jpg',
     rating: 0.5,

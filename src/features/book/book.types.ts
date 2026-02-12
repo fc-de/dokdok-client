@@ -223,7 +223,7 @@ export interface PreOpinionTopic {
   confirmOrder: number
   topicTitle: string
   topicDescription: string
-  answer: string
+  answer: string | null
 }
 
 /** 모임 사전의견 */

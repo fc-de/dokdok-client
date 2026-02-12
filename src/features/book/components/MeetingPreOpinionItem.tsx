@@ -45,7 +45,7 @@ const MeetingPreOpinionItem = ({ record, onEdit, onDelete }: MeetingPreOpinionIt
               </h4>
               <p className="mt-xxtiny typo-body1 text-grey-700">{topic.topicDescription}</p>
             </div>
-            <p className="typo-body1 text-black">{topic.answer}</p>
+            {topic.answer && <p className="typo-body1 text-black">{topic.answer}</p>}
           </div>
           {idx !== sortedTopics.length - 1 && <Division className="mt-medium" />}
         </div>
