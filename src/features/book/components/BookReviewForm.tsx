@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { useKeywords } from '@/features/keywords'
 import { StarRate } from '@/shared/components/StarRate'
+import { TextButton } from '@/shared/ui'
 import { Chip } from '@/shared/ui/Chip'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
@@ -123,7 +124,7 @@ export function BookReviewForm({
     onChange?.({
       rating: newRating,
       keywordIds: selectedKeywordIds,
-      isValid: newRating > 0 && selectedBookKeywords.length > 0 && selectedImpressionKeywords.length > 0,
+      isValid: selectedBookKeywords.length > 0 && selectedImpressionKeywords.length > 0,
     })
   }
 
@@ -133,17 +134,16 @@ export function BookReviewForm({
       : [...selectedKeywordIds, keywordId]
     setSelectedKeywordIds(nextIds)
 
-    const nextBookCount = keywordsData?.keywords.filter(
-      (k) => k.type === 'BOOK' && nextIds.includes(k.id)
-    ).length ?? 0
-    const nextImpressionCount = keywordsData?.keywords.filter(
-      (k) => k.type === 'IMPRESSION' && nextIds.includes(k.id)
-    ).length ?? 0
+    const nextBookCount =
+      keywordsData?.keywords.filter((k) => k.type === 'BOOK' && nextIds.includes(k.id)).length ?? 0
+    const nextImpressionCount =
+      keywordsData?.keywords.filter((k) => k.type === 'IMPRESSION' && nextIds.includes(k.id))
+        .length ?? 0
 
     onChange?.({
       rating,
       keywordIds: nextIds,
-      isValid: rating > 0 && nextBookCount > 0 && nextImpressionCount > 0,
+      isValid: nextBookCount > 0 && nextImpressionCount > 0,
     })
   }
 
@@ -172,6 +172,9 @@ export function BookReviewForm({
           <div className="flex items-center gap-xsmall">
             <StarRate rating={rating} size={36} interactive onRatingChange={handleRatingChange} />
             <p className="subtitle5 text-black">{rating.toFixed(1)}</p>
+            {rating >= 0.5 && (
+              <TextButton onClick={() => handleRatingChange(0)}>별점 초기화</TextButton>
+            )}
           </div>
         </section>
 
