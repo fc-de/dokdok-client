@@ -1,13 +1,20 @@
 import { format } from 'date-fns'
 import { Check } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
+import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 
 type ProposedHeaderProps = {
   activeTab: 'PROPOSED'
   actions: { canConfirm: boolean; canSuggest: boolean }
   confirmedTopic: boolean
   confirmedTopicDate: string | null
+  proposedTopicsCount: number
+  onOpenChange: (open: boolean) => void
+  gatheringId: number
+  meetingId: number
 }
 
 type ConfirmedHeaderProps = {
@@ -20,6 +27,7 @@ type ConfirmedHeaderProps = {
 type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
 
 export default function TopicHeader(props: TopicHeaderProps) {
+  const navigate = useNavigate()
   return (
     <>
       {/* 제안탭 */}
@@ -50,13 +58,19 @@ export default function TopicHeader(props: TopicHeaderProps) {
           </div>
 
           <div className="flex gap-xsmall">
-            {props.actions.canConfirm && (
-              <Button variant="secondary" outline>
+            {props.actions.canConfirm && props.proposedTopicsCount > 0 && (
+              <Button variant="secondary" outline onClick={() => props.onOpenChange(true)}>
                 주제 확정하기
               </Button>
             )}
 
-            {props.actions.canSuggest && <Button>제안하기</Button>}
+            {props.actions.canSuggest && (
+              <Button
+                onClick={() => navigate(ROUTES.TOPICS_CREATE(props.gatheringId, props.meetingId))}
+              >
+                제안하기
+              </Button>
+            )}
           </div>
         </div>
       )}
@@ -89,9 +103,23 @@ export default function TopicHeader(props: TopicHeaderProps) {
           </div>
 
           <div className="flex gap-xsmall">
-            <Button variant="secondary" outline disabled={!props.actions.canViewPreOpinions}>
-              사전 의견 확인하기
-            </Button>
+            {props.actions.canViewPreOpinions ? (
+              <Button variant="secondary" outline>
+                사전 의견 확인하기
+              </Button>
+            ) : (
+              <Tooltip dismissable>
+                <TooltipTrigger asChild>
+                  <Button variant="secondary" outline disabled>
+                    사전 의견 확인하기
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>내 의견을 먼저 공유해야 다른</p>
+                  <p>멤버들의 의견도 확인할 수 있어요!</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
 
             <Button disabled={!props.actions.canWritePreOpinions}>사전 의견 작성하기</Button>
           </div>

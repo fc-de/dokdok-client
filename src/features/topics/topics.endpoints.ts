@@ -16,4 +16,11 @@ export const TOPICS_ENDPOINTS = {
   // 주제 좋아요 토글 (POST /api/gatherings/{gatheringId}/meetings/{meetingId}/topics/{topicId}/likes)
   LIKE_TOGGLE: (gatheringId: number, meetingId: number, topicId: number) =>
     `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/topics/${topicId}/likes`,
+
+  // 주제 확정 (POST /api/gatherings/{gatheringId}/meetings/{meetingId}/topics/confirm)
+  CONFIRM: (gatheringId: number, meetingId: number) =>
+    `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/topics/confirm`,
+  // 주제 제안 (POST /api/gatherings/{gatheringId}/meetings/{meetingId}/topics)
+  CREATE: (gatheringId: number, meetingId: number) =>
+    `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/topics`,
 } as const

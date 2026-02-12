@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext } from 'react'
+import { createContext, forwardRef, type ReactNode, useContext } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -68,38 +68,41 @@ export interface NumberedCheckboxProps {
   disabled?: boolean
 }
 
-function NumberedCheckbox({ id, className, children, disabled = false }: NumberedCheckboxProps) {
-  const { selected, toggle } = useNumberedCheckboxContext()
+const NumberedCheckbox = forwardRef<HTMLButtonElement, NumberedCheckboxProps>(
+  function NumberedCheckbox({ id, className, children, disabled = false }, ref) {
+    const { selected, toggle } = useNumberedCheckboxContext()
 
-  const index = selected.indexOf(id)
-  const isChecked = index !== -1
-  const displayNumber = isChecked ? index + 1 : undefined
+    const index = selected.indexOf(id)
+    const isChecked = index !== -1
+    const displayNumber = isChecked ? index + 1 : undefined
 
-  return (
-    <div className="inline-flex items-center gap-2 align-middle">
-      <button
-        type="button"
-        role="checkbox"
-        aria-checked={isChecked}
-        aria-disabled={disabled}
-        data-slot="numbered-checkbox"
-        data-state={isChecked ? 'checked' : 'unchecked'}
-        onClick={() => !disabled && toggle(id)}
-        disabled={disabled}
-        className={cn(
-          'inline-flex items-center justify-center size-8 shrink-0 rounded-medium border transition-colors align-middle',
-          disabled ? 'invisible pointer-events-none' : 'cursor-pointer',
-          isChecked ? 'bg-primary-200 border-primary-200' : 'bg-transparent border-grey-300',
-          className
-        )}
-      >
-        <span className={cn('typo-body3 leading-none', isChecked ? 'text-black' : 'invisible')}>
-          {displayNumber ?? 0}
-        </span>
-      </button>
-      {children && <span className="align-middle">{children}</span>}
-    </div>
-  )
-}
+    return (
+      <div className="inline-flex items-center gap-2 align-middle">
+        <button
+          ref={ref}
+          type="button"
+          role="checkbox"
+          aria-checked={isChecked}
+          aria-disabled={disabled}
+          data-slot="numbered-checkbox"
+          data-state={isChecked ? 'checked' : 'unchecked'}
+          onClick={() => !disabled && toggle(id)}
+          disabled={disabled}
+          className={cn(
+            'inline-flex items-center justify-center size-8 shrink-0 rounded-medium border transition-colors align-middle',
+            disabled ? 'invisible pointer-events-none' : 'cursor-pointer',
+            isChecked ? 'bg-primary-200 border-primary-200' : 'bg-transparent border-grey-300',
+            className
+          )}
+        >
+          <span className={cn('typo-body3 leading-none', isChecked ? 'text-black' : 'invisible')}>
+            {displayNumber ?? 0}
+          </span>
+        </button>
+        {children && <span className="align-middle">{children}</span>}
+      </div>
+    )
+  }
+)
 
 export { NumberedCheckbox, NumberedCheckboxGroup }

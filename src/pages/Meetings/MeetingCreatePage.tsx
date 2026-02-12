@@ -1,26 +1,88 @@
 import { ChevronLeft, Search } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { BookSearchModal } from '@/features/book'
+import { useGatheringDetail } from '@/features/gatherings'
 import {
   combineDateAndTime,
   type CreateMeetingRequest,
   PlaceSearchModal,
+  type UpdateMeetingRequest,
   useCreateMeeting,
+  useMeetingDetail,
   useMeetingForm,
+  useUpdateMeeting,
 } from '@/features/meetings'
+import { ROUTES } from '@/shared/constants'
 import { Button, Card, Container, DatePicker, Input, Select } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 export default function MeetingCreatePage() {
   const navigate = useNavigate()
-  const { openError, openAlert } = useGlobalModalStore()
+  const openError = useGlobalModalStore((state) => state.openError)
+  const openAlert = useGlobalModalStore((state) => state.openAlert)
+  const openConfirm = useGlobalModalStore((state) => state.openConfirm)
   const createMutation = useCreateMeeting()
+  const updateMutation = useUpdateMeeting()
   const [isPlaceSearchOpen, setIsPlaceSearchOpen] = useState(false)
+  const [isBookSearchOpen, setIsBookSearchOpen] = useState(false)
 
-  // 임시: 모임 정보 (실제로는 API에서 가져와야 함)
-  const gatheringId = 1 // TODO: 실제 모임 ID로 교체
-  const gatheringMaxCount = 16 // TODO: API에서 가져오기
+  const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
+    gatheringId: string
+    meetingId?: string
+  }>()
+  const parsedId = gatheringIdParam ? Number(gatheringIdParam) : NaN
+  const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
+
+  // 수정 모드 판별
+  const parsedMeetingId = meetingIdParam ? Number(meetingIdParam) : NaN
+  const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : null
+  const isEditMode = !!meetingId
+
+  // 수정 모드일 때 약속 상세 조회
+  const {
+    data: meetingDetail,
+    error: meetingError,
+    isLoading: isMeetingLoading,
+  } = useMeetingDetail(meetingId ?? 0)
+
+  // 모임 상세 조회
+  const {
+    data: gathering,
+    error: gatheringError,
+    isLoading: isGatheringLoading,
+  } = useGatheringDetail(gatheringId)
+
+  // 유효하지 않은 ID 처리
+  useEffect(() => {
+    if (gatheringId === 0) {
+      openError('오류', '잘못된 모임 ID입니다.', () => {
+        navigate(ROUTES.GATHERINGS, { replace: true })
+      })
+    }
+  }, [gatheringId, navigate, openError])
+
+  // API 에러 처리 (gatheringError 우선)
+  useEffect(() => {
+    if (gatheringId === 0) return
+    if (!gatheringError && !meetingError) return
+
+    const message = gatheringError
+      ? '모임 정보를 불러오는데 실패했습니다.'
+      : '약속 정보를 불러오는데 실패했습니다.'
+
+    openError('오류', message, () => {
+      // 브라우저 히스토리가 없으면 홈으로 이동
+      if (window.history.length > 1) {
+        navigate(-1)
+      } else {
+        navigate(ROUTES.HOME, { replace: true })
+      }
+    })
+  }, [gatheringId, gatheringError, meetingError, navigate, openError])
+
+  const gatheringMaxCount = gathering?.totalMembers || 1
 
   // 폼 로직 및 유효성 검사 (커스텀 훅으로 분리)
   const {
@@ -34,12 +96,15 @@ export default function MeetingCreatePage() {
     formattedSchedule,
     refs,
     handlers,
-  } = useMeetingForm({ gatheringMaxCount })
+  } = useMeetingForm({ gatheringMaxCount, initialData: meetingDetail })
 
   const {
     meetingName,
     bookId,
     bookName,
+    bookThumbnail,
+    bookAuthors,
+    bookPublisher,
     maxParticipants,
     startDate,
     startTime,
@@ -51,7 +116,6 @@ export default function MeetingCreatePage() {
     longitude,
   } = formData
 
-  //setBookId, setBookName
   const {
     setMeetingName,
     setMaxParticipants,
@@ -63,34 +127,21 @@ export default function MeetingCreatePage() {
     setLocationName,
     setLatitude,
     setLongitude,
+    setBook,
   } = handlers
 
   const { bookButtonRef, startDateRef, endDateRef, maxParticipantsRef } = refs
 
-  // 제출 핸들러
-  const handleSubmit = async () => {
-    //유효성 검사
-    const isValid = validateForm()
-    if (!isValid) {
+  // 수정 처리
+  const handleUpdate = (id: number) => {
+    if (!startDate || !startTime || !endDate || !endTime || !bookName) {
       return
     }
 
-    // validation 통과 후 필수 값 타입 가드
-    if (!bookId || !bookName || !startDate || !startTime || !endDate || !endTime) {
-      return
-    }
-
-    const startDateTime = combineDateAndTime(startDate, startTime)
-    const endDateTime = combineDateAndTime(endDate, endTime)
-
-    const trimmedMeetingName = meetingName?.trim() || null
-
-    const requestData: CreateMeetingRequest = {
-      gatheringId,
-      bookId,
-      meetingName: trimmedMeetingName || bookName, // 약속명이 없으면 책 이름 사용
-      meetingStartDate: startDateTime,
-      meetingEndDate: endDateTime,
+    const updateData: UpdateMeetingRequest = {
+      meetingName: (meetingName?.trim() || bookName).slice(0, 24),
+      startDate: combineDateAndTime(startDate, startTime),
+      endDate: combineDateAndTime(endDate, endTime),
       maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
       location:
         locationName && locationAddress && latitude !== null && longitude !== null
@@ -98,16 +149,87 @@ export default function MeetingCreatePage() {
           : null,
     }
 
-    createMutation.mutate(requestData, {
-      onSuccess: async () => {
-        await openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.')
-        navigate('/') //이동경로 수정해야 함
+    updateMutation.mutate(
+      { meetingId: id, data: updateData },
+      {
+        onSuccess: () => {
+          openAlert('약속 수정 완료', '약속이 성공적으로 수정되었습니다.', () => {
+            navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+          })
+        },
+        onError: (error) => {
+          openError('약속 수정 실패', error.userMessage)
+        },
+      }
+    )
+  }
+
+  // 생성 처리
+  const handleCreate = () => {
+    if (
+      !startDate ||
+      !startTime ||
+      !endDate ||
+      !endTime ||
+      !bookId ||
+      !bookName ||
+      !bookThumbnail ||
+      !bookAuthors ||
+      !bookPublisher
+    ) {
+      return
+    }
+
+    const createData: CreateMeetingRequest = {
+      gatheringId,
+      book: {
+        title: bookName,
+        authors: bookAuthors,
+        publisher: bookPublisher,
+        isbn: bookId,
+        thumbnail: bookThumbnail,
+      },
+      meetingName: (meetingName?.trim() || bookName).slice(0, 24),
+      meetingStartDate: combineDateAndTime(startDate, startTime),
+      meetingEndDate: combineDateAndTime(endDate, endTime),
+      maxParticipants: maxParticipants ? Number(maxParticipants) : gatheringMaxCount,
+      location:
+        locationName && locationAddress && latitude !== null && longitude !== null
+          ? { name: locationName, address: locationAddress, latitude, longitude }
+          : null,
+    }
+
+    createMutation.mutate(createData, {
+      onSuccess: () => {
+        openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.', () => {
+          navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+        })
       },
       onError: (error) => {
         openError('약속 생성 실패', error.userMessage)
       },
     })
   }
+
+  // 제출 핸들러: 유효성 검사 → confirm 모달 → 생성/수정 처리
+  const handleSubmit = async () => {
+    if (!validateForm()) return
+
+    const confirmed = await openConfirm(
+      isEditMode ? '약속 수정' : '약속 생성',
+      isEditMode ? '약속을 수정하시겠습니까?' : '약속을 생성하시겠습니까?'
+    )
+    if (!confirmed) return
+
+    if (isEditMode && meetingId) {
+      handleUpdate(meetingId)
+    } else {
+      handleCreate()
+    }
+  }
+
+  const isSubmitting = isEditMode ? updateMutation.isPending : createMutation.isPending
+  const isLoading = isGatheringLoading || isMeetingLoading
 
   return (
     <>
@@ -117,22 +239,24 @@ export default function MeetingCreatePage() {
           <ChevronLeft size={16} /> 뒤로가기
         </p>
         <div className="flex justify-between py-large">
-          <p className="text-black typo-heading3">약속 만들기</p>
+          <p className="text-black typo-heading3">{isEditMode ? '약속 수정하기' : '약속 만들기'}</p>
           <Button
             className="w-fit"
             size="small"
             onClick={handleSubmit}
-            disabled={createMutation.isPending}
+            disabled={isSubmitting || isLoading}
           >
-            {createMutation.isPending ? '...' : '만들기'}
+            {isSubmitting ? '...' : isEditMode ? '수정하기' : '만들기'}
           </Button>
         </div>
       </div>
       {/* 공통컴포넌트로 교체 예정 */}
       <div className="flex flex-col gap-base pb-xlarge">
-        <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
-          <p className="typo-caption1">작성한 내용은 모임장의 승인 후 약속으로 등록돼요.</p>
-        </Card>
+        {!isEditMode && (
+          <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
+            <p className="typo-caption1">작성한 내용은 모임장의 승인 후 약속으로 등록돼요.</p>
+          </Card>
+        )}
 
         <Container>
           <Container.Title className="typo-subtitle3">약속명</Container.Title>
@@ -147,19 +271,43 @@ export default function MeetingCreatePage() {
         </Container>
 
         <Container>
-          <Container.Title required className="typo-subtitle3">
+          <Container.Title
+            required
+            className="typo-subtitle3"
+            errorMessage={isEditMode ? '도서는 수정이 불가합니다.' : undefined}
+          >
             도서
           </Container.Title>
           <Container.Content>
-            <Button
-              ref={bookButtonRef}
-              outline
-              variant="secondary"
-              className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
-            >
-              <Search size={18} className="text-grey-600 mr-tiny" />
-              <span className="typo-subtitle5">도서 검색</span>
-            </Button>
+            <div className="flex flex-col gap-medium">
+              {bookThumbnail && bookName && bookAuthors && (
+                <Card className="rounded-small py-base px-medium bg-gray-100 border-none flex gap-small items-center">
+                  <div className="w-[70px] h-[100px] overflow-hidden rounded">
+                    <img
+                      src={bookThumbnail}
+                      alt={bookName}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-xtiny">
+                    <p className="typo-subtitle5 text-black">{bookName}</p>
+                    <p className="typo-body4 text-grey-800">{bookAuthors}</p>
+                  </div>
+                </Card>
+              )}
+              {!isEditMode && (
+                <Button
+                  ref={bookButtonRef}
+                  outline
+                  variant="secondary"
+                  className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
+                  onClick={() => setIsBookSearchOpen(true)}
+                >
+                  <Search size={18} className="text-grey-600 mr-tiny" />
+                  <span className="typo-subtitle5">도서 검색</span>
+                </Button>
+              )}
+            </div>
             {errors?.bookId && (
               <p className="mt-tiny text-accent-300 text-body3">{errors.bookId}</p>
             )}
@@ -169,7 +317,7 @@ export default function MeetingCreatePage() {
         <Container>
           <Container.Title className="typo-subtitle3">장소</Container.Title>
           <Container.Content>
-            {locationAddress && (
+            {locationAddress && locationName && (
               <Card className="border-none p-base bg-grey-100 rounded-small text-grey-700 typo-body1 mb-xsmall">
                 <p className="text-black typo-subtitle5 mb-xtiny">{locationName}</p>
                 <p className="typo-body3 text-grey-600">{locationAddress}</p>
@@ -190,17 +338,6 @@ export default function MeetingCreatePage() {
             )}
           </Container.Content>
         </Container>
-
-        <PlaceSearchModal
-          open={isPlaceSearchOpen}
-          onOpenChange={setIsPlaceSearchOpen}
-          onSelectPlace={(place) => {
-            setLocationName(place.name)
-            setLocationAddress(place.address)
-            setLatitude(place.latitude)
-            setLongitude(place.longitude)
-          }}
-        />
 
         <Container>
           <Container.Title required className="typo-subtitle3">
@@ -302,6 +439,26 @@ export default function MeetingCreatePage() {
             />
           </Container.Content>
         </Container>
+
+        {isPlaceSearchOpen && (
+          <PlaceSearchModal
+            open={isPlaceSearchOpen}
+            onOpenChange={setIsPlaceSearchOpen}
+            onSelectPlace={(place) => {
+              setLocationName(place.name)
+              setLocationAddress(place.address)
+              setLatitude(place.latitude)
+              setLongitude(place.longitude)
+            }}
+          />
+        )}
+        {!isEditMode && isBookSearchOpen && (
+          <BookSearchModal
+            open={isBookSearchOpen}
+            onOpenChange={setIsBookSearchOpen}
+            onSelectBook={(book) => setBook(book)}
+          />
+        )}
       </div>
     </>
   )

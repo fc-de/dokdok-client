@@ -7,6 +7,7 @@ import {
   usePreOpinionAnswers,
 } from '@/features/preOpinions'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 export default function PreOpinionListPage() {
@@ -52,7 +53,7 @@ export default function PreOpinionListPage() {
 
   const selectedMember = data?.members.find((m) => m.memberInfo.userId === activeMemberId)
 
-  if (isLoading) return <div>로딩중...</div>
+  if (isLoading) return <Spinner height="full" />
 
   return (
     <>

@@ -12,6 +12,7 @@ export * from './lib/meetingStatus'
 
 // Types
 export type {
+  ApproveType,
   CreateGatheringRequest,
   CreateGatheringResponse,
   FavoriteGatheringListResponse,
@@ -27,12 +28,18 @@ export type {
   GatheringMeetingItem,
   GatheringMeetingListResponse,
   GatheringMember,
+  GatheringMemberListCursor,
+  GatheringMemberListResponse,
   GatheringMemberStatus,
   GatheringStatus,
+  GatheringUpdateRequest,
+  GatheringUpdateResponse,
   GatheringUserRole,
   GetGatheringBooksParams,
   GetGatheringMeetingsParams,
+  GetGatheringMembersParams,
   GetGatheringsParams,
   MeetingFilter,
   MeetingTabCountsResponse,
+  MemberStatusFilter,
 } from './gatherings.types'

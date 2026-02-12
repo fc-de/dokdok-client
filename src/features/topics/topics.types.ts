@@ -35,7 +35,7 @@ export type ProposedTopicItem = {
   meetingId: number
   /** 주제 제목 */
   title: string
-  /** 주제 설명 */
+  /** 주제 설명 (Todo : 없을떄 null인지 빈값인지 체크해야함)*/
   description: string
   /** 주제 타입 */
   topicType: TopicType
@@ -64,7 +64,7 @@ export type ConfirmedTopicItem = {
   topicId: number
   /** 주제 제목 */
   title: string
-  /** 주제 설명 */
+  /** 주제 설명 (Todo : 없을떄 null인지 빈값인지 체크해야함)*/
   description: string
   /** 주제 타입 */
   topicType: TopicType
@@ -197,4 +197,69 @@ export type LikeTopicResponse = {
   liked: boolean
   /** 새로운 좋아요 수 */
   newCount: number
+}
+
+/**
+ * 주제 확정 요청 파라미터
+ */
+export type ConfirmTopicsParams = {
+  /** 모임 식별자 */
+  gatheringId: number
+  /** 약속 식별자 */
+  meetingId: number
+  /** 확정할 주제 ID 목록 (순서대로) */
+  topicIds: number[]
+}
+
+/**
+ * 주제 확정 응답
+ */
+export type ConfirmTopicsResponse = {
+  /** 약속 식별자 */
+  meetingId: number
+  /** 주제 상태 */
+  topicStatus: TopicStatus
+  /** 확정된 주제 목록 */
+  topics: Array<{
+    topicId: number
+    confirmOrder: number
+  }>
+}
+
+/**
+ * 주제 제안 요청 파라미터
+ */
+export type CreateTopicParams = {
+  /** 모임 식별자 */
+  gatheringId: number
+  /** 약속 식별자 */
+  meetingId: number
+  /** 요청 바디 */
+  body: CreateTopicRequest
+}
+
+/**
+ * 주제 제안 요청 바디
+ */
+export type CreateTopicRequest = {
+  /** 주제 제목 */
+  title: string
+  /** 주제 설명 (Todo: 없을때 어떻게 보낼지 체크해야 함)*/
+  description: string | null
+  /** 주제 타입 */
+  topicType: TopicType
+}
+
+/**
+ * 주제 제안 응답
+ */
+export type CreateTopicResponse = {
+  /** 주제 ID */
+  topicId: number
+  /** 주제 제목 */
+  title: string
+  /** 주제 설명 (Todo: 없을때 null인지 빈값인지 체크해야 함)*/
+  description: string | null
+  /** 주제 타입 */
+  topicType: TopicType
 }

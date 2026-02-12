@@ -11,7 +11,7 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks'
-import { Button, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 type TabValue = 'all' | 'favorites'
@@ -106,7 +106,7 @@ export default function GatheringListPage() {
         <>
           {isLoading ? (
             <div className="flex h-35 items-center justify-center">
-              <p className="text-grey-600 typo-subtitle2">로딩 중...</p>
+              <Spinner />
             </div>
           ) : gatherings.length === 0 ? (
             <EmptyState type="all" />
@@ -128,7 +128,7 @@ export default function GatheringListPage() {
           )}
           {isFetchingNextPage && (
             <div className="flex justify-center py-4">
-              <p className="text-grey-600 typo-body3">로딩 중...</p>
+              <Spinner />
             </div>
           )}
         </>
@@ -138,7 +138,7 @@ export default function GatheringListPage() {
         <>
           {isFavoritesLoading ? (
             <div className="flex h-35 items-center justify-center">
-              <p className="text-grey-600 typo-subtitle2">로딩 중...</p>
+              <Spinner />
             </div>
           ) : favorites.length === 0 ? (
             <EmptyState type="favorites" />

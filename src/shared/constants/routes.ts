@@ -6,6 +6,8 @@ export const ROUTES = {
   HOME: '/',
   HOME_ALIAS: '/home',
 
+  LANDING: '/landing',
+
   // Books
   BOOKS: '/books',
   BOOK_DETAIL: (id: number | string) => `/books/${id}`,
@@ -35,6 +37,10 @@ export const ROUTES = {
   MEETING_SETTING: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/setting`,
   PRE_OPINIONS: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions`,
+
+  // Topics
+  TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
 
   // Records
   RECORDS: '/records',

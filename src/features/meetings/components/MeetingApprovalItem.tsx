@@ -16,6 +16,8 @@ import { useGlobalModalStore } from '@/store'
 export type MeetingApprovalItemProps = {
   /** 약속 승인 아이템 데이터 */
   item: MeetingApprovalItemType
+  /** 모임 ID */
+  gatheringId: number
 }
 
 /**
@@ -24,13 +26,13 @@ export type MeetingApprovalItemProps = {
  * @description
  * 약속 승인 리스트의 개별 아이템을 렌더링합니다.
  */
-export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) {
+export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprovalItemProps) {
   const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus, meetingId } =
     item
 
   const confirmMutation = useConfirmMeeting()
-  const rejectMutation = useRejectMeeting()
-  const deleteMutation = useDeleteMeeting()
+  const rejectMutation = useRejectMeeting(gatheringId)
+  const deleteMutation = useDeleteMeeting(gatheringId)
   const isPending =
     confirmMutation.isPending || rejectMutation.isPending || deleteMutation.isPending
   const { openConfirm, openError } = useGlobalModalStore()
@@ -41,6 +43,7 @@ export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) 
     if (!confirmed) return
 
     confirmMutation.mutate(meetingId, {
+      //Todo : 동시간에 승인할 수 없다고 별도로 알려주면 좋을듯
       onError: (error) => openError('에러', error.userMessage),
     })
   }
@@ -94,7 +97,7 @@ export default function MeetingApprovalItem({ item }: MeetingApprovalItemProps) 
               거절
             </Button>
             <Button variant="primary" size="small" onClick={handleApprove} disabled={isPending}>
-              수락
+              승인
             </Button>
           </>
         ) : (

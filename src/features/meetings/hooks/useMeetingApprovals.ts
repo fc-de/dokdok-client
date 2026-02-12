@@ -40,13 +40,11 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  * })
  */
 export const useMeetingApprovals = (params: GetMeetingApprovalsParams) => {
-  const isValidGatheringId = !Number.isNaN(params.gatheringId) && params.gatheringId > 0
-
   return useQuery<PaginatedResponse<MeetingApprovalItemType>, ApiError>({
     queryKey: meetingQueryKeys.approvalList(params),
     queryFn: () => getMeetingApprovals(params),
     // gatheringId가 유효할 때만 쿼리 실행
-    enabled: isValidGatheringId,
+    enabled: params.gatheringId > 0,
     // 캐시 데이터 10분간 유지 (전역 설정 staleTime: 5분 사용)
     gcTime: 10 * 60 * 1000,
   })

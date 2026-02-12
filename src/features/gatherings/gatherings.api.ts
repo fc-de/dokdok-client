@@ -2,6 +2,7 @@ import { apiClient, type ApiResponse } from '@/api'
 
 import { GATHERINGS_ENDPOINTS } from './gatherings.endpoints'
 import type {
+  ApproveType,
   CreateGatheringRequest,
   CreateGatheringResponse,
   FavoriteGatheringListResponse,
@@ -11,8 +12,12 @@ import type {
   GatheringJoinResponse,
   GatheringListResponse,
   GatheringMeetingListResponse,
+  GatheringMemberListResponse,
+  GatheringUpdateRequest,
+  GatheringUpdateResponse,
   GetGatheringBooksParams,
   GetGatheringMeetingsParams,
+  GetGatheringMembersParams,
   GetGatheringsParams,
   MeetingTabCountsResponse,
 } from './gatherings.types'
@@ -155,6 +160,80 @@ export const getMeetingTabCounts = async (gatheringId: number) => {
   const response = await apiClient.get<ApiResponse<MeetingTabCountsResponse>>(
     GATHERINGS_ENDPOINTS.MEETING_TAB_COUNTS,
     { params: { gatheringId } }
+  )
+  return response.data
+}
+
+/**
+ * 모임 멤버 목록 조회 (커서 기반 무한 스크롤)
+ *
+ * @param params - 조회 파라미터
+ * @returns 멤버 목록 및 페이지네이션 정보
+ */
+export const getGatheringMembers = async (params: GetGatheringMembersParams) => {
+  const { gatheringId, ...queryParams } = params
+  const response = await apiClient.get<ApiResponse<GatheringMemberListResponse>>(
+    GATHERINGS_ENDPOINTS.MEMBERS(gatheringId),
+    { params: queryParams }
+  )
+  return response.data
+}
+
+/**
+ * 모임 정보 수정
+ *
+ * @param gatheringId - 모임 ID
+ * @param data - 수정할 모임 정보
+ * @returns 수정된 모임 정보
+ */
+export const updateGathering = async (gatheringId: number, data: GatheringUpdateRequest) => {
+  const response = await apiClient.patch<ApiResponse<GatheringUpdateResponse>>(
+    GATHERINGS_ENDPOINTS.DETAIL(gatheringId),
+    data
+  )
+  return response.data
+}
+
+/**
+ * 모임 삭제
+ *
+ * @param gatheringId - 모임 ID
+ */
+export const deleteGathering = async (gatheringId: number) => {
+  const response = await apiClient.delete<ApiResponse<null>>(
+    GATHERINGS_ENDPOINTS.DETAIL(gatheringId)
+  )
+  return response.data
+}
+
+/**
+ * 가입 요청 승인/거절
+ *
+ * @param gatheringId - 모임 ID
+ * @param memberId - 처리할 멤버의 유저 ID
+ * @param approveType - 승인(ACTIVE) 또는 거절(REJECTED)
+ */
+export const handleJoinRequest = async (
+  gatheringId: number,
+  memberId: number,
+  approveType: ApproveType
+) => {
+  const response = await apiClient.patch<ApiResponse<null>>(
+    GATHERINGS_ENDPOINTS.HANDLE_JOIN_REQUEST(gatheringId, memberId),
+    { approve_type: approveType }
+  )
+  return response.data
+}
+
+/**
+ * 멤버 삭제(강퇴)
+ *
+ * @param gatheringId - 모임 ID
+ * @param userId - 강퇴할 유저 ID
+ */
+export const removeMember = async (gatheringId: number, userId: number) => {
+  const response = await apiClient.delete<ApiResponse<null>>(
+    GATHERINGS_ENDPOINTS.REMOVE_MEMBER(gatheringId, userId)
   )
   return response.data
 }
