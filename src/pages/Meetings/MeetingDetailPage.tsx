@@ -18,10 +18,11 @@ import {
   ConfirmTopicModal,
   ProposedTopicList,
   TopicHeader,
+  TopicSkeleton,
   useConfirmedTopics,
   useProposedTopics,
 } from '@/features/topics'
-import { Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
+import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
@@ -29,7 +30,11 @@ export default function MeetingDetailPage() {
   const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
 
-  const { data: meeting, isLoading, error } = useMeetingDetail(Number(meetingId))
+  const {
+    data: meeting,
+    isLoading: meetingLoading,
+    error: meetingError,
+  } = useMeetingDetail(Number(meetingId))
 
   // 제안된 주제 조회 (무한 스크롤)
   const {
@@ -65,15 +70,11 @@ export default function MeetingDetailPage() {
     if (confirmedError) {
       alert(`확정된 주제 조회 실패: ${confirmedError.userMessage}`)
     }
-  }, [proposedError, confirmedError])
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-error typo-body2">{error.userMessage}</p>
-      </div>
-    )
-  }
+    if (meetingError) {
+      alert(`약속 조회 실패: ${meetingError.userMessage}`)
+    }
+    // navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+  }, [proposedError, confirmedError, meetingError])
 
   return (
     <>
@@ -88,9 +89,9 @@ export default function MeetingDetailPage() {
       <div className="flex justify-between gap-[36px]">
         {/* 약속 로딩 적용 */}
         <div className="w-[300px] flex-none flex flex-col gap-base">
-          {isLoading ? (
+          {meetingLoading ? (
             <div className="flex items-center justify-center h-[400px]">
-              <p className="text-grey-500 typo-body2">로딩 중...</p>
+              <Spinner />
             </div>
           ) : meeting ? (
             <>
@@ -138,11 +139,9 @@ export default function MeetingDetailPage() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="PROPOSED">
-              {isProposedLoading ? (
-                <div className="flex items-center justify-center h-[200px]">
-                  <p className="text-grey-500 typo-body2">로딩 중...</p>
-                </div>
-              ) : proposedTopicsInfiniteData ? (
+              {isProposedLoading || !proposedTopicsInfiniteData ? (
+                <TopicSkeleton />
+              ) : (
                 <div className="flex flex-col gap-base">
                   <TopicHeader
                     activeTab="PROPOSED"
@@ -151,6 +150,8 @@ export default function MeetingDetailPage() {
                     confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                     proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
                     onOpenChange={setIsConfirmTopicOpen}
+                    gatheringId={Number(gatheringId)}
+                    meetingId={Number(meetingId)}
                   />
                   <ProposedTopicList
                     topics={proposedTopicsInfiniteData.pages.flatMap(
@@ -159,20 +160,17 @@ export default function MeetingDetailPage() {
                     hasNextPage={hasNextProposedPage}
                     isFetchingNextPage={isFetchingNextProposedPage}
                     onLoadMore={fetchNextProposedPage}
-                    pageSize={5}
                     gatheringId={Number(gatheringId)}
                     meetingId={Number(meetingId)}
                   />
                 </div>
-              ) : null}
+              )}
             </TabsContent>
 
             <TabsContent value="CONFIRMED">
-              {isConfirmedLoading ? (
-                <div className="flex items-center justify-center h-[200px]">
-                  <p className="text-grey-500 typo-body2">로딩 중...</p>
-                </div>
-              ) : confirmedTopicsInfiniteData ? (
+              {isConfirmedLoading || !confirmedTopicsInfiniteData ? (
+                <TopicSkeleton />
+              ) : (
                 <div className="flex flex-col gap-base">
                   <TopicHeader
                     activeTab="CONFIRMED"
@@ -187,10 +185,9 @@ export default function MeetingDetailPage() {
                     hasNextPage={hasNextConfirmedPage}
                     isFetchingNextPage={isFetchingNextConfirmedPage}
                     onLoadMore={fetchNextConfirmedPage}
-                    pageSize={5}
                   />
                 </div>
-              ) : null}
+              )}
             </TabsContent>
           </Tabs>
         </div>

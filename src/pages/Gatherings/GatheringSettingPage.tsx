@@ -20,6 +20,7 @@ import {
   Button,
   Container,
   Input,
+  Spinner,
   Tabs,
   TabsContent,
   TabsList,
@@ -179,11 +180,7 @@ export default function GatheringSettingPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="flex h-60 items-center justify-center">
-        <p className="typo-body1 text-grey-600">로딩 중...</p>
-      </div>
-    )
+    return <Spinner height="full" />
   }
 
   if (!gathering || gathering.currentUserRole !== 'LEADER') return null

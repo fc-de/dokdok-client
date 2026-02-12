@@ -12,6 +12,7 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useScrollCollapse } from '@/shared/hooks'
+import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store/globalModalStore'
 
 export default function GatheringDetailPage() {
@@ -89,11 +90,7 @@ export default function GatheringDetailPage() {
 
   // 로딩 상태
   if (isLoading || !gathering) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <p className="text-grey-600 typo-subtitle2">로딩 중...</p>
-      </div>
-    )
+    return <Spinner height="full" />
   }
 
   return (
