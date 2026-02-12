@@ -112,6 +112,7 @@
 
   /* Layout tokens */
   --spacing-layout-max: 1440px;
+  --spacing-landing-max: 1340px;
   --spacing-layout-padding: 120px;
   --spacing-gnb-height: 64px;
 
