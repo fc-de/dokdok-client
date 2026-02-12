@@ -119,13 +119,13 @@ function StarRatingFilter({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="flex flex-col bg-white border p-small border-grey-300 rounded-tiny gap-small w-[264px]"
+        className="flex flex-col bg-white border p-small border-grey-300 rounded-tiny gap-small w-[325px]"
         sideOffset={8}
       >
         <p className="typo-body3 text-grey-600">{placeholder}</p>
 
         <div className="flex gap-xsmall">
-          {[1, 2, 3, 4, 5].map((rating) => (
+          {[0, 1, 2, 3, 4, 5].map((rating) => (
             <button
               key={rating}
               type="button"

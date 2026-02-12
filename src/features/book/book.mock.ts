@@ -470,7 +470,7 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
   }
 
   // 별점 필터 - 선택한 범위 내의 별점만 필터링 (정수 기준)
-  if (ratingMin !== undefined && ratingMax !== undefined && ratingMin > 0) {
+  if (ratingMin !== undefined && ratingMax !== undefined && ratingMin >= 0) {
     filteredItems = filteredItems.filter((item) => {
       const floorRating = Math.floor(item.rating)
       return floorRating >= ratingMin && floorRating <= ratingMax
