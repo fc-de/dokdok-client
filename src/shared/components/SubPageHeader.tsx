@@ -41,7 +41,10 @@ export default function SubPageHeader({ label = '뒤로가기', to, className }:
   return (
     <nav
       aria-label={`${label} 페이지로 이동`}
-      className={cn('sticky top-gnb-height z-40 bg-white w-screen ml-[calc(-50vw+50%)]', className)}
+      className={cn(
+        'sticky top-gnb-height z-40 bg-white transition-shadow w-screen ml-[calc(-50vw+50%)]',
+        className
+      )}
     >
       <div className="mx-auto max-w-layout-max px-layout-padding py-small">
         <TextButton size="medium" icon={ChevronLeft} onClick={handleClick}>

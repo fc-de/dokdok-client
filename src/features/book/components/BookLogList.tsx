@@ -16,6 +16,8 @@ import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospe
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
 import { bookRecordsKeys, useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import { useScrollCollapse } from '@/shared/hooks'
+import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
@@ -34,6 +36,7 @@ type RecordItem =
   | { type: 'meetingPreOpinion'; date: Date; data: MeetingPreOpinion }
 
 const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
+  const isSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
@@ -121,8 +124,13 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[108px] z-20 bg-white [box-shadow:0_6px_6px_-4px_rgba(17,17,17,0.08)] w-screen ml-[calc(-50vw+50%)]">
-        <div className="mx-auto max-w-layout-max px-layout-padding py-base">
+      <div
+        className={cn(
+          'sticky top-[108px] z-20 bg-white transition-shadow w-screen ml-[calc(-50vw+50%)]',
+          isSticky && 'shadow-drop-bottom'
+        )}
+      >
+        <div className="mx-auto max-w-layout-max px-layout-padding py-base ">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
             <Button onClick={handleCreateRecord}>기록 추가하기</Button>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -7,6 +7,7 @@ import {
   usePreOpinionAnswers,
 } from '@/features/preOpinions'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { useScrollCollapse } from '@/shared/hooks'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -14,8 +15,7 @@ export default function PreOpinionListPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
   const navigate = useNavigate()
   const openError = useGlobalModalStore((state) => state.openError)
-  const sentinelRef = useRef<HTMLDivElement>(null)
-  const [isStuck, setIsStuck] = useState(false)
+  const isSticky = useScrollCollapse()
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null)
 
   const { data, isLoading, error } = usePreOpinionAnswers({
@@ -28,21 +28,6 @@ export default function PreOpinionListPage() {
       openError('조회 불가', error.userMessage, () => navigate(-1))
     }
   }, [error, openError, navigate])
-
-  useEffect(() => {
-    const sentinel = sentinelRef.current
-    if (!sentinel) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsStuck(!entry.isIntersecting)
-      },
-      { threshold: 0 }
-    )
-
-    observer.observe(sentinel)
-    return () => observer.disconnect()
-  }, [isLoading])
 
   // 선택된 멤버 ID: 유저가 선택한 값이 있으면 사용, 없으면 첫 번째 제출한 멤버를 기본값으로
   const activeMemberId = useMemo(() => {
@@ -57,8 +42,7 @@ export default function PreOpinionListPage() {
 
   return (
     <>
-      <div ref={sentinelRef} className="h-0" />
-      <SubPageHeader className={isStuck ? 'shadow-drop' : ''} />
+      <SubPageHeader className={isSticky ? 'shadow-drop-bottom' : ''} />
       <h3 className="typo-heading3 text-black mt-large mb-[27px]">사전 의견</h3>
       <div className="flex gap-xlarge">
         {/* 왼쪽: 멤버 리스트 */}
