@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
+import { useInfiniteScroll } from '@/shared/hooks'
 import {
   FilterDropdown,
   StarRatingFilter,
@@ -66,9 +67,6 @@ function BookList({
   const [sortType, setSortType] = useState<RecordSortType>('LATEST')
   const [openDropdown, setOpenDropdown] = useState<'gathering' | null>(null)
 
-  // 무한스크롤 감지용 ref
-  const loadMoreRef = useRef<HTMLDivElement>(null)
-
   // 모임 목록 조회
   const {
     data: gatheringsData,
@@ -93,23 +91,12 @@ function BookList({
     sort: sortType,
   })
 
-  // 무한스크롤 Intersection Observer
-  useEffect(() => {
-    const target = loadMoreRef.current
-    if (!target) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  // 무한스크롤
+  const loadMoreRef = useInfiniteScroll(fetchNextPage, {
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  })
 
   const handleGatheringChange = (value: string) => {
     setSelectedGathering(value)
@@ -206,9 +193,8 @@ function BookList({
             ))}
           </div>
           {/* 무한스크롤 트리거 */}
-          <div ref={loadMoreRef} className="h-10">
-            {isFetchingNextPage && <BookListLoadingMore />}
-          </div>
+          {isFetchingNextPage && <BookListSkeleton />}
+          <div ref={loadMoreRef} className="h-10" />
         </>
       )}
     </div>
@@ -228,14 +214,6 @@ function BookListSkeleton() {
           </div>
         </div>
       ))}
-    </div>
-  )
-}
-
-function BookListLoadingMore() {
-  return (
-    <div className="flex justify-center py-medium">
-      <div className="size-6 border-2 border-grey-300 border-t-grey-600 rounded-full animate-spin" />
     </div>
   )
 }
