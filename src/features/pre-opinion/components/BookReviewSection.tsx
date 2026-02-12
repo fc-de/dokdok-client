@@ -2,7 +2,7 @@ import {
   BookReviewForm,
   type BookReviewFormValues,
 } from '@/features/book/components/BookReviewForm'
-import { useBookReview } from '@/features/book/hooks'
+import type { PreOpinionReview } from '@/features/pre-opinion/preOpinion.types'
 import { Container } from '@/shared/ui'
 
 /**
@@ -14,33 +14,22 @@ import { Container } from '@/shared/ui'
  *
  * @example
  * ```tsx
- * <BookReviewSection bookId={1} onChange={(values) => setReviewValues(values)} />
+ * <BookReviewSection review={preOpinion.review} onChange={(values) => setReviewValues(values)} />
  * ```
  */
 interface BookReviewSectionProps {
-  bookId: number
+  review: PreOpinionReview
   onChange?: (values: BookReviewFormValues) => void
 }
 
-const BookReviewSection = ({ bookId, onChange }: BookReviewSectionProps) => {
-  const { data: review, isLoading } = useBookReview(bookId)
-
-  if (isLoading) {
-    return (
-      <section className="bg-white rounded-lg p-large">
-        <h3 className="typo-subtitle1 mb-medium">책 평가</h3>
-        <div className="flex items-center justify-center py-xlarge">
-          <p className="typo-body2 text-grey-600">로딩 중...</p>
-        </div>
-      </section>
-    )
-  }
+const BookReviewSection = ({ review, onChange }: BookReviewSectionProps) => {
+  const hasReview = review.rating > 0 || review.keywords.length > 0
 
   return (
     <Container className="gap-small">
       <Container.Title
         infoMessage={
-          review
+          hasReview
             ? '내 책장의 기록을 자동으로 불러왔어요. 여기서 수정하는 내용은 내 책장에도 똑같이 반영돼요!'
             : ''
         }
@@ -50,8 +39,8 @@ const BookReviewSection = ({ bookId, onChange }: BookReviewSectionProps) => {
       </Container.Title>
       <Container.Content>
         <BookReviewForm
-          initialRating={review?.rating ?? 0}
-          initialKeywordIds={review?.keywords.map((k) => k.id) ?? []}
+          initialRating={review.rating ?? 0}
+          initialKeywordIds={review.keywords.map((k) => k.id) ?? []}
           onChange={onChange}
         />
       </Container.Content>

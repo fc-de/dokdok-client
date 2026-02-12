@@ -1,24 +1,25 @@
 import { useParams } from 'react-router-dom'
 
-import { useMeetingDetail } from '@/features/meetings'
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
 import PreOpinionQuestionSection from '@/features/pre-opinion/components/PreOpinionQuestionSection'
 import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionWriteHeader'
 import { usePreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
-import { Card } from '@/shared/ui'
+import { Card, Spinner } from '@/shared/ui'
 
 export default function PreOpinionWritePage() {
-  const { meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
-  const { data: meeting, isLoading: isMeetingLoading } = useMeetingDetail(Number(meetingId))
-  const { data: preOpinion, isLoading: isPreOpinionLoading } = usePreOpinion(Number(meetingId))
+  const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
+  const { data: preOpinion, isLoading } = usePreOpinion({
+    gatheringId: Number(gatheringId),
+    meetingId: Number(meetingId),
+  })
 
-  if (isMeetingLoading || isPreOpinionLoading || !meeting || !preOpinion) {
+  if (isLoading || !preOpinion) {
     return (
       <>
         <SubPageHeader />
         <div className="flex items-center justify-center py-xlarge">
-          <p className="typo-body2 text-grey-600">로딩 중...</p>
+          <Spinner />
         </div>
       </>
     )
@@ -27,10 +28,7 @@ export default function PreOpinionWritePage() {
   return (
     <>
       <SubPageHeader />
-      <PreOpinionWriteHeader
-        book={preOpinion.book}
-        updatedAt={preOpinion.preOpinion.updatedAt}
-      />
+      <PreOpinionWriteHeader book={preOpinion.book} updatedAt={preOpinion.preOpinion.updatedAt} />
 
       <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
         <section className="max-w-[1200px] mx-auto py-large flex flex-col gap-base">
@@ -39,7 +37,7 @@ export default function PreOpinionWritePage() {
               작성하신 사전 의견은 약속 당일이 되면 멤버들에게 자동으로 공개돼요.
             </p>
           </Card>
-          <BookReviewSection bookId={meeting.book.bookId} />
+          <BookReviewSection review={preOpinion.review} />
           <PreOpinionQuestionSection topics={preOpinion.preOpinion.topics} />
         </section>
       </div>

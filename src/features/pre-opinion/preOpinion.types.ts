@@ -3,6 +3,8 @@
  * @description 사전 의견 API 관련 타입 정의
  */
 
+import type { ReviewKeyword } from '@/features/book/book.types'
+
 /**
  * 주제 유형
  */
@@ -61,11 +63,39 @@ export type PreOpinionData = {
 }
 
 /**
+ * 사전 의견 응답 내 리뷰(평가) 정보
+ */
+export type PreOpinionReview = {
+  /** 리뷰 ID */
+  reviewId: number
+  /** 책 ID */
+  bookId: number
+  /** 사용자 ID */
+  userId: number
+  /** 평점 */
+  rating: number
+  /** 키워드 목록 */
+  keywords: ReviewKeyword[]
+}
+
+/**
+ * 사전 의견 조회 요청 파라미터
+ */
+export type GetPreOpinionParams = {
+  /** 모임 ID */
+  gatheringId: number
+  /** 약속 ID */
+  meetingId: number
+}
+
+/**
  * 사전 의견 조회 응답 타입
  */
 export type GetPreOpinionResponse = {
   /** 책 정보 */
   book: PreOpinionBook
+  /** 리뷰(평가) 정보 */
+  review: PreOpinionReview
   /** 사전 의견 데이터 */
   preOpinion: PreOpinionData
 }

@@ -83,8 +83,8 @@ const mockBookReview: BookReview = {
   userId: 1,
   rating: 3.5,
   keywords: [
-    { id: 3, name: '감동', type: 'BOOK' },
-    { id: 7, name: '몰입', type: 'IMPRESSION' },
+    { id: 43, name: '관계', type: 'BOOK' },
+    { id: 18, name: '흥미로운', type: 'IMPRESSION' },
   ],
   createdAt: '2026-01-11T10:00:00',
 }
@@ -462,20 +462,20 @@ const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
       createdAt: '2025-12-15T10:30:00',
       rating: 3.5,
       bookKeywords: [
-        { id: 1, name: '관계', type: 'BOOK' },
-        { id: 2, name: '성장', type: 'BOOK' },
+        { id: 43, name: '관계', type: 'BOOK' },
+        { id: 47, name: '성장', type: 'BOOK' },
       ],
       impressionKeywords: [
-        { id: 10, name: '즐거운', type: 'IMPRESSION' },
-        { id: 11, name: '여운이 남는', type: 'IMPRESSION' },
+        { id: 9, name: '즐거운', type: 'IMPRESSION' },
+        { id: 20, name: '여운이 남는', type: 'IMPRESSION' },
       ],
     },
     {
       bookReviewHistoryId: 1,
       createdAt: '2025-12-08T14:20:00',
       rating: 4,
-      bookKeywords: [{ id: 3, name: '감동', type: 'BOOK' }],
-      impressionKeywords: [{ id: 12, name: '몰입되는', type: 'IMPRESSION' }],
+      bookKeywords: [{ id: 52, name: '삶', type: 'BOOK' }],
+      impressionKeywords: [{ id: 12, name: '뭉클한', type: 'IMPRESSION' }],
     },
   ],
   pageSize: 5,

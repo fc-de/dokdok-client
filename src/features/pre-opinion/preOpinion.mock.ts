@@ -14,6 +14,16 @@ const mockPreOpinionDetail: GetPreOpinionResponse = {
     title: '아주 작은 습관의 힘',
     author: '제임스 클리어',
   },
+  review: {
+    reviewId: 1,
+    bookId: 10,
+    userId: 1,
+    rating: 4.5,
+    keywords: [
+      { id: 47, name: '성장', type: 'BOOK' },
+      { id: 10, name: '감동적인', type: 'IMPRESSION' },
+    ],
+  },
   preOpinion: {
     updatedAt: '2026-02-06T09:12:30',
     topics: [
