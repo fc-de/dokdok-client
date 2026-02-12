@@ -218,6 +218,8 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       bookId: 1001,
       bookName: '클린 코드',
       thumbnail: 'https://picsum.photos/seed/cleancode/200/300',
+      authors: '로버트 C. 마틴',
+      publisher: '인사이트',
     },
     schedule: {
       startDateTime: '2026-02-01T14:00:00',
@@ -277,6 +279,8 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       bookId: 1002,
       bookName: '실용주의 프로그래머',
       thumbnail: 'https://picsum.photos/seed/pragmatic/200/300',
+      authors: '데이비드 토머스, 앤드류 헌트',
+      publisher: '인사이트',
     },
     schedule: {
       startDateTime: '2026-02-11T14:00:00',

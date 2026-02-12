@@ -10,7 +10,6 @@ type ProposedTopicListProps = {
   hasNextPage: boolean
   isFetchingNextPage: boolean
   onLoadMore: () => void
-  pageSize?: number
   gatheringId: number
   meetingId: number
 }
@@ -20,7 +19,6 @@ export default function ProposedTopicList({
   hasNextPage,
   isFetchingNextPage,
   onLoadMore,
-  pageSize = 5,
   gatheringId,
   meetingId,
 }: ProposedTopicListProps) {
@@ -58,7 +56,7 @@ export default function ProposedTopicList({
       )}
 
       {/* 무한 스크롤 로딩 상태 */}
-      {isFetchingNextPage && <TopicListSkeleton count={pageSize} />}
+      {isFetchingNextPage && <TopicListSkeleton />}
 
       {/* 무한 스크롤 트리거 */}
       {hasNextPage && !isFetchingNextPage && <div ref={observerRef} className="h-4" />}

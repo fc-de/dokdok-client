@@ -112,6 +112,10 @@ export interface GatheringMember {
   profileImageUrl: string | null
   /** 역할 */
   role: GatheringUserRole
+  /** 멤버 상태 (멤버 목록 API에서만 제공) */
+  memberStatus?: GatheringMemberStatus
+  /** 가입일 (ISO 8601, 멤버 목록 API에서만 제공, PENDING이면 null) */
+  joinedAt?: string | null
 }
 
 /** 모임 상세 응답 */
@@ -218,3 +222,56 @@ export interface GetGatheringBooksParams {
   /** 페이지 크기 */
   size?: number
 }
+
+// ========== 모임 설정 (수정/삭제/멤버 관리) ==========
+
+/** 모임 수정 요청 */
+export interface GatheringUpdateRequest {
+  /** 모임 이름 (필수, 최대 12자, 공백만 불가) */
+  gatheringName: string
+  /** 모임 설명 (선택, 최대 150자) */
+  description?: string
+}
+
+/** 모임 수정 응답 */
+export interface GatheringUpdateResponse {
+  /** 모임 ID */
+  gatheringId: number
+  /** 모임 이름 */
+  gatheringName: string
+  /** 모임 설명 */
+  description: string | null
+  /** 수정 일시 (ISO 8601) */
+  updatedAt: string
+}
+
+// ========== 모임 멤버 목록 조회 ==========
+
+/** 멤버 목록 필터 상태 (GatheringMemberStatus에서 파생) */
+export type MemberStatusFilter = Extract<GatheringMemberStatus, 'PENDING' | 'ACTIVE'>
+
+/** 멤버 목록 커서 */
+export interface GatheringMemberListCursor {
+  gatheringMemberId: number
+}
+
+/** 멤버 목록 응답 (커서 기반 페이지네이션) */
+export type GatheringMemberListResponse = CursorPaginatedResponse<
+  GatheringMember,
+  GatheringMemberListCursor
+>
+
+/** 멤버 목록 조회 파라미터 */
+export interface GetGatheringMembersParams {
+  /** 모임 ID */
+  gatheringId: number
+  /** 멤버 상태 필터 */
+  status: MemberStatusFilter
+  /** 페이지 크기 (기본: 10) */
+  pageSize?: number
+  /** 커서 - 마지막 항목의 모임 멤버 ID */
+  cursorId?: number
+}
+
+/** 가입 요청 승인/거절 타입 (GatheringMemberStatus에서 파생) */
+export type ApproveType = Extract<GatheringMemberStatus, 'ACTIVE' | 'REJECTED'>

@@ -1,5 +1,7 @@
 export * from './topicQueryKeys'
 export * from './useConfirmedTopics'
+export * from './useConfirmTopics'
+export * from './useCreateTopic'
 export * from './useDeleteTopic'
 export * from './useLikeTopic'
 export * from './useProposedTopics'

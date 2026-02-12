@@ -1,4 +1,5 @@
 import { Division } from '@/shared/components/Division'
+import { Spinner } from '@/shared/ui'
 import { Switch } from '@/shared/ui/Switch'
 
 import { useBookDetail } from '../hooks'
@@ -14,7 +15,12 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
   const { data, isLoading, isError } = useBookDetail(bookId)
 
   //   if (isLoading) return <BookInfoSkeleton />
-  if (isLoading) return <div>로딩중...</div>
+  if (isLoading)
+    return (
+      <div className="h-[486px] flex items-center justify-center">
+        <Spinner />
+      </div>
+    )
   if (isError || !data) return <div>책 정보를 불러올 수 없습니다.</div>
 
   return (

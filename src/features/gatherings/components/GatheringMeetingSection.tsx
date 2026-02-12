@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useUserProfile } from '@/features/user'
 import { PAGE_SIZES, ROUTES } from '@/shared/constants'
-import { Button, Pagination, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import { Button, Pagination, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
 import type { GatheringUserRole, MeetingFilter } from '../gatherings.types'
 import { useGatheringMeetings, useMeetingTabCounts } from '../hooks'
@@ -133,7 +133,9 @@ export default function GatheringMeetingSection({
 
       {/* 약속 목록 */}
       {isLoading ? (
-        <div className="py-xlarge text-center text-grey-600 typo-body3">로딩 중...</div>
+        <div className="flex items-center justify-center">
+          <Spinner />
+        </div>
       ) : totalCount === 0 ? (
         <EmptyState type="meetings" />
       ) : (

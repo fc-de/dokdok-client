@@ -3,7 +3,7 @@
  * @description 카카오 장소 검색 모달 컴포넌트
  */
 
-import { Search } from 'lucide-react'
+import { AlertCircle, Search } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 import {
@@ -49,12 +49,24 @@ export default function PlaceSearchModal({
   onSelectPlace,
 }: PlaceSearchModalProps) {
   // 지도 관리
-  const { mapElement, isInitialized, initializeMap, renderMarkers, setCenter, cleanup } =
-    useKakaoMap()
+  const {
+    mapElement,
+    isInitialized,
+    error: mapError,
+    initializeMap,
+    renderMarkers,
+    setCenter,
+    cleanup,
+  } = useKakaoMap()
 
   // 장소 검색 관리
   const keywordRef = useRef<HTMLInputElement>(null)
-  const { places, search, reset } = useKakaoPlaceSearch({
+  const {
+    places,
+    error: searchError,
+    search,
+    reset,
+  } = useKakaoPlaceSearch({
     onSearchSuccess: renderMarkers,
   })
 
@@ -123,13 +135,23 @@ export default function PlaceSearchModal({
             </Button>
           </div>
 
-          <div className="flex gap-base h-100">
+          <div className="flex gap-base h-95">
             {/* 지도 영역 */}
             <div className="relative flex-1">
               <div ref={mapElement} className="w-full h-full rounded-small bg-grey-100" />
 
+              {/* SDK 로드 에러 오버레이 */}
+              {mapError && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-small bg-grey-50">
+                  <div className="text-center text-red-500 px-base">
+                    <AlertCircle size={48} className="mx-auto mb-base opacity-70" />
+                    <p className="text-sm font-medium">{mapError}</p>
+                  </div>
+                </div>
+              )}
+
               {/* 검색 전 안내 메시지 오버레이 */}
-              {!isInitialized && (
+              {!isInitialized && !mapError && (
                 <div className="absolute inset-0 flex items-center justify-center rounded-small bg-grey-50">
                   <div className="text-center text-grey-400">
                     <Search size={48} className="mx-auto mb-base opacity-30" />
@@ -141,7 +163,15 @@ export default function PlaceSearchModal({
             </div>
 
             {/* 장소 리스트 */}
-            <PlaceList places={places} onPlaceClick={handlePlaceClick} />
+            <div className="flex flex-col w-[300px] shrink-0">
+              {searchError && (
+                <div className="flex items-start gap-xsmall text-red-500 text-sm p-xsmall mb-xsmall bg-red-50 rounded-small">
+                  <AlertCircle size={16} className="mt-[2px] shrink-0" />
+                  <span>{searchError}</span>
+                </div>
+              )}
+              <PlaceList places={places} onPlaceClick={handlePlaceClick} />
+            </div>
           </div>
         </ModalBody>
 

@@ -7,6 +7,9 @@ export const MEETINGS_ENDPOINTS = {
   // 약속 상세 조회 (GET /api/meetings/{meetingId})
   DETAIL: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}`,
 
+  // 약속 생성 (POST /api/meetings)
+  CREATE: `${API_PATHS.MEETINGS}`,
+
   // 약속 거부 (POST /api/meetings/{meetingId}/reject)
   REJECT: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/reject`,
 
@@ -21,4 +24,7 @@ export const MEETINGS_ENDPOINTS = {
 
   // 약속 참가취소 (DELETE /api/meetings/{meetingId}/join)
   CANCEL_JOIN: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/join`,
+
+  // 약속 수정 (PATCH /api/meetings/{meetingId})
+  UPDATE: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}`,
 } as const

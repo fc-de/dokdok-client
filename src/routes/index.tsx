@@ -8,8 +8,10 @@ import {
   CreateGatheringPage,
   GatheringDetailPage,
   GatheringListPage,
+  GatheringSettingPage,
   HomePage,
   InvitePage,
+  LandingPage,
   LoginPage,
   MeetingCreatePage,
   MeetingDetailPage,
@@ -17,9 +19,10 @@ import {
   OnboardingPage,
   PreOpinionListPage,
   RecordListPage,
+  TopicCreatePage,
 } from '@/pages'
 import { ROUTES } from '@/shared/constants'
-import { AuthLayout, FullWidthLayout, MainLayout, RootLayout } from '@/shared/layout'
+import { AuthLayout, FullWidthLayout, LandingLayout, MainLayout, RootLayout } from '@/shared/layout'
 
 import { PrivateRoute } from './PrivateRoute'
 import { PublicRoute } from './PublicRoute'
@@ -28,6 +31,15 @@ export const router = createBrowserRouter([
   {
     path: '/component-guide',
     element: <ComponentGuidePage />,
+  },
+  {
+    element: <LandingLayout />,
+    children: [
+      {
+        path: ROUTES.LANDING,
+        element: <LandingPage />,
+      },
+    ],
   },
   {
     element: <RootLayout />,
@@ -110,8 +122,16 @@ export const router = createBrowserRouter([
             element: <MainLayout />,
             children: [
               {
+                path: `${ROUTES.GATHERINGS}/:id/settings`,
+                element: <GatheringSettingPage />,
+              },
+              {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/topic-create`,
+                element: <TopicCreatePage />,
               },
               {
                 path: ROUTES.PRE_OPINIONS(':gatheringId', ':meetingId'),
@@ -122,7 +142,11 @@ export const router = createBrowserRouter([
                 element: <MeetingSettingPage />,
               },
               {
-                path: `${ROUTES.GATHERINGS}/:id/meetings/create`,
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/create`,
+                element: <MeetingCreatePage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/update`,
                 element: <MeetingCreatePage />,
               },
               {
