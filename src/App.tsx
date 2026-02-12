@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import { setupInterceptors } from '@/api'
 import { queryClient } from '@/shared/lib/tanstack-query'
 import { GlobalModalHost } from '@/shared/ui/GlobalModalHost'
+import { TooltipProvider } from '@/shared/ui/Tooltip'
 
 import { router } from './routes'
 
@@ -13,8 +14,10 @@ setupInterceptors()
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <GlobalModalHost />
+      <TooltipProvider>
+        <RouterProvider router={router} />
+        <GlobalModalHost />
+      </TooltipProvider>
     </QueryClientProvider>
   )
 }

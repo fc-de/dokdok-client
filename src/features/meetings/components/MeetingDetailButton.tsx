@@ -74,7 +74,7 @@ export default function MeetingDetailButton({
       >
         {buttonLabel}
       </Button>
-      {isEnabled && (
+      {!isEnabled && (
         <p className="text-grey-700 typo-body6 pt-tiny">
           {type === 'EDIT_TIME_EXPIRED' && '약속 24시간 전까지만 약속 정보를 수정할 수 있어요'}
           {(type === 'CANCEL_TIME_EXPIRED' || type === 'JOIN_TIME_EXPIRED') &&

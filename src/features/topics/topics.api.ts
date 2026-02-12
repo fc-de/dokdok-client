@@ -22,12 +22,8 @@ import type {
   LikeTopicResponse,
 } from './topics.types'
 
-/**
- * 목데이터 사용 여부
- * @description 로그인 기능 개발 전까지 true로 설정하여 목데이터 사용
- * TODO: 로그인 기능 완료 후 false로 변경하여 실제 API 호출
- */
-const USE_MOCK_DATA = true
+/** 목데이터 사용 여부 플래그 */
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 /**
  * 제안된 주제 조회
@@ -58,7 +54,7 @@ export const getProposedTopics = async (
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 500))
     return getMockProposedTopics(pageSize, cursorLikeCount, cursorTopicId)
@@ -103,7 +99,7 @@ export const getConfirmedTopics = async (
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 500))
     return getMockConfirmedTopics(pageSize, cursorConfirmOrder, cursorTopicId)
@@ -137,7 +133,7 @@ export const deleteTopic = async (params: DeleteTopicParams): Promise<void> => {
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 500))
     return
@@ -165,7 +161,7 @@ export const createTopic = async (params: CreateTopicParams): Promise<CreateTopi
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 500))
     return {
@@ -198,7 +194,7 @@ export const likeTopicToggle = async (params: LikeTopicParams): Promise<LikeTopi
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 300))
     // 목 응답 (랜덤하게 좋아요/취소)
