@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { SearchBookItem } from '@/features/book'
 import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 import { useGlobalModalStore } from '@/store'
 
 export default function BookListPage() {
@@ -192,7 +193,18 @@ export default function BookListPage() {
                 >
                   편집하기
                 </Button>
-                <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                {totalCount === 0 ? (
+                  <Tooltip dismissable>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>책을 추가해 감상 기록을 남겨보세요!</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                )}
               </>
             )}
           </div>
