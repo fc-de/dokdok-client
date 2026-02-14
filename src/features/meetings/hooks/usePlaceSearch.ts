@@ -47,7 +47,7 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
 
   const keywordRef = useRef<HTMLInputElement>(null)
 
-  const { places, search, reset } = useKakaoPlaceSearch({
+  const { places, error: searchError, search, reset } = useKakaoPlaceSearch({
     onSearchSuccess: (results) => {
       setSearchState(results.length > 0 ? 'hasResults' : 'noResults')
     },
@@ -135,7 +135,7 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
   }, [onOpenChange, resetState])
 
   // error 상태에서 노출할 메시지 — SDK 오류 우선
-  const errorMessage = sdkError?.message ?? '오류가 발생했습니다. 다시 시도해주세요.'
+  const errorMessage = sdkError?.message ?? searchError ?? '오류가 발생했습니다. 다시 시도해주세요.'
 
   // Map 컴포넌트를 DOM에 마운트할지 여부
   // error 상태는 인스턴스 보존이 불필요하므로 unmount (다음 검색 시 새로 초기화)
