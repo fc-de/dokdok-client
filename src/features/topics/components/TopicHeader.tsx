@@ -64,13 +64,12 @@ export default function TopicHeader(props: TopicHeaderProps) {
               </Button>
             )}
 
-            {props.actions.canSuggest && (
-              <Button
-                onClick={() => navigate(ROUTES.TOPICS_CREATE(props.gatheringId, props.meetingId))}
-              >
-                제안하기
-              </Button>
-            )}
+            <Button
+              onClick={() => navigate(ROUTES.TOPICS_CREATE(props.gatheringId, props.meetingId))}
+              disabled={!props.actions.canSuggest}
+            >
+              제안하기
+            </Button>
           </div>
         </div>
       )}

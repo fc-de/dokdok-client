@@ -30,7 +30,7 @@ export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprov
   const { meetingName, bookName, nickname, startDateTime, endDateTime, meetingStatus, meetingId } =
     item
 
-  const confirmMutation = useConfirmMeeting()
+  const confirmMutation = useConfirmMeeting(gatheringId)
   const rejectMutation = useRejectMeeting(gatheringId)
   const deleteMutation = useDeleteMeeting(gatheringId)
   const isPending =

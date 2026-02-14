@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ApiError } from '@/api/errors'
+import { meetingQueryKeys } from '@/features/meetings/hooks/meetingQueryKeys'
 
 import { confirmTopics } from '../topics.api'
 import type { ConfirmTopicsParams, ConfirmTopicsResponse } from '../topics.types'
@@ -54,6 +55,10 @@ export const useConfirmTopics = () => {
           gatheringId: variables.gatheringId,
           meetingId: variables.meetingId,
         }),
+      })
+      // 약속 상세 무효화
+      queryClient.invalidateQueries({
+        queryKey: meetingQueryKeys.detail(variables.meetingId),
       })
     },
   })

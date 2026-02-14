@@ -1,5 +1,8 @@
+import { useNavigate } from 'react-router-dom'
+
 import { useCancelJoinMeeting, useJoinMeeting } from '@/features/meetings/hooks'
 import type { MeetingDetailActionStateType } from '@/features/meetings/meetings.types'
+import { ROUTES } from '@/shared/constants/routes'
 import { Button } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -7,6 +10,7 @@ interface MeetingDetailButtonProps {
   buttonLabel: string
   isEnabled: boolean
   type: MeetingDetailActionStateType
+  gatheringId: number
   meetingId: number
 }
 
@@ -14,8 +18,10 @@ export default function MeetingDetailButton({
   buttonLabel,
   isEnabled,
   type,
+  gatheringId,
   meetingId,
 }: MeetingDetailButtonProps) {
+  const navigate = useNavigate()
   const joinMutation = useJoinMeeting()
   const cancelJoinMutation = useCancelJoinMeeting()
   const { openError, openConfirm } = useGlobalModalStore()
@@ -25,9 +31,9 @@ export default function MeetingDetailButton({
   const handleClick = async () => {
     if (!isEnabled || isPending) return
 
-    // 약속 수정 - 페이지 이동 예정 (TODO)
+    // 약속 수정
     if (type === 'CAN_EDIT') {
-      // 페이지 이동 로직 추가 예정
+      navigate(ROUTES.MEETING_UPDATE(gatheringId, meetingId))
       return
     }
 
