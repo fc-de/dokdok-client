@@ -73,7 +73,6 @@ export default function ConfirmTopicModal({
           handleClose()
         },
         onError: (error) => {
-          console.log(error)
           openError('확정 실패', error.userMessage)
         },
       }

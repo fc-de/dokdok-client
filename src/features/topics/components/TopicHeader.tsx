@@ -28,7 +28,6 @@ type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
 
 export default function TopicHeader(props: TopicHeaderProps) {
   const navigate = useNavigate()
-  console.log(props.confirmedTopic, props.confirmedTopicDate)
   return (
     <>
       {/* 제안탭 */}
