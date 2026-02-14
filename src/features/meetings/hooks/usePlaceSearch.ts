@@ -47,7 +47,12 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
 
   const keywordRef = useRef<HTMLInputElement>(null)
 
-  const { places, error: searchError, search, reset } = useKakaoPlaceSearch({
+  const {
+    places,
+    error: searchError,
+    search,
+    reset,
+  } = useKakaoPlaceSearch({
     onSearchSuccess: (results) => {
       setSearchState(results.length > 0 ? 'hasResults' : 'noResults')
     },
