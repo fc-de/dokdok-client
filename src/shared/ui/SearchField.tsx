@@ -15,31 +15,35 @@ type SearchFieldProps = Omit<React.ComponentProps<'input'>, 'type'>
  * <SearchField value={query} onChange={(e) => setQuery(e.target.value)} />
  * ```
  */
-function SearchField({ className, disabled, ...props }: SearchFieldProps) {
-  return (
-    <div
-      className={cn(
-        'flex h-[53px] w-full items-center gap-xsmall rounded-small border bg-white px-[14px]',
-        'border-grey-400',
-        'focus-within:border-primary-300',
-        'transition-colors',
-        className
-      )}
-    >
-      <Search className="w-3 h-3 shrink-0 text-grey-600" strokeWidth={1.5} />
-      <input
-        type="text"
-        disabled={disabled}
+const SearchField = React.forwardRef<HTMLInputElement, SearchFieldProps>(
+  ({ className, disabled, ...props }, ref) => {
+    return (
+      <div
         className={cn(
-          'flex-1 bg-transparent outline-none',
-          'typo-body1 text-black',
-          'placeholder:text-grey-600',
-          disabled && 'pointer-events-none'
+          'flex h-[53px] w-full items-center gap-xsmall rounded-small border bg-white px-[14px]',
+          'border-grey-400',
+          'focus-within:border-primary-300',
+          'transition-colors',
+          className
         )}
-        {...props}
-      />
-    </div>
-  )
-}
+      >
+        <Search className="size-4.5 shrink-0 text-grey-600" strokeWidth={1.5} />
+        <input
+          ref={ref}
+          type="text"
+          disabled={disabled}
+          className={cn(
+            'flex-1 bg-transparent outline-none',
+            'typo-body1 text-black',
+            'placeholder:text-grey-600',
+            disabled && 'pointer-events-none'
+          )}
+          {...props}
+        />
+      </div>
+    )
+  }
+)
+SearchField.displayName = 'SearchField'
 
 export { SearchField }

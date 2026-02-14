@@ -230,7 +230,7 @@ export const confirmTopics = async (
 
   // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
   // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
-  if (USE_MOCK_DATA) {
+  if (USE_MOCK) {
     // 실제 API 호출을 시뮬레이션하기 위한 지연
     await new Promise((resolve) => setTimeout(resolve, 500))
     return getMockConfirmTopics(meetingId, topicIds)
