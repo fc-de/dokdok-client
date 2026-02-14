@@ -261,7 +261,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
       buttonLabel: '약속이 끝났어요',
       enabled: false,
     },
-    confirmedTopicExpand: true,
+    confirmedTopic: true,
     confirmedTopicDate: '2026-01-20T14:00:00',
   },
   11: {
@@ -269,7 +269,7 @@ const mockMeetingDetails: Record<number, GetMeetingDetailResponse> = {
     progressStatus: 'PRE',
     meetingName: '킥오프 모임',
     meetingStatus: 'CONFIRMED',
-    confirmedTopicExpand: false,
+    confirmedTopic: false,
     confirmedTopicDate: null,
     gathering: {
       gatheringId: 102,
