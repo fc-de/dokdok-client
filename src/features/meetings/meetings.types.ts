@@ -215,7 +215,7 @@ export type GetMeetingDetailResponse = {
   /** 약속 진행 상태 */
   progressStatus: MeetingProgressStatus
   /** 주제 확정 여부 */
-  confirmedTopicExpand: boolean
+  confirmedTopic: boolean
   /** 주제 확정 일시 */
   confirmedTopicDate: string | null
   /** 모임 정보 */

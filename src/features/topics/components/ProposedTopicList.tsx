@@ -12,6 +12,7 @@ type ProposedTopicListProps = {
   onLoadMore: () => void
   gatheringId: number
   meetingId: number
+  confirmedTopic: boolean
 }
 
 export default function ProposedTopicList({
@@ -21,6 +22,7 @@ export default function ProposedTopicList({
   onLoadMore,
   gatheringId,
   meetingId,
+  confirmedTopic,
 }: ProposedTopicListProps) {
   // 무한 스크롤: IntersectionObserver로 다음 페이지 로드
   const observerRef = useInfiniteScroll(onLoadMore, {
@@ -44,11 +46,12 @@ export default function ProposedTopicList({
                 description={topic.description}
                 createdByNickname={topic.createdByInfo.nickname}
                 likeCount={topic.likeCount}
-                isLiked={topic.isLiked}
-                canDelete={topic.canDelete}
+                isLiked={confirmedTopic ? false : topic.isLiked}
+                canDelete={confirmedTopic ? false : topic.canDelete}
                 gatheringId={gatheringId}
                 meetingId={meetingId}
                 topicId={topic.topicId}
+                isLikeDisabled={confirmedTopic}
               />
             </li>
           ))}

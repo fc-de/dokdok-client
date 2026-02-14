@@ -123,11 +123,12 @@ export const useMeetingForm = ({ gatheringMaxCount, initialData }: UseMeetingFor
     const newError: ValidationErrors = {}
 
     if (
-      !formData.bookId ||
-      !formData.bookName ||
-      !formData.bookThumbnail ||
-      !formData.bookAuthors ||
-      !formData.bookPublisher
+      !isEditMode &&
+      (!formData.bookId ||
+        !formData.bookName ||
+        !formData.bookThumbnail ||
+        !formData.bookAuthors ||
+        !formData.bookPublisher)
     ) {
       newError.bookId = '* 도서를 선택해주세요.'
     }
