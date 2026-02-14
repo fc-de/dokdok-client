@@ -16,26 +16,33 @@ import { useEffect, useState } from 'react'
 
 import { Loader } from '../lib/kakaoMapApiLoader'
 
+const appkey = import.meta.env.VITE_KAKAO_MAP_KEY
+
 export function useKakaoLoader(): [loading: boolean, error: Error | null] {
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [state, setState] = useState<[loading: boolean, error: Error | null]>(
+    appkey ? [true, null] : [false, new Error('VITE_KAKAO_MAP_KEY 환경변수가 설정되지 않았습니다.')]
+  )
 
   useEffect(() => {
+    if (!appkey) return
+
     const loader = Loader.getInstance({
-      appkey: import.meta.env.VITE_KAKAO_MAP_KEY as string,
+      appkey,
       libraries: ['services'],
     })
 
     loader
       .load()
       .then(() => {
-        setLoading(false)
+        setState([false, null])
       })
       .catch((err: unknown) => {
-        setLoading(false)
-        setError(err instanceof Error ? err : new Error('카카오 지도 SDK 로드에 실패했습니다.'))
+        setState([
+          false,
+          err instanceof Error ? err : new Error('카카오 지도 SDK 로드에 실패했습니다.'),
+        ])
       })
   }, [])
 
-  return [loading, error]
+  return state
 }

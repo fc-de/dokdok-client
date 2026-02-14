@@ -74,6 +74,7 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
     setSearchState('idle')
     setHoveredPlaceId(null)
     setHasBeenSearched(false)
+    setMapInstance(null)
     reset()
   }, [reset])
 

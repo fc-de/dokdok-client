@@ -3,7 +3,8 @@
  * @description 카카오 마커 내부 구현 컴포넌트
  *
  * MapMarker에서 위임받아 실제 kakao.maps.Marker 인스턴스를 관리합니다.
- * - useLayoutEffect: DOM paint 직전 마커 생성/정리
+ * - useMemo: 렌더 중 동기적으로 마커 인스턴스 생성 (타이밍 문제 없음)
+ * - useLayoutEffect: map 등록/해제 및 props setter 동기화
  * - useKakaoEvent: 이벤트 등록/해제 자동화
  * - createPortal: children을 CustomOverlay DOM에 주입
  * - forwardRef: 외부에서 마커 인스턴스에 직접 접근 가능
@@ -14,6 +15,7 @@ import {
   type PropsWithChildren,
   useImperativeHandle,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -97,95 +99,78 @@ export const Marker = forwardRef<KakaoMarker, PropsWithChildren<MarkerProps>>(fu
   },
   ref
 ) {
-  const markerRef = useRef<KakaoMarker | null>(null)
   const overlayRef = useRef<KakaoCustomOverlay | null>(null)
   const [overlayEl, setOverlayEl] = useState<HTMLDivElement | null>(null)
 
   const hasChildren = children != null
 
-  // 마커 인스턴스를 ref로 외부에 노출
-  useImperativeHandle(ref, () => markerRef.current as KakaoMarker, [])
-
-  // ── 마커 생성/정리 ─────────────────────────────────────────
-  useLayoutEffect(() => {
-    const { kakao } = window
-
-    const markerImage = image ? buildMarkerImage(image) : undefined
-
-    const marker = new kakao.maps.Marker({
-      map,
-      position,
-      image: markerImage,
-      title,
-      draggable,
-      clickable,
-      zIndex,
-      opacity,
-    })
-
-    markerRef.current = marker
-    onCreate?.(marker)
-
-    return () => {
-      marker.setMap(null)
-      markerRef.current = null
-    }
-    // position, image 등은 아래 별도 effect에서 setter로 동기화
+  // ── 마커 인스턴스 생성  ────────
+  const marker = useMemo(
+    () =>
+      new window.kakao.maps.Marker({
+        position,
+        image: image ? buildMarkerImage(image) : undefined,
+        title,
+        draggable,
+        clickable,
+        zIndex,
+        opacity,
+      }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map])
+    []
+  )
+
+  // 마커 인스턴스를 ref로 외부에 노출
+  useImperativeHandle(ref, () => marker, [marker])
+
+  // ── map 등록/해제 ──────────────────────────────────────────
+  useLayoutEffect(() => {
+    marker.setMap(map)
+    return () => marker.setMap(null)
+  }, [map, marker])
+
+  // ── onCreate 콜백 ──────────────────────────────────────────
+  useLayoutEffect(() => {
+    onCreate?.(marker)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marker])
 
   // ── props 변경 → SDK setter 호출 ──────────────────────────
   useLayoutEffect(() => {
-    markerRef.current?.setPosition(position)
-  }, [position])
+    marker.setPosition(position)
+  }, [marker, position])
 
   useLayoutEffect(() => {
     if (!image) return
-    markerRef.current?.setImage(buildMarkerImage(image))
-  }, [image])
+    marker.setImage(buildMarkerImage(image))
+  }, [marker, image])
 
   useLayoutEffect(() => {
-    if (title !== undefined) markerRef.current?.setTitle(title)
-  }, [title])
+    if (title !== undefined) marker.setTitle(title)
+  }, [marker, title])
 
   useLayoutEffect(() => {
-    if (draggable !== undefined) markerRef.current?.setDraggable(draggable)
-  }, [draggable])
+    if (draggable !== undefined) marker.setDraggable(draggable)
+  }, [marker, draggable])
 
   useLayoutEffect(() => {
-    if (clickable !== undefined) markerRef.current?.setClickable(clickable)
-  }, [clickable])
+    if (clickable !== undefined) marker.setClickable(clickable)
+  }, [marker, clickable])
 
   useLayoutEffect(() => {
-    if (zIndex !== undefined) markerRef.current?.setZIndex(zIndex)
-  }, [zIndex])
+    if (zIndex !== undefined) marker.setZIndex(zIndex)
+  }, [marker, zIndex])
 
   useLayoutEffect(() => {
-    if (opacity !== undefined) markerRef.current?.setOpacity(opacity)
-  }, [opacity])
+    if (opacity !== undefined) marker.setOpacity(opacity)
+  }, [marker, opacity])
 
   // ── 이벤트 자동 등록/해제 ─────────────────────────────────
-  useKakaoEvent(markerRef.current, 'click', onClick ? () => onClick(markerRef.current!) : undefined)
-  useKakaoEvent(
-    markerRef.current,
-    'mouseover',
-    onMouseOver ? () => onMouseOver(markerRef.current!) : undefined
-  )
-  useKakaoEvent(
-    markerRef.current,
-    'mouseout',
-    onMouseOut ? () => onMouseOut(markerRef.current!) : undefined
-  )
-  useKakaoEvent(
-    markerRef.current,
-    'dragstart',
-    onDragStart ? () => onDragStart(markerRef.current!) : undefined
-  )
-  useKakaoEvent(
-    markerRef.current,
-    'dragend',
-    onDragEnd ? () => onDragEnd(markerRef.current!) : undefined
-  )
+  useKakaoEvent(marker, 'click', onClick ? () => onClick(marker) : undefined)
+  useKakaoEvent(marker, 'mouseover', onMouseOver ? () => onMouseOver(marker) : undefined)
+  useKakaoEvent(marker, 'mouseout', onMouseOut ? () => onMouseOut(marker) : undefined)
+  useKakaoEvent(marker, 'dragstart', onDragStart ? () => onDragStart(marker) : undefined)
+  useKakaoEvent(marker, 'dragend', onDragEnd ? () => onDragEnd(marker) : undefined)
 
   // ── children → CustomOverlay + createPortal ───────────────
   useLayoutEffect(() => {

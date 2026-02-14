@@ -25,10 +25,10 @@ export function useKakaoPlaceSearch({
 
   const placesServiceRef = useRef<KakaoPlacesService | null>(null)
 
-  /** 검색 실행 — initializeMap() 완료 후 호출해야 window.kakao.maps.services가 존재함 */
   const search = useCallback(
     (searchKeyword: string) => {
-      if (!searchKeyword.trim()) return false
+      const trimmedKeyword = searchKeyword.trim()
+      if (!trimmedKeyword) return false
 
       const { kakao } = window
       if (!kakao?.maps?.services) {
@@ -42,7 +42,7 @@ export function useKakaoPlaceSearch({
 
       const ps = placesServiceRef.current
 
-      ps.keywordSearch(searchKeyword, (data, status) => {
+      ps.keywordSearch(trimmedKeyword, (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
           setError(null)
           setPlaces(data)

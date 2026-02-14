@@ -90,7 +90,7 @@ export default function PlaceSearchModal({
                 ))}
               </Map>
 
-              <div className="flex flex-col shrink-0 w-[350px]">
+              <div className="flex flex-col shrink-0 w-[390px]">
                 {searchState === 'searching' ? (
                   <PlaceListSkeleton />
                 ) : (

@@ -27,7 +27,7 @@ export const ZoomControl = forwardRef<KakaoControl, ZoomControlProps>(function Z
   { position: _position = 'RIGHT' },
   ref
 ) {
-  const map = useKakaoMapContext()
+  const map = useKakaoMapContext('ZoomControl')
 
   const position =
     typeof _position === 'string' ? window.kakao.maps.ControlPosition[_position] : _position
@@ -37,8 +37,6 @@ export const ZoomControl = forwardRef<KakaoControl, ZoomControlProps>(function Z
   useImperativeHandle(ref, () => zoomControl, [zoomControl])
 
   useLayoutEffect(() => {
-    if (!map) return
-
     map.addControl(zoomControl, position)
 
     return () => {

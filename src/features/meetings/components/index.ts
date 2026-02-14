@@ -1,4 +1,3 @@
-export { default as MapModal } from '../../kakaomap/components/MapModal'
 export { default as MeetingApprovalItem } from './MeetingApprovalItem'
 export { default as MeetingApprovalList } from './MeetingApprovalList'
 export { default as MeetingApprovalListSkeleton } from './MeetingApprovalListSkeleton'

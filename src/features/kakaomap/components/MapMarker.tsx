@@ -74,18 +74,13 @@ export type MapMarkerProps = {
 
 export const MapMarker = forwardRef<KakaoMarker, PropsWithChildren<MapMarkerProps>>(
   function MapMarker({ position, ...props }, ref) {
-    const map = useKakaoMapContext()
+    const map = useKakaoMapContext('MapMarker')
 
     // 복잡한 표현식을 변수로 추출해 useMemo deps를 정적으로 분석 가능하게 함
     const lat = 'lat' in position ? position.lat : position.y
     const lng = 'lng' in position ? position.lng : position.x
 
-    const markerPosition = useMemo(() => {
-      if (!window.kakao?.maps) return null
-      return new window.kakao.maps.LatLng(lat, lng)
-    }, [lat, lng])
-
-    if (!map || !markerPosition) return null
+    const markerPosition = useMemo(() => new window.kakao.maps.LatLng(lat, lng), [lat, lng])
 
     return <Marker map={map} position={markerPosition} {...props} ref={ref} />
   }
