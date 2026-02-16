@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react'
  */
 export function useDeferredLoading(
   isLoading: boolean,
-  { delay = 200, minDuration = 500 } = {},
+  { delay = 200, minDuration = 500 } = {}
 ): boolean {
   const [showSkeleton, setShowSkeleton] = useState(false)
   const showTimeRef = useRef<number | null>(null)

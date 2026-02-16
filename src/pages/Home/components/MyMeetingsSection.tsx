@@ -95,11 +95,7 @@ export default function MyMeetingsSection() {
             <button
               type="button"
               className="flex h-12 w-full cursor-pointer items-center justify-center gap-tiny rounded-small border border-grey-300 text-grey-700 typo-body3 hover:bg-grey-100"
-              onClick={
-                isCollapsed || hasNextPage
-                  ? handleExpand
-                  : handleCollapse
-              }
+              onClick={isCollapsed || hasNextPage ? handleExpand : handleCollapse}
             >
               {isCollapsed || hasNextPage ? (
                 <>
