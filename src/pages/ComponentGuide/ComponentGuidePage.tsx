@@ -1939,10 +1939,7 @@ function ToastSection() {
 showToast('모임이 생성되었습니다.')`}
       >
         <Button onClick={() => showToast('모임이 생성되었습니다.')}>Default 토스트</Button>
-        <Button
-          variant="secondary"
-          onClick={() => showToast('초대 링크가 복사되었습니다.')}
-        >
+        <Button variant="secondary" onClick={() => showToast('초대 링크가 복사되었습니다.')}>
           복사 완료
         </Button>
       </Showcase>
