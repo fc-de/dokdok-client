@@ -27,11 +27,11 @@ import type {
   CreateBookRecordBody,
   CreateBookReviewBody,
   GetBookReviewHistoryParams,
-  GetBookTimelineParams,
-  GetBookTimelineResponse,
   GetBookReviewHistoryResponse,
   GetBooksParams,
   GetBooksResponse,
+  GetBookTimelineParams,
+  GetBookTimelineResponse,
   GetGatheringsParams,
   GetGatheringsResponse,
   PersonalRecord,
@@ -353,7 +353,7 @@ export async function createBookReview(
  *
  * 커서 기반 페이지네이션을 지원하며, 상태별 필터링이 가능합니다.
  *
- * @param params - 조회 파라미터 (status, pageSize, cursorAddedAt, cursorBookId)
+ * @param params - 조회 파라미터 (readingStatus, gatheringId, sortBy, sortOrder, size)
  * @returns 책 목록 및 페이지네이션 정보
  *
  * @example
@@ -362,7 +362,7 @@ export async function createBookReview(
  * const result = await getBooks()
  *
  * // 읽는 중인 책만 조회
- * const readingBooks = await getBooks({ status: 'READING' })
+ * const readingBooks = await getBooks({ readingStatus: 'READING' })
  *
  * // 다음 페이지 조회
  * const nextPage = await getBooks({

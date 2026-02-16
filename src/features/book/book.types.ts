@@ -6,7 +6,13 @@
 import type { CursorPaginatedResponse } from '@/api/types'
 
 /** 책 읽기 상태 */
-export type BookReadingStatus = 'READING' | 'COMPLETED'
+export type BookReadingStatus = 'READING' | 'COMPLETED' | 'PENDING'
+
+/** 책 목록 정렬 기준 */
+export type BookSortBy = 'TIME' | 'RATING'
+
+/** 정렬 방향 */
+export type BookSortOrder = 'DESC' | 'ASC'
 
 /** 책 상세 정보 */
 export interface BookDetail {
@@ -22,6 +28,12 @@ export interface BookDetail {
 // Book List (책 목록) 관련 타입
 // ============================================================
 
+/** 책 목록 아이템 - 소속 모임 정보 */
+export interface BookListGathering {
+  gatheringId: number
+  gatheringName: string
+}
+
 /** 책 목록 아이템 */
 export interface BookListItem {
   bookId: number
@@ -30,33 +42,41 @@ export interface BookListItem {
   authors: string
   bookReadingStatus: BookReadingStatus
   thumbnail: string
-  rating: number
-  gatheringNames: string[]
+  rating: number | null
+  gatherings: BookListGathering[]
 }
 
 /** 책 목록 조회 요청 파라미터 */
 export interface GetBooksParams {
-  status?: BookReadingStatus
+  readingStatus?: BookReadingStatus
   gatheringId?: number
-  ratingMin?: number
-  ratingMax?: number
-  sort?: RecordSortType
-  pageSize?: number
+  sortBy?: BookSortBy
+  sortOrder?: BookSortOrder
+  cursorRating?: number
   cursorAddedAt?: string
   cursorBookId?: number
+  size?: number
 }
 
 /** 책 목록 조회 커서 */
 export interface BookListCursor {
+  rating: number
   addedAt: string
   bookId: number
 }
 
+/** 책 목록 상태별 카운트 */
+export interface BookStatusCounts {
+  reading: number
+  completed: number
+  pending: number
+  total: number
+}
+
 /** 책 목록 조회 응답 */
 export interface GetBooksResponse extends CursorPaginatedResponse<BookListItem, BookListCursor> {
+  statusCounts: BookStatusCounts
   totalCount: number
-  readingCount: number
-  completedCount: number
 }
 
 /** 리뷰 키워드 종류 */

@@ -43,7 +43,7 @@ function BookCard({
   isSelected = false,
   onSelectToggle,
 }: BookCardProps) {
-  const { bookId, title, authors, thumbnail, rating, gatheringNames } = book
+  const { bookId, title, authors, thumbnail, rating, gatherings } = book
 
   const handleClick = (e: React.MouseEvent) => {
     if (isEditMode) {
@@ -76,15 +76,18 @@ function BookCard({
         {/* 별점 */}
         <div className="flex items-center gap-xtiny">
           <Star className="size-4 fill-grey-600 text-grey-600" />
-          <span className="typo-body4 text-grey-600">{rating.toFixed(1)}</span>
+          <span className="typo-body4 text-grey-600">{rating !== null ? rating.toFixed(1) : '-'}</span>
         </div>
 
         {/* 모임 태그 */}
-        {gatheringNames.length > 0 && (
+        {gatherings.length > 0 && (
           <div className="flex flex-wrap gap-tiny mt-tiny max-h-[62px] overflow-hidden">
-            {gatheringNames.map((name) => (
-              <Badge key={name} color={name === selectedGatheringName ? 'green' : 'grey'}>
-                {name}
+            {gatherings.map((gathering) => (
+              <Badge
+                key={gathering.gatheringId}
+                color={gathering.gatheringName === selectedGatheringName ? 'green' : 'grey'}
+              >
+                {gathering.gatheringName}
               </Badge>
             ))}
           </div>

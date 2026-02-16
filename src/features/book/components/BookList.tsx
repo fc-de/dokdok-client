@@ -1,16 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useInfiniteScroll } from '@/shared/hooks'
-import {
-  FilterDropdown,
-  StarRatingFilter,
-  type StarRatingRange,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@/shared/ui'
+import { FilterDropdown, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
-import type { BookReadingStatus, RecordSortType } from '../book.types'
+import type { BookReadingStatus, BookSortOrder } from '../book.types'
 import { useBooks, useMyGatherings } from '../hooks'
 import BookCard from './BookCard'
 
@@ -63,8 +56,7 @@ function BookList({
 }: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
-  const [rating, setRating] = useState<StarRatingRange | null>(null)
-  const [sortType, setSortType] = useState<RecordSortType>('LATEST')
+  const [sortOrder, setSortOrder] = useState<BookSortOrder>('DESC')
   const [openDropdown, setOpenDropdown] = useState<'gathering' | null>(null)
 
   // 모임 목록 조회
@@ -84,11 +76,10 @@ function BookList({
 
   // 책 목록 조회 (필터 적용, 무한스크롤)
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooks({
-    status,
+    readingStatus: status,
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
-    ratingMin: rating?.min,
-    ratingMax: rating?.max,
-    sort: sortType,
+    sortBy: 'TIME',
+    sortOrder,
   })
 
   // 무한스크롤
@@ -155,20 +146,14 @@ function BookList({
               </button>
             )}
           </FilterDropdown>
-          <StarRatingFilter
-            placeholder="별점"
-            value={rating}
-            onChange={setRating}
-            disabled={isLoading}
-          />
         </div>
-        <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
+        <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
           <TabsList size="small" className="gap-0">
-            <TabsTrigger value="LATEST" size="small" disabled={isLoading}>
+            <TabsTrigger value="DESC" size="small" disabled={isLoading}>
               최신순
             </TabsTrigger>
             <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-            <TabsTrigger value="OLDEST" size="small" disabled={isLoading}>
+            <TabsTrigger value="ASC" size="small" disabled={isLoading}>
               오래된순
             </TabsTrigger>
           </TabsList>
@@ -177,7 +162,7 @@ function BookList({
       {isLoading ? (
         <BookListSkeleton />
       ) : isEmpty ? (
-        <BookListEmpty status={status} hasFilters={!!selectedGathering || !!rating} />
+        <BookListEmpty status={status} hasFilters={!!selectedGathering} />
       ) : (
         <>
           <div className="grid grid-cols-6 gap-large mt-large">

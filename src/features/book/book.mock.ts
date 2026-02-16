@@ -42,7 +42,10 @@ const mockBookListItems: BookListItem[] = [
     bookReadingStatus: 'READING',
     thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791189327156.jpg',
     rating: 0.5,
-    gatheringNames: ['책책책 책을 읽자', 'FCDE'],
+    gatherings: [
+      { gatheringId: 1, gatheringName: '책책책 책을 읽자' },
+      { gatheringId: 4, gatheringName: 'FCDE' },
+    ],
   },
   {
     bookId: 2,
@@ -52,7 +55,7 @@ const mockBookListItems: BookListItem[] = [
     bookReadingStatus: 'READING',
     thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937460449.jpg',
     rating: 4.5,
-    gatheringNames: ['주말 독서 모임'],
+    gatherings: [{ gatheringId: 2, gatheringName: '주말 독서 모임' }],
   },
   {
     bookId: 3,
@@ -63,7 +66,7 @@ const mockBookListItems: BookListItem[] = [
     thumbnail:
       'https://i.namu.wiki/i/OuId9i6YhTdBIk5XDIZWVre8GtdOv_OaaXSL_WlGUvPisTnbN2jwn0lf_b8sJp_bjBLoKgl6Fa4-enbgZJIRLA.webp',
     rating: 5,
-    gatheringNames: [],
+    gatherings: [],
   },
 ]
 
@@ -468,35 +471,24 @@ export const getMockBooks = async (params: GetBooksParams = {}): Promise<GetBook
 // ============================================================
 
 function filterMockBooks(params: GetBooksParams): GetBooksResponse {
-  const { status, gatheringId, ratingMin, ratingMax, sort = 'LATEST' } = params
+  const { readingStatus, gatheringId, sortOrder = 'DESC' } = params
 
   let filteredItems = [...mockBookListItems]
 
   // 상태 필터
-  if (status) {
-    filteredItems = filteredItems.filter((item) => item.bookReadingStatus === status)
+  if (readingStatus) {
+    filteredItems = filteredItems.filter((item) => item.bookReadingStatus === readingStatus)
   }
 
-  // 모임 필터 - gatheringId가 있으면 해당 모임 이름을 가진 책만 필터링
+  // 모임 필터 - gatheringId가 있으면 해당 모임에 속한 책만 필터링
   if (gatheringId !== undefined) {
-    const gathering = mockGatheringsResponse.items.find((g) => g.gatheringId === gatheringId)
-    if (gathering) {
-      filteredItems = filteredItems.filter((item) =>
-        item.gatheringNames.includes(gathering.gatheringName)
-      )
-    }
-  }
-
-  // 별점 필터 - 선택한 범위 내의 별점만 필터링 (정수 기준)
-  if (ratingMin !== undefined && ratingMax !== undefined && ratingMin >= 0) {
-    filteredItems = filteredItems.filter((item) => {
-      const floorRating = Math.floor(item.rating)
-      return floorRating >= ratingMin && floorRating <= ratingMax
-    })
+    filteredItems = filteredItems.filter((item) =>
+      item.gatherings.some((g) => g.gatheringId === gatheringId)
+    )
   }
 
   // 정렬 처리 (bookId 기준으로 시뮬레이션)
-  const sortMultiplier = sort === 'LATEST' ? -1 : 1
+  const sortMultiplier = sortOrder === 'DESC' ? -1 : 1
   filteredItems.sort((a, b) => sortMultiplier * (a.bookId - b.bookId))
 
   const readingCount = mockBookListItems.filter(
@@ -508,12 +500,16 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
 
   return {
     items: filteredItems,
-    pageSize: params.pageSize ?? 10,
+    pageSize: params.size ?? 10,
     hasNext: false,
     nextCursor: null,
+    statusCounts: {
+      reading: readingCount,
+      completed: completedCount,
+      pending: 0,
+      total: mockBookListItems.length,
+    },
     totalCount: mockBookListItems.length,
-    readingCount,
-    completedCount,
   }
 }
 

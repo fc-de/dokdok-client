@@ -34,10 +34,10 @@ export default function BookListPage() {
   const { data: countData } = useBooks()
 
   // 첫 페이지에서 카운트 정보 가져오기
-  const firstPage = countData?.pages[0]
-  const totalCount = firstPage?.totalCount ?? 0
-  const readingCount = firstPage?.readingCount ?? 0
-  const completedCount = firstPage?.completedCount ?? 0
+  const statusCounts = countData?.pages[0]?.statusCounts
+  const totalCount = statusCounts?.total ?? 0
+  const readingCount = statusCounts?.reading ?? 0
+  const completedCount = statusCounts?.completed ?? 0
 
   // 선택 토글
   const handleSelectToggle = (bookId: number) => {
