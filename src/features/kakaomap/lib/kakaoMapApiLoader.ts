@@ -1,10 +1,5 @@
 /**
- * @file kakaoMapApiLoader.ts
- * @description 카카오 Maps SDK 싱글톤 Loader 클래스
- *
- * 상태 흐름:
- *   INITIALIZED → LOADING → SUCCESS
- *                         ↘ FAILURE → retry (지수 백오프)
+ * @description KakaoMapApiLoader 클래스
  *
  * - 동일 appkey/libraries 옵션이면 단일 인스턴스 재사용
  * - 옵션이 달라지면 에러 throw
@@ -33,8 +28,8 @@ const KAKAO_STATUS_MESSAGES: Record<number, string> = {
   503: '카카오 서비스 점검 중입니다. 잠시 후 다시 시도해주세요. (503 Service Unavailable)',
 }
 
-export class Loader {
-  private static instance: Loader | null = null
+export class KakaoMapApiLoader {
+  private static instance: KakaoMapApiLoader | null = null
 
   private state: LoadState = 'INITIALIZED'
   private promise: Promise<void> | null = null
@@ -62,19 +57,19 @@ export class Loader {
    * - 이후 호출 시 options 없이 기존 인스턴스 반환 가능
    * - options가 달라지면 에러 throw
    */
-  static getInstance(options?: KakaoMapLoaderOptions): Loader {
-    if (!Loader.instance) {
+  static getInstance(options?: KakaoMapLoaderOptions): KakaoMapApiLoader {
+    if (!KakaoMapApiLoader.instance) {
       if (!options) {
         throw new Error('[KakaoMapLoader] 처음 호출 시 options가 필요합니다.')
       }
-      Loader.instance = new Loader(options)
-      return Loader.instance
+      KakaoMapApiLoader.instance = new KakaoMapApiLoader(options)
+      return KakaoMapApiLoader.instance
     }
 
     if (options) {
-      const isSameKey = Loader.instance.appkey === options.appkey
+      const isSameKey = KakaoMapApiLoader.instance.appkey === options.appkey
       const isSameLibs =
-        JSON.stringify(Loader.instance.libraries.sort()) ===
+        JSON.stringify(KakaoMapApiLoader.instance.libraries.sort()) ===
         JSON.stringify((options.libraries ?? []).sort())
 
       if (!isSameKey || !isSameLibs) {
@@ -84,12 +79,12 @@ export class Loader {
       }
     }
 
-    return Loader.instance
+    return KakaoMapApiLoader.instance
   }
 
   /** 테스트 등에서 인스턴스 초기화 시 사용 */
   static reset(): void {
-    Loader.instance = null
+    KakaoMapApiLoader.instance = null
   }
 
   /** SDK 스크립트 URL 생성 */
@@ -117,11 +112,13 @@ export class Loader {
         try {
           window.kakao.maps.load(() => resolve())
         } catch {
+          script.remove()
           reject(new Error('카카오 지도 SDK 초기화에 실패했습니다.'))
         }
       }
 
       script.onerror = () => {
+        script.remove()
         // fetch로 실제 HTTP 상태 코드 확인
         fetch(url)
           .then((res) => {

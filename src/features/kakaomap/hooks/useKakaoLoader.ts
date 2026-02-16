@@ -2,7 +2,7 @@
  * @file useKakaoLoader.ts
  * @description 카카오 Maps SDK 로드 상태를 관리하는 훅
  *
- * 내부적으로 Loader.load()를 호출하고 [loading, error] 상태를 반환합니다.
+ * 내부적으로 KakaoMapApiLoader.load()를 호출하고 [loading, error] 상태를 반환합니다.
  * loading이 false가 된 후에 <Map> 컴포넌트를 렌더링해야 합니다.
  *
  * @example
@@ -14,7 +14,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { Loader } from '../lib/kakaoMapApiLoader'
+import { KakaoMapApiLoader } from '../lib/kakaoMapApiLoader'
 
 const appkey = import.meta.env.VITE_KAKAO_MAP_KEY
 
@@ -26,7 +26,7 @@ export function useKakaoLoader(): [loading: boolean, error: Error | null] {
   useEffect(() => {
     if (!appkey) return
 
-    const loader = Loader.getInstance({
+    const loader = KakaoMapApiLoader.getInstance({
       appkey,
       libraries: ['services'],
     })
