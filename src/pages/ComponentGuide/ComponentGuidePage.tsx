@@ -39,11 +39,13 @@ import {
   TabsTrigger,
   Textarea,
   TextButton,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   TopicTypeSelectGroup,
   TopicTypeSelectItem,
   UserChip,
 } from '@/shared/ui'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 
 function ComponentGuidePage() {
   const [selectedSection, setSelectedSection] = useState<string>('button')

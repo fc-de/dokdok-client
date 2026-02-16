@@ -67,7 +67,9 @@ export default function CreateGatheringPage() {
 
   const handleComplete = () => {
     if (createdData?.gatheringId) {
-      navigate(ROUTES.GATHERING_DETAIL(createdData.gatheringId))
+      navigate(ROUTES.GATHERING_DETAIL(createdData.gatheringId), {
+        state: { justCreated: true },
+      })
     } else {
       navigate(ROUTES.GATHERINGS)
     }
