@@ -1987,7 +1987,7 @@ showToast('세 번째 토스트')`}
       <Showcase title="사용 가이드">
         <div className="typo-caption1 text-grey-600 space-y-tiny">
           <p>• Default: bg primary-200/50%, text grey-900, 3초 후 자동 닫힘</p>
-          <p>• Error: bg accent-200/50%, text accent-300, 4초 후 자동 닫힘</p>
+          <p>• Error: bg accent-200/50%, text accent-300, 3초 후 자동 닫힘</p>
           <p>• position: bottom-center, max-width: 360px</p>
           <p>• 최대 3개까지 동시 표시, 간격 12px</p>
           <p>• Toaster는 App.tsx에서 전역으로 설정됨</p>
