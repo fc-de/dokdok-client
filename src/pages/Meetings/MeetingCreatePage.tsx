@@ -154,7 +154,7 @@ export default function MeetingCreatePage() {
       {
         onSuccess: () => {
           openAlert('약속 수정 완료', '약속이 성공적으로 수정되었습니다.', () => {
-            navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+            navigate(ROUTES.MEETING_DETAIL(gatheringId, id), { replace: true })
           })
         },
         onError: (error) => {
