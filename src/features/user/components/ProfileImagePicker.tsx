@@ -3,8 +3,8 @@ import { useId, useRef } from 'react'
 
 import UserAvatarIcon from '@/shared/assets/icon/UserAvatar.svg'
 import { ALLOWED_IMAGE_ACCEPT, MAX_IMAGE_SIZE } from '@/shared/constants'
+import { showErrorToast } from '@/shared/lib/toast'
 import { Avatar, AvatarFallback, AvatarImage, Button, TextButton } from '@/shared/ui'
-import { useGlobalModalStore } from '@/store'
 
 interface ProfileImagePickerProps {
   /** 현재 표시할 이미지 URL */
@@ -49,13 +49,11 @@ export function ProfileImagePicker({
 }: ProfileImagePickerProps) {
   const inputId = useId()
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { openAlert } = useGlobalModalStore()
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       if (file.size > MAX_IMAGE_SIZE) {
-        openAlert('파일 크기 초과', '이미지 파일은 5MB 이하만 업로드할 수 있습니다.')
+        showErrorToast('이미지 파일은 5MB 이하만 업로드할 수 있습니다.')
         e.target.value = ''
         return
       }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { SearchBookItem } from '@/features/book'
 import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
+import { showToast } from '@/shared/lib/toast'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -240,6 +241,7 @@ export default function BookListPage() {
               isbn: book.isbn,
               thumbnail: book.thumbnail,
             })
+            showToast('책이 추가되었습니다.')
           } catch {
             openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
               confirmText: '확인',

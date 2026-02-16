@@ -12,13 +12,14 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useScrollCollapse } from '@/shared/hooks'
+import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store/globalModalStore'
 
 export default function GatheringDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { openAlert, openError } = useGlobalModalStore()
+  const { openError } = useGlobalModalStore()
 
   const parsedId = id ? Number(id) : NaN
   const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
@@ -39,13 +40,13 @@ export default function GatheringDetailPage() {
     toggleFavorite(gatheringId, {
       onError: (error: ApiError) => {
         if (error.is(ErrorCode.FAVORITE_LIMIT_EXCEEDED)) {
-          openAlert('알림', '즐겨찾기는 최대 4개까지만 등록할 수 있습니다.')
+          showErrorToast('즐겨찾기는 최대 4개까지만 등록할 수 있습니다.')
         } else {
-          openAlert('오류', '즐겨찾기 변경에 실패했습니다.')
+          showErrorToast('즐겨찾기 변경에 실패했습니다.')
         }
       },
     })
-  }, [gatheringId, gathering, toggleFavorite, openAlert])
+  }, [gatheringId, gathering, toggleFavorite])
 
   // 설정 버튼 핸들러
   const handleSettingsClick = useCallback(() => {
@@ -59,11 +60,11 @@ export default function GatheringDetailPage() {
     try {
       const inviteUrl = `${window.location.origin}/invite/${gathering.invitationLink}`
       await navigator.clipboard.writeText(inviteUrl)
-      openAlert('알림', '초대 링크가 복사되었습니다.')
+      showToast('초대 링크가 복사되었습니다.')
     } catch {
-      openAlert('오류', '링크 복사에 실패했습니다.')
+      showErrorToast('링크 복사에 실패했습니다.')
     }
-  }, [gathering, openAlert])
+  }, [gathering])
 
   // 유효하지 않은 ID 처리
   useEffect(() => {
