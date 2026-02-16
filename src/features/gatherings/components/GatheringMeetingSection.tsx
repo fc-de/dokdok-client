@@ -45,7 +45,7 @@ export default function GatheringMeetingSection({
   const [activeTab, setActiveTab] = useState<MeetingFilter>('ALL')
   const [currentPage, setCurrentPage] = useState(0)
   const [showCreateTooltip, setShowCreateTooltip] = useState(
-    () => location.state?.justCreated === true,
+    () => location.state?.justCreated === true
   )
 
   const isLeader = currentUserRole === 'LEADER'
