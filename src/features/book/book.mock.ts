@@ -9,13 +9,14 @@ import type {
   BookReview,
   CreateBookRecordBody,
   CreateBookReviewBody,
-  GetBookRecordsParams,
-  GetBookRecordsResponse,
   GetBookReviewHistoryResponse,
   GetBooksParams,
   GetBooksResponse,
+  GetBookTimelineParams,
+  GetBookTimelineResponse,
   GetGatheringsResponse,
   PersonalRecord,
+  TimelineItem,
   UpdateBookRecordBody,
 } from './book.types'
 
@@ -116,9 +117,12 @@ const mockGatheringsResponse: GetGatheringsResponse = {
   nextCursor: null,
 }
 
-const mockBookRecordsResponse: GetBookRecordsResponse = {
-  personalRecords: [
-    {
+const mockTimelineItems: TimelineItem[] = [
+  {
+    type: 'READING_RECORD',
+    eventAt: '2026-01-05T14:30:00',
+    sourceId: 1,
+    readingRecord: {
       recordId: 1,
       recordType: 'MEMO',
       recordContent: '이 책에서 가장 인상 깊었던 부분은 물고기 분류학자의 이야기였다.',
@@ -126,7 +130,12 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
       bookId: 1,
       createdAt: '2026-01-05T14:30:00',
     },
-    {
+  },
+  {
+    type: 'READING_RECORD',
+    eventAt: '2026-01-05T21:38:00',
+    sourceId: 2,
+    readingRecord: {
       recordId: 2,
       recordType: 'QUOTE',
       recordContent:
@@ -139,9 +148,12 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
       bookId: 1,
       createdAt: '2026-01-05T21:38:00',
     },
-  ],
-  meetingGroupRecords: [
-    {
+  },
+  {
+    type: 'GROUP_RETROSPECTIVE',
+    eventAt: '2026-01-15T00:00:00',
+    sourceId: 1,
+    groupRetrospective: {
       meetingId: 1,
       meetingName: '데미안을 읽어보아요',
       meetingDate: '2026-01-15',
@@ -200,9 +212,12 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
         },
       ],
     },
-  ],
-  meetingPersonalRecords: [
-    {
+  },
+  {
+    type: 'PERSONAL_RETROSPECTIVE',
+    eventAt: '2026-01-05T21:38:00',
+    sourceId: 1,
+    personalRetrospective: {
       retrospectiveId: 1,
       gatheringName: '책책책 책을 읽자',
       recordType: '개인 회고',
@@ -255,9 +270,12 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
         },
       ],
     },
-  ],
-  meetingPreOpinions: [
-    {
+  },
+  {
+    type: 'PRE_OPINION',
+    eventAt: '2026-01-05T21:38:00',
+    sourceId: 1,
+    preOpinion: {
       type: 'PRE_OPINION',
       gatheringName: '책책책 책을 읽자',
       sharedAt: '2026-01-05T21:38:00',
@@ -277,8 +295,8 @@ const mockBookRecordsResponse: GetBookRecordsResponse = {
         },
       ],
     },
-  ],
-}
+  },
+]
 
 const mockBookReviewHistoryResponse: GetBookReviewHistoryResponse = {
   items: [
@@ -354,13 +372,13 @@ export const getMockMyGatherings = async (): Promise<GetGatheringsResponse> => {
 }
 
 /**
- * 감상 기록 목데이터 반환
+ * 기록 타임라인 목데이터 반환
  */
 export const getMockBookRecords = async (
-  params: GetBookRecordsParams = {}
-): Promise<GetBookRecordsResponse> => {
+  params: GetBookTimelineParams = {}
+): Promise<GetBookTimelineResponse> => {
   await delay(MOCK_DELAY)
-  return filterMockBookRecords(mockBookRecordsResponse, params)
+  return filterMockTimeline(mockTimelineItems, params)
 }
 
 /**
@@ -499,64 +517,69 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
   }
 }
 
-function filterMockBookRecords(
-  data: GetBookRecordsResponse,
-  params: GetBookRecordsParams
-): GetBookRecordsResponse {
-  const { gatheringId, recordType, sort = 'LATEST' } = params
+function filterMockTimeline(
+  items: TimelineItem[],
+  params: GetBookTimelineParams
+): GetBookTimelineResponse {
+  const {
+    gatheringId,
+    recordType,
+    sort = 'LATEST',
+    pageSize = 10,
+    cursorEventAt,
+    cursorSourceId,
+  } = params
 
-  let personalRecords = [...data.personalRecords]
-  let meetingGroupRecords = [...data.meetingGroupRecords]
-  let meetingPersonalRecords = [...data.meetingPersonalRecords]
-  let meetingPreOpinions = [...(data.meetingPreOpinions ?? [])]
+  let filtered = [...items]
 
   // 모임 필터 - 모임 선택 시 개인 기록 제외, 해당 모임 기록만 표시
   if (gatheringId !== undefined) {
-    personalRecords = []
-    meetingGroupRecords = meetingGroupRecords.filter(
-      (record) => record.gathering.gatheringId === gatheringId
-    )
-    meetingPersonalRecords = meetingPersonalRecords.filter((record) => {
-      const matching = data.meetingGroupRecords.find((g) => g.gathering.gatheringId === gatheringId)
-      return matching && record.gatheringName === matching.gathering.gatheringName
-    })
-    meetingPreOpinions = meetingPreOpinions.filter((record) => {
-      const matching = data.meetingGroupRecords.find((g) => g.gathering.gatheringId === gatheringId)
-      return matching && record.gatheringName === matching.gathering.gatheringName
+    const gathering = mockGatheringsResponse.items.find((g) => g.gatheringId === gatheringId)
+    filtered = filtered.filter((item) => {
+      if (item.type === 'READING_RECORD') return false
+      if (item.type === 'GROUP_RETROSPECTIVE')
+        return item.groupRetrospective.gathering.gatheringId === gatheringId
+      if (gathering) {
+        if (item.type === 'PERSONAL_RETROSPECTIVE')
+          return item.personalRetrospective.gatheringName === gathering.gatheringName
+        if (item.type === 'PRE_OPINION')
+          return item.preOpinion.gatheringName === gathering.gatheringName
+      }
+      return false
     })
   }
 
   // 기록 유형 필터 - 개인 기록만 필터링, 모임 기록 제외
   if (recordType) {
-    personalRecords = personalRecords.filter((record) => record.recordType === recordType)
-    meetingGroupRecords = []
-    meetingPersonalRecords = []
-    meetingPreOpinions = []
+    filtered = filtered.filter(
+      (item) => item.type === 'READING_RECORD' && item.readingRecord.recordType === recordType
+    )
   }
 
-  // 정렬 처리
+  // 정렬
   const sortMultiplier = sort === 'LATEST' ? -1 : 1
+  filtered.sort(
+    (a, b) => sortMultiplier * (new Date(a.eventAt).getTime() - new Date(b.eventAt).getTime())
+  )
 
-  personalRecords.sort((a, b) => {
-    return sortMultiplier * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-  })
+  // 커서 기반 페이지네이션
+  let startIndex = 0
+  if (cursorEventAt && cursorSourceId !== undefined) {
+    startIndex = filtered.findIndex(
+      (item) => item.eventAt === cursorEventAt && item.sourceId === cursorSourceId
+    )
+    startIndex = startIndex === -1 ? 0 : startIndex + 1
+  }
 
-  meetingGroupRecords.sort((a, b) => {
-    return sortMultiplier * (new Date(a.meetingDate).getTime() - new Date(b.meetingDate).getTime())
-  })
-
-  meetingPersonalRecords.sort((a, b) => {
-    return sortMultiplier * (new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-  })
-
-  meetingPreOpinions.sort((a, b) => {
-    return sortMultiplier * (new Date(a.sharedAt).getTime() - new Date(b.sharedAt).getTime())
-  })
+  const paged = filtered.slice(startIndex, startIndex + pageSize)
+  const hasNext = startIndex + pageSize < filtered.length
+  const lastItem = paged[paged.length - 1]
 
   return {
-    personalRecords,
-    meetingGroupRecords,
-    meetingPersonalRecords,
-    meetingPreOpinions,
+    items: paged,
+    pageSize,
+    hasNext,
+    nextCursor:
+      hasNext && lastItem ? { eventAt: lastItem.eventAt, sourceId: lastItem.sourceId } : null,
   }
 }

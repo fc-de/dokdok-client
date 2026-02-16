@@ -279,20 +279,58 @@ export interface UpdateBookRecordBody {
   }
 }
 
-/** 감상 기록 조회 요청 파라미터 */
-export interface GetBookRecordsParams {
+/** 기록 타임라인 조회 요청 파라미터 */
+export interface GetBookTimelineParams {
   gatheringId?: number
   recordType?: RecordType
   sort?: RecordSortType
+  pageSize?: number
+  cursorEventAt?: string
+  cursorSourceId?: number
 }
 
-/** 감상 기록 조회 응답 */
-export interface GetBookRecordsResponse {
-  personalRecords: PersonalRecord[]
-  meetingGroupRecords: MeetingGroupRecord[]
-  meetingPersonalRecords: MeetingPersonalRecord[]
-  meetingPreOpinions: MeetingPreOpinion[]
+/** 타임라인 아이템 타입 */
+export type TimelineItemType =
+  | 'READING_RECORD'
+  | 'GROUP_RETROSPECTIVE'
+  | 'PERSONAL_RETROSPECTIVE'
+  | 'PRE_OPINION'
+
+/** 타임라인 아이템 (통합 타입) */
+export type TimelineItem =
+  | {
+      type: 'READING_RECORD'
+      eventAt: string
+      sourceId: number
+      readingRecord: PersonalRecord
+    }
+  | {
+      type: 'GROUP_RETROSPECTIVE'
+      eventAt: string
+      sourceId: number
+      groupRetrospective: MeetingGroupRecord
+    }
+  | {
+      type: 'PERSONAL_RETROSPECTIVE'
+      eventAt: string
+      sourceId: number
+      personalRetrospective: MeetingPersonalRecord
+    }
+  | {
+      type: 'PRE_OPINION'
+      eventAt: string
+      sourceId: number
+      preOpinion: MeetingPreOpinion
+    }
+
+/** 타임라인 커서 */
+export interface TimelineCursor {
+  eventAt: string
+  sourceId: number
 }
+
+/** 기록 타임라인 조회 응답 */
+export type GetBookTimelineResponse = CursorPaginatedResponse<TimelineItem, TimelineCursor>
 
 /** 책 평가 생성 요청 바디 */
 export interface CreateBookReviewBody {

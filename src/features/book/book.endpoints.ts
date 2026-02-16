@@ -25,6 +25,10 @@ export const BOOK_ENDPOINTS = {
   // 책 평가 히스토리 조회 (GET /api/book/{bookId}/reviews/history)
   REVIEW_HISTORY: (bookId: number) => `${API_PATHS.BOOK}/${bookId}/reviews/history`,
 
+  // 기록 타임라인 조회 (GET /api/book/{personalBookId}/records/timeline)
+  RECORDS_TIMELINE: (personalBookId: number) =>
+    `${API_PATHS.BOOK}/${personalBookId}/records/timeline`,
+
   // 감상 기록 조회 (GET /api/book/{personalBookId}/records)
   RECORDS: (personalBookId: number) => `${API_PATHS.BOOK}/${personalBookId}/records`,
 

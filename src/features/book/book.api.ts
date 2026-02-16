@@ -26,9 +26,9 @@ import type {
   CreateBookBody,
   CreateBookRecordBody,
   CreateBookReviewBody,
-  GetBookRecordsParams,
-  GetBookRecordsResponse,
   GetBookReviewHistoryParams,
+  GetBookTimelineParams,
+  GetBookTimelineResponse,
   GetBookReviewHistoryResponse,
   GetBooksParams,
   GetBooksResponse,
@@ -166,26 +166,30 @@ export async function getMyGatherings(
 // ============================================================
 
 /**
- * 책 감상 기록 조회
+ * 기록 타임라인 조회
+ *
+ * 커서 기반 무한 스크롤을 지원하며, 모든 기록 유형이 통합 정렬됩니다.
  *
  * @param personalBookId - 개인 책 ID
- * @param params - 필터 및 정렬 파라미터
- * @returns 감상 기록 목록
+ * @param params - 필터, 정렬, 페이지네이션 파라미터
+ * @returns 타임라인 아이템 목록 및 커서 정보
  *
  * @example
  * ```typescript
- * const records = await getBookRecords(1, { sort: 'LATEST', recordType: 'MEMO' })
+ * const timeline = await getBookTimeline(1, { sort: 'LATEST' })
  * ```
  */
-export async function getBookRecords(
+export async function getBookTimeline(
   personalBookId: number,
-  params: GetBookRecordsParams = {}
-): Promise<GetBookRecordsResponse> {
+  params: GetBookTimelineParams = {}
+): Promise<GetBookTimelineResponse> {
   if (USE_MOCK) {
     return getMockBookRecords(params)
   }
 
-  return api.get<GetBookRecordsResponse>(BOOK_ENDPOINTS.RECORDS(personalBookId), { params })
+  return api.get<GetBookTimelineResponse>(BOOK_ENDPOINTS.RECORDS_TIMELINE(personalBookId), {
+    params,
+  })
 }
 
 // ============================================================

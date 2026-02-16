@@ -1,22 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import { deleteBookRecord } from '@/features/book/book.api'
-import type {
-  MeetingGroupRecord,
-  MeetingPersonalRecord,
-  MeetingPreOpinion,
-  PersonalRecord,
-  RecordSortType,
-  RecordType,
-} from '@/features/book/book.types'
+import type { PersonalRecord, RecordSortType, RecordType } from '@/features/book/book.types'
+import BookLogListSkeleton from '@/features/book/components/BookLogListSkeleton'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
 import { bookRecordsKeys, useBookRecords, useMyGatherings } from '@/features/book/hooks'
-import { useScrollCollapse } from '@/shared/hooks'
+import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
@@ -28,12 +22,6 @@ type BookLogListProps = {
 }
 
 type OpenDropdown = 'gathering' | 'recordType' | null
-
-type RecordItem =
-  | { type: 'personal'; date: Date; data: PersonalRecord }
-  | { type: 'meetingGroup'; date: Date; data: MeetingGroupRecord }
-  | { type: 'meetingPersonal'; date: Date; data: MeetingPersonalRecord }
-  | { type: 'meetingPreOpinion'; date: Date; data: MeetingPreOpinion }
 
 const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const isSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
@@ -61,43 +49,26 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   } = useMyGatherings()
 
   const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
-  const { data: recordsData } = useBookRecords(bookId, {
+
+  const {
+    data: recordsData,
+    isLoading: isRecordsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useBookRecords(bookId, {
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
     recordType: recordType || undefined,
     sort: sortType,
   })
 
-  // 모든 레코드를 통합하여 날짜순으로 정렬
-  const allRecords = useMemo((): RecordItem[] => {
-    if (!recordsData) return []
+  const allRecords = recordsData?.pages.flatMap((page) => page.items) ?? []
 
-    const records: RecordItem[] = []
-
-    recordsData.personalRecords.forEach((record) => {
-      records.push({ type: 'personal', date: new Date(record.createdAt), data: record })
-    })
-
-    recordsData.meetingGroupRecords.forEach((record) => {
-      records.push({ type: 'meetingGroup', date: new Date(record.meetingDate), data: record })
-    })
-
-    recordsData.meetingPersonalRecords.forEach((record) => {
-      records.push({ type: 'meetingPersonal', date: new Date(record.createdAt), data: record })
-    })
-
-    recordsData.meetingPreOpinions?.forEach((record) => {
-      records.push({ type: 'meetingPreOpinion', date: new Date(record.sharedAt), data: record })
-    })
-
-    // 정렬: LATEST면 최신순(내림차순), OLDEST면 오래된순(오름차순)
-    records.sort((a, b) => {
-      return sortType === 'LATEST'
-        ? b.date.getTime() - a.date.getTime()
-        : a.date.getTime() - b.date.getTime()
-    })
-
-    return records
-  }, [recordsData, sortType])
+  const observerRef = useInfiniteScroll(fetchNextPage, {
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isRecordsLoading,
+  })
 
   const handleGatheringChange = (value: string) => {
     setSelectedGathering(value)
@@ -194,7 +165,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
         <section className="max-w-[1200px] mx-auto py-xlarge">
-          {allRecords.length === 0 ? (
+          {isRecordsLoading ? (
+            <BookLogListSkeleton />
+          ) : allRecords.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-base text-center">
               <p className="typo-subtitle2 text-grey-600">
                 아직 감상 기록이 없어요.
@@ -204,50 +177,64 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
             </div>
           ) : (
             <div className="flex flex-col gap-xlarge">
-              {allRecords.map((item, idx) => {
+              {allRecords.map((item) => {
                 switch (item.type) {
-                  case 'personal':
+                  case 'READING_RECORD':
                     return (
                       <PersonalRecordItem
-                        key={`personal-${item.data.recordId}`}
-                        record={item.data}
-                        onEdit={isRecording ? () => handleEditRecord(item.data) : undefined}
+                        key={`personal-${item.readingRecord.recordId}`}
+                        record={item.readingRecord}
+                        onEdit={
+                          isRecording ? () => handleEditRecord(item.readingRecord) : undefined
+                        }
                         onDelete={
-                          isRecording ? () => deletePersonalRecord(item.data.recordId) : undefined
+                          isRecording
+                            ? () => deletePersonalRecord(item.readingRecord.recordId)
+                            : undefined
                         }
                       />
                     )
-                  case 'meetingGroup':
+                  case 'GROUP_RETROSPECTIVE':
                     return (
                       <MeetingGroupRecordItem
-                        key={`group-${item.data.meetingId}`}
-                        record={item.data}
+                        key={`group-${item.groupRetrospective.meetingId}`}
+                        record={item.groupRetrospective}
                         onDelete={
                           isRecording
-                            ? () => console.log('delete group', item.data.meetingId)
+                            ? () =>
+                                console.log(
+                                  'delete group',
+                                  item.groupRetrospective.meetingId
+                                )
                             : undefined
                         }
                       />
                     )
-                  case 'meetingPersonal':
+                  case 'PERSONAL_RETROSPECTIVE':
                     return (
                       <MeetingRetrospectiveItem
-                        key={`retrospective-${item.data.retrospectiveId}`}
-                        record={item.data}
+                        key={`retrospective-${item.personalRetrospective.retrospectiveId}`}
+                        record={item.personalRetrospective}
                         onDelete={
                           isRecording
-                            ? () => console.log('delete retrospective', item.data.retrospectiveId)
+                            ? () =>
+                                console.log(
+                                  'delete retrospective',
+                                  item.personalRetrospective.retrospectiveId
+                                )
                             : undefined
                         }
                       />
                     )
-                  case 'meetingPreOpinion':
+                  case 'PRE_OPINION':
                     return (
                       <MeetingPreOpinionItem
-                        key={`pre-opinion-${item.data.gatheringName}-${item.data.sharedAt}`}
-                        record={item.data}
+                        key={`pre-opinion-${item.preOpinion.gatheringName}-${item.preOpinion.sharedAt}`}
+                        record={item.preOpinion}
                         onDelete={
-                          isRecording ? () => console.log('delete pre-opinion', idx) : undefined
+                          isRecording
+                            ? () => console.log('delete pre-opinion', item.preOpinion.sharedAt)
+                            : undefined
                         }
                       />
                     )
@@ -255,6 +242,8 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                     return null
                 }
               })}
+              {isFetchingNextPage && <BookLogListSkeleton count={2} />}
+              {hasNextPage && <div ref={observerRef} className="h-10" />}
             </div>
           )}
         </section>
