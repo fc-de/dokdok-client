@@ -5,11 +5,7 @@ import type { BookReviewFormValues } from '@/features/book/components/BookReview
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
 import PreOpinionQuestionSection from '@/features/pre-opinion/components/PreOpinionQuestionSection'
 import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionWriteHeader'
-import {
-  usePreOpinion,
-  useSavePreOpinion,
-  useSubmitPreOpinion,
-} from '@/features/pre-opinion/hooks'
+import { usePreOpinion, useSavePreOpinion, useSubmitPreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { Card, Spinner } from '@/shared/ui'
 
@@ -37,7 +33,11 @@ export default function PreOpinionWritePage() {
 
   const isFirstSave = preOpinion?.preOpinion.updatedAt === null
 
-  const { mutate: save, mutateAsync: saveAsync, isPending: isSaving } = useSavePreOpinion({
+  const {
+    mutate: save,
+    mutateAsync: saveAsync,
+    isPending: isSaving,
+  } = useSavePreOpinion({
     gatheringId: numGatheringId,
     meetingId: numMeetingId,
     isFirstSave: isFirstSave ?? true,

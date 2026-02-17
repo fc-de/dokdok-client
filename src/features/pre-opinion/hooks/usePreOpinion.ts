@@ -32,10 +32,7 @@ import { preOpinionQueryKeys } from './preOpinionQueryKeys'
 export const usePreOpinion = (params: GetPreOpinionParams) => {
   const { gatheringId, meetingId } = params
   const isValidParams =
-    !Number.isNaN(gatheringId) &&
-    gatheringId > 0 &&
-    !Number.isNaN(meetingId) &&
-    meetingId > 0
+    !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0
 
   return useQuery<GetPreOpinionResponse>({
     queryKey: preOpinionQueryKeys.detail(params),
