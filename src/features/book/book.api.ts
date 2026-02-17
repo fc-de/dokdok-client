@@ -306,19 +306,19 @@ export async function deleteBookRecord(personalBookId: number, recordId: number)
 /**
  * 책 삭제
  *
- * @param bookId - 삭제할 책 ID
+ * @param bookIds - 삭제할 책 ID 배열
  *
  * @example
  * ```typescript
- * await deleteBook(1)
+ * await deleteBook([1, 2, 3])
  * ```
  */
-export async function deleteBook(bookId: number): Promise<void> {
+export async function deleteBook(bookIds: number[]): Promise<void> {
   if (USE_MOCK) {
     return getMockDeleteResponse()
   }
 
-  return api.delete(BOOK_ENDPOINTS.DELETE(bookId))
+  return api.delete(BOOK_ENDPOINTS.DELETE, { data: { bookIds } })
 }
 
 /**

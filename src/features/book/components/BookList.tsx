@@ -118,47 +118,49 @@ function BookList({
 
   return (
     <div>
-      <div className="flex justify-between mt-medium">
-        <div className="flex flex-wrap gap-xsmall">
-          <FilterDropdown
-            placeholder="독서모임"
-            value={selectedGathering}
-            onChange={handleGatheringChange}
-            disabled={isLoading || isGatheringsLoading || gatherings.length === 0}
-            open={openDropdown === 'gathering'}
-            onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
-          >
-            {gatherings.map((gathering) => (
-              <FilterDropdown.Option
-                key={gathering.gatheringId}
-                value={String(gathering.gatheringId)}
-              >
-                {gathering.gatheringName}
-              </FilterDropdown.Option>
-            ))}
-            {hasNextGatherings && (
-              <button
-                type="button"
-                className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
-                onClick={() => fetchNextGatherings()}
-              >
-                더 보기
-              </button>
-            )}
-          </FilterDropdown>
+      {!isEditMode && (
+        <div className="flex justify-between mt-medium">
+          <div className="flex flex-wrap gap-xsmall">
+            <FilterDropdown
+              placeholder="독서모임"
+              value={selectedGathering}
+              onChange={handleGatheringChange}
+              disabled={isLoading || isGatheringsLoading || gatherings.length === 0}
+              open={openDropdown === 'gathering'}
+              onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
+            >
+              {gatherings.map((gathering) => (
+                <FilterDropdown.Option
+                  key={gathering.gatheringId}
+                  value={String(gathering.gatheringId)}
+                >
+                  {gathering.gatheringName}
+                </FilterDropdown.Option>
+              ))}
+              {hasNextGatherings && (
+                <button
+                  type="button"
+                  className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
+                  onClick={() => fetchNextGatherings()}
+                >
+                  더 보기
+                </button>
+              )}
+            </FilterDropdown>
+          </div>
+          <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
+            <TabsList size="small" className="gap-0">
+              <TabsTrigger value="DESC" size="small" disabled={isLoading}>
+                최신순
+              </TabsTrigger>
+              <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
+              <TabsTrigger value="ASC" size="small" disabled={isLoading}>
+                오래된순
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-        <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
-          <TabsList size="small" className="gap-0">
-            <TabsTrigger value="DESC" size="small" disabled={isLoading}>
-              최신순
-            </TabsTrigger>
-            <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-            <TabsTrigger value="ASC" size="small" disabled={isLoading}>
-              오래된순
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      )}
       {isLoading ? (
         <BookListSkeleton />
       ) : isEmpty ? (

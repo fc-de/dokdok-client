@@ -10,8 +10,8 @@ export const BOOK_ENDPOINTS = {
   // 책 상세 조회 (GET /api/book/{bookId})
   DETAIL: (bookId: number) => `${API_PATHS.BOOK}/${bookId}`,
 
-  // 책 삭제 (DELETE /api/book/{bookId})
-  DELETE: (bookId: number) => `${API_PATHS.BOOK}/${bookId}`,
+  // 책 삭제 (DELETE /api/book)
+  DELETE: API_PATHS.BOOK,
 
   // 책 읽기 상태 토글 (POST /api/book/{bookId}/isReading)
   TOGGLE_READING: (bookId: number) => `${API_PATHS.BOOK}/${bookId}/isReading`,
