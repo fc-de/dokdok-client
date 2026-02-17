@@ -1,6 +1,7 @@
 import { createPortal } from 'react-dom'
 
-import { Button } from '../../../shared/ui/Button'
+import { Button } from '@/shared/ui'
+
 import AiGradientIcon from './AiGradientIcon'
 
 type AiLoadingOverlayProps = {

@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 type AiSummaryToastProps = {
@@ -15,18 +15,16 @@ export default function AiSummaryToast({
   onDismiss,
   duration = 3000,
 }: AiSummaryToastProps) {
-  const [mounted, setMounted] = useState(false)
   const [opacity, setOpacity] = useState(false)
+  const onDismissRef = useRef(onDismiss)
+  const fadeOutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // isVisible이 true가 되면 마운트 후 페이드인
   useEffect(() => {
-    if (!isVisible) {
-      setMounted(false)
-      setOpacity(false)
-      return
-    }
+    onDismissRef.current = onDismiss
+  })
 
-    setMounted(true)
+  useEffect(() => {
+    if (!isVisible) return
 
     const fadeInTimer = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -36,17 +34,18 @@ export default function AiSummaryToast({
 
     const dismissTimer = setTimeout(() => {
       setOpacity(false)
-      setTimeout(onDismiss, 300)
+      fadeOutTimerRef.current = setTimeout(() => onDismissRef.current(), 300)
     }, duration)
 
     return () => {
       cancelAnimationFrame(fadeInTimer)
       clearTimeout(dismissTimer)
+      if (fadeOutTimerRef.current) clearTimeout(fadeOutTimerRef.current)
+      setOpacity(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVisible, duration])
 
-  if (!mounted) return null
+  if (!isVisible) return null
 
   return createPortal(
     <div
