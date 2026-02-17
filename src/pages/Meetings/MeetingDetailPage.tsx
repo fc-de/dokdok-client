@@ -105,6 +105,7 @@ export default function MeetingDetailPage() {
                 buttonLabel={meeting.actionState.buttonLabel}
                 isEnabled={meeting.actionState.enabled}
                 type={meeting.actionState.type}
+                gatheringId={Number(gatheringId)}
                 meetingId={meeting.meetingId}
               />
             </>
@@ -145,7 +146,7 @@ export default function MeetingDetailPage() {
                 <div className="flex flex-col gap-base">
                   <TopicHeader
                     activeTab="PROPOSED"
-                    confirmedTopic={meeting?.confirmedTopicExpand ?? false}
+                    confirmedTopic={meeting?.confirmedTopic ?? false}
                     actions={proposedTopicsInfiniteData.pages[0].actions}
                     confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                     proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
@@ -157,6 +158,7 @@ export default function MeetingDetailPage() {
                     topics={proposedTopicsInfiniteData.pages.flatMap(
                       (page: GetProposedTopicsResponse) => page.items
                     )}
+                    confirmedTopic={meeting?.confirmedTopic ?? false}
                     hasNextPage={hasNextProposedPage}
                     isFetchingNextPage={isFetchingNextProposedPage}
                     onLoadMore={fetchNextProposedPage}
@@ -174,7 +176,7 @@ export default function MeetingDetailPage() {
                 <div className="flex flex-col gap-base">
                   <TopicHeader
                     activeTab="CONFIRMED"
-                    confirmedTopic={meeting?.confirmedTopicExpand ?? false}
+                    confirmedTopic={meeting?.confirmedTopic ?? false}
                     actions={confirmedTopicsInfiniteData.pages[0].actions}
                     confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                   />
