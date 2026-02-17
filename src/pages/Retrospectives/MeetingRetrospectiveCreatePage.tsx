@@ -13,10 +13,7 @@ export default function MeetingRetrospectiveCreatePage() {
 
   return (
     <>
-      <SubPageHeader
-        label="뒤로가기"
-        to={ROUTES.MEETING_RETROSPECTIVE(gatheringId!, meetingId!)}
-      />
+      <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_RETROSPECTIVE(gatheringId!, meetingId!)} />
 
       {/* 헤더: 타이틀 + 설명 + AI 요약 시작하기 버튼 */}
       <div className="sticky top-[calc(var(--gnb-height)+59px)] z-30 flex items-center justify-between bg-white pb-small">

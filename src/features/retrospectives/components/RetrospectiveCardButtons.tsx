@@ -45,9 +45,7 @@ export default function RetrospectiveCardButtons({
           <div className="flex items-center gap-xsmall">
             <span className="text-black typo-subtitle2">개인 회고</span>
           </div>
-          <span className="text-grey-600 typo-body4">
-            약속 후 느낀 나만의 생각을 정리해보세요
-          </span>
+          <span className="text-grey-600 typo-body4">약속 후 느낀 나만의 생각을 정리해보세요</span>
         </div>
       </button>
     </div>
