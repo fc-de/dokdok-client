@@ -9,6 +9,9 @@ import { getMockPreOpinionDetail } from '@/features/pre-opinion/preOpinion.mock'
 import type {
   GetPreOpinionParams,
   GetPreOpinionResponse,
+  SavePreOpinionBody,
+  SavePreOpinionParams,
+  SubmitPreOpinionBody,
 } from '@/features/pre-opinion/preOpinion.types'
 
 /** 목데이터 사용 여부 플래그 */
@@ -34,7 +37,42 @@ export const getPreOpinion = async ({
     return getMockPreOpinionDetail()
   }
 
-  return api.get<GetPreOpinionResponse>(
-    PRE_OPINION_ENDPOINTS.DETAIL(gatheringId, meetingId)
-  )
+  return api.get<GetPreOpinionResponse>(PRE_OPINION_ENDPOINTS.DETAIL(gatheringId, meetingId))
+}
+
+/**
+ * 사전 의견 저장
+ *
+ * @description
+ * updatedAt이 null이면 최초 저장(POST), 값이 있으면 수정(PATCH)으로 요청합니다.
+ *
+ * @param params - 모임 ID, 약속 ID, 최초 저장 여부
+ * @param body - 리뷰 평가 및 주제별 답변
+ */
+export const savePreOpinion = async (
+  { gatheringId, meetingId, isFirstSave }: SavePreOpinionParams,
+  body: SavePreOpinionBody
+): Promise<void> => {
+  if (isFirstSave) {
+    return api.post(PRE_OPINION_ENDPOINTS.CREATE(gatheringId, meetingId), body)
+  }
+  return api.patch(PRE_OPINION_ENDPOINTS.UPDATE(gatheringId, meetingId), body)
+}
+
+/**
+ * 사전 의견 공유(제출)
+ *
+ * @description
+ * 작성한 사전 의견을 멤버들에게 공유합니다.
+ *
+ * @param gatheringId - 모임 ID
+ * @param meetingId - 약속 ID
+ * @param body - 리뷰 평가 및 제출할 주제 ID 목록
+ */
+export const submitPreOpinion = async (
+  gatheringId: number,
+  meetingId: number,
+  body: SubmitPreOpinionBody
+): Promise<void> => {
+  return api.patch(PRE_OPINION_ENDPOINTS.SUBMIT(gatheringId, meetingId), body)
 }

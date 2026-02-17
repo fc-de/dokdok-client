@@ -9,6 +9,10 @@ import { formatUpdatedAt } from '../lib/date'
 interface PreOpinionWriteHeaderProps {
   book: PreOpinionBook
   updatedAt: string | null
+  onSave?: () => void
+  onSubmit?: () => void
+  isSaving?: boolean
+  isSubmitting?: boolean
 }
 
 /**
@@ -26,7 +30,14 @@ interface PreOpinionWriteHeaderProps {
  * />
  * ```
  */
-const PreOpinionWriteHeader = ({ book, updatedAt }: PreOpinionWriteHeaderProps) => {
+const PreOpinionWriteHeader = ({
+  book,
+  updatedAt,
+  onSave,
+  onSubmit,
+  isSaving,
+  isSubmitting,
+}: PreOpinionWriteHeaderProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
 
@@ -66,10 +77,18 @@ const PreOpinionWriteHeader = ({ book, updatedAt }: PreOpinionWriteHeaderProps) 
               {updatedAt && (
                 <p className="typo-body6 text-grey-600 mr-large">{formatUpdatedAt(updatedAt)}</p>
               )}
-              <Button className="mr-xsmall" variant={'secondary'} outline>
-                저장하기
+              <Button
+                className="mr-xsmall"
+                variant={'secondary'}
+                outline
+                onClick={onSave}
+                disabled={isSaving}
+              >
+                {isSaving ? '저장 중...' : '저장하기'}
               </Button>
-              <Button>공유하기</Button>
+              <Button onClick={onSubmit} disabled={isSubmitting || isSaving}>
+                {isSubmitting ? '공유 중...' : '공유하기'}
+              </Button>
             </div>
           </div>
         </div>

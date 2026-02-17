@@ -94,8 +94,49 @@ export type GetPreOpinionParams = {
 export type GetPreOpinionResponse = {
   /** 책 정보 */
   book: PreOpinionBook
-  /** 리뷰(평가) 정보 */
-  review: PreOpinionReview
+  /** 리뷰(평가) 정보 (평가 전적이 없으면 null) */
+  review: PreOpinionReview | null
   /** 사전 의견 데이터 */
   preOpinion: PreOpinionData
+}
+
+/**
+ * 사전 의견 저장 요청 바디
+ */
+export type SavePreOpinionBody = {
+  /** 리뷰(평가) 정보 */
+  review: {
+    rating: number
+    keywordIds: number[]
+  }
+  /** 주제별 답변 목록 */
+  answers: {
+    topicId: number
+    content: string | null
+  }[]
+}
+
+/**
+ * 사전 의견 저장 요청 파라미터
+ */
+export type SavePreOpinionParams = {
+  /** 모임 ID */
+  gatheringId: number
+  /** 약속 ID */
+  meetingId: number
+  /** 최초 저장 여부 (updatedAt이 null이면 true) */
+  isFirstSave: boolean
+}
+
+/**
+ * 사전 의견 공유(제출) 요청 바디
+ */
+export type SubmitPreOpinionBody = {
+  /** 리뷰(평가) 정보 */
+  review: {
+    rating: number
+    keywordIds: number[]
+  }
+  /** 제출할 주제 ID 목록 */
+  topicIds: number[]
 }

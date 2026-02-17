@@ -18,12 +18,12 @@ import { Container } from '@/shared/ui'
  * ```
  */
 interface BookReviewSectionProps {
-  review: PreOpinionReview
+  review: PreOpinionReview | null
   onChange?: (values: BookReviewFormValues) => void
 }
 
 const BookReviewSection = ({ review, onChange }: BookReviewSectionProps) => {
-  const hasReview = review.rating > 0 || review.keywords.length > 0
+  const hasReview = review !== null
 
   return (
     <Container className="gap-small">
@@ -39,8 +39,8 @@ const BookReviewSection = ({ review, onChange }: BookReviewSectionProps) => {
       </Container.Title>
       <Container.Content>
         <BookReviewForm
-          initialRating={review.rating ?? 0}
-          initialKeywordIds={review.keywords.map((k) => k.id) ?? []}
+          initialRating={review?.rating ?? 0}
+          initialKeywordIds={review?.keywords.map((k) => k.id) ?? []}
           onChange={onChange}
         />
       </Container.Content>

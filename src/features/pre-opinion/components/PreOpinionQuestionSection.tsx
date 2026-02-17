@@ -3,6 +3,7 @@ import { Badge, Container, Textarea } from '@/shared/ui'
 
 interface PreOpinionQuestionSectionProps {
   topics: PreOpinionTopic[]
+  onChange?: (topicId: number, content: string) => void
 }
 
 /**
@@ -15,10 +16,13 @@ interface PreOpinionQuestionSectionProps {
  *
  * @example
  * ```tsx
- * <PreOpinionQuestionSection topics={preOpinion.topics} />
+ * <PreOpinionQuestionSection
+ *   topics={preOpinion.topics}
+ *   onChange={(topicId, content) => handleTopicChange(topicId, content)}
+ * />
  * ```
  */
-const PreOpinionQuestionSection = ({ topics }: PreOpinionQuestionSectionProps) => {
+const PreOpinionQuestionSection = ({ topics, onChange }: PreOpinionQuestionSectionProps) => {
   const sortedTopics = [...topics].sort((a, b) => a.confirmOrder - b.confirmOrder)
 
   return (
@@ -34,7 +38,11 @@ const PreOpinionQuestionSection = ({ topics }: PreOpinionQuestionSectionProps) =
           <Container.Content>
             <div className="flex flex-col gap-small">
               <p className="typo-body4 text-grey-600">{topic.topicDescription}</p>
-              <Textarea placeholder="자유롭게 작성해주세요" defaultValue={topic.content ?? ''} />
+              <Textarea
+                placeholder="자유롭게 작성해주세요"
+                defaultValue={topic.content ?? ''}
+                onChange={(e) => onChange?.(topic.topicId, e.target.value)}
+              />
             </div>
           </Container.Content>
         </Container>
