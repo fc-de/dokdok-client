@@ -10,6 +10,10 @@ import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui'
 
+type MeetingRetrospectiveLocationState = {
+  fromAiSummary?: boolean
+}
+
 export default function MeetingRetrospectivePage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -18,7 +22,8 @@ export default function MeetingRetrospectivePage() {
     meetingId: string
   }>()
 
-  const fromAiSummary = (location.state as { fromAiSummary?: boolean })?.fromAiSummary ?? false
+  const fromAiSummary =
+    (location.state as MeetingRetrospectiveLocationState)?.fromAiSummary ?? false
 
   const [showOverlay, setShowOverlay] = useState(fromAiSummary)
   const [showToast, setShowToast] = useState(false)
@@ -38,6 +43,11 @@ export default function MeetingRetrospectivePage() {
     setShowToast(true)
   }, [])
 
+  const handleCancelAiSummary = useCallback(() => {
+    setShowOverlay(false)
+    setIsLoading(false)
+  }, [])
+
   useEffect(() => {
     if (!isLoading) return
 
@@ -45,9 +55,11 @@ export default function MeetingRetrospectivePage() {
     return () => clearTimeout(timer)
   }, [isLoading, handleSummaryComplete])
 
+  if (!gatheringId || !meetingId) return null
+
   return (
     <>
-      <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId!, meetingId!)} />
+      <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} />
 
       {/* 헤더: 약속 회고 타이틀 + 버튼 */}
       <div className="sticky top-[calc(var(--gnb-height)+59px)] z-30 flex items-center justify-between bg-white pb-small">
@@ -59,7 +71,7 @@ export default function MeetingRetrospectivePage() {
           <Button
             variant="primary"
             size="small"
-            onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId!, meetingId!))}
+            onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))}
           >
             약속 회고 생성하기
           </Button>
@@ -76,7 +88,7 @@ export default function MeetingRetrospectivePage() {
         )}
       </div>
 
-      <AiLoadingOverlay isOpen={showOverlay} />
+      <AiLoadingOverlay isOpen={showOverlay} onCancel={handleCancelAiSummary} />
       <AiSummaryToast isVisible={showToast} onDismiss={() => setShowToast(false)} />
     </>
   )

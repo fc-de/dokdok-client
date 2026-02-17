@@ -7,7 +7,7 @@ const Sonner = ({ ...props }: ToasterProps) => {
       gap={12}
       visibleToasts={3}
       offset={48}
-      icons={{ error: ' ' }}
+      icons={{ error: <></> }}
       toastOptions={{
         unstyled: true,
         classNames: {
