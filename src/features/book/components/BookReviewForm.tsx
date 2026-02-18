@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useKeywords } from '@/features/keywords'
 import { StarRate } from '@/shared/components/StarRate'
@@ -53,6 +53,16 @@ export function BookReviewForm({
   const [selectedImpressionCategoryId, setSelectedImpressionCategoryId] = useState<number | null>(
     null
   )
+
+  useEffect(() => {
+    setRating(initialRating)
+  }, [initialRating])
+
+  const initialKeywordKey = initialKeywordIds.slice().sort().join(',')
+  useEffect(() => {
+    const ids = initialKeywordKey ? initialKeywordKey.split(',').map(Number) : []
+    setSelectedKeywordIds(ids)
+  }, [initialKeywordKey])
 
   const {
     data: keywordsData,
@@ -171,7 +181,7 @@ export function BookReviewForm({
           <h4 className="typo-body4 text-grey-600 mb-tiny ml-xxtiny">별점</h4>
           <div className="flex items-center gap-xsmall">
             <StarRate rating={rating} size={36} interactive onRatingChange={handleRatingChange} />
-            <p className="subtitle5 text-black">{rating.toFixed(1)}</p>
+            <p className="typo-subtitle5 text-black">{rating.toFixed(1)}</p>
             {rating >= 0.5 && (
               <TextButton onClick={() => handleRatingChange(0)}>별점 초기화</TextButton>
             )}

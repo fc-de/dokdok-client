@@ -34,14 +34,23 @@ export interface BookReviewModalProps {
   onOpenChange: (open: boolean) => void
 }
 
+const INITIAL_FORM_VALUES: BookReviewFormValues = {
+  rating: 0,
+  keywordIds: [],
+  isValid: false,
+}
+
 export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalProps) {
-  const [formValues, setFormValues] = useState<BookReviewFormValues>({
-    rating: 0,
-    keywordIds: [],
-    isValid: false,
-  })
+  const [formValues, setFormValues] = useState<BookReviewFormValues>(INITIAL_FORM_VALUES)
   const { mutate: submitReview, isPending } = useCreateBookReview(bookId)
   const { openError } = useGlobalModalStore()
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      setFormValues(INITIAL_FORM_VALUES)
+    }
+    onOpenChange(newOpen)
+  }
 
   const handleSubmit = () => {
     if (formValues.rating === 0) {
@@ -63,13 +72,13 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
   }
 
   return (
-    <Modal open={open} onOpenChange={onOpenChange}>
+    <Modal open={open} onOpenChange={handleOpenChange}>
       <ModalContent variant="wide">
         <ModalHeader>
           <ModalTitle>책 평가하기</ModalTitle>
         </ModalHeader>
         <ModalBody>
-          <BookReviewForm onChange={setFormValues} />
+          <BookReviewForm key={open ? 'open' : 'closed'} onChange={setFormValues} />
         </ModalBody>
         <ModalFooter variant="full">
           <Button

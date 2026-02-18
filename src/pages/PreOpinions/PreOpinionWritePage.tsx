@@ -31,7 +31,7 @@ export default function PreOpinionWritePage() {
     }
   }, [preOpinion?.review])
 
-  const isFirstSave = preOpinion?.preOpinion.updatedAt === null
+  const isFirstSave = preOpinion ? preOpinion.preOpinion.updatedAt === null : true
 
   const {
     mutate: save,
@@ -40,10 +40,10 @@ export default function PreOpinionWritePage() {
   } = useSavePreOpinion({
     gatheringId: numGatheringId,
     meetingId: numMeetingId,
-    isFirstSave: isFirstSave ?? true,
+    isFirstSave,
   })
 
-  const { mutate: submit, isPending: isSubmitting } = useSubmitPreOpinion({
+  const { mutateAsync: submitAsync, isPending: isSubmitting } = useSubmitPreOpinion({
     gatheringId: numGatheringId,
     meetingId: numMeetingId,
   })
@@ -101,14 +101,18 @@ export default function PreOpinionWritePage() {
     const submitBody = buildSubmitBody()
     if (!submitBody) return
 
-    if (isFirstSave) {
-      const saveBody = buildSaveBody()
-      if (!saveBody) return
-      await saveAsync(saveBody)
-    }
+    try {
+      if (isFirstSave) {
+        const saveBody = buildSaveBody()
+        if (!saveBody) return
+        await saveAsync(saveBody)
+      }
 
-    submit(submitBody)
-  }, [isFirstSave, buildSaveBody, buildSubmitBody, saveAsync, submit])
+      await submitAsync(submitBody)
+    } catch {
+      // 에러는 useSubmitPreOpinion/useSavePreOpinion의 onError에서 처리
+    }
+  }, [isFirstSave, buildSaveBody, buildSubmitBody, saveAsync, submitAsync])
 
   if (isLoading || !preOpinion) {
     return (
