@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { useKeywords } from '@/features/keywords'
 import { StarRate } from '@/shared/components/StarRate'
@@ -53,16 +53,6 @@ export function BookReviewForm({
   const [selectedImpressionCategoryId, setSelectedImpressionCategoryId] = useState<number | null>(
     null
   )
-
-  useEffect(() => {
-    setRating(initialRating)
-  }, [initialRating])
-
-  const initialKeywordKey = initialKeywordIds.slice().sort().join(',')
-  useEffect(() => {
-    const ids = initialKeywordKey ? initialKeywordKey.split(',').map(Number) : []
-    setSelectedKeywordIds(ids)
-  }, [initialKeywordKey])
 
   const {
     data: keywordsData,

@@ -39,6 +39,14 @@ const BookReviewSection = ({ review, onChange }: BookReviewSectionProps) => {
       </Container.Title>
       <Container.Content>
         <BookReviewForm
+          key={
+            review
+              ? `${review.rating}-${review.keywords
+                  .map((k) => k.id)
+                  .sort()
+                  .join(',')}`
+              : 'empty'
+          }
           initialRating={review?.rating ?? 0}
           initialKeywordIds={review?.keywords.map((k) => k.id) ?? []}
           onChange={onChange}

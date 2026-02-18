@@ -53,16 +53,11 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
   }
 
   const handleSubmit = () => {
-    if (formValues.rating === 0) {
-      openError('별점 필요', '별점을 선택해주세요.')
-      return
-    }
-
     submitReview(
       { rating: formValues.rating, keywordIds: formValues.keywordIds },
       {
         onSuccess: () => {
-          onOpenChange(false)
+          handleOpenChange(false)
         },
         onError: (error) => {
           openError('평가 저장 실패', error.message)

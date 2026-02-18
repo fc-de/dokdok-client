@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
+import { ApiError } from '@/api'
 import type { BookReviewFormValues } from '@/features/book/components/BookReviewForm'
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
 import PreOpinionQuestionSection from '@/features/pre-opinion/components/PreOpinionQuestionSection'
@@ -8,13 +9,23 @@ import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionW
 import { usePreOpinion, useSavePreOpinion, useSubmitPreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { Card, Spinner } from '@/shared/ui'
+import { useGlobalModalStore } from '@/store'
 
 export default function PreOpinionWritePage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
   const numGatheringId = Number(gatheringId)
   const numMeetingId = Number(meetingId)
 
-  const { data: preOpinion, isLoading } = usePreOpinion({
+  const { openError } = useGlobalModalStore()
+
+  const navigate = useNavigate()
+
+  const {
+    data: preOpinion,
+    isLoading,
+    isError,
+    error,
+  } = usePreOpinion({
     gatheringId: numGatheringId,
     meetingId: numMeetingId,
   })
@@ -30,6 +41,18 @@ export default function PreOpinionWritePage() {
       isValid: true,
     }
   }, [preOpinion?.review])
+
+  useEffect(() => {
+    if (isError) {
+      const message =
+        error instanceof ApiError
+          ? error.userMessage
+          : '사전 의견을 불러오는 중 오류가 발생했습니다.'
+      openError('에러', message, () => {
+        navigate(-1)
+      })
+    }
+  }, [isError, error, openError, navigate])
 
   const isFirstSave = preOpinion ? preOpinion.preOpinion.updatedAt === null : true
 
@@ -110,9 +133,9 @@ export default function PreOpinionWritePage() {
 
       await submitAsync(submitBody)
     } catch {
-      // 에러는 useSubmitPreOpinion/useSavePreOpinion의 onError에서 처리
+      openError('오류', '사전 의견 제출 중 오류가 발생했습니다.')
     }
-  }, [isFirstSave, buildSaveBody, buildSubmitBody, saveAsync, submitAsync])
+  }, [isFirstSave, buildSaveBody, buildSubmitBody, saveAsync, submitAsync, openError])
 
   if (isLoading || !preOpinion) {
     return (
