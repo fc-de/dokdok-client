@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { ApiError } from '@/api'
 import {
   PreOpinionDetail,
   PreOpinionMemberList,
@@ -25,7 +26,11 @@ export default function PreOpinionListPage() {
 
   useEffect(() => {
     if (error) {
-      openError('조회 불가', error.userMessage, () => navigate(-1))
+      const message =
+        error instanceof ApiError
+          ? error.userMessage
+          : '사전 의견을 불러오는 중 오류가 발생했습니다.'
+      openError('조회 불가', message, () => navigate(-1))
     }
   }, [error, openError, navigate])
 

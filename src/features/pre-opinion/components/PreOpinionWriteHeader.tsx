@@ -13,6 +13,7 @@ interface PreOpinionWriteHeaderProps {
   onSubmit?: () => void
   isSaving?: boolean
   isSubmitting?: boolean
+  isReviewValid?: boolean
 }
 
 /**
@@ -37,6 +38,7 @@ const PreOpinionWriteHeader = ({
   onSubmit,
   isSaving,
   isSubmitting,
+  isReviewValid,
 }: PreOpinionWriteHeaderProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)
@@ -82,11 +84,11 @@ const PreOpinionWriteHeader = ({
                 variant={'secondary'}
                 outline
                 onClick={onSave}
-                disabled={isSaving}
+                disabled={isSaving || !isReviewValid}
               >
                 {isSaving ? '저장 중...' : '저장하기'}
               </Button>
-              <Button onClick={onSubmit} disabled={isSubmitting || isSaving}>
+              <Button onClick={onSubmit} disabled={isSubmitting || isSaving || !isReviewValid}>
                 {isSubmitting ? '공유 중...' : '공유하기'}
               </Button>
             </div>

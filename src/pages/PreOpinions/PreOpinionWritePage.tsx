@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { ApiError } from '@/api'
@@ -31,6 +31,8 @@ export default function PreOpinionWritePage() {
   })
 
   const reviewRef = useRef<BookReviewFormValues>({ rating: 0, keywordIds: [], isValid: false })
+  const [formReviewValid, setFormReviewValid] = useState<boolean | null>(null)
+  const isReviewValid = formReviewValid ?? !!preOpinion?.review
   const answersRef = useRef<Map<number, string>>(new Map())
 
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function PreOpinionWritePage() {
 
   const handleReviewChange = useCallback((values: BookReviewFormValues) => {
     reviewRef.current = values
+    setFormReviewValid(values.isValid)
   }, [])
 
   const handleTopicChange = useCallback((topicId: number, content: string) => {
@@ -117,25 +120,32 @@ export default function PreOpinionWritePage() {
   const handleSave = useCallback(() => {
     const body = buildSaveBody()
     if (!body) return
-    save(body)
-  }, [buildSaveBody, save])
+    save(body, {
+      onError: () => {
+        openError('오류', '사전 의견 저장 중 오류가 발생했습니다.')
+      },
+    })
+  }, [buildSaveBody, save, openError])
 
   const handleSubmit = useCallback(async () => {
+    const saveBody = buildSaveBody()
+    if (!saveBody) return
     const submitBody = buildSubmitBody()
     if (!submitBody) return
 
     try {
-      if (isFirstSave) {
-        const saveBody = buildSaveBody()
-        if (!saveBody) return
-        await saveAsync(saveBody)
-      }
+      await saveAsync(saveBody)
+    } catch {
+      openError('오류', '사전 의견 저장 중 오류가 발생했습니다.')
+      return
+    }
 
+    try {
       await submitAsync(submitBody)
     } catch {
       openError('오류', '사전 의견 제출 중 오류가 발생했습니다.')
     }
-  }, [isFirstSave, buildSaveBody, buildSubmitBody, saveAsync, submitAsync, openError])
+  }, [buildSaveBody, buildSubmitBody, saveAsync, submitAsync, openError])
 
   if (isLoading || !preOpinion) {
     return (
@@ -158,6 +168,7 @@ export default function PreOpinionWritePage() {
         onSubmit={handleSubmit}
         isSaving={isSaving}
         isSubmitting={isSubmitting}
+        isReviewValid={isReviewValid}
       />
 
       <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
