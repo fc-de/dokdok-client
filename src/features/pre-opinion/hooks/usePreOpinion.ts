@@ -5,6 +5,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 
+import type { ApiError } from '@/api'
 import { getPreOpinion } from '@/features/pre-opinion/preOpinion.api'
 import type {
   GetPreOpinionParams,
@@ -34,7 +35,7 @@ export const usePreOpinion = (params: GetPreOpinionParams) => {
   const isValidParams =
     !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0
 
-  return useQuery<GetPreOpinionResponse>({
+  return useQuery<GetPreOpinionResponse, ApiError>({
     queryKey: preOpinionQueryKeys.detail(params),
     queryFn: () => getPreOpinion(params),
     enabled: isValidParams,

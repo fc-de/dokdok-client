@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
+import { topicQueryKeys } from '@/features/topics/hooks/topicQueryKeys'
 
 import { submitPreOpinion } from '../preOpinion.api'
 import type { GetPreOpinionParams, SubmitPreOpinionBody } from '../preOpinion.types'
@@ -32,6 +33,7 @@ export function useSubmitPreOpinion({ gatheringId, meetingId }: GetPreOpinionPar
     mutationFn: (body) => submitPreOpinion(gatheringId, meetingId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: preOpinionQueryKeys.all })
+      queryClient.invalidateQueries({ queryKey: topicQueryKeys.confirmed() })
     },
   })
 }

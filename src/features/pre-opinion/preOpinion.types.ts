@@ -5,20 +5,7 @@
 
 import type { ReviewKeyword } from '@/features/book/book.types'
 
-/**
- * 주제 유형
- */
-export type TopicType =
-  | 'FREE'
-  | 'DISCUSSION'
-  | 'EMOTION'
-  | 'EXPERIENCE'
-  | 'CHARACTER_ANALYSIS'
-  | 'COMPARISON'
-  | 'STRUCTURE'
-  | 'IN_DEPTH'
-  | 'CREATIVE'
-  | 'CUSTOM'
+import type { TopicType } from '../topics'
 
 /**
  * 사전 의견 주제 항목

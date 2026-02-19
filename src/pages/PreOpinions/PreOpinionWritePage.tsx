@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { ApiError } from '@/api'
 import type { BookReviewFormValues } from '@/features/book/components/BookReviewForm'
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
-import PreOpinionQuestionSection from '@/features/pre-opinion/components/PreOpinionQuestionSection'
 import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionWriteHeader'
+import TopicItem from '@/features/pre-opinion/components/TopicItem'
 import { usePreOpinion, useSavePreOpinion, useSubmitPreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { Card, Spinner } from '@/shared/ui'
@@ -46,11 +45,7 @@ export default function PreOpinionWritePage() {
 
   useEffect(() => {
     if (isError) {
-      const message =
-        error instanceof ApiError
-          ? error.userMessage
-          : '사전 의견을 불러오는 중 오류가 발생했습니다.'
-      openError('에러', message, () => {
+      openError('에러', error.userMessage, () => {
         navigate(-1)
       })
     }
@@ -179,10 +174,9 @@ export default function PreOpinionWritePage() {
             </p>
           </Card>
           <BookReviewSection review={preOpinion.review} onChange={handleReviewChange} />
-          <PreOpinionQuestionSection
-            topics={preOpinion.preOpinion.topics}
-            onChange={handleTopicChange}
-          />
+          {preOpinion.preOpinion.topics.map((topic) => (
+            <TopicItem key={topic.topicId} topic={topic} onChange={handleTopicChange} />
+          ))}
         </section>
       </div>
     </>
