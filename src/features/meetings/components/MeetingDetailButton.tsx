@@ -2,7 +2,8 @@ import { useNavigate } from 'react-router-dom'
 
 import { useCancelJoinMeeting, useJoinMeeting } from '@/features/meetings/hooks'
 import type { MeetingDetailActionStateType } from '@/features/meetings/meetings.types'
-import { ROUTES } from '@/shared/constants/routes'
+import { ROUTES } from '@/shared/constants'
+import { showToast } from '@/shared/lib/toast'
 import { Button } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -44,7 +45,7 @@ export default function MeetingDetailButton({
 
       joinMutation.mutate(meetingId, {
         onSuccess: () => {
-          alert('참가 신청이 완료되었습니다.')
+          showToast('참가 신청이 완료되었습니다.')
         },
         onError: (error) => {
           openError('에러', error.userMessage)
@@ -60,7 +61,7 @@ export default function MeetingDetailButton({
 
       cancelJoinMutation.mutate(meetingId, {
         onSuccess: () => {
-          alert('참가 취소가 완료되었습니다.')
+          showToast('참가 취소가 완료되었습니다.')
         },
         onError: (error) => {
           openError('에러', error.userMessage)

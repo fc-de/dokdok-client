@@ -6,6 +6,7 @@ import type { CreateGatheringResponse } from '@/features/gatherings'
 import { useCreateGathering } from '@/features/gatherings'
 import PaperPlane from '@/shared/assets/icon/paper-plane.svg'
 import { ROUTES } from '@/shared/constants'
+import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Button, Input, Textarea, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -59,15 +60,17 @@ export default function CreateGatheringPage() {
 
     try {
       await navigator.clipboard.writeText(fullUrl)
-      // TODO: toast 알림 표시
-    } catch (error) {
-      console.error('클립보드 복사 실패:', error)
+      showToast('초대 링크가 복사되었습니다.')
+    } catch {
+      showErrorToast('링크 복사에 실패했습니다.')
     }
   }
 
   const handleComplete = () => {
     if (createdData?.gatheringId) {
-      navigate(ROUTES.GATHERING_DETAIL(createdData.gatheringId))
+      navigate(ROUTES.GATHERING_DETAIL(createdData.gatheringId), {
+        state: { justCreated: true },
+      })
     } else {
       navigate(ROUTES.GATHERINGS)
     }

@@ -16,6 +16,7 @@ import {
 } from '@/features/gatherings'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
   Button,
   Container,
@@ -36,7 +37,7 @@ export default function GatheringSettingPage() {
   const parsedId = id ? Number(id) : NaN
   const gatheringId = Number.isFinite(parsedId) ? parsedId : 0
   const navigate = useNavigate()
-  const { openConfirm, openError, openAlert } = useGlobalModalStore()
+  const { openConfirm, openError } = useGlobalModalStore()
 
   const { data: gathering, isLoading, error } = useGatheringDetail(gatheringId)
   const { name, setName, description, setDescription, isValid, getFormData } =
@@ -85,10 +86,10 @@ export default function GatheringSettingPage() {
       { gatheringId, data: getFormData() },
       {
         onSuccess: () => {
-          openAlert('알림', '모임 정보가 수정되었습니다.')
+          showToast('모임 정보가 수정되었습니다.')
         },
         onError: () => {
-          openError('오류', '모임 정보 수정에 실패했습니다.')
+          showErrorToast('모임 정보 수정에 실패했습니다.')
         },
       }
     )
@@ -119,10 +120,10 @@ export default function GatheringSettingPage() {
       { gatheringId, memberId: member.userId, approveType: 'ACTIVE' },
       {
         onSuccess: () => {
-          openAlert('알림', `${member.nickname}님의 가입을 승인했습니다.`)
+          showToast(`${member.nickname}님의 가입을 승인했습니다.`)
         },
         onError: () => {
-          openError('오류', '가입 승인에 실패했습니다.')
+          showErrorToast('가입 승인에 실패했습니다.')
         },
       }
     )
@@ -134,10 +135,10 @@ export default function GatheringSettingPage() {
       { gatheringId, memberId: member.userId, approveType: 'REJECTED' },
       {
         onSuccess: () => {
-          openAlert('알림', `${member.nickname}님의 가입을 거절했습니다.`)
+          showToast(`${member.nickname}님의 가입을 거절했습니다.`)
         },
         onError: () => {
-          openError('오류', '가입 거절에 실패했습니다.')
+          showErrorToast('가입 거절에 실패했습니다.')
         },
       }
     )
@@ -156,10 +157,10 @@ export default function GatheringSettingPage() {
       { gatheringId, userId: member.userId },
       {
         onSuccess: () => {
-          openAlert('알림', `${member.nickname}님을 모임에서 내보냈습니다.`)
+          showToast(`${member.nickname}님을 모임에서 내보냈습니다.`)
         },
         onError: () => {
-          openError('오류', '멤버 내보내기에 실패했습니다.')
+          showErrorToast('멤버 내보내기에 실패했습니다.')
         },
       }
     )
