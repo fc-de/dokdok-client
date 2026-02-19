@@ -117,7 +117,8 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
         </Button>
       )}
       {isDone && (
-        <Button variant="primary" size="small" className="shrink-0" onClick={handleActionClick}>
+        // TODO: 개인 회고 작성 페이지 연결 후 disabled 제거
+        <Button variant="primary" size="small" className="shrink-0" disabled>
           개인 회고 작성하기
         </Button>
       )}
