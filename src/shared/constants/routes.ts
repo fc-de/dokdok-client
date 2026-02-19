@@ -38,6 +38,12 @@ export const ROUTES = {
   TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
 
+  // Retrospectives (약속 회고)
+  MEETING_RETROSPECTIVE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective`,
+  MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
+
   // Records
   RECORDS: '/records',
   RECORD_DETAIL: (id: number | string) => `/records/${id}`,

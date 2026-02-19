@@ -8,6 +8,7 @@ import {
   MeetingDetailInfo,
   useMeetingDetail,
 } from '@/features/meetings'
+import { RetrospectiveCardButtons } from '@/features/retrospectives'
 import type {
   GetConfirmedTopicsResponse,
   GetProposedTopicsResponse,
@@ -115,6 +116,13 @@ export default function MeetingDetailPage() {
         {/* 약속 로딩 적용 */}
 
         <div className="flex flex-col flex-1 gap-base pb-base">
+          {meeting?.progressStatus === 'POST' && (
+            <RetrospectiveCardButtons
+              gatheringId={Number(gatheringId)}
+              meetingId={Number(meetingId)}
+            />
+          )}
+
           <p className="text-black typo-heading3">주제</p>
 
           <Tabs
