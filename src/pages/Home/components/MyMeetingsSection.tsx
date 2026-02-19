@@ -2,6 +2,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useState } from 'react'
 
 import { type MyMeetingFilter, useMyMeetings, useMyMeetingTabCounts } from '@/features/meetings'
+import { PAGE_SIZES } from '@/shared/constants'
 import { useDeferredLoading } from '@/shared/hooks'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
@@ -19,7 +20,7 @@ export default function MyMeetingsSection() {
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? []
   const hasMultiplePages = (data?.pages.length ?? 0) > 1
-  const displayItems = isCollapsed ? allItems.slice(0, 4) : allItems
+  const displayItems = isCollapsed ? allItems.slice(0, PAGE_SIZES.MY_MEETINGS) : allItems
 
   const handleTabChange = (value: string) => {
     setActiveTab(value as MyMeetingFilter)
@@ -57,7 +58,7 @@ export default function MyMeetingsSection() {
 
       {showSkeleton ? (
         <div className="flex flex-col">
-          {[...Array(4).keys()].map((i) => (
+          {[...Array(PAGE_SIZES.MY_MEETINGS).keys()].map((i) => (
             <div
               key={i}
               className="flex animate-pulse items-center gap-medium border-b border-grey-300 px-medium py-small last:border-b-0"

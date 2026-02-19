@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 
+import { PAGE_SIZES } from '@/shared/constants'
+
 import { getMyMeetings } from '../meetings.api'
 import type { MyMeetingFilter, MyMeetingListResponse } from '../meetings.types'
 import { myMeetingQueryKeys } from './myMeetingQueryKeys'
-
-const MY_MEETINGS_PAGE_SIZE = 4
 
 export function useMyMeetings(filter: MyMeetingFilter) {
   return useInfiniteQuery({
@@ -14,7 +14,7 @@ export function useMyMeetings(filter: MyMeetingFilter) {
         filter,
         startDateTime: pageParam?.startDateTime,
         meetingId: pageParam?.meetingId,
-        size: MY_MEETINGS_PAGE_SIZE,
+        size: PAGE_SIZES.MY_MEETINGS,
       }),
     initialPageParam: undefined as MyMeetingListResponse['nextCursor'] | undefined,
     getNextPageParam: (lastPage) => (lastPage.hasNext ? lastPage.nextCursor : undefined),

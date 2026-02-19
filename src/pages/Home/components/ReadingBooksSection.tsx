@@ -12,6 +12,7 @@ import HomeSectionHeader from './HomeSectionHeader'
 type BookTab = 'all' | 'pre' | 'post'
 
 export default function ReadingBooksSection() {
+  // TODO: pre/post 탭 활성화 시 activeTab을 useBooks filter 파라미터로 연결 필요
   const [activeTab, setActiveTab] = useState<BookTab>('all')
   const navigate = useNavigate()
 

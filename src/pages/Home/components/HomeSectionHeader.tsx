@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 import { cn } from '@/shared/lib/utils'
@@ -7,7 +8,7 @@ interface HomeSectionHeaderProps {
   title: string
   linkTo?: string
   linkLabel?: string
-  children?: React.ReactNode
+  children?: ReactNode
   className?: string
 }
 

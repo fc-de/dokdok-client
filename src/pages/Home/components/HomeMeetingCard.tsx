@@ -1,3 +1,6 @@
+import { differenceInCalendarDays, format } from 'date-fns'
+import { ko } from 'date-fns/locale'
+import type { MouseEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import type { MyMeetingListItem } from '@/features/meetings'
@@ -9,24 +12,12 @@ interface HomeMeetingCardProps {
   meeting: MyMeetingListItem
 }
 
-const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토']
-
 function formatMeetingDate(dateStr: string) {
-  const date = new Date(dateStr)
-  const yy = String(date.getFullYear()).slice(2)
-  const mm = String(date.getMonth() + 1).padStart(2, '0')
-  const dd = String(date.getDate()).padStart(2, '0')
-  const day = DAY_NAMES[date.getDay()]
-  const hh = String(date.getHours()).padStart(2, '0')
-  const min = String(date.getMinutes()).padStart(2, '0')
-  return `${yy}.${mm}.${dd}(${day}) ${hh}:${min}`
+  return format(new Date(dateStr), 'yy.MM.dd(eee) HH:mm', { locale: ko })
 }
 
 function getDDay(startDateTime: string): string {
-  const now = new Date()
-  const start = new Date(startDateTime)
-  const diffTime = start.getTime() - now.getTime()
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  const diffDays = differenceInCalendarDays(new Date(startDateTime), new Date())
   if (diffDays === 0) return 'D-Day'
   if (diffDays > 0) return `D-${diffDays}`
   return ''
@@ -63,7 +54,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
     navigate(ROUTES.MEETING_DETAIL(gatheringId, meetingId))
   }
 
-  const handleActionClick = (e: React.MouseEvent) => {
+  const handleActionClick = (e: MouseEvent) => {
     e.stopPropagation()
     if (isUpcoming) {
       navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { type ReactNode,useCallback, useEffect, useRef, useState } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -7,7 +7,7 @@ const THUMBNAIL_HEIGHT = 260
 const SCROLL_AMOUNT = 408
 
 interface BookCarouselProps {
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
@@ -47,7 +47,7 @@ export default function BookCarousel({ children, className }: BookCarouselProps)
 
   return (
     <div className={cn('group/carousel relative', className)}>
-      <div ref={scrollRef} className="flex gap-large overflow-x-auto scrollbar-hide scroll-smooth">
+      <div ref={scrollRef} className="flex gap-large overflow-x-auto scrollbar-hide">
         {children}
       </div>
 

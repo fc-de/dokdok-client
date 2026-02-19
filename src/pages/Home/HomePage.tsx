@@ -11,7 +11,9 @@ export default function HomePage() {
     <div className="pb-20 pt-xlarge">
       {/* 인사말 */}
       <div className="flex flex-col gap-xtiny mb-8.5">
-        <h1 className="text-black typo-heading2">안녕하세요, {user?.nickname ?? ''}님!</h1>
+        <h1 className="text-black typo-heading2">
+          {user ? `안녕하세요, ${user.nickname}님!` : '\u00A0'}
+        </h1>
         <p className="text-grey-600 typo-heading2">읽고 있는 책과 생각을 기록해보세요</p>
       </div>
 

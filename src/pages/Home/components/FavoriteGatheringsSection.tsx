@@ -37,7 +37,7 @@ export default function FavoriteGatheringsSection() {
             </div>
           ))}
         </div>
-      ) : gatherings.length === 0 ? (
+      ) : !data ? null : gatherings.length === 0 ? (
         <div className="flex h-35 flex-col items-center justify-center gap-xtiny rounded-base border border-grey-300">
           <p className="text-grey-600 typo-subtitle2">즐겨찾기한 모임이 없어요.</p>
           <p className="text-grey-500 typo-body3">
@@ -50,7 +50,7 @@ export default function FavoriteGatheringsSection() {
             <GatheringCard
               key={gathering.gatheringId}
               gathering={gathering}
-              onFavoriteToggle={(id) => toggleFavorite(id)}
+              onFavoriteToggle={toggleFavorite}
               onClick={() => navigate(ROUTES.GATHERING_DETAIL(gathering.gatheringId))}
             />
           ))}
