@@ -11,14 +11,13 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks'
+import { showErrorToast } from '@/shared/lib/toast'
 import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
-import { useGlobalModalStore } from '@/store'
 
 type TabValue = 'all' | 'favorites'
 
 export default function GatheringListPage() {
   const navigate = useNavigate()
-  const { openAlert } = useGlobalModalStore()
   const [activeTab, setActiveTab] = useState<TabValue>('all')
 
   // 전체 모임 목록 (무한 스크롤)
@@ -58,14 +57,14 @@ export default function GatheringListPage() {
       toggleFavorite(gatheringId, {
         onError: (error: ApiError) => {
           if (error.is(ErrorCode.FAVORITE_LIMIT_EXCEEDED)) {
-            openAlert('알림', '즐겨찾기는 최대 4개까지만 등록할 수 있습니다.')
+            showErrorToast('즐겨찾기는 최대 4개까지만 등록할 수 있습니다.')
           } else {
-            openAlert('오류', '즐겨찾기 변경에 실패했습니다.')
+            showErrorToast('즐겨찾기 변경에 실패했습니다.')
           }
         },
       })
     },
-    [toggleFavorite, openAlert]
+    [toggleFavorite]
   )
 
   // 카드 클릭 핸들러

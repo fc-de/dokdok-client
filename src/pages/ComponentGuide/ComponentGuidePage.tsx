@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
+import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
   Avatar,
   AvatarFallback,
@@ -74,6 +75,7 @@ function ComponentGuidePage() {
     { id: 'pagination', name: 'Pagination', category: '내비게이션' },
     { id: 'modal', name: 'Modal', category: '오버레이' },
     { id: 'tooltip', name: 'Tooltip', category: '오버레이' },
+    { id: 'toast', name: 'Toast', category: '오버레이' },
   ]
 
   const filteredSections = sections.filter(
@@ -159,6 +161,7 @@ function ComponentGuidePage() {
           {selectedSection === 'pagination' && <PaginationSection />}
           {selectedSection === 'modal' && <ModalSection />}
           {selectedSection === 'tooltip' && <TooltipSection />}
+          {selectedSection === 'toast' && <ToastSection />}
         </div>
       </main>
     </div>
@@ -1919,6 +1922,75 @@ function TooltipSection() {
           <p>• 외부 클릭, ESC 키, 스크롤로 닫히지 않음 (dismissable 모드)</p>
           <p>• asChild prop을 사용하여 자식 요소에 직접 이벤트 연결</p>
           <p>• TooltipProvider는 App.tsx에서 전역으로 설정됨</p>
+        </div>
+      </Showcase>
+    </Section>
+  )
+}
+
+function ToastSection() {
+  return (
+    <Section title="Toast" description="사용자 액션 결과를 알려주는 토스트 알림 (Sonner 기반)">
+      <Showcase
+        title="Default Toast"
+        description="생성/저장/수정 완료, 정보성 안내에 사용"
+        code={`import { showToast } from '@/shared/lib/toast'
+
+showToast('모임이 생성되었습니다.')`}
+      >
+        <Button onClick={() => showToast('모임이 생성되었습니다.')}>Default 토스트</Button>
+        <Button variant="secondary" onClick={() => showToast('초대 링크가 복사되었습니다.')}>
+          복사 완료
+        </Button>
+      </Showcase>
+
+      <Showcase
+        title="Error Toast"
+        description="저장/생성/삭제 실패, 네트워크/서버 오류에 사용"
+        code={`import { showErrorToast } from '@/shared/lib/toast'
+
+showErrorToast('저장에 실패했습니다. 잠시 후 다시 시도해주세요.')`}
+      >
+        <Button
+          variant="danger"
+          onClick={() => showErrorToast('저장에 실패했습니다. 잠시 후 다시 시도해주세요.')}
+        >
+          Error 토스트
+        </Button>
+        <Button
+          variant="danger"
+          outline
+          onClick={() => showErrorToast('네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.')}
+        >
+          네트워크 오류
+        </Button>
+      </Showcase>
+
+      <Showcase
+        title="여러 개 동시 표시"
+        description="최대 3개까지 동시에 표시됩니다"
+        code={`showToast('첫 번째 토스트')
+showToast('두 번째 토스트')
+showToast('세 번째 토스트')`}
+      >
+        <Button
+          onClick={() => {
+            showToast('첫 번째 토스트')
+            showToast('두 번째 토스트')
+            showToast('세 번째 토스트')
+          }}
+        >
+          3개 동시 표시
+        </Button>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• Default: bg primary-200/50%, text grey-900, 3초 후 자동 닫힘</p>
+          <p>• Error: bg accent-200/50%, text accent-300, 3초 후 자동 닫힘</p>
+          <p>• position: bottom-center, max-width: 360px</p>
+          <p>• 최대 3개까지 동시 표시, 간격 12px</p>
+          <p>• Toaster는 App.tsx에서 전역으로 설정됨</p>
         </div>
       </Showcase>
     </Section>

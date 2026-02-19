@@ -22,6 +22,7 @@ import {
   useConfirmedTopics,
   useProposedTopics,
 } from '@/features/topics'
+import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
@@ -65,13 +66,13 @@ export default function MeetingDetailPage() {
   // 에러 처리
   useEffect(() => {
     if (proposedError) {
-      alert(`제안된 주제 조회 실패: ${proposedError.userMessage}`)
+      showErrorToast(proposedError.userMessage)
     }
     if (confirmedError) {
-      alert(`확정된 주제 조회 실패: ${confirmedError.userMessage}`)
+      showErrorToast(confirmedError.userMessage)
     }
     if (meetingError) {
-      alert(`약속 조회 실패: ${meetingError.userMessage}`)
+      showErrorToast(meetingError.userMessage)
     }
     // navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
   }, [proposedError, confirmedError, meetingError])
