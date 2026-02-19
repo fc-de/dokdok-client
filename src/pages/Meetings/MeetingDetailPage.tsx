@@ -1,6 +1,6 @@
 import { ChevronLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   MeetingDetailButton,
@@ -23,13 +23,15 @@ import {
   useConfirmedTopics,
   useProposedTopics,
 } from '@/features/topics'
+import { ROUTES } from '@/shared/constants'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
+  const navigate = useNavigate()
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
 
-  const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
+  const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
 
   const {
@@ -37,6 +39,14 @@ export default function MeetingDetailPage() {
     isLoading: meetingLoading,
     error: meetingError,
   } = useMeetingDetail(Number(meetingId))
+
+  // 사용자 선택이 없으면 progressStatus에 따라 자동 결정
+  const activeTab =
+    userSelectedTab !== null
+      ? userSelectedTab
+      : meeting?.progressStatus === 'POST'
+        ? 'CONFIRMED'
+        : 'PROPOSED'
 
   // 제안된 주제 조회 (무한 스크롤)
   const {
@@ -64,8 +74,10 @@ export default function MeetingDetailPage() {
     meetingId: Number(meetingId),
   })
 
-  // 에러 처리
+  // 에러 처리 및 리다이렉트
   useEffect(() => {
+    const hasError = proposedError || confirmedError || meetingError
+
     if (proposedError) {
       showErrorToast(proposedError.userMessage)
     }
@@ -75,8 +87,11 @@ export default function MeetingDetailPage() {
     if (meetingError) {
       showErrorToast(meetingError.userMessage)
     }
-    // navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
-  }, [proposedError, confirmedError, meetingError])
+
+    if (hasError) {
+      navigate(ROUTES.GATHERING_DETAIL(Number(gatheringId)), { replace: true })
+    }
+  }, [proposedError, confirmedError, meetingError, navigate, gatheringId])
 
   return (
     <>
@@ -127,7 +142,7 @@ export default function MeetingDetailPage() {
 
           <Tabs
             value={activeTab}
-            onValueChange={(value) => setActiveTab(value as TopicStatus)}
+            onValueChange={(value) => setUserSelectedTab(value as TopicStatus)}
             className="gap-medium"
           >
             <TabsList className="border-b border-grey-300" size="medium">
@@ -188,6 +203,7 @@ export default function MeetingDetailPage() {
                     confirmedTopic={meeting?.confirmedTopic ?? false}
                     actions={confirmedTopicsInfiniteData.pages[0].actions}
                     confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                    progressStatus={meeting?.progressStatus ?? 'PRE'}
                   />
                   <ConfirmedTopicList
                     topics={confirmedTopicsInfiniteData.pages.flatMap(

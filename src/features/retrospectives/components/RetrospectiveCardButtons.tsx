@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
+import MeetingRetroIcon from '@/features/retrospectives/components/MeetingRetroIcon'
+import PersonalRetroIcon from '@/features/retrospectives/components/PersonalRetroIcon'
 import { ROUTES } from '@/shared/constants'
 
 interface RetrospectiveCardButtonsProps {
@@ -14,21 +16,23 @@ export default function RetrospectiveCardButtons({
   const navigate = useNavigate()
 
   return (
-    <div className="flex gap-small w-full">
+    <div className="flex gap-small w-full pb-large">
       {/* 약속 회고 카드 */}
       <button
         type="button"
         className="flex flex-1 items-center gap-base rounded-base bg-white p-large shadow-drop cursor-pointer"
         onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId))}
       >
-        {/* TODO: GraphicIc meeting review 아이콘 */}
-        <div className="flex flex-col gap-xsmall items-start">
-          <div className="flex items-center gap-xsmall">
-            <span className="text-black typo-subtitle2">약속 회고</span>
+        <div className="flex gap-base">
+          <MeetingRetroIcon className="shrink-0" />
+          <div className="flex flex-col gap-xsmall items-start">
+            <div className="flex items-center gap-xsmall">
+              <span className="text-black typo-subtitle2">약속 회고</span>
+            </div>
+            <span className="text-grey-600 typo-body4">
+              약속에서 나눈 대화를 다같이 정리해 남겨보세요
+            </span>
           </div>
-          <span className="text-grey-600 typo-body4">
-            약속에서 나눈 대화를 다같이 정리해 남겨보세요
-          </span>
         </div>
       </button>
 
@@ -40,12 +44,17 @@ export default function RetrospectiveCardButtons({
           /* TODO: 개인 회고 라우트 연결 */
         }}
       >
-        {/* TODO: GraphicIc personal review 아이콘 */}
-        <div className="flex flex-col gap-xsmall items-start">
-          <div className="flex items-center gap-xsmall">
-            <span className="text-black typo-subtitle2">개인 회고</span>
+        <div className="flex gap-base">
+          <PersonalRetroIcon className="shrink-0" />
+
+          <div className="flex flex-col gap-xsmall items-start">
+            <div className="flex items-center gap-xsmall">
+              <span className="text-black typo-subtitle2">개인 회고</span>
+            </div>
+            <span className="text-grey-600 typo-body4">
+              약속 후 느낀 나만의 생각을 정리해보세요
+            </span>
           </div>
-          <span className="text-grey-600 typo-body4">약속 후 느낀 나만의 생각을 정리해보세요</span>
         </div>
       </button>
     </div>
