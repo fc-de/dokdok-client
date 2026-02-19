@@ -17,11 +17,13 @@ export default function BookDetailPage() {
   return (
     <>
       <SubPageHeader label="내 책장" to="/books" />
-      <BookInfo
-        bookId={bookId}
-        isRecording={isRecording}
-        onToggleRecording={() => toggleReadingStatus()}
-      />
+      <div className="mx-auto max-w-layout-max px-layout-padding">
+        <BookInfo
+          bookId={bookId}
+          isRecording={isRecording}
+          onToggleRecording={() => toggleReadingStatus()}
+        />
+      </div>
       <BookLogList bookId={bookId} isRecording={isRecording} />
     </>
   )

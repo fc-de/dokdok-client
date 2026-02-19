@@ -37,31 +37,22 @@ export const router = createBrowserRouter([
   },
   {
     element: <LandingLayout />,
-    children: [
-      {
-        path: ROUTES.LANDING,
-        element: <LandingPage />,
-      },
-    ],
+    children: [{ path: ROUTES.LANDING, element: <LandingPage /> }],
   },
   {
     element: <RootLayout />,
     children: [
-      // 비로그인 사용자만 접근 가능한 페이지
+      // 비로그인 사용자만 접근 가능
       {
         element: <PublicRoute />,
         children: [
           {
             element: <AuthLayout />,
-            children: [
-              {
-                path: ROUTES.LOGIN,
-                element: <LoginPage />,
-              },
-            ],
+            children: [{ path: ROUTES.LOGIN, element: <LoginPage /> }],
           },
         ],
       },
+
       // 인증 필요한 페이지
       {
         element: <PrivateRoute />,
@@ -69,65 +60,33 @@ export const router = createBrowserRouter([
           // 온보딩 (GNB 없음)
           {
             element: <AuthLayout />,
-            children: [
-              {
-                path: ROUTES.ONBOARDING,
-                element: <OnboardingPage />,
-              },
-            ],
+            children: [{ path: ROUTES.ONBOARDING, element: <OnboardingPage /> }],
           },
-          // 메인 페이지들 (GNB 있음)
+
+          // GNB + 콘텐츠 패딩
           {
             element: <MainLayout />,
             children: [
-              {
-                path: ROUTES.HOME,
-                element: <HomePage />,
-              },
-              {
-                path: ROUTES.HOME_ALIAS,
-                element: <Navigate to={ROUTES.HOME} replace />,
-              },
-              {
-                path: ROUTES.BOOKS,
-                element: <BookListPage />,
-              },
-              {
-                path: `${ROUTES.BOOKS}/:id`,
-                element: <BookDetailPage />,
-              },
-              {
-                path: `${ROUTES.BOOKS}/:id/reviews`,
-                element: <BookReviewHistoryPage />,
-              },
-              {
-                path: ROUTES.GATHERINGS,
-                element: <GatheringListPage />,
-              },
-              {
-                path: ROUTES.GATHERING_CREATE,
-                element: <CreateGatheringPage />,
-              },
+              { path: ROUTES.HOME, element: <HomePage /> },
+              { path: ROUTES.HOME_ALIAS, element: <Navigate to={ROUTES.HOME} replace /> },
+              { path: ROUTES.BOOKS, element: <BookListPage /> },
+              { path: ROUTES.GATHERINGS, element: <GatheringListPage /> },
+              { path: ROUTES.GATHERING_CREATE, element: <CreateGatheringPage /> },
+              { path: ROUTES.RECORDS, element: <RecordListPage /> },
             ],
           },
-          // 전체 너비 레이아웃 페이지 (GNB 있음, 컨텐츠 패딩 없음)
+
+          // GNB + 콘텐츠 패딩 없음, 페이지에서 자체 래퍼 관리
           {
             element: <FullWidthLayout />,
             children: [
-              {
-                path: `${ROUTES.GATHERINGS}/:id`,
-                element: <GatheringDetailPage />,
-              },
-            ],
-          },
-          // 메인 페이지들 계속 (GNB 있음)
-          {
-            element: <MainLayout />,
-            children: [
-              {
-                path: `${ROUTES.GATHERINGS}/:id/settings`,
-                element: <GatheringSettingPage />,
-              },
+              // 도서
+              { path: `${ROUTES.BOOKS}/:id`, element: <BookDetailPage /> },
+              { path: `${ROUTES.BOOKS}/:id/reviews`, element: <BookReviewHistoryPage /> },
+              // 모임
+              { path: `${ROUTES.GATHERINGS}/:id`, element: <GatheringDetailPage /> },
+              { path: `${ROUTES.GATHERINGS}/:id/settings`, element: <GatheringSettingPage /> },
+              // 약속
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
@@ -164,23 +123,15 @@ export const router = createBrowserRouter([
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/update`,
                 element: <MeetingCreatePage />,
               },
-              {
-                path: ROUTES.RECORDS,
-                element: <RecordListPage />,
-              },
             ],
           },
         ],
       },
-      // 로그인/비로그인 모두 접근 가능한 페이지 (GNB 있음)
+
+      // 로그인/비로그인 모두 접근 가능 (GNB + 콘텐츠 패딩)
       {
         element: <MainLayout />,
-        children: [
-          {
-            path: `${ROUTES.INVITE_BASE}/:invitationCode`,
-            element: <InvitePage />,
-          },
-        ],
+        children: [{ path: `${ROUTES.INVITE_BASE}/:invitationCode`, element: <InvitePage /> }],
       },
     ],
   },
