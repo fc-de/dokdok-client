@@ -1,3 +1,4 @@
+import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Badge, Card, LikeButton, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -30,7 +31,7 @@ export default function TopicCard({
   meetingId,
   topicId,
 }: TopicCardProps) {
-  const { openConfirm, openAlert, openError } = useGlobalModalStore()
+  const { openConfirm, openError } = useGlobalModalStore()
   const deleteMutation = useDeleteTopic()
   const likeMutation = useLikeTopic()
 
@@ -51,10 +52,9 @@ export default function TopicCard({
 
     deleteMutation.mutate(
       { gatheringId, meetingId, topicId },
-      // TODO: 토스트 컴포넌트로 교체 예정
       {
         onSuccess: () => {
-          openAlert('삭제 완료', '주제가 삭제되었습니다.')
+          showToast('주제가 삭제되었습니다.')
         },
         onError: (error) => {
           openError('삭제 실패', error.userMessage)
@@ -74,8 +74,7 @@ export default function TopicCard({
       { gatheringId, meetingId, topicId },
       {
         onError: (error) => {
-          // TODO: 토스트 컴포넌트로 교체 예정
-          alert(`좋아요 처리 중 오류가 발생했습니다: ${error.userMessage}`)
+          showErrorToast(error.userMessage)
         },
       }
     )

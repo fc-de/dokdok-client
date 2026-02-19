@@ -8,6 +8,7 @@ import {
   type TopicType,
   useCreateTopic,
 } from '@/features/topics'
+import { showToast } from '@/shared/lib/toast'
 import {
   Button,
   Container,
@@ -67,8 +68,7 @@ export default function TopicCreatePage() {
       },
       {
         onSuccess: () => {
-          // TODO : 토스트로 교체
-          alert('주제 제안이 완료되었습니다.')
+          showToast('주제 제안이 완료되었습니다.')
           navigate(-1)
         },
         onError: (error) => {

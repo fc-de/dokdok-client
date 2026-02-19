@@ -18,7 +18,7 @@ interface MeetingDetailInfoProps {
   meeting: GetMeetingDetailResponse
 }
 
-export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
+export default function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
   const leader = meeting.participants.members.find((member) => member.role === 'LEADER')
   const members = meeting.participants.members.filter((member) => member.role === 'MEMBER')
   const displayedMembers = members.slice(0, MAX_DISPLAYED_AVATARS)

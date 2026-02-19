@@ -1,33 +1,17 @@
 /**
  * @file PlaceSearchModal.tsx
- * @description 카카오 장소 검색 모달 컴포넌트
+ * @description 장소 검색 모달 컴포넌트
+ *
+ * UI는 searchState 기준으로만 화면을 분기합니다.
+ * 모든 상태 관리와 비동기 로직은 usePlaceSearch 훅에서 처리합니다.
  */
 
-import { AlertCircle, Search } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-
-import {
-  Button,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-} from '@/shared/ui'
-
-import { useKakaoMap } from '../hooks/useKakaoMap'
-import { useKakaoPlaceSearch } from '../hooks/useKakaoPlaceSearch'
-import type { KakaoPlace } from '../kakaoMap.types'
-import PlaceList from './PlaceList'
-
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    kakao: any
-  }
-}
+import { Map, MapMarker, ZoomControl } from '@/features/kakaomap'
+import PlaceList from '@/features/meetings/components/PlaceList'
+import PlaceListSkeleton from '@/features/meetings/components/PlaceListSkeleton'
+import { usePlaceSearch } from '@/features/meetings/hooks'
+import { cn } from '@/shared/lib/utils'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
 
 export type PlaceSearchModalProps = {
   /** 모달 열림 상태 */
@@ -48,71 +32,21 @@ export default function PlaceSearchModal({
   onOpenChange,
   onSelectPlace,
 }: PlaceSearchModalProps) {
-  // 지도 관리
   const {
-    mapElement,
-    isInitialized,
-    error: mapError,
-    initializeMap,
-    renderMarkers,
-    setCenter,
-    cleanup,
-  } = useKakaoMap()
-
-  // 장소 검색 관리
-  const keywordRef = useRef<HTMLInputElement>(null)
-  const {
+    searchState,
+    errorMessage,
     places,
-    error: searchError,
-    search,
-    reset,
-  } = useKakaoPlaceSearch({
-    onSearchSuccess: renderMarkers,
-  })
-
-  // 모달 열릴 때 지도 초기화
-  useEffect(() => {
-    if (open && !isInitialized) {
-      initializeMap()
-    }
-  }, [open, isInitialized, initializeMap])
-
-  // 검색 실행
-  const handleSearch = () => {
-    const keyword = keywordRef.current?.value || ''
-    search(keyword)
-  }
-
-  // Enter 키 처리
-  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleSearch()
-    }
-  }
-
-  // 장소 선택
-  const handlePlaceClick = (place: KakaoPlace) => {
-    setCenter(Number(place.y), Number(place.x))
-
-    onSelectPlace({
-      name: place.place_name,
-      address: place.road_address_name || place.address_name,
-      latitude: Number(place.y),
-      longitude: Number(place.x),
-    })
-
-    onOpenChange(false)
-    reset()
-    cleanup()
-  }
-
-  // 모달 닫기
-  const handleClose = () => {
-    onOpenChange(false)
-    reset()
-    cleanup()
-  }
+    isMapMounted,
+    isMapVisible,
+    hoveredPlaceId,
+    keywordRef,
+    setMapInstance,
+    setHoveredPlaceId,
+    handleKeyDown,
+    handlePlaceClick,
+    handlePlaceFocus,
+    handleClose,
+  } = usePlaceSearch({ open, onOpenChange, onSelectPlace })
 
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
@@ -122,64 +56,68 @@ export default function PlaceSearchModal({
         </ModalHeader>
 
         <ModalBody className="flex flex-col gap-base">
-          <div className="flex gap-xsmall">
-            <Input
-              placeholder="장소 또는 주소를 검색해주세요"
-              ref={keywordRef}
-              onKeyUp={handleKeyUp}
-              className="flex-1"
-            />
-            <Button onClick={handleSearch} size="large" type="button">
-              <Search size={18} className="mr-tiny" />
-              검색
-            </Button>
-          </div>
+          <SearchField
+            placeholder="장소 또는 주소를 입력해주세요"
+            ref={keywordRef}
+            onKeyDown={handleKeyDown}
+          />
 
-          <div className="flex gap-base h-95">
-            {/* 지도 영역 */}
-            <div className="relative flex-1">
-              <div ref={mapElement} className="w-full h-full rounded-small bg-grey-100" />
+          {/* 지도 + 리스트 영역
+              isMapMounted: 첫 검색 전 / 에러는 마운트하지 않음
+              isMapVisible: noResults일 때 Map 인스턴스를 유지한 채 CSS로만 숨김 */}
+          {isMapMounted && (
+            <div className={cn('flex gap-base h-95 flex-1 pb-large', !isMapVisible && 'hidden')}>
+              <Map
+                center={{ lat: 37.566826, lng: 126.9786567 }}
+                level={3}
+                className="relative rounded-small bg-grey-100 size-full"
+                onCreate={setMapInstance}
+              >
+                <ZoomControl position="TOPRIGHT" />
+                {places.map((place) => (
+                  <MapMarker
+                    key={place.id}
+                    position={{ lat: Number(place.y), lng: Number(place.x) }}
+                    onMouseOver={() => setHoveredPlaceId(place.id)}
+                    onMouseOut={() => setHoveredPlaceId(null)}
+                  >
+                    {hoveredPlaceId === place.id && (
+                      <div className="py-xsmall px-small bg-white text-black">
+                        {place.place_name}
+                      </div>
+                    )}
+                  </MapMarker>
+                ))}
+              </Map>
 
-              {/* SDK 로드 에러 오버레이 */}
-              {mapError && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-small bg-grey-50">
-                  <div className="text-center text-red-500 px-base">
-                    <AlertCircle size={48} className="mx-auto mb-base opacity-70" />
-                    <p className="text-sm font-medium">{mapError}</p>
-                  </div>
-                </div>
-              )}
-
-              {/* 검색 전 안내 메시지 오버레이 */}
-              {!isInitialized && !mapError && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-small bg-grey-50">
-                  <div className="text-center text-grey-400">
-                    <Search size={48} className="mx-auto mb-base opacity-30" />
-                    <p className="text-lg font-medium mb-xsmall">장소를 검색하면</p>
-                    <p className="text-sm">지도에 표시됩니다</p>
-                  </div>
-                </div>
-              )}
+              <div className="flex flex-col shrink-0 w-[390px]">
+                {searchState === 'searching' ? (
+                  <PlaceListSkeleton />
+                ) : (
+                  <PlaceList
+                    places={places}
+                    onPlaceFocus={handlePlaceFocus}
+                    onPlaceClick={handlePlaceClick}
+                  />
+                )}
+              </div>
             </div>
+          )}
 
-            {/* 장소 리스트 */}
-            <div className="flex flex-col w-[300px] shrink-0">
-              {searchError && (
-                <div className="flex items-start gap-xsmall text-red-500 text-sm p-xsmall mb-xsmall bg-red-50 rounded-small">
-                  <AlertCircle size={16} className="mt-[2px] shrink-0" />
-                  <span>{searchError}</span>
-                </div>
-              )}
-              <PlaceList places={places} onPlaceClick={handlePlaceClick} />
+          {/* 검색 결과 없음 */}
+          {searchState === 'noResults' && (
+            <div className="h-95 flex items-center justify-center">
+              <p className="text-grey-600 typo-body3">검색 결과가 없습니다</p>
             </div>
-          </div>
+          )}
+
+          {/* SDK 오류 또는 검색 오류 */}
+          {searchState === 'error' && (
+            <div className="h-95 flex items-center justify-center">
+              <p className="text-red-500 typo-body3">{errorMessage}</p>
+            </div>
+          )}
         </ModalBody>
-
-        <ModalFooter>
-          <Button variant="secondary" outline onClick={handleClose}>
-            취소
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   )

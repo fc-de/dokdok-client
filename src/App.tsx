@@ -3,9 +3,7 @@ import { RouterProvider } from 'react-router-dom'
 
 import { setupInterceptors } from '@/api'
 import { queryClient } from '@/shared/lib/tanstack-query'
-import { GlobalModalHost } from '@/shared/ui/GlobalModalHost'
-import { Sonner } from '@/shared/ui/Sonner'
-import { TooltipProvider } from '@/shared/ui/Tooltip'
+import { GlobalModalHost, Sonner, TooltipProvider } from '@/shared/ui'
 
 import { router } from './routes'
 
