@@ -18,7 +18,7 @@ interface MeetingDetailInfoProps {
   meeting: GetMeetingDetailResponse
 }
 
-export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
+export default function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
   const leader = meeting.participants.members.find((member) => member.role === 'LEADER')
   const members = meeting.participants.members.filter((member) => member.role === 'MEMBER')
   const displayedMembers = members.slice(0, MAX_DISPLAYED_AVATARS)
@@ -36,8 +36,11 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
         {/* 도서 */}
         <dl className="flex gap-base">
           <dt className={DT_VARIANTS}>도서</dt>
-          <dd className="flex flex-col gap-xtiny">
-            <p className="text-black typo-body3">{meeting.book.bookName}</p>
+          <dd className="flex flex-col gap-tiny">
+            <div className="flex flex-col gap-xtiny">
+              <p className="text-black typo-body3">{meeting.book.bookName}</p>
+              <p className="typo-caption1 text-grey-700">{meeting.book.authors}</p>
+            </div>
             <div className="w-[120px] h-[170px] overflow-hidden rounded">
               <img
                 src={meeting.book.thumbnail}

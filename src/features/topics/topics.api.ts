@@ -237,7 +237,7 @@ export const confirmTopics = async (
   }
 
   // 실제 API 호출 (로그인 완료 후 사용)
-  return api.post<ConfirmTopicsResponse>(TOPICS_ENDPOINTS.CONFIRM(gatheringId, meetingId), {
+  return api.patch<ConfirmTopicsResponse>(TOPICS_ENDPOINTS.CONFIRM(gatheringId, meetingId), {
     topicIds,
   })
 }

@@ -9,7 +9,10 @@ type ProgressBadge = {
   text: '약속 전' | '약속 중' | '약속 후'
   color: 'yellow' | 'blue' | 'red'
 }
-export function MeetingDetailHeader({ children, progressStatus }: MeetingDetailHeaderProps) {
+export default function MeetingDetailHeader({
+  children,
+  progressStatus,
+}: MeetingDetailHeaderProps) {
   const progressStatusLabelMap: Record<MeetingProgressStatus, ProgressBadge> = {
     PRE: { text: '약속 전', color: 'yellow' },
     ONGOING: { text: '약속 중', color: 'red' },
