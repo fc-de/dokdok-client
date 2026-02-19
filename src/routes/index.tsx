@@ -20,6 +20,7 @@ import {
   MeetingSettingPage,
   OnboardingPage,
   PreOpinionListPage,
+  PreOpinionWritePage,
   RecordListPage,
   TopicCreatePage,
 } from '@/pages'
@@ -130,6 +131,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/pre-opinions/new`,
+                element: <PreOpinionWritePage />,
               },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/topic-create`,
