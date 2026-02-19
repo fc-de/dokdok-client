@@ -111,7 +111,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[108px] z-30 bg-white shadow-drop-bottom">
+      <div className="sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white shadow-drop-bottom">
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
@@ -175,7 +175,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
 
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="bg-grey-100">
-        <section className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
           {allRecords.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-base text-center">
               <p className="typo-subtitle2 text-grey-600">
@@ -236,7 +236,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               })}
             </div>
           )}
-        </section>
+        </div>
       </div>
       <BookLogModal
         open={isModalOpen}

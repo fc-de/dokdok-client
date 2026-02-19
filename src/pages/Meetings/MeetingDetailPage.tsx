@@ -28,7 +28,10 @@ import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
-  const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
+  const { gatheringId, meetingId } = useParams<{
+    gatheringId: string
+    meetingId: string
+  }>()
 
   const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
@@ -79,11 +82,13 @@ export default function MeetingDetailPage() {
     // navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
   }, [proposedError, confirmedError, meetingError])
 
+  if (!gatheringId || !meetingId) return null
+
   return (
     <>
       <SubPageHeader
         label={meeting?.gathering.gatheringName ?? '뒤로가기'}
-        to={ROUTES.GATHERING_DETAIL(gatheringId!)}
+        to={ROUTES.GATHERING_DETAIL(gatheringId)}
       />
 
       <div className="mx-auto max-w-layout-max px-layout-padding">
