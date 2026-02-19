@@ -9,8 +9,8 @@ import { formatUpdatedAt } from '../lib/date'
 interface PreOpinionWriteHeaderProps {
   book: PreOpinionBook
   updatedAt: string | null
-  onSave?: () => void
-  onSubmit?: () => void
+  onSave: () => void
+  onSubmit: () => void
   isSaving?: boolean
   isSubmitting?: boolean
   isReviewValid?: boolean
@@ -28,6 +28,8 @@ interface PreOpinionWriteHeaderProps {
  * <PreOpinionWriteHeader
  *   book={{ bookId: 1, title: '데미안', author: '헤르만 헤세' }}
  *   updatedAt="2026-02-06T09:12:30"
+ *   onSave={handleSave}
+ *   onSubmit={handleSubmit}
  * />
  * ```
  */
@@ -38,7 +40,7 @@ const PreOpinionWriteHeader = ({
   onSubmit,
   isSaving,
   isSubmitting,
-  isReviewValid,
+  isReviewValid = false,
 }: PreOpinionWriteHeaderProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null)
   const [isStuck, setIsStuck] = useState(false)

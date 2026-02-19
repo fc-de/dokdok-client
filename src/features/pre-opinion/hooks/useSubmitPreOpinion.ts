@@ -31,9 +31,13 @@ export function useSubmitPreOpinion({ gatheringId, meetingId }: GetPreOpinionPar
 
   return useMutation<void, ApiError, SubmitPreOpinionBody>({
     mutationFn: (body) => submitPreOpinion(gatheringId, meetingId, body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: preOpinionQueryKeys.all })
-      queryClient.invalidateQueries({ queryKey: topicQueryKeys.confirmed() })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: preOpinionQueryKeys.all }),
+        // confirmed 전체 무효화: 제출 후 어떤 gatheringId/meetingId 조합이 영향 받는지
+        // 특정할 수 없으므로 confirmed 범위 전체를 무효화합니다.
+        queryClient.invalidateQueries({ queryKey: topicQueryKeys.confirmed() }),
+      ])
     },
   })
 }

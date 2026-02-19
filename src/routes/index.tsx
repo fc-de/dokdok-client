@@ -20,10 +20,10 @@ import {
   MeetingSettingPage,
   OnboardingPage,
   PreOpinionListPage,
+  PreOpinionWritePage,
   RecordListPage,
   TopicCreatePage,
 } from '@/pages'
-import PreOpinionWritePage from '@/pages/PreOpinions/PreOpinionWritePage'
 import { ROUTES } from '@/shared/constants'
 import { AuthLayout, FullWidthLayout, LandingLayout, MainLayout, RootLayout } from '@/shared/layout'
 
@@ -133,7 +133,7 @@ export const router = createBrowserRouter([
                 element: <MeetingDetailPage />,
               },
               {
-                path: ROUTES.PRE_OPINION_WRITE(':gatheringId', ':meetingId'),
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/pre-opinions/new`,
                 element: <PreOpinionWritePage />,
               },
               {
