@@ -16,11 +16,7 @@ import type { CreateSttJobParams, SttJobResponse } from '../retrospectives.types
 export const useCreateSttJob = () => {
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  const mutation = useMutation<
-    ApiResponse<SttJobResponse>,
-    ApiError,
-    CreateSttJobParams
-  >({
+  const mutation = useMutation<ApiResponse<SttJobResponse>, ApiError, CreateSttJobParams>({
     mutationFn: (params: CreateSttJobParams) => {
       abortControllerRef.current?.abort()
 

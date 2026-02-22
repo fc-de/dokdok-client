@@ -28,10 +28,7 @@ const STT_TIMEOUT = 5 * 60 * 1000
  * @param params - 생성 파라미터
  * @param signal - AbortSignal (취소 지원)
  */
-export const createSttJob = async (
-  params: CreateSttJobParams,
-  signal?: AbortSignal
-) => {
+export const createSttJob = async (params: CreateSttJobParams, signal?: AbortSignal) => {
   const { gatheringId, meetingId, file } = params
 
   const formData = new FormData()
@@ -56,12 +53,8 @@ export const createSttJob = async (
  *
  * @param meetingId - 약속 식별자
  */
-export const getSummary = async (
-  meetingId: number
-): Promise<RetrospectiveSummaryResponse> => {
-  return api.get<RetrospectiveSummaryResponse>(
-    RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId)
-  )
+export const getSummary = async (meetingId: number): Promise<RetrospectiveSummaryResponse> => {
+  return api.get<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId))
 }
 
 /**

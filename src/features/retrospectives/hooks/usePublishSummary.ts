@@ -10,17 +10,10 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
 export const usePublishSummary = () => {
   const queryClient = useQueryClient()
 
-  return useMutation<
-    ApiResponse<RetrospectiveSummaryResponse>,
-    ApiError,
-    PublishSummaryParams
-  >({
+  return useMutation<ApiResponse<RetrospectiveSummaryResponse>, ApiError, PublishSummaryParams>({
     mutationFn: (params: PublishSummaryParams) => publishSummary(params),
     onSuccess: (response, variables) => {
-      queryClient.setQueryData(
-        retrospectiveQueryKeys.summary(variables.meetingId),
-        response.data
-      )
+      queryClient.setQueryData(retrospectiveQueryKeys.summary(variables.meetingId), response.data)
     },
   })
 }
