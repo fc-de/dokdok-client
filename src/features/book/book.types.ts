@@ -3,8 +3,10 @@
  * @description Book 도메인 관련 타입 정의
  */
 
+import type { CursorPaginatedResponse } from '@/api/types'
+
 /** 책 읽기 상태 */
-export type BookReadingStatus = 'READING' | 'COMPLETED' | 'PENDING'
+export type BookReadingStatus = 'READING' | 'COMPLETED'
 
 /** 책 상세 정보 */
 export interface BookDetail {
@@ -14,6 +16,47 @@ export interface BookDetail {
   authors: string
   bookReadingStatus: BookReadingStatus
   thumbnail: string
+}
+
+// ============================================================
+// Book List (책 목록) 관련 타입
+// ============================================================
+
+/** 책 목록 아이템 */
+export interface BookListItem {
+  bookId: number
+  title: string
+  publisher: string
+  authors: string
+  bookReadingStatus: BookReadingStatus
+  thumbnail: string
+  rating: number
+  gatheringNames: string[]
+}
+
+/** 책 목록 조회 요청 파라미터 */
+export interface GetBooksParams {
+  status?: BookReadingStatus
+  gatheringId?: number
+  ratingMin?: number
+  ratingMax?: number
+  sort?: RecordSortType
+  pageSize?: number
+  cursorAddedAt?: string
+  cursorBookId?: number
+}
+
+/** 책 목록 조회 커서 */
+export interface BookListCursor {
+  addedAt: string
+  bookId: number
+}
+
+/** 책 목록 조회 응답 */
+export interface GetBooksResponse extends CursorPaginatedResponse<BookListItem, BookListCursor> {
+  totalCount: number
+  readingCount: number
+  completedCount: number
 }
 
 /** 리뷰 키워드 종류 */
@@ -65,12 +108,7 @@ export interface GetGatheringsParams {
 }
 
 /** 모임 목록 조회 응답 */
-export interface GetGatheringsResponse {
-  items: Gathering[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: string | null
-}
+export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 
 // ============================================================
 // Book Records (감상 기록) 관련 타입
@@ -216,14 +254,10 @@ export interface GetBookReviewHistoryParams {
 }
 
 /** 책 평가 히스토리 조회 응답 */
-export interface GetBookReviewHistoryResponse {
-  items: BookReviewHistoryItem[]
-  pageSize: number
-  hasNext: boolean
-  nextCursor: {
-    historyId: number | null
-  }
-}
+export type GetBookReviewHistoryResponse = CursorPaginatedResponse<
+  BookReviewHistoryItem,
+  { historyId: number | null }
+>
 
 /** 감상 기록 생성 요청 바디 */
 export interface CreateBookRecordBody {
@@ -264,4 +298,47 @@ export interface GetBookRecordsResponse {
 export interface CreateBookReviewBody {
   rating: number
   keywordIds: number[]
+}
+
+// ============================================================
+// Book Search (도서 검색) 관련 타입
+// ============================================================
+
+/** 검색된 도서 아이템 */
+export interface SearchBookItem {
+  title: string
+  contents: string
+  authors: string[]
+  publisher: string
+  isbn: string
+  thumbnail: string
+}
+
+/** 도서 검색 요청 파라미터 */
+export interface SearchBooksParams {
+  query: string
+  page?: number
+  pageSize?: number
+}
+
+/** 도서 검색 커서 */
+export interface SearchBooksCursor {
+  page: number
+}
+
+/** 도서 검색 응답 */
+export interface SearchBooksResponse extends CursorPaginatedResponse<
+  SearchBookItem,
+  SearchBooksCursor
+> {
+  totalCount: number
+}
+
+/** 책 등록 요청 바디 */
+export interface CreateBookBody {
+  title: string
+  authors: string
+  publisher: string
+  isbn: string
+  thumbnail: string
 }

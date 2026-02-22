@@ -1,5 +1,9 @@
+import { useNavigate } from 'react-router-dom'
+
 import { useCancelJoinMeeting, useJoinMeeting } from '@/features/meetings/hooks'
 import type { MeetingDetailActionStateType } from '@/features/meetings/meetings.types'
+import { ROUTES } from '@/shared/constants'
+import { showToast } from '@/shared/lib/toast'
 import { Button } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -7,6 +11,7 @@ interface MeetingDetailButtonProps {
   buttonLabel: string
   isEnabled: boolean
   type: MeetingDetailActionStateType
+  gatheringId: number
   meetingId: number
 }
 
@@ -14,8 +19,10 @@ export default function MeetingDetailButton({
   buttonLabel,
   isEnabled,
   type,
+  gatheringId,
   meetingId,
 }: MeetingDetailButtonProps) {
+  const navigate = useNavigate()
   const joinMutation = useJoinMeeting()
   const cancelJoinMutation = useCancelJoinMeeting()
   const { openError, openConfirm } = useGlobalModalStore()
@@ -25,9 +32,9 @@ export default function MeetingDetailButton({
   const handleClick = async () => {
     if (!isEnabled || isPending) return
 
-    // 약속 수정 - 페이지 이동 예정 (TODO)
+    // 약속 수정
     if (type === 'CAN_EDIT') {
-      // 페이지 이동 로직 추가 예정
+      navigate(ROUTES.MEETING_UPDATE(gatheringId, meetingId))
       return
     }
 
@@ -38,7 +45,7 @@ export default function MeetingDetailButton({
 
       joinMutation.mutate(meetingId, {
         onSuccess: () => {
-          alert('참가 신청이 완료되었습니다.')
+          showToast('참가 신청이 완료되었습니다.')
         },
         onError: (error) => {
           openError('에러', error.userMessage)
@@ -54,7 +61,7 @@ export default function MeetingDetailButton({
 
       cancelJoinMutation.mutate(meetingId, {
         onSuccess: () => {
-          alert('참가 취소가 완료되었습니다.')
+          showToast('참가 취소가 완료되었습니다.')
         },
         onError: (error) => {
           openError('에러', error.userMessage)
@@ -74,7 +81,7 @@ export default function MeetingDetailButton({
       >
         {buttonLabel}
       </Button>
-      {isEnabled && (
+      {!isEnabled && (
         <p className="text-grey-700 typo-body6 pt-tiny">
           {type === 'EDIT_TIME_EXPIRED' && '약속 24시간 전까지만 약속 정보를 수정할 수 있어요'}
           {(type === 'CANCEL_TIME_EXPIRED' || type === 'JOIN_TIME_EXPIRED') &&

@@ -8,6 +8,7 @@ import UserAvatarIcon from '@/shared/assets/icon/UserAvatar.svg'
 import LogoIcon from '@/shared/assets/images/logo-icon.png'
 import LogoText from '@/shared/assets/images/logo-text.png'
 import { ROUTES } from '@/shared/constants/routes'
+import { showToast } from '@/shared/lib/toast'
 import { cn } from '@/shared/lib/utils'
 import {
   Avatar,
@@ -38,11 +39,11 @@ export default function Header() {
   const { data: user } = useUserProfile({ enabled: !isInvitePage || isLoggedIn })
 
   const handleNotificationClick = () => {
-    alert('준비중입니다.')
+    showToast('준비중입니다.')
   }
 
   return (
-    <header className="sticky top-0 z-50 h-gnb-height bg-white">
+    <header className="sticky top-0 z-20 h-gnb-height bg-white">
       <nav className="mx-auto flex h-full max-w-layout-max items-center justify-between px-layout-padding">
         {/* 좌측: 로고 + 네비게이션 */}
         <div className="flex items-center gap-11.75">

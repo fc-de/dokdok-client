@@ -42,6 +42,13 @@ export default defineConfig([
         {
           selector: 'variable',
           format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+          leadingUnderscore: 'allow',
+        },
+        // 매개변수: camelCase, 언더스코어로 시작 가능 (unused params)
+        {
+          selector: 'parameter',
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
         },
         // 함수: camelCase, PascalCase (컴포넌트)
         {

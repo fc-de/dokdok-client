@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { ApiError } from '@/api'
 import { useAuth } from '@/features/auth'
 import { ROUTES } from '@/shared/constants'
-import { ErrorFallback } from '@/shared/ui'
+import { ErrorFallback, Spinner } from '@/shared/ui'
 
 export function PrivateRoute() {
   const { data: user, isLoading, isError, error, refetch } = useAuth()
@@ -14,7 +14,7 @@ export function PrivateRoute() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p>Loading...</p>
+        <Spinner />
       </div>
     )
   }

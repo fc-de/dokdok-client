@@ -5,7 +5,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-pretendard overflow-x-hidden;
+    @apply bg-background text-foreground font-pretendard;
     line-height: var(--leading-140);
   }
   html {

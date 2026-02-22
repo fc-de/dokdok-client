@@ -1,7 +1,5 @@
 import { MapPin } from 'lucide-react'
-import { useState } from 'react'
 
-import MapModal from '@/features/meetings/components/MapModal'
 import {
   Avatar,
   AvatarFallback,
@@ -20,9 +18,7 @@ interface MeetingDetailInfoProps {
   meeting: GetMeetingDetailResponse
 }
 
-export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
-  const [isMapModalOpen, setIsMapModalOpen] = useState(false)
-
+export default function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
   const leader = meeting.participants.members.find((member) => member.role === 'LEADER')
   const members = meeting.participants.members.filter((member) => member.role === 'MEMBER')
   const displayedMembers = members.slice(0, MAX_DISPLAYED_AVATARS)
@@ -32,14 +28,19 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
 
   const [startDate, endDate] = meeting.schedule.displayDate.split(' ~ ')
 
+  const location = meeting.location
+
   return (
     <div className="w-[300px] flex-none flex flex-col gap-base">
       <div className="flex flex-col gap-medium">
         {/* 도서 */}
         <dl className="flex gap-base">
           <dt className={DT_VARIANTS}>도서</dt>
-          <dd className="flex flex-col gap-xtiny">
-            <p className="text-black typo-body3">{meeting.book.bookName}</p>
+          <dd className="flex flex-col gap-tiny">
+            <div className="flex flex-col gap-xtiny">
+              <p className="text-black typo-body3">{meeting.book.bookName}</p>
+              <p className="typo-caption1 text-grey-700">{meeting.book.authors}</p>
+            </div>
             <div className="w-[120px] h-[170px] overflow-hidden rounded">
               <img
                 src={meeting.book.thumbnail}
@@ -117,28 +118,25 @@ export function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
         <dl className="flex gap-base">
           <dt className={DT_VARIANTS}>장소</dt>
           <dd>
-            {meeting.location && (
+            {location && (
               <TextButton
                 size="medium"
                 icon={MapPin}
                 className="text-black typo-body3 [&_svg]:text-grey-600"
-                onClick={() => setIsMapModalOpen(true)}
+                onClick={() => {
+                  window.open(
+                    `https://map.kakao.com/link/map/${location.name},${location.latitude},${location.longitude}`,
+                    '_blank',
+                    'noopener,noreferrer'
+                  )
+                }}
               >
-                {meeting.location.name}
+                {location.name}
               </TextButton>
             )}
           </dd>
         </dl>
       </div>
-
-      {/* 지도 모달 */}
-      {meeting.location && (
-        <MapModal
-          open={isMapModalOpen}
-          onOpenChange={setIsMapModalOpen}
-          location={meeting.location}
-        />
-      )}
     </div>
   )
 }

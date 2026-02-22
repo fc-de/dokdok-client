@@ -78,3 +78,34 @@ export type PaginatedResponse<T> = {
   /** 전체 페이지 수 */
   totalPages: number
 }
+
+/**
+ * 커서 기반 페이지네이션 응답 타입
+ *
+ * @template T - 아이템의 타입
+ * @template C - 커서의 타입
+ *
+ * @example
+ * ```typescript
+ * // 커서 기반 페이지네이션 응답 예시
+ * {
+ *   "items": [{ "id": 1, "name": "모임1" }, { "id": 2, "name": "모임2" }],
+ *   "pageSize": 10,
+ *   "hasNext": true,
+ *   "nextCursor": { "joinedAt": "2024-01-01T00:00:00", "id": 2 },
+ *   "totalCount": 50
+ * }
+ * ```
+ */
+export type CursorPaginatedResponse<T, C = unknown> = {
+  /** 현재 페이지의 아이템 배열 */
+  items: T[]
+  /** 페이지 크기 (한 페이지당 아이템 수) */
+  pageSize: number
+  /** 다음 페이지 존재 여부 */
+  hasNext: boolean
+  /** 다음 페이지 커서 (없으면 null) */
+  nextCursor: C | null
+  /** 전체 아이템 수 (첫 페이지 응답에만 포함될 수 있음) */
+  totalCount?: number
+}

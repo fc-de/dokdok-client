@@ -26,11 +26,7 @@ const TabsSizeContext = React.createContext<TabsSize>('small')
  */
 function Tabs({ className, ...props }: React.ComponentProps<typeof TabsPrimitive.Root>) {
   return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn('flex flex-col gap-2', className)}
-      {...props}
-    />
+    <TabsPrimitive.Root data-slot="tabs" className={cn('flex flex-col', className)} {...props} />
   )
 }
 
@@ -44,7 +40,7 @@ function TabsList({ className, size = 'small', ...props }: TabsListProps) {
       <TabsPrimitive.List
         data-slot="tabs-list"
         data-size={size}
-        className={cn('inline-flex items-center gap-4', className)}
+        className={cn('inline-flex items-center gap-medium', className)}
         {...props}
       />
     </TabsSizeContext.Provider>

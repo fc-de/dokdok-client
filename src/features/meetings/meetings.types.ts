@@ -3,6 +3,8 @@
  * @description Meeting API 관련 타입 정의
  */
 
+import type { CreateBookBody } from '@/features/book'
+
 /**
  * 약속 상태 타입
  */
@@ -84,8 +86,8 @@ export type MeetingLocation = {
 export type CreateMeetingRequest = {
   /** 모임 ID */
   gatheringId: number
-  /** 책 ID */
-  bookId: number
+  /** 책 정보 */
+  book: CreateBookBody
   /** 약속 이름 */
   meetingName: string
   /** 약속 시작 일시 (ISO 8601 형식) */
@@ -99,7 +101,7 @@ export type CreateMeetingRequest = {
 }
 
 /**
- * 약속 생성 응답 타입
+ * 약속 생성 응답 타입 Todo:실제 응답값이랑 비교해봐야 함
  */
 export type CreateMeetingResponse = {
   /** 약속 ID */
@@ -117,6 +119,9 @@ export type CreateMeetingResponse = {
   book: {
     bookId: number
     bookName: string
+    thumbnail: string
+    authors: string
+    publisher: string
   }
   /** 일정 정보 */
   schedule: {
@@ -137,6 +142,40 @@ export type CreateMeetingResponse = {
       profileImageUrl: string
     }>
   }
+}
+
+/**
+ * 약속 수정 요청 타입
+ */
+export type UpdateMeetingRequest = {
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 시작 일시 (ISO 8601 형식) */
+  startDate: string
+  /** 약속 종료 일시 (ISO 8601 형식) */
+  endDate: string
+  /** 장소 (선택 사항) */
+  location: MeetingLocation | null
+  /** 최대 참가 인원 */
+  maxParticipants: number
+}
+
+/**
+ * 약속 수정 응답 타입
+ */
+export type UpdateMeetingResponse = {
+  /** 약속 ID */
+  meetingId: number
+  /** 약속 이름 */
+  meetingName: string
+  /** 약속 시작 일시 (ISO 8601 형식) */
+  startDate: string
+  /** 약속 종료 일시 (ISO 8601 형식) */
+  endDate: string
+  /** 장소 (선택 사항) */
+  location: MeetingLocation | null
+  /** 최대 참가 인원 */
+  maxParticipants: number
 }
 
 /**
@@ -176,7 +215,7 @@ export type GetMeetingDetailResponse = {
   /** 약속 진행 상태 */
   progressStatus: MeetingProgressStatus
   /** 주제 확정 여부 */
-  confirmedTopicExpand: boolean
+  confirmedTopic: boolean
   /** 주제 확정 일시 */
   confirmedTopicDate: string | null
   /** 모임 정보 */
@@ -189,6 +228,8 @@ export type GetMeetingDetailResponse = {
     bookId: number
     bookName: string
     thumbnail: string
+    authors: string
+    publisher: string
   }
   /** 일정 정보 */
   schedule: MeetingSchedule
@@ -211,4 +252,62 @@ export type GetMeetingDetailResponse = {
     buttonLabel: string
     enabled: boolean
   }
+}
+
+// ============================================================
+// 메인페이지 내 약속 리스트 관련 타입
+// ============================================================
+
+/** 메인페이지 약속 진행 상태 (시간 기준) */
+export type MyMeetingProgressStatus = 'UPCOMING' | 'ONGOING' | 'DONE' | 'UNKNOWN'
+
+/** 메인페이지 내 역할 */
+export type MyMeetingRole = 'LEADER' | 'GATHERING_LEADER' | 'MEMBER' | 'NONE'
+
+/** 메인페이지 약속 필터 */
+export type MyMeetingFilter = 'ALL' | 'UPCOMING' | 'DONE'
+
+/** 메인페이지 내 약속 아이템 */
+export interface MyMeetingListItem {
+  meetingId: number
+  meetingName: string
+  gatheringId: number
+  gatheringName: string
+  meetingLeaderName: string
+  bookName: string
+  startDateTime: string
+  endDateTime: string
+  meetingStatus: MeetingStatus | 'REJECTED' | 'DONE'
+  myRole: MyMeetingRole
+  progressStatus: MyMeetingProgressStatus
+}
+
+/** 메인페이지 내 약속 커서 */
+export interface MyMeetingCursor {
+  startDateTime: string
+  meetingId: number
+}
+
+/** 메인페이지 내 약속 리스트 응답 */
+export interface MyMeetingListResponse {
+  items: MyMeetingListItem[]
+  totalCount: number
+  pageSize: number
+  hasNext: boolean
+  nextCursor: MyMeetingCursor | null
+}
+
+/** 메인페이지 내 약속 조회 파라미터 */
+export interface GetMyMeetingsParams {
+  filter: MyMeetingFilter
+  startDateTime?: string
+  meetingId?: number
+  size?: number
+}
+
+/** 메인페이지 내 약속 탭 카운트 응답 */
+export interface MyMeetingTabCountsResponse {
+  all: number
+  upcoming: number
+  done: number
 }

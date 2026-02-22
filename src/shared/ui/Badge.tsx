@@ -8,6 +8,7 @@ const badgeVariants = cva(
   {
     variants: {
       size: {
+        xsmall: 'px-tiny py-0.5 typo-caption2',
         small: 'px-xsmall py-xtiny typo-body5',
         medium: 'px-2 py-[5px] typo-body3',
       },

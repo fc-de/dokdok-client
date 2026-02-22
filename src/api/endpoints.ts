@@ -11,6 +11,7 @@ export const API_PATHS = {
   AUTH: `${API_BASE}/auth`,
   USERS: `${API_BASE}/users`,
   BOOK: `${API_BASE}/book`,
+  KEYWORDS: `${API_BASE}/keywords`,
   GATHERINGS: `${API_BASE}/gatherings`,
   MEETINGS: `${API_BASE}/meetings`,
 } as const

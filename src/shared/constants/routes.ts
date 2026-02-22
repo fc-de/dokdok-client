@@ -6,6 +6,8 @@ export const ROUTES = {
   HOME: '/',
   HOME_ALIAS: '/home',
 
+  LANDING: '/landing',
+
   // Books
   BOOKS: '/books',
   BOOK_DETAIL: (id: number | string) => `/books/${id}`,
@@ -16,10 +18,15 @@ export const ROUTES = {
   GATHERINGS: '/gatherings',
   GATHERING_DETAIL: (id: number | string) => `/gatherings/${id}`,
   GATHERING_CREATE: '/gatherings/create',
+  GATHERING_SETTING: (id: number | string) => `/gatherings/${id}/settings`,
 
   // Invite
   INVITE_BASE: '/invite',
   INVITE: (invitationCode: string) => `/invite/${invitationCode}`,
+
+  // Pre-opinions
+  PRE_OPINION_WRITE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions/new`,
 
   // Meetings
   MEETING_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
@@ -28,6 +35,18 @@ export const ROUTES = {
   MEETING_UPDATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/update`,
   MEETING_SETTING: (gatheringId: number | string) => `/gatherings/${gatheringId}/meetings/setting`,
+  PRE_OPINIONS: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions`,
+
+  // Topics
+  TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
+
+  // Retrospectives (약속 회고)
+  MEETING_RETROSPECTIVE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective`,
+  MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
 
   // Records
   RECORDS: '/records',

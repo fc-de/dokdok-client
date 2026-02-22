@@ -20,4 +20,14 @@ export const DEFAULT_SHOW_PAGES = 5
 export const PAGE_SIZES = {
   /** 약속 승인 관리 리스트 페이지 사이즈 */
   MEETING_APPROVALS: 10,
+  /** 주제 목록 페이지 사이즈 */
+  TOPICS: 5,
+  /** 모임 약속 목록 페이지 사이즈 */
+  GATHERING_MEETINGS: 5,
+  /** 모임 책장 페이지 사이즈 */
+  GATHERING_BOOKS: 12,
+  /** 모임 멤버 목록 페이지 사이즈 */
+  GATHERING_MEMBERS: 9,
+  /** 내 약속 목록 페이지 사이즈 */
+  MY_MEETINGS: 4,
 } as const

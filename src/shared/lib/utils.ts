@@ -1,8 +1,30 @@
 import { type ClassValue, clsx } from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
 
-const customTwMerge = extendTailwindMerge({
+type AdditionalClassGroupIds = 'typo'
+
+const customTwMerge = extendTailwindMerge<AdditionalClassGroupIds>({
   extend: {
+    classGroups: {
+      typo: [
+        'typo-heading1',
+        'typo-heading2',
+        'typo-heading3',
+        'typo-subtitle1',
+        'typo-subtitle2',
+        'typo-subtitle3',
+        'typo-subtitle4',
+        'typo-subtitle5',
+        'typo-body1',
+        'typo-body2',
+        'typo-body3',
+        'typo-body4',
+        'typo-body5',
+        'typo-body6',
+        'typo-caption1',
+        'typo-caption2',
+      ],
+    },
     theme: {
       spacing: [
         'xxtiny',

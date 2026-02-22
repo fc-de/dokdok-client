@@ -8,6 +8,7 @@ export interface LikeButtonProps {
   onClick?: (liked: boolean) => void
   disabled?: boolean
   className?: string
+  isPending?: boolean
 }
 
 /**
@@ -27,9 +28,12 @@ function LikeButton({
   onClick,
   disabled = false,
   className,
+  isPending = false,
 }: LikeButtonProps) {
+  const isButtonDisabled = disabled || isPending
+
   const handleClick = () => {
-    if (disabled) return
+    if (isButtonDisabled) return
     onClick?.(!isLiked)
   }
 
@@ -39,14 +43,19 @@ function LikeButton({
       data-slot="like-button"
       data-liked={isLiked}
       onClick={handleClick}
-      disabled={disabled}
+      disabled={isButtonDisabled}
       className={cn(
         'inline-flex items-center gap-tiny rounded-small px-[10px] py-tiny typo-caption1 transition-colors',
         isLiked
           ? 'border border-primary-300 bg-primary-100 text-primary-300'
           : 'border border-grey-400 bg-white text-grey-700',
-        disabled && 'border-transparent',
-        !disabled && 'cursor-pointer',
+
+        // 의미적 disabled (기존 유지)
+        disabled && 'border-transparent opacity-100',
+
+        // 정상
+        !isButtonDisabled && 'cursor-pointer',
+
         className
       )}
     >

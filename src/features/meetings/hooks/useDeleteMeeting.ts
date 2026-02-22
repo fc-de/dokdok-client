@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ApiError } from '@/api/errors'
 import type { ApiResponse } from '@/api/types'
+import { gatheringQueryKeys } from '@/features/gatherings'
 import { deleteMeeting } from '@/features/meetings'
 
 import { meetingQueryKeys } from './meetingQueryKeys'
@@ -23,7 +24,7 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  * const deleteMutation = useDeleteMeeting()
  * deleteMutation.mutate(meetingId)
  */
-export const useDeleteMeeting = () => {
+export const useDeleteMeeting = (gatheringId: number) => {
   const queryClient = useQueryClient()
 
   return useMutation<ApiResponse<null>, ApiError, number>({
@@ -33,6 +34,7 @@ export const useDeleteMeeting = () => {
       queryClient.invalidateQueries({
         queryKey: meetingQueryKeys.approvals(),
       })
+      queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.meetings(gatheringId) })
     },
   })
 }

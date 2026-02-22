@@ -112,6 +112,7 @@
 
   /* Layout tokens */
   --spacing-layout-max: 1440px;
+  --spacing-landing-max: 1340px;
   --spacing-layout-padding: 120px;
   --spacing-gnb-height: 64px;
 
@@ -209,4 +210,18 @@
   &::-webkit-scrollbar {
     display: block !important;
   }
+}
+
+@utility scrollbar-hide {
+  /* 스크롤바 숨기기 (캐러셀 등에서 사용) */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility shadow-drop-bottom {
+  /* 아래쪽에만 그림자 (sticky 헤더용) */
+  box-shadow: 0 4px 8px -4px rgba(17, 17, 17, 0.08);
 }

@@ -104,8 +104,9 @@ export const setupInterceptors = (): void => {
         const isAlreadyOnLogin = currentPath === ROUTES.LOGIN
         const isInvitePage = currentPath.startsWith(ROUTES.INVITE_BASE)
 
-        // 초대 페이지 또는 로그인 페이지에서는 리다이렉트하지 않음
-        const shouldSkipRedirect = isInvitePage || isAlreadyOnLogin
+        const isLandingPage = currentPath === ROUTES.LANDING
+        // 초대 페이지, 로그인 페이지, 랜딩 페이지에서는 리다이렉트하지 않음
+        const shouldSkipRedirect = isInvitePage || isAlreadyOnLogin || isLandingPage
         if (!shouldSkipRedirect) {
           // React Query 캐시 전체 삭제 (인증 정보 포함)
           // 세션이 만료되었으므로 모든 캐시된 데이터는 더 이상 유효하지 않음

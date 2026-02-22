@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   pull_request:
-    branches: [main, dev]
+    branches: [main]
     types: [closed]
 
 jobs:
@@ -32,6 +32,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
+          VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
 
       - name: Deploy to EC2
         uses: appleboy/scp-action@v0.1.7
