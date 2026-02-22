@@ -3,8 +3,7 @@
  * @description 약속 회고 AI 요약 API 요청 함수
  */
 
-import { api, apiClient } from '@/api/client'
-import type { ApiResponse } from '@/api/types'
+import { api } from '@/api/client'
 
 import { RETROSPECTIVES_ENDPOINTS } from './retrospectives.endpoints'
 import type {
@@ -28,7 +27,10 @@ const STT_TIMEOUT = 5 * 60 * 1000
  * @param params - 생성 파라미터
  * @param signal - AbortSignal (취소 지원)
  */
-export const createSttJob = async (params: CreateSttJobParams, signal?: AbortSignal) => {
+export const createSttJob = async (
+  params: CreateSttJobParams,
+  signal?: AbortSignal
+): Promise<SttJobResponse> => {
   const { gatheringId, meetingId, file } = params
 
   const formData = new FormData()
@@ -36,7 +38,7 @@ export const createSttJob = async (params: CreateSttJobParams, signal?: AbortSig
     formData.append('file', file)
   }
 
-  const response = await apiClient.post<ApiResponse<SttJobResponse>>(
+  return api.post<SttJobResponse>(
     RETROSPECTIVES_ENDPOINTS.STT_JOBS(gatheringId, meetingId),
     formData,
     {
@@ -45,7 +47,6 @@ export const createSttJob = async (params: CreateSttJobParams, signal?: AbortSig
       signal,
     }
   )
-  return response.data
 }
 
 /**
@@ -62,13 +63,11 @@ export const getSummary = async (meetingId: number): Promise<RetrospectiveSummar
  *
  * @param params - 수정 파라미터 (meetingId + topics 데이터)
  */
-export const updateSummary = async (params: UpdateSummaryParams) => {
+export const updateSummary = async (
+  params: UpdateSummaryParams
+): Promise<RetrospectiveSummaryResponse> => {
   const { meetingId, data } = params
-  const response = await apiClient.patch<ApiResponse<RetrospectiveSummaryResponse>>(
-    RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId),
-    data
-  )
-  return response.data
+  return api.patch<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId), data)
 }
 
 /**
@@ -76,9 +75,8 @@ export const updateSummary = async (params: UpdateSummaryParams) => {
  *
  * @param params - 발행 파라미터 (meetingId)
  */
-export const publishSummary = async (params: PublishSummaryParams) => {
-  const response = await apiClient.post<ApiResponse<RetrospectiveSummaryResponse>>(
-    RETROSPECTIVES_ENDPOINTS.PUBLISH(params.meetingId)
-  )
-  return response.data
+export const publishSummary = async (
+  params: PublishSummaryParams
+): Promise<RetrospectiveSummaryResponse> => {
+  return api.post<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.PUBLISH(params.meetingId))
 }

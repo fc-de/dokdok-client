@@ -55,11 +55,8 @@ export interface RetrospectiveSummaryResponse {
 
 // ─── Request Types ───
 
-/** 주요 포인트 수정 요청 */
-export type KeyPointUpdateRequest = {
-  title: string
-  details: string[]
-}
+/** 주요 포인트 수정 요청 (KeyPoint와 동일 형태) */
+export type KeyPointUpdateRequest = KeyPoint
 
 /** 토픽 요약 수정 요청 */
 export type UpdateSummaryTopicRequest = {
