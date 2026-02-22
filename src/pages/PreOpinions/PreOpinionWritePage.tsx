@@ -145,7 +145,7 @@ export default function PreOpinionWritePage() {
   if (isLoading || !preOpinion) {
     return (
       <>
-        <SubPageHeader />
+        <SubPageHeader disableShadow />
         <div className="flex items-center justify-center py-xlarge">
           <Spinner />
         </div>
@@ -155,7 +155,7 @@ export default function PreOpinionWritePage() {
 
   return (
     <>
-      <SubPageHeader />
+      <SubPageHeader disableShadow />
       <PreOpinionWriteHeader
         book={preOpinion.book}
         updatedAt={preOpinion.preOpinion.updatedAt}
@@ -166,7 +166,7 @@ export default function PreOpinionWritePage() {
         isReviewValid={isReviewValid}
       />
 
-      <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
+      <div className="bg-grey-100">
         <section className="max-w-[1200px] mx-auto py-large flex flex-col gap-base">
           <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
             <p className="typo-caption1">

@@ -5,12 +5,12 @@ import { Chip } from '@/shared/ui/Chip'
 import { useGlobalModalStore } from '@/store'
 
 import { useDeleteMyPreOpinionAnswer } from '../hooks/useDeleteMyPreOpinionAnswer'
-import { ROLE_TO_AVATAR_VARIANT } from '../preOpinions.constants'
-import type { PreOpinionMember, PreOpinionTopic } from '../preOpinions.types'
+import { ROLE_TO_AVATAR_VARIANT } from '../preOpinion.constants'
+import type { PreOpinionAnswerTopic, PreOpinionMember } from '../preOpinion.types'
 
 type PreOpinionDetailProps = {
   member: PreOpinionMember
-  topics: PreOpinionTopic[]
+  topics: PreOpinionAnswerTopic[]
   gatheringId: number
   meetingId: number
 }
