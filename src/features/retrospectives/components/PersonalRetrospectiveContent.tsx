@@ -11,7 +11,7 @@ export interface PersonalRetrospectiveContentProps {
  *
  * @description
  * 개인 회고 페이지의 전체 콘텐츠를 렌더링합니다.
- * 책 정보, 참여 멤버, 내 사전 의견, 토론 주제 섹션으로 구성됩니다.
+ * 책 정보, 참여 멤버, 토론 주제, 내 사전 의견 섹션으로 구성됩니다.
  *
  * @example
  * ```tsx
@@ -37,7 +37,7 @@ export default function PersonalRetrospectiveContent({ data }: PersonalRetrospec
           {meetingMembers.map((member) => (
             <div key={member.meetingMemberId} className="flex flex-col items-center gap-xxsmall">
               <Avatar className="size-10">
-                <AvatarImage src={member.profileImage} alt={member.nickname} />
+                <AvatarImage src={member.profileImage ?? undefined} alt={member.nickname} />
                 <AvatarFallback>{member.nickname.slice(0, 1)}</AvatarFallback>
               </Avatar>
               <span className="text-grey-700 typo-body4">{member.nickname}</span>

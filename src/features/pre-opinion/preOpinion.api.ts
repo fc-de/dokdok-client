@@ -59,6 +59,8 @@ export const savePreOpinion = async (
   { gatheringId, meetingId, isFirstSave }: SavePreOpinionParams,
   body: SavePreOpinionBody
 ): Promise<void> => {
+  if (USE_MOCK) return
+
   if (isFirstSave) {
     return api.post(PRE_OPINION_ENDPOINTS.CREATE(gatheringId, meetingId), body)
   }
@@ -80,6 +82,8 @@ export const submitPreOpinion = async (
   meetingId: number,
   body: SubmitPreOpinionBody
 ): Promise<void> => {
+  if (USE_MOCK) return
+
   return api.patch(PRE_OPINION_ENDPOINTS.SUBMIT(gatheringId, meetingId), body)
 }
 
@@ -117,6 +121,8 @@ export const getPreOpinionAnswers = async (
 export const deleteMyPreOpinionAnswer = async (
   params: DeleteMyPreOpinionAnswerParams
 ): Promise<void> => {
+  if (USE_MOCK) return
+
   const { gatheringId, meetingId } = params
   return api.delete(PRE_OPINION_ENDPOINTS.DELETE_MY_ANSWER(gatheringId, meetingId))
 }

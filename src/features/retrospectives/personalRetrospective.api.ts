@@ -35,7 +35,14 @@ export const getPersonalRetrospective = async ({
     return getMockPersonalRetrospectiveDetail()
   }
 
-  return api.get<GetPersonalRetrospectiveResponse>(
+  const data = await api.get<GetPersonalRetrospectiveResponse>(
     PERSONAL_RETROSPECTIVE_ENDPOINTS.DETAIL(gatheringId, meetingId)
   )
+
+  return {
+    ...data,
+    preOpinions: data.preOpinions ?? [],
+    topics: data.topics ?? [],
+    meetingMembers: data.meetingMembers ?? [],
+  }
 }
