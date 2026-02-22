@@ -12,6 +12,8 @@ export interface SubPageHeaderProps {
   to?: string
   /** 외부에서 전달하는 추가 클래스 */
   className?: string
+  /** 스크롤 시 하단 shadow 비활성화 */
+  disableShadow?: boolean
 }
 
 /**
@@ -31,7 +33,7 @@ export interface SubPageHeaderProps {
  * <SubPageHeader label="내 책장" to="/books" />
  * ```
  */
-export default function SubPageHeader({ label = '뒤로가기', to, className }: SubPageHeaderProps) {
+export default function SubPageHeader({ label = '뒤로가기', to, className, disableShadow = false }: SubPageHeaderProps) {
   const navigate = useNavigate()
   const isScrolled = useScrollShadow()
 
@@ -48,11 +50,11 @@ export default function SubPageHeader({ label = '뒤로가기', to, className }:
       aria-label={`${label} 페이지로 이동`}
       className={cn(
         'sticky top-gnb-height z-40 bg-white transition-shadow',
-        isScrolled && 'shadow-drop-bottom',
+        isScrolled && !disableShadow && 'shadow-drop-bottom',
         className
       )}
     >
-      <div className="mx-auto max-w-layout-max px-layout-padding py-small h-[59px]">
+      <div className="mx-auto max-w-layout-max px-layout-padding py-small h-[59px] flex items-end">
         <TextButton size="medium" icon={ChevronLeft} onClick={handleClick}>
           {label}
         </TextButton>
