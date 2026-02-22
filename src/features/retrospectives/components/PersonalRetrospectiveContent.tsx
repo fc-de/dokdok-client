@@ -1,9 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Card,
-} from '@/shared/ui'
+import { Avatar, AvatarFallback, AvatarImage, Card } from '@/shared/ui'
 
 import type { GetPersonalRetrospectiveResponse } from '../personalRetrospective.types'
 
@@ -23,9 +18,7 @@ export interface PersonalRetrospectiveContentProps {
  * <PersonalRetrospectiveContent data={personalRetrospectiveData} />
  * ```
  */
-export default function PersonalRetrospectiveContent({
-  data,
-}: PersonalRetrospectiveContentProps) {
+export default function PersonalRetrospectiveContent({ data }: PersonalRetrospectiveContentProps) {
   const { gatheringName, bookTitle, bookAuthor, preOpinions, topics, meetingMembers } = data
 
   return (

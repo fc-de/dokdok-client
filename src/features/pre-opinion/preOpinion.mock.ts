@@ -3,7 +3,10 @@
  * @description 사전 의견 API 목데이터
  */
 
-import type { GetPreOpinionResponse, PreOpinionAnswersData } from '@/features/pre-opinion/preOpinion.types'
+import type {
+  GetPreOpinionResponse,
+  PreOpinionAnswersData,
+} from '@/features/pre-opinion/preOpinion.types'
 
 /**
  * 사전 의견 목록 목데이터

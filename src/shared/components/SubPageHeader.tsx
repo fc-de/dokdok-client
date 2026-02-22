@@ -33,7 +33,12 @@ export interface SubPageHeaderProps {
  * <SubPageHeader label="내 책장" to="/books" />
  * ```
  */
-export default function SubPageHeader({ label = '뒤로가기', to, className, disableShadow = false }: SubPageHeaderProps) {
+export default function SubPageHeader({
+  label = '뒤로가기',
+  to,
+  className,
+  disableShadow = false,
+}: SubPageHeaderProps) {
   const navigate = useNavigate()
   const isScrolled = useScrollShadow()
 
