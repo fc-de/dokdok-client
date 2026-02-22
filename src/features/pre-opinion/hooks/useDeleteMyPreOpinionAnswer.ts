@@ -7,8 +7,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
 
-import { deleteMyPreOpinionAnswer } from '../preOpinions.api'
-import type { DeleteMyPreOpinionAnswerParams } from '../preOpinions.types'
+import { deleteMyPreOpinionAnswer } from '../preOpinion.api'
+import type { DeleteMyPreOpinionAnswerParams } from '../preOpinion.types'
 import { preOpinionQueryKeys } from './preOpinionQueryKeys'
 
 /**

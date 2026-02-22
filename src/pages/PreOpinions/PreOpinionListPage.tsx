@@ -5,7 +5,7 @@ import {
   PreOpinionDetail,
   PreOpinionMemberList,
   usePreOpinionAnswers,
-} from '@/features/preOpinions'
+} from '@/features/pre-opinion'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'

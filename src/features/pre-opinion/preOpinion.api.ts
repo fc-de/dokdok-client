@@ -5,10 +5,16 @@
 
 import { api } from '@/api/client'
 import { PRE_OPINION_ENDPOINTS } from '@/features/pre-opinion/preOpinion.endpoints'
-import { getMockPreOpinionDetail } from '@/features/pre-opinion/preOpinion.mock'
+import {
+  getMockPreOpinionAnswers,
+  getMockPreOpinionDetail,
+} from '@/features/pre-opinion/preOpinion.mock'
 import type {
+  DeleteMyPreOpinionAnswerParams,
+  GetPreOpinionAnswersParams,
   GetPreOpinionParams,
   GetPreOpinionResponse,
+  PreOpinionAnswersData,
   SavePreOpinionBody,
   SavePreOpinionParams,
   SubmitPreOpinionBody,
@@ -75,4 +81,42 @@ export const submitPreOpinion = async (
   body: SubmitPreOpinionBody
 ): Promise<void> => {
   return api.patch(PRE_OPINION_ENDPOINTS.SUBMIT(gatheringId, meetingId), body)
+}
+
+/**
+ * 사전 의견 목록 조회
+ *
+ * @description
+ * 약속의 사전 의견 목록(멤버별 책 평가 + 주제 의견)을 조회합니다.
+ *
+ * @param params - 모임 ID와 약속 ID
+ *
+ * @returns 사전 의견 목록 데이터 (topics + members)
+ */
+export const getPreOpinionAnswers = async (
+  params: GetPreOpinionAnswersParams
+): Promise<PreOpinionAnswersData> => {
+  const { gatheringId, meetingId } = params
+
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockPreOpinionAnswers()
+  }
+
+  return api.get<PreOpinionAnswersData>(PRE_OPINION_ENDPOINTS.ANSWERS(gatheringId, meetingId))
+}
+
+/**
+ * 내 사전 의견 삭제
+ *
+ * @description
+ * 현재 로그인한 사용자의 사전 의견을 삭제합니다.
+ *
+ * @param params - 모임 ID와 약속 ID
+ */
+export const deleteMyPreOpinionAnswer = async (
+  params: DeleteMyPreOpinionAnswerParams
+): Promise<void> => {
+  const { gatheringId, meetingId } = params
+  return api.delete(PRE_OPINION_ENDPOINTS.DELETE_MY_ANSWER(gatheringId, meetingId))
 }

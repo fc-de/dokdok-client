@@ -1,4 +1,4 @@
-import type { MemberRole } from './preOpinions.types'
+import type { MemberRole } from './preOpinion.types'
 
 /** API MemberRole → Avatar variant 매핑 */
 export const ROLE_TO_AVATAR_VARIANT: Record<MemberRole, 'leader' | 'host' | 'member'> = {
