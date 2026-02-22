@@ -1,4 +1,5 @@
 export { default as AiLoadingOverlay } from './AiLoadingOverlay'
 export { default as AiSummaryToast } from './AiSummaryToast'
+export { default as PersonalRetrospectiveContent } from './PersonalRetrospectiveContent'
 export { default as RetrospectiveCardButtons } from './RetrospectiveCardButtons'
 export { default as RetrospectiveSummarySkeleton } from './RetrospectiveSummarySkeleton'
