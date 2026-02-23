@@ -41,6 +41,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
     endDateTime,
     myRole,
     progressStatus,
+    preOpinionTemplateConfirmed,
   } = meeting
 
   const status = STATUS_CONFIG[progressStatus]
@@ -56,7 +57,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
 
   const handleActionClick = (e: MouseEvent) => {
     e.stopPropagation()
-    if (isUpcoming) {
+    if (isUpcoming && preOpinionTemplateConfirmed) {
       navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))
     }
     // TODO: 종료 → 개인 회고 작성 페이지 연결
@@ -110,9 +111,14 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
       </div>
 
       {/* 액션 버튼 */}
-      {/* TODO: API 응답에 hasPreOpinionTemplate 필드 추가 후, 템플릿 미제작 시 disabled 처리 */}
       {isUpcoming && (
-        <Button variant="primary" size="small" className="shrink-0" onClick={handleActionClick}>
+        <Button
+          variant="primary"
+          size="small"
+          className="shrink-0"
+          disabled={!preOpinionTemplateConfirmed}
+          onClick={handleActionClick}
+        >
           사전 의견 작성하기
         </Button>
       )}
