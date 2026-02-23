@@ -5,20 +5,20 @@ import * as React from 'react'
 import { cn } from '@/shared/lib/utils'
 
 function Accordion({ ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
-  return <AccordionPrimitive.Root data-slot="accordion" {...props} />
+  return (
+    <AccordionPrimitive.Root
+      data-slot="accordion"
+      {...props}
+      className="flex flex-col gap-xsmall"
+    />
+  )
 }
 
 function AccordionItem({
   className,
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Item>) {
-  return (
-    <AccordionPrimitive.Item
-      data-slot="accordion-item"
-      className={cn('border-b last:border-b-0', className)}
-      {...props}
-    />
-  )
+  return <AccordionPrimitive.Item data-slot="accordion-item" className={className} {...props} />
 }
 
 type AccordionTriggerProps = React.ComponentProps<typeof AccordionPrimitive.Trigger> & {

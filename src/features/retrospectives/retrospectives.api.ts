@@ -1,0 +1,56 @@
+/**
+ * @file retrospectives.api.ts
+ * @description Retrospectives API 요청 함수
+ */
+
+import { api } from '@/api/client'
+import { PAGE_SIZES } from '@/shared/constants'
+
+import { RETROSPECTIVES_ENDPOINTS } from './retrospectives.endpoints'
+import { getMockCollectedAnswers } from './retrospectives.mock'
+import type {
+  GetCollectedAnswersParams,
+  GetCollectedAnswersResponse,
+} from './retrospectives.types'
+
+/** 목데이터 사용 여부 플래그 */
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
+/**
+ * 수집된 사전 의견 조회
+ *
+ * @description
+ * 약속의 수집된 사전 의견 목록을 커서 기반 페이지네이션으로 조회합니다.
+ * 사용자별로 각 주제에 대한 답변을 확인할 수 있습니다.
+ *
+ * @param params - 조회 파라미터
+ * @param params.meetingId - 약속 식별자
+ * @param params.pageSize - 페이지 크기 (기본값: 10)
+ * @param params.cursorUserId - 커서: 이전 페이지 마지막 항목의 사용자 ID
+ *
+ * @returns 수집된 사전 의견 목록
+ */
+export const getCollectedAnswers = async (
+  params: GetCollectedAnswersParams
+): Promise<GetCollectedAnswersResponse> => {
+  const { meetingId, pageSize = PAGE_SIZES.COLLECTED_ANSWERS, cursorUserId } = params
+
+  // 🚧 임시: 로그인 기능 개발 전까지 목데이터 사용
+  // TODO: 로그인 완료 후 아래 주석을 해제하고 목데이터 로직 제거
+  if (USE_MOCK) {
+    // 실제 API 호출을 시뮬레이션하기 위한 지연
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockCollectedAnswers(pageSize, cursorUserId)
+  }
+
+  // 실제 API 호출 (로그인 완료 후 사용)
+  return api.get<GetCollectedAnswersResponse>(
+    RETROSPECTIVES_ENDPOINTS.COLLECTED_ANSWERS(meetingId),
+    {
+      params: {
+        pageSize,
+        cursorUserId,
+      },
+    }
+  )
+}
