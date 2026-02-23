@@ -48,6 +48,10 @@ export const ROUTES = {
   MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
 
+  // Retrospectives (개인 회고)
+  PERSONAL_RETROSPECTIVE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/personal`,
+
   // Records
   RECORDS: '/records',
   RECORD_DETAIL: (id: number | string) => `/records/${id}`,

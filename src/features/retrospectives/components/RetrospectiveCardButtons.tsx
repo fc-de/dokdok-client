@@ -36,9 +36,7 @@ export default function RetrospectiveCardButtons({
       <button
         type="button"
         className="flex flex-1 items-center gap-base rounded-base bg-white p-large shadow-drop cursor-pointer"
-        onClick={() => {
-          /* TODO: 개인 회고 라우트 연결 */
-        }}
+        onClick={() => navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))}
       >
         {/* TODO: GraphicIc personal review 아이콘 */}
         <div className="flex flex-col gap-xsmall items-start">
