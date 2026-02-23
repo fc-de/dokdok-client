@@ -71,7 +71,7 @@ export default function MeetingRetrospectivePage() {
           <Button
             variant="primary"
             size="small"
-            onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))}
+            onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_DETAILE(gatheringId, meetingId))}
           >
             약속 회고 생성하기
           </Button>

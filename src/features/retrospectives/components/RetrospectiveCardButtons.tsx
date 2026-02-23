@@ -21,7 +21,7 @@ export default function RetrospectiveCardButtons({
       <button
         type="button"
         className="flex flex-1 items-center gap-base rounded-base bg-white p-large shadow-drop cursor-pointer"
-        onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId))}
+        onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))}
       >
         <div className="flex gap-base">
           <MeetingRetroIcon className="shrink-0" />

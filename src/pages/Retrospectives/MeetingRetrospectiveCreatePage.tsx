@@ -27,12 +27,13 @@ export default function MeetingRetrospectiveCreatePage() {
         </div>
         <Button
           variant="ai"
-          size="small"
           onClick={() =>
             navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), {
               state: { fromAiSummary: true },
             })
           }
+          size="small"
+          className="px-medium"
         >
           AI 요약 시작하기
         </Button>
