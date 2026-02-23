@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import type { GetCollectedAnswersResponse } from '@/features/retrospectives'
@@ -7,7 +7,18 @@ import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
 import { showErrorToast } from '@/shared/lib/toast'
-import { Accordion, Avatar, AvatarFallback, AvatarImage, Button, Card, Spinner } from '@/shared/ui'
+import {
+  Accordion,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Card,
+  Dropzone,
+  type DropzoneHandle,
+  Spinner,
+} from '@/shared/ui'
+import AlertIcon from '@/shared/ui/AlertIcon'
 
 export default function MeetingRetrospectiveCreatePage() {
   const navigate = useNavigate()
@@ -15,6 +26,10 @@ export default function MeetingRetrospectiveCreatePage() {
     gatheringId: string
     meetingId: string
   }>()
+
+  // 업로드된 파일 상태
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const dropzoneRef = useRef<DropzoneHandle>(null)
 
   // 수집된 사전 의견 조회
   const {
@@ -44,6 +59,19 @@ export default function MeetingRetrospectiveCreatePage() {
   // 수집된 사전 의견 총 개수
   const totalCount = collectedAnswersData?.pages[0]?.totalCount ?? 0
   const hasData = totalCount > 0
+
+  // 파일 업로드 핸들러
+  const handleFileChange = (file: File | null) => {
+    setUploadedFile(file)
+  }
+
+  const handleSizeExceeded = () => {
+    alert('용량을 초과했어요.')
+  }
+
+  const handleUploadButtonClick = () => {
+    dropzoneRef.current?.triggerFileSelect()
+  }
 
   if (!gatheringId || !meetingId) return null
 
@@ -137,11 +165,34 @@ export default function MeetingRetrospectiveCreatePage() {
 
         {/* 오른쪽: 녹음 파일 업로드 */}
         <div className="flex flex-1 flex-col gap-medium rounded-base border border-grey-300 bg-white p-large shadow-drop">
-          <div className="flex flex-col gap-xtiny">
-            <h4 className="text-black typo-heading3">녹음 파일 업로드</h4>
-            <p className="text-grey-600 typo-body4">AI가 음성을 텍스트로 변환하여 분석해요</p>
+          <div className="flex flex-col gap-medium mb-small">
+            <div className="flex flex-col gap-xtiny">
+              <h4 className="text-black typo-heading3">녹음 파일 업로드</h4>
+              <p className="text-grey-600 typo-body4">
+                AI가 음성을 텍스트로 변환하여 분석해요
+                <br />
+                녹음 없이 사전 의견만으로도 회고를 만들 수 있어요
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="typo-body3 text-purple-200 flex gap-tiny">
+                <AlertIcon />
+                파일은 하나만 업로드 할 수 있어요
+              </p>
+              <Button variant="secondary" outline onClick={handleUploadButtonClick}>
+                {uploadedFile ? '음성 파일 교체' : '음성 파일 업로드'}
+              </Button>
+            </div>
           </div>
-          {/* TODO: 파일 업로드 드롭존 + 파일 리스트 테이블 */}
+          <div className="flex-1">
+            <Dropzone
+              ref={dropzoneRef}
+              maxSizeInMB={50}
+              accept="audio/*"
+              onFileChange={handleFileChange}
+              onSizeExceeded={handleSizeExceeded}
+            />
+          </div>
         </div>
       </div>
 

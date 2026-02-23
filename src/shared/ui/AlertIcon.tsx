@@ -1,0 +1,31 @@
+import { cn } from '@/shared/lib/utils'
+
+interface AlertIconProps extends React.SVGProps<SVGSVGElement> {
+  className?: string
+}
+
+export default function AlertIcon({ className, ...props }: AlertIconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      className={cn(className)}
+      {...props}
+    >
+      <path
+        d="M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z"
+        fill="#A372CD"
+      />
+      <path
+        d="M9 12V9M9 6H9.0075"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
