@@ -60,5 +60,10 @@ export const savePersonalRetrospective = async ({
   meetingId,
   body,
 }: SavePersonalRetrospectiveParams): Promise<void> => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return
+  }
+
   await api.post<void>(PERSONAL_RETROSPECTIVE_ENDPOINTS.SAVE(meetingId), body)
 }

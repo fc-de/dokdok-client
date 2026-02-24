@@ -47,7 +47,44 @@ export function useOthersPerspective() {
     [],
   )
 
-  return { items, addItem, removeItem, updateItem }
+  const isItemPartial = useCallback(
+    (id: string) => {
+      const item = items.find((i) => i.id === id)
+      if (!item) return false
+      const hasAny =
+        item.speakerMemberId !== null ||
+        item.topicId !== null ||
+        item.opinion.trim() !== '' ||
+        item.impact.trim() !== ''
+      const hasAll =
+        item.speakerMemberId !== null &&
+        item.topicId !== null &&
+        item.opinion.trim() !== '' &&
+        item.impact.trim() !== ''
+      return hasAny && !hasAll
+    },
+    [items],
+  )
+
+  const hasPartialInput = items.some((item) => {
+    const hasAny =
+      item.speakerMemberId !== null ||
+      item.topicId !== null ||
+      item.opinion.trim() !== '' ||
+      item.impact.trim() !== ''
+    const hasAll =
+      item.speakerMemberId !== null &&
+      item.topicId !== null &&
+      item.opinion.trim() !== '' &&
+      item.impact.trim() !== ''
+    return hasAny && !hasAll
+  })
+
+  const reset = useCallback(() => {
+    setItems([])
+  }, [])
+
+  return { items, addItem, removeItem, updateItem, isItemPartial, hasPartialInput, reset }
 }
 
 export type UseOthersPerspectiveReturn = ReturnType<typeof useOthersPerspective>

@@ -37,7 +37,24 @@ export function useFreeRecord() {
     setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)))
   }, [])
 
-  return { entries, addEntry, removeEntry, updateEntry }
+  const isEntryPartial = useCallback(
+    (id: string) => {
+      const entry = entries.find((e) => e.id === id)
+      if (!entry) return false
+      const hasTitle = entry.title.trim() !== ''
+      const hasContent = entry.content.trim() !== ''
+      return hasTitle !== hasContent
+    },
+    [entries],
+  )
+
+  const hasPartialInput = entries.some((e) => (e.title.trim() !== '') !== (e.content.trim() !== ''))
+
+  const reset = useCallback(() => {
+    setEntries([createEntry()])
+  }, [])
+
+  return { entries, addEntry, removeEntry, updateEntry, isEntryPartial, hasPartialInput, reset }
 }
 
 export type UseFreeRecordReturn = ReturnType<typeof useFreeRecord>

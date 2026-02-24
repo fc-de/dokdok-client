@@ -95,10 +95,10 @@ export type FreeRecordEntryFormItem = {
  */
 export type SaveChangedThoughtItem = {
   topicId: number
-  /** 핵심 쟁점 요약 */
-  keyIssue: string
-  /** 모임 후 내 의견 */
-  postOpinion: string
+  /** 핵심 쟁점 요약 (미입력 시 null) */
+  keyIssue: string | null
+  /** 모임 후 내 의견 (미입력 시 null) */
+  postOpinion: string | null
 }
 
 /**
@@ -117,8 +117,10 @@ export type SaveOthersPerspectiveItem = {
  * 개인 회고 저장 요청 - 자유 기록 항목
  */
 export type SaveFreeTextItem = {
-  title: string
-  content: string
+  /** 제목 (미입력 시 null) */
+  title: string | null
+  /** 내용 (미입력 시 null) */
+  content: string | null
 }
 
 /**

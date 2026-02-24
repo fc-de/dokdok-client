@@ -53,7 +53,13 @@ export function useChangedThoughts(
     postOpinion: overrides[t.topicId]?.postOpinion ?? '',
   }))
 
-  return { formValues, updateField, getPreOpinion }
+  const hasPartialInput = false
+
+  const reset = useCallback(() => {
+    setOverrides({})
+  }, [])
+
+  return { formValues, updateField, getPreOpinion, hasPartialInput, reset }
 }
 
 export type UseChangedThoughtsReturn = ReturnType<typeof useChangedThoughts>

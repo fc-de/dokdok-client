@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button, TextButton } from '@/shared/ui'
 
+import type { SectionKey } from '../hooks/usePersonalRetrospectiveForm'
 import type { UsePersonalRetrospectiveFormReturn } from '../hooks/usePersonalRetrospectiveForm'
 import type { GetPersonalRetrospectiveResponse } from '../personalRetrospective.types'
 import ChangedThoughtsSection from './ChangedThoughtsSection'
@@ -13,9 +14,8 @@ export interface PersonalRetrospectiveContentProps {
   form: UsePersonalRetrospectiveFormReturn
 }
 
-type SectionType = 'othersPerspective' | 'freeRecord'
-
-const SECTION_OPTIONS: { type: SectionType; label: string }[] = [
+const SECTION_OPTIONS: { type: SectionKey; label: string }[] = [
+  { type: 'changedThoughts', label: '바뀐 나의 생각' },
   { type: 'othersPerspective', label: '타인의 관점' },
   { type: 'freeRecord', label: '자유 기록' },
 ]
@@ -25,8 +25,7 @@ const SECTION_OPTIONS: { type: SectionType; label: string }[] = [
  *
  * @description
  * 개인 회고 페이지의 전체 콘텐츠를 렌더링합니다.
- * 바뀐 나의 생각 섹션은 항상 표시되며, 타인의 관점·자유 기록은
- * '문항 추가하기' 버튼의 드롭다운을 통해 선택적으로 추가할 수 있습니다.
+ * 각 섹션은 X 버튼으로 닫을 수 있으며, '문항 추가하기' 드롭다운으로 다시 열 수 있습니다.
  *
  * @example
  * ```tsx
@@ -38,50 +37,54 @@ export default function PersonalRetrospectiveContent({
   form,
 }: PersonalRetrospectiveContentProps) {
   const { topics, meetingMembers } = data
-  const [visibleSections, setVisibleSections] = useState<Record<SectionType, boolean>>({
-    othersPerspective: false,
-    freeRecord: false,
-  })
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const othersPerspectiveVisible =
-    visibleSections.othersPerspective && form.othersPerspective.items.length > 0
+  const { sectionVisibility, showSection, hideSection } = form
 
-  const freeRecordVisible =
-    visibleSections.freeRecord && form.freeRecord.entries.length > 0
+  const availableOptions = SECTION_OPTIONS.filter(({ type }) => !sectionVisibility[type])
 
-  const availableOptions = SECTION_OPTIONS.filter(({ type }) => {
-    if (type === 'othersPerspective') return !othersPerspectiveVisible
-    if (type === 'freeRecord') return !freeRecordVisible
-    return !visibleSections[type]
-  })
-
-  const handleAddSection = (type: SectionType) => {
-    if (type === 'othersPerspective') {
-      form.othersPerspective.addItem()
-    } else if (type === 'freeRecord' && form.freeRecord.entries.length === 0) {
-      form.freeRecord.addEntry()
-    }
-    setVisibleSections((prev) => ({ ...prev, [type]: true }))
+  const handleAddSection = (type: SectionKey) => {
+    showSection(type)
     setIsDropdownOpen(false)
   }
 
+  useEffect(() => {
+    if (form.scrollTrigger === 0) return
+    const firstError = containerRef.current?.querySelector('[data-field-error]')
+    firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [form.scrollTrigger])
+
   return (
-    <div className="flex flex-col gap-large pt-large pb-25">
+    <div className="flex flex-col gap-large pt-large pb-25" ref={containerRef}>
       {/* 바뀐 나의 생각 */}
-      <ChangedThoughtsSection topics={topics} form={form.changedThoughts} />
+      {sectionVisibility.changedThoughts && (
+        <ChangedThoughtsSection
+          topics={topics}
+          form={form.changedThoughts}
+          onClose={() => hideSection('changedThoughts')}
+        />
+      )}
 
       {/* 타인의 관점 */}
-      {othersPerspectiveVisible && (
+      {sectionVisibility.othersPerspective && (
         <OthersPerspectiveSection
           topics={topics}
           members={meetingMembers}
           form={form.othersPerspective}
+          showErrors={form.showErrors}
+          onClose={() => hideSection('othersPerspective')}
         />
       )}
 
       {/* 자유 기록 */}
-      {freeRecordVisible && <FreeRecordSection form={form.freeRecord} />}
+      {sectionVisibility.freeRecord && (
+        <FreeRecordSection
+          form={form.freeRecord}
+          showErrors={form.showErrors}
+          onClose={() => hideSection('freeRecord')}
+        />
+      )}
 
       {/* 문항 추가하기 */}
       {availableOptions.length > 0 && (
