@@ -96,6 +96,8 @@ export default function MeetingRetrospectiveCreatePage() {
                 state: { fromAiSummary: true },
               })
             }
+            className="px-medium"
+            disabled={totalCount === 0}
           >
             AI 요약 시작하기
           </Button>
