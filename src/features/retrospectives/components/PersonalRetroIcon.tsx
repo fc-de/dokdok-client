@@ -18,7 +18,16 @@ export default function PersonalRetroIcon({ className, ...props }: PersonalRetro
         d="M3 12.5714C3 10.599 4.59898 9 6.57143 9H30.4286C32.401 9 34 10.599 34 12.5714V45.4286C34 47.401 32.401 49 30.4286 49H8C5.23858 49 3 46.7614 3 44V12.5714Z"
         fill="#56CDAF"
       />
-      <rect x="8.5" y="2.5" width="31.5714" height="40.5" rx="3.5" fill="#E7FAF6" stroke="white" strokeWidth="3" />
+      <rect
+        x="8.5"
+        y="2.5"
+        width="31.5714"
+        height="40.5"
+        rx="3.5"
+        fill="#E7FAF6"
+        stroke="white"
+        strokeWidth="3"
+      />
       <rect x="15.4714" y="12.5" width="18" height="3" rx="1.5" fill="#56CDAF" />
       <rect x="15.4714" y="19.0723" width="18" height="3" rx="1.5" fill="#56CDAF" />
       <rect x="15.4714" y="25.6426" width="10" height="3" rx="1.5" fill="#56CDAF" />

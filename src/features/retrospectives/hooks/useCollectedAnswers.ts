@@ -28,9 +28,7 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
  *
  * @returns TanStack Query 무한 스크롤 결과 객체
  */
-export const useCollectedAnswers = (
-  params: Omit<GetCollectedAnswersParams, 'cursorUserId'>
-) => {
+export const useCollectedAnswers = (params: Omit<GetCollectedAnswersParams, 'cursorUserId'>) => {
   const { meetingId, pageSize } = params
   const isValidParams = !Number.isNaN(meetingId) && meetingId > 0
 
