@@ -79,20 +79,14 @@ export default function MeetingDetailPage() {
 
   // 에러 처리 및 리다이렉트
   useEffect(() => {
-    const hasError = proposedError || confirmedError || meetingError
+    const primaryError = meetingError || proposedError || confirmedError
 
-    if (proposedError) {
-      showErrorToast(proposedError.userMessage)
-    }
-    if (confirmedError) {
-      showErrorToast(confirmedError.userMessage)
-    }
-    if (meetingError) {
-      showErrorToast(meetingError.userMessage)
-    }
+    if (primaryError) {
+      showErrorToast(primaryError.userMessage)
 
-    if (hasError) {
-      navigate(ROUTES.GATHERING_DETAIL(Number(gatheringId)), { replace: true })
+      if (gatheringId && !isNaN(Number(gatheringId))) {
+        navigate(ROUTES.GATHERING_DETAIL(Number(gatheringId)), { replace: true })
+      }
     }
   }, [proposedError, confirmedError, meetingError, navigate, gatheringId])
 
