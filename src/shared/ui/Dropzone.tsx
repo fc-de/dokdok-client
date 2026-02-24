@@ -13,6 +13,8 @@ interface DropzoneProps {
   onFileChange?: (file: File | null) => void
   /** 파일 크기 초과 시 호출되는 콜백 */
   onSizeExceeded?: (file: File, maxSizeInMB: number) => void
+  /** 파일 타입 불일치 시 호출되는 콜백 */
+  onTypeRejected?: (file: File, accept: string) => void
 }
 
 export interface DropzoneHandle {
@@ -20,9 +22,10 @@ export interface DropzoneHandle {
 }
 
 const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
-  ({ maxSizeInMB, accept = 'audio/*', onFileChange, onSizeExceeded }, ref) => {
+  ({ maxSizeInMB, accept = 'audio/*', onFileChange, onSizeExceeded, onTypeRejected }, ref) => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [isDragging, setIsDragging] = useState(false)
+    const dragCounterRef = useRef(0)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     useImperativeHandle(ref, () => ({
@@ -33,10 +36,36 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
 
     const maxSizeInBytes = maxSizeInMB * 1024 * 1024
 
+    const isFileTypeAccepted = (file: File, acceptPattern: string): boolean => {
+      const acceptedTypes = acceptPattern.split(',').map((type) => type.trim())
+
+      return acceptedTypes.some((type) => {
+        // MIME 타입 와일드카드 (예: audio/*)
+        if (type.includes('/*')) {
+          const [mainType] = type.split('/')
+          return file.type.startsWith(`${mainType}/`)
+        }
+
+        // 확장자 (예: .mp3)
+        if (type.startsWith('.')) {
+          return file.name.toLowerCase().endsWith(type.toLowerCase())
+        }
+
+        // 정확한 MIME 타입 (예: audio/mpeg)
+        return file.type === type
+      })
+    }
+
     const validateAndSetFile = (file: File | null) => {
       if (!file) {
         setSelectedFile(null)
         onFileChange?.(null)
+        return
+      }
+
+      // 파일 타입 검증
+      if (!isFileTypeAccepted(file, accept)) {
+        onTypeRejected?.(file, accept)
         return
       }
 
@@ -58,13 +87,19 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
     const handleDragEnter = (e: React.DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      setIsDragging(true)
+      dragCounterRef.current++
+      if (dragCounterRef.current === 1) {
+        setIsDragging(true)
+      }
     }
 
     const handleDragLeave = (e: React.DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      setIsDragging(false)
+      dragCounterRef.current--
+      if (dragCounterRef.current === 0) {
+        setIsDragging(false)
+      }
     }
 
     const handleDragOver = (e: React.DragEvent) => {
@@ -75,6 +110,7 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
     const handleDrop = (e: React.DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
+      dragCounterRef.current = 0
       setIsDragging(false)
 
       const file = e.dataTransfer.files?.[0] || null
@@ -129,7 +165,7 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
           ) : (
             <>
               <File size={24} className="text-black" />
-              <div className="flex flex-col items-center gap-xtiny typo-caption1 text-balck">
+              <div className="flex flex-col items-center gap-xtiny typo-caption1 text-black">
                 <p>{selectedFile.name}</p>
                 <p>{formatFileSize(selectedFile.size)}</p>
               </div>

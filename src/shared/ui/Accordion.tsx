@@ -1,15 +1,15 @@
+import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import { ChevronDownIcon } from 'lucide-react'
-import { Accordion as AccordionPrimitive } from 'radix-ui'
 import * as React from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
-function Accordion({ ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
+function Accordion({ className, ...props }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return (
     <AccordionPrimitive.Root
       data-slot="accordion"
+      className={cn('flex flex-col gap-xsmall', className)}
       {...props}
-      className="flex flex-col gap-xsmall"
     />
   )
 }
@@ -58,10 +58,13 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden typo-body4 text-black"
+      className={cn(
+        'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down overflow-hidden typo-body4 text-black',
+        className
+      )}
       {...props}
     >
-      <div className={cn('py-base px-xsmall', className)}>{children}</div>
+      <div className="py-base px-xsmall">{children}</div>
     </AccordionPrimitive.Content>
   )
 }

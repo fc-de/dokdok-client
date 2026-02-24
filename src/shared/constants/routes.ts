@@ -47,7 +47,7 @@ export const ROUTES = {
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective`,
   MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
-  MEETING_RETROSPECTIVE_DETAILE: (gatheringId: number | string, meetingId: number | string) =>
+  MEETING_RETROSPECTIVE_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/detail`,
 
   // Records

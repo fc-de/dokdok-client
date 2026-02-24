@@ -6,6 +6,7 @@
 import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
+import { PAGE_SIZES } from '@/shared/constants/pagination'
 
 import { getCollectedAnswers } from '../retrospectives.api'
 import type {
@@ -29,7 +30,7 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
  * @returns TanStack Query 무한 스크롤 결과 객체
  */
 export const useCollectedAnswers = (params: Omit<GetCollectedAnswersParams, 'cursorUserId'>) => {
-  const { meetingId, pageSize } = params
+  const { meetingId, pageSize = PAGE_SIZES.COLLECTED_ANSWERS } = params
   const isValidParams = !Number.isNaN(meetingId) && meetingId > 0
 
   return useInfiniteQuery<

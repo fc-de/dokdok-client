@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
-import MeetingRetroIcon from '@/features/retrospectives/components/MeetingRetroIcon'
-import PersonalRetroIcon from '@/features/retrospectives/components/PersonalRetroIcon'
+import { MeetingRetroIcon, PersonalRetroIcon } from '@/features/retrospectives/components'
 import { ROUTES } from '@/shared/constants'
 
 interface RetrospectiveCardButtonsProps {

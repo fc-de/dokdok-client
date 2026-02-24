@@ -50,9 +50,9 @@ export default function MeetingRetrospectiveCreatePage() {
 
   // 에러 처리 및 리다이렉트
   useEffect(() => {
-    if (error) {
+    if (error && gatheringId && meetingId) {
       showErrorToast(error.userMessage)
-      navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId!, meetingId!), { replace: true })
+      navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), { replace: true })
     }
   }, [error, navigate, gatheringId, meetingId])
 
@@ -66,7 +66,11 @@ export default function MeetingRetrospectiveCreatePage() {
   }
 
   const handleSizeExceeded = () => {
-    alert('용량을 초과했어요.')
+    showErrorToast('용량을 초과했어요.')
+  }
+
+  const handleTypeRejected = () => {
+    showErrorToast('오디오 파일만 업로드할 수 있어요.')
   }
 
   const handleUploadButtonClick = () => {
@@ -193,6 +197,7 @@ export default function MeetingRetrospectiveCreatePage() {
               accept="audio/*"
               onFileChange={handleFileChange}
               onSizeExceeded={handleSizeExceeded}
+              onTypeRejected={handleTypeRejected}
             />
           </div>
         </div>
