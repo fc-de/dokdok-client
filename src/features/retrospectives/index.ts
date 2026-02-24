@@ -11,6 +11,7 @@ export { createSttJob, getSummary, publishSummary, updateSummary } from './retro
 // Types
 export type {
   CreateSttJobParams,
+  GetCollectedAnswersParams,
   GetCollectedAnswersResponse,
   KeyPoint,
   KeyPointUpdateRequest,
