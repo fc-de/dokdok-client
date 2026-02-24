@@ -14,7 +14,7 @@ import {
   useRemoveMember,
   useUpdateGathering,
 } from '@/features/gatherings'
-import SubPageHeader from '@/shared/components/SubPageHeader'
+import FormPageHeader from '@/shared/components/FormPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
@@ -187,140 +187,142 @@ export default function GatheringSettingPage() {
   if (!gathering || gathering.currentUserRole !== 'LEADER') return null
 
   return (
-    <div className="flex flex-col gap-xlarge pb-medium">
-      <SubPageHeader to={ROUTES.GATHERING_DETAIL(gatheringId)} />
-
-      <h2 className="typo-heading3 text-black">독서모임 설정</h2>
-      {/* 독서모임 정보 섹션 */}
-      <Container>
-        <div className="flex items-center justify-between">
-          <Container.Title>독서모임 정보</Container.Title>
-          <div className="flex items-center gap-xsmall">
-            <Button
-              variant="danger"
-              outline
-              size="small"
-              onClick={handleDeleteGathering}
-              disabled={deleteMutation.isPending}
-            >
-              모임 삭제하기
-            </Button>
-            <Button
-              variant="primary"
-              size="small"
-              onClick={handleSave}
-              disabled={!isValid || updateMutation.isPending}
-            >
-              저장하기
-            </Button>
+    <>
+      <FormPageHeader
+        title="독서모임 설정"
+        actionLabel={updateMutation.isPending ? '...' : '저장하기'}
+        onAction={handleSave}
+        isActionDisabled={!isValid || updateMutation.isPending}
+        to={ROUTES.GATHERING_DETAIL(gatheringId)}
+      />
+      <div className="bg-grey-100">
+        <div className="mx-auto max-w-layout-max px-layout-padding">
+          <div className="flex flex-col gap-xlarge py-xlarge">
+            {/* 독서모임 정보 섹션 */}
+            <Container>
+              <div className="flex items-center justify-between">
+                <Container.Title>독서모임 정보</Container.Title>
+                <Button
+                  variant="danger"
+                  outline
+                  size="small"
+                  onClick={handleDeleteGathering}
+                  disabled={deleteMutation.isPending}
+                >
+                  모임 삭제하기
+                </Button>
+              </div>
+              <Container.Content className="flex flex-col gap-medium">
+                <Input
+                  label="독서모임 이름"
+                  placeholder="독서모임 이름을 입력해주세요."
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  maxLength={MAX_NAME_LENGTH}
+                />
+                <div className="flex flex-col gap-xsmall">
+                  <p className="text-left text-black typo-subtitle3">독서모임 설명</p>
+                  <Textarea
+                    placeholder="모임에 대한 설명을 적어주세요"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    maxLength={MAX_DESCRIPTION_LENGTH}
+                    height={80}
+                  />
+                </div>
+              </Container.Content>
+            </Container>
+            {/* 멤버 관리 섹션 */}
+            <Container>
+              <Container.Title>멤버 관리</Container.Title>
+              <Container.Content>
+                <Tabs
+                  value={activeTab}
+                  onValueChange={(value) => setActiveTab(value as MemberTab)}
+                  className="gap-0"
+                >
+                  <TabsList className="border-b border-grey-300" size="medium">
+                    <TabsTrigger value="PENDING" badge={pendingTotalCount} size="medium">
+                      승인 대기
+                    </TabsTrigger>
+                    <TabsTrigger value="ACTIVE" badge={activeTotalCount} size="medium">
+                      승인 완료
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="PENDING" className="pt-medium">
+                    {pendingMembers.length === 0 ? (
+                      <div className="flex h-35 items-center justify-center rounded-base border border-grey-300">
+                        <p className="text-center text-grey-600 typo-subtitle2">
+                          승인 대기 중인 멤버가 없어요.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-medium">
+                        <div className="grid grid-cols-1 gap-medium md:grid-cols-2 lg:grid-cols-3">
+                          {pendingMembers.map((member) => (
+                            <MemberCard
+                              key={member.gatheringMemberId}
+                              member={member}
+                              actions={['reject', 'approve']}
+                              onAction={handleMemberAction}
+                              disabled={joinRequestMutation.isPending}
+                            />
+                          ))}
+                        </div>
+                        {hasNextPending && (
+                          <Button
+                            variant="secondary"
+                            outline
+                            size="medium"
+                            onClick={() => fetchNextPending()}
+                            disabled={isFetchingNextPending}
+                          >
+                            {isFetchingNextPending ? '불러오는 중...' : '더보기'}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </TabsContent>
+                  <TabsContent value="ACTIVE" className="pt-medium">
+                    {activeMembers.length === 0 ? (
+                      <div className="flex h-35 items-center justify-center rounded-base border border-grey-300">
+                        <p className="text-center text-grey-600 typo-subtitle2">
+                          승인된 멤버가 없어요.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-medium">
+                        <div className="grid grid-cols-1 gap-medium md:grid-cols-2 lg:grid-cols-3">
+                          {activeMembers.map((member) => (
+                            <MemberCard
+                              key={member.gatheringMemberId}
+                              member={member}
+                              actions={['remove']}
+                              onAction={handleMemberAction}
+                              disabled={removeMemberMutation.isPending}
+                            />
+                          ))}
+                        </div>
+                        {hasNextActive && (
+                          <Button
+                            variant="secondary"
+                            outline
+                            size="medium"
+                            onClick={() => fetchNextActive()}
+                            disabled={isFetchingNextActive}
+                          >
+                            {isFetchingNextActive ? '불러오는 중...' : '더보기'}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </Container.Content>
+            </Container>
           </div>
         </div>
-        <Container.Content className="flex flex-col gap-medium">
-          <Input
-            label="독서모임 이름"
-            placeholder="독서모임 이름을 입력해주세요."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={MAX_NAME_LENGTH}
-          />
-          <div className="flex flex-col gap-xsmall">
-            <p className="text-left text-black typo-subtitle3">독서모임 설명</p>
-            <Textarea
-              placeholder="모임에 대한 설명을 적어주세요"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={MAX_DESCRIPTION_LENGTH}
-              height={80}
-            />
-          </div>
-        </Container.Content>
-      </Container>
-      {/* 멤버 관리 섹션 */}
-      <Container>
-        <Container.Title>멤버 관리</Container.Title>
-        <Container.Content>
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) => setActiveTab(value as MemberTab)}
-            className="gap-0"
-          >
-            <TabsList className="border-b border-grey-300" size="medium">
-              <TabsTrigger value="PENDING" badge={pendingTotalCount} size="medium">
-                승인 대기
-              </TabsTrigger>
-              <TabsTrigger value="ACTIVE" badge={activeTotalCount} size="medium">
-                승인 완료
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="PENDING" className="pt-medium">
-              {pendingMembers.length === 0 ? (
-                <div className="flex h-35 items-center justify-center rounded-base border border-grey-300">
-                  <p className="text-center text-grey-600 typo-subtitle2">
-                    승인 대기 중인 멤버가 없어요.
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-medium">
-                  <div className="grid grid-cols-1 gap-medium md:grid-cols-2 lg:grid-cols-3">
-                    {pendingMembers.map((member) => (
-                      <MemberCard
-                        key={member.gatheringMemberId}
-                        member={member}
-                        actions={['reject', 'approve']}
-                        onAction={handleMemberAction}
-                        disabled={joinRequestMutation.isPending}
-                      />
-                    ))}
-                  </div>
-                  {hasNextPending && (
-                    <Button
-                      variant="secondary"
-                      outline
-                      size="medium"
-                      onClick={() => fetchNextPending()}
-                      disabled={isFetchingNextPending}
-                    >
-                      {isFetchingNextPending ? '불러오는 중...' : '더보기'}
-                    </Button>
-                  )}
-                </div>
-              )}
-            </TabsContent>
-            <TabsContent value="ACTIVE" className="pt-medium">
-              {activeMembers.length === 0 ? (
-                <div className="flex h-35 items-center justify-center rounded-base border border-grey-300">
-                  <p className="text-center text-grey-600 typo-subtitle2">승인된 멤버가 없어요.</p>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-medium">
-                  <div className="grid grid-cols-1 gap-medium md:grid-cols-2 lg:grid-cols-3">
-                    {activeMembers.map((member) => (
-                      <MemberCard
-                        key={member.gatheringMemberId}
-                        member={member}
-                        actions={['remove']}
-                        onAction={handleMemberAction}
-                        disabled={removeMemberMutation.isPending}
-                      />
-                    ))}
-                  </div>
-                  {hasNextActive && (
-                    <Button
-                      variant="secondary"
-                      outline
-                      size="medium"
-                      onClick={() => fetchNextActive()}
-                      disabled={isFetchingNextActive}
-                    >
-                      {isFetchingNextActive ? '불러오는 중...' : '더보기'}
-                    </Button>
-                  )}
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
-        </Container.Content>
-      </Container>
-    </div>
+      </div>
+    </>
   )
 }

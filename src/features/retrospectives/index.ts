@@ -3,11 +3,24 @@ export * from './components'
 
 // Hooks
 export * from './hooks'
-
-// API
-export * from './retrospectives.api'
 export * from './retrospectives.endpoints'
 export * from './retrospectives.mock'
 
+// API
+export { createSttJob, getSummary, publishSummary, updateSummary } from './retrospectives.api'
+
 // Types
-export * from './retrospectives.types'
+export type {
+  CreateSttJobParams,
+  GetCollectedAnswersResponse,
+  KeyPoint,
+  KeyPointUpdateRequest,
+  PublishSummaryParams,
+  RetrospectiveSummaryResponse,
+  SttJobResponse,
+  SttJobStatus,
+  SummaryTopic,
+  UpdateSummaryParams,
+  UpdateSummaryRequest,
+  UpdateSummaryTopicRequest,
+} from './retrospectives.types'

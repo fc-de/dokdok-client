@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import type { MeetingProgressStatus } from '@/features/meetings/meetings.types'
 import { ROUTES } from '@/shared/constants'
-import { Button } from '@/shared/ui'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
+import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui'
 
 type ProposedHeaderProps = {
   activeTab: 'PROPOSED'

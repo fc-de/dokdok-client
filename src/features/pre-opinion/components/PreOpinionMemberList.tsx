@@ -1,7 +1,7 @@
 import { UserChip } from '@/shared/ui/UserChip'
 
-import { ROLE_TO_AVATAR_VARIANT } from '../preOpinions.constants'
-import type { PreOpinionMember } from '../preOpinions.types'
+import { ROLE_TO_AVATAR_VARIANT } from '../preOpinion.constants'
+import type { PreOpinionMember } from '../preOpinion.types'
 
 type PreOpinionMemberListProps = {
   members: PreOpinionMember[]

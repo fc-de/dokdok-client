@@ -62,24 +62,26 @@ export default function MeetingRetrospectivePage() {
       <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} />
 
       {/* 헤더: 약속 회고 타이틀 + 버튼 */}
-      <div className="sticky top-[calc(var(--gnb-height)+59px)] z-30 flex items-center justify-between bg-white pb-small">
-        <h3 className="text-black typo-heading3">약속 회고</h3>
-        <div className="flex items-center gap-xsmall">
-          <Button variant="secondary" outline size="small">
-            수정하기
-          </Button>
-          <Button
-            variant="primary"
-            size="small"
-            onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_DETAILE(gatheringId, meetingId))}
-          >
-            약속 회고 생성하기
-          </Button>
+      <div className="sticky top-[calc(var(--spacing-gnb-height)+59px)] z-30 bg-white shadow-drop-bottom">
+        <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between pb-small">
+          <h3 className="text-black typo-heading3">약속 회고</h3>
+          <div className="flex items-center gap-xsmall">
+            <Button variant="secondary" outline size="small">
+              수정하기
+            </Button>
+            <Button
+              variant="primary"
+              size="small"
+              onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))}
+            >
+              약속 회고 생성하기
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* 회고 콘텐츠 영역 */}
-      <div className="mt-base">
+      <div className="mx-auto max-w-layout-max px-layout-padding mt-base">
         {isLoading ? (
           <RetrospectiveSummarySkeleton />
         ) : (

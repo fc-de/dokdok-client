@@ -17,4 +17,8 @@ export const retrospectiveQueryKeys = {
   // 수집된 사전 의견 리스트
   collectedAnswersList: (params: Omit<GetCollectedAnswersParams, 'cursorUserId'>) =>
     [...retrospectiveQueryKeys.all, 'collectedAnswers', params] as const,
+
+  // 회고 요약
+  summaries: () => [...retrospectiveQueryKeys.all, 'summary'] as const,
+  summary: (meetingId: number) => [...retrospectiveQueryKeys.summaries(), meetingId] as const,
 }

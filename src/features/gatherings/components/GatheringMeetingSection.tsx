@@ -1,9 +1,19 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useUserProfile } from '@/features/user'
 import { PAGE_SIZES, ROUTES } from '@/shared/constants'
-import { Button, Pagination, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import {
+  Button,
+  Pagination,
+  Spinner,
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/shared/ui'
 
 import type { GatheringUserRole, MeetingFilter } from '../gatherings.types'
 import { useGatheringMeetings, useMeetingTabCounts } from '../hooks'
@@ -31,10 +41,21 @@ export default function GatheringMeetingSection({
   currentUserRole,
 }: GatheringMeetingSectionProps) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [activeTab, setActiveTab] = useState<MeetingFilter>('ALL')
   const [currentPage, setCurrentPage] = useState(0)
+  const [showCreateTooltip, setShowCreateTooltip] = useState(
+    () => location.state?.justCreated === true
+  )
 
   const isLeader = currentUserRole === 'LEADER'
+
+  // 모임 생성 직후 state를 소비한 뒤 히스토리에서 제거 (새로고침 시 재표시 방지)
+  useEffect(() => {
+    if (location.state?.justCreated) {
+      window.history.replaceState({}, '')
+    }
+  }, [location.state])
 
   // 현재 사용자 정보
   const { data: currentUser } = useUserProfile()
@@ -124,9 +145,20 @@ export default function GatheringMeetingSection({
             <Button variant="secondary" outline size="small" onClick={handleMeetingSettings}>
               약속 설정
             </Button>
-            <Button size="small" onClick={handleCreateMeeting}>
-              약속 만들기
-            </Button>
+            {showCreateTooltip ? (
+              <Tooltip dismissable onOpenChange={(open) => !open && setShowCreateTooltip(false)}>
+                <TooltipTrigger asChild>
+                  <Button size="small" onClick={handleCreateMeeting}>
+                    약속 만들기
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>약속을 만들어 함께 책을 읽어보세요!</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Button size="small" onClick={handleCreateMeeting}>
+                약속 만들기
+              </Button>
+            )}
           </div>
         )}
       </div>

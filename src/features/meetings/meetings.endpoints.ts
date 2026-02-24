@@ -27,4 +27,10 @@ export const MEETINGS_ENDPOINTS = {
 
   // 약속 수정 (PATCH /api/meetings/{meetingId})
   UPDATE: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}`,
+
+  // 메인페이지 내 약속 리스트 조회 (GET /api/meetings/me)
+  MY_MEETINGS: `${API_PATHS.MEETINGS}/me`,
+
+  // 메인페이지 내 약속 탭 카운트 조회 (GET /api/meetings/me/tab-counts)
+  MY_MEETING_TAB_COUNTS: `${API_PATHS.MEETINGS}/me/tab-counts`,
 } as const
