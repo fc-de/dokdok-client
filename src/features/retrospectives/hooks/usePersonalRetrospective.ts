@@ -30,7 +30,7 @@ import { personalRetrospectiveQueryKeys } from './personalRetrospectiveQueryKeys
  * const { data, isLoading } = usePersonalRetrospective({ gatheringId: 1, meetingId: 2 })
  * ```
  */
-export const usePersonalRetrospective = (params: GetPersonalRetrospectiveParams) => {
+export const usePersonalRetrospective = (params: GetPersonalRetrospectiveParams, enabled = true) => {
   const { gatheringId, meetingId } = params
   const isValidParams =
     !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0
@@ -38,7 +38,7 @@ export const usePersonalRetrospective = (params: GetPersonalRetrospectiveParams)
   return useQuery<GetPersonalRetrospectiveResponse, ApiError>({
     queryKey: personalRetrospectiveQueryKeys.detail(params),
     queryFn: () => getPersonalRetrospective(params),
-    enabled: isValidParams,
+    enabled: isValidParams && enabled,
     gcTime: 10 * 60 * 1000,
   })
 }

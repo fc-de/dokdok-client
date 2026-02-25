@@ -22,15 +22,15 @@ function createItem(): OthersPerspectiveFormItem {
  *
  * @description
  * 관점 항목 동적 추가/삭제/수정을 관리합니다.
- * 초기값으로 빈 항목 하나가 생성됩니다.
+ * 수정 모드에서는 initialItems를 통해 기존 저장값으로 초기화할 수 있습니다.
  *
  * @example
  * ```tsx
  * const { items, addItem, removeItem, updateItem } = useOthersPerspective()
  * ```
  */
-export function useOthersPerspective() {
-  const [items, setItems] = useState<OthersPerspectiveFormItem[]>([])
+export function useOthersPerspective(initialItems?: OthersPerspectiveFormItem[]) {
+  const [items, setItems] = useState<OthersPerspectiveFormItem[]>(initialItems ?? [])
 
   const addItem = useCallback(() => {
     setItems((prev) => [...prev, createItem()])
@@ -84,7 +84,11 @@ export function useOthersPerspective() {
     setItems([])
   }, [])
 
-  return { items, addItem, removeItem, updateItem, isItemPartial, hasPartialInput, reset }
+  const reinit = useCallback((items: OthersPerspectiveFormItem[]) => {
+    setItems(items)
+  }, [])
+
+  return { items, addItem, removeItem, updateItem, isItemPartial, hasPartialInput, reset, reinit }
 }
 
 export type UseOthersPerspectiveReturn = ReturnType<typeof useOthersPerspective>

@@ -4,13 +4,14 @@ import { Button, TextButton } from '@/shared/ui'
 
 import type { SectionKey } from '../hooks/usePersonalRetrospectiveForm'
 import type { UsePersonalRetrospectiveFormReturn } from '../hooks/usePersonalRetrospectiveForm'
-import type { GetPersonalRetrospectiveResponse } from '../personalRetrospective.types'
+import type { PersonalRetrospectiveMember, PersonalRetrospectiveTopic } from '../personalRetrospective.types'
 import ChangedThoughtsSection from './ChangedThoughtsSection'
 import FreeRecordSection from './FreeRecordSection'
 import OthersPerspectiveSection from './OthersPerspectiveSection'
 
 export interface PersonalRetrospectiveContentProps {
-  data: GetPersonalRetrospectiveResponse
+  topics: PersonalRetrospectiveTopic[]
+  meetingMembers: PersonalRetrospectiveMember[]
   form: UsePersonalRetrospectiveFormReturn
 }
 
@@ -29,14 +30,14 @@ const SECTION_OPTIONS: { type: SectionKey; label: string }[] = [
  *
  * @example
  * ```tsx
- * <PersonalRetrospectiveContent data={personalRetrospectiveData} form={form} />
+ * <PersonalRetrospectiveContent topics={topics} meetingMembers={meetingMembers} form={form} />
  * ```
  */
 export default function PersonalRetrospectiveContent({
-  data,
+  topics,
+  meetingMembers,
   form,
 }: PersonalRetrospectiveContentProps) {
-  const { topics, meetingMembers } = data
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 

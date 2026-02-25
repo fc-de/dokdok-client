@@ -14,4 +14,8 @@ export const personalRetrospectiveQueryKeys = {
 
   views: () => [...personalRetrospectiveQueryKeys.all, 'view'] as const,
   view: (meetingId: number) => [...personalRetrospectiveQueryKeys.views(), meetingId] as const,
+
+  editForms: () => [...personalRetrospectiveQueryKeys.all, 'editForm'] as const,
+  editForm: (meetingId: number) =>
+    [...personalRetrospectiveQueryKeys.editForms(), meetingId] as const,
 }

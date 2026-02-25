@@ -216,3 +216,44 @@ export type GetPersonalRetrospectiveViewResponse = {
     freeTexts: PersonalRetrospectiveViewFreeText[]
   }
 }
+
+// ─── 개인 회고 수정 API 타입 ──────────────────────────────────────────────────
+
+/**
+ * 개인 회고 수정 폼 조회 응답 타입
+ *
+ * @description
+ * 수정 화면에 기존 저장값을 채워 넣기 위해 사용됩니다.
+ */
+export type GetPersonalRetrospectiveEditFormResponse = {
+  retrospectiveId: number
+  meetingHeaderInfo: MeetingHeaderInfo
+  topics: PersonalRetrospectiveTopic[]
+  meetingMembers: PersonalRetrospectiveMember[]
+  retrospective: {
+    changedThoughts: {
+      topicId: number
+      keyIssue: string | null
+      preOpinion: string | null
+      postOpinion: string | null
+    }[]
+    othersPerspectives: {
+      topicId: number
+      meetingMemberId: number
+      opinionContent: string
+      impressiveReason: string
+    }[]
+    freeTexts: {
+      title: string | null
+      content: string | null
+    }[]
+  }
+}
+
+/**
+ * 개인 회고 수정 요청 파라미터
+ */
+export type UpdatePersonalRetrospectiveParams = {
+  meetingId: number
+  body: SavePersonalRetrospectiveRequest
+}

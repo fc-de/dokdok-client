@@ -10,4 +10,13 @@ export const PERSONAL_RETROSPECTIVE_ENDPOINTS = {
   // 개인 회고 뷰 조회 (GET /api/meetings/{meetingId}/retrospectives/personal)
   VIEW: (meetingId: number) =>
     `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal`,
+  // 개인 회고 수정 폼 조회 (GET /api/meetings/{meetingId}/retrospectives/personal/form/edit)
+  EDIT_FORM: (meetingId: number) =>
+    `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal/form/edit`,
+  // 개인 회고 수정 (PUT /api/meetings/{meetingId}/retrospectives/personal)
+  UPDATE: (meetingId: number) =>
+    `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal`,
+  // 개인 회고 삭제 (DELETE /api/meetings/{meetingId}/retrospectives/personal)
+  DELETE: (meetingId: number) =>
+    `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal`,
 } as const

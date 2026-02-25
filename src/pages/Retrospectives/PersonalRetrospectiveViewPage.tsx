@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   PersonalRetrospectiveViewContent,
+  useDeletePersonalRetrospective,
   usePersonalRetrospectiveView,
 } from '@/features/retrospectives'
 import SubPageHeader from '@/shared/components/SubPageHeader'
@@ -9,6 +10,7 @@ import { ROUTES } from '@/shared/constants'
 import { useScrollShadow } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button, Spinner, TextButton } from '@/shared/ui'
+import { useGlobalModalStore } from '@/store'
 
 export default function PersonalRetrospectiveViewPage() {
   const isScrolled = useScrollShadow()
@@ -21,9 +23,34 @@ export default function PersonalRetrospectiveViewPage() {
   const meetingId = Number(meetingIdParam)
 
   const navigate = useNavigate()
+  const { openConfirm, openError } = useGlobalModalStore()
   const { data, isLoading, isError } = usePersonalRetrospectiveView(meetingId)
+  const { mutate: deleteRetrospective, isPending: isDeleting } = useDeletePersonalRetrospective()
 
   if (!gatheringIdParam || !meetingIdParam) return null
+
+  const handleDelete = async () => {
+    const confirmed = await openConfirm('개인 회고 삭제', '작성한 개인 회고를 삭제하시겠습니까?', {
+      confirmText: '삭제',
+      variant: 'danger',
+    })
+    if (!confirmed) return
+
+    deleteRetrospective(meetingId, {
+      onSuccess: () => {
+        navigate(ROUTES.GATHERING_DETAIL(gatheringIdParam), { replace: true })
+      },
+      onError: (error) => {
+        openError('삭제 실패', error.userMessage)
+      },
+    })
+  }
+
+  const handleEdit = () => {
+    navigate(
+      `${ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)}?mode=edit`
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-var(--spacing-gnb-height))]">
@@ -48,16 +75,10 @@ export default function PersonalRetrospectiveViewPage() {
               </p>
             </div>
             <div className="flex items-center gap-medium">
-              <TextButton
-                onClick={() => navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))}
-              >
+              <TextButton onClick={handleDelete} disabled={isDeleting}>
                 삭제하기
               </TextButton>
-              <Button
-                variant="secondary"
-                outline
-                onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId))}
-              >
+              <Button variant="secondary" outline onClick={handleEdit}>
                 수정하기
               </Button>
             </div>

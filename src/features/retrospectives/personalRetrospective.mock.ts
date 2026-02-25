@@ -4,6 +4,7 @@
  */
 
 import type {
+  GetPersonalRetrospectiveEditFormResponse,
   GetPersonalRetrospectiveResponse,
   GetPersonalRetrospectiveViewResponse,
 } from './personalRetrospective.types'
@@ -161,3 +162,71 @@ const mockPersonalRetrospectiveView: GetPersonalRetrospectiveViewResponse = {
 export const getMockPersonalRetrospectiveView = (): GetPersonalRetrospectiveViewResponse => {
   return mockPersonalRetrospectiveView
 }
+
+/**
+ * 개인 회고 수정 폼 목데이터
+ */
+const mockPersonalRetrospectiveEditForm: GetPersonalRetrospectiveEditFormResponse = {
+  retrospectiveId: 1,
+  meetingHeaderInfo: {
+    gatheringName: '책을 읽자',
+    bookTitle: '데미안',
+    bookAuthor: '헤르만 헤세',
+  },
+  topics: [
+    {
+      topicId: 1,
+      topicName: '가짜 욕망, 유사 욕망',
+      confirmOrder: 1,
+    },
+    {
+      topicId: 2,
+      topicName: '선과 악',
+      confirmOrder: 2,
+    },
+  ],
+  meetingMembers: [
+    {
+      meetingMemberId: 10,
+      nickname: '독서왕',
+      profileImage: 'https://example.com/profile.jpg',
+    },
+    {
+      meetingMemberId: 15,
+      nickname: '애옹',
+      profileImage: null,
+    },
+  ],
+  retrospective: {
+    changedThoughts: [
+      {
+        topicId: 1,
+        keyIssue: '기존에 작성한 핵심 쟁점입니다.',
+        preOpinion: '기존에 작성한 사전 의견입니다.',
+        postOpinion: '기존에 작성한 모임 후 의견입니다.',
+      },
+    ],
+    othersPerspectives: [
+      {
+        topicId: 2,
+        meetingMemberId: 10,
+        opinionContent: '기존에 작성한 상대 의견입니다.',
+        impressiveReason: '기존에 작성한 인상적이었던 이유입니다.',
+      },
+    ],
+    freeTexts: [
+      {
+        title: '오늘의 한 줄',
+        content: '기존에 작성한 자유 기록 내용입니다.',
+      },
+    ],
+  },
+}
+
+/**
+ * 개인 회고 수정 폼 목데이터 반환 함수
+ */
+export const getMockPersonalRetrospectiveEditForm =
+  (): GetPersonalRetrospectiveEditFormResponse => {
+    return mockPersonalRetrospectiveEditForm
+  }

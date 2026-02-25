@@ -19,6 +19,7 @@ type ChangedThoughtOverrides = Record<string, { coreSummary?: string; postOpinio
  * @description
  * 토픽별로 핵심 쟁점 요약(coreSummary)과 모임 후 내 의견(postOpinion)을 관리합니다.
  * 사용자가 변경한 값만 저장하고, 나머지는 빈 문자열을 기본값으로 사용합니다.
+ * 수정 모드에서는 initialOverrides를 통해 기존 저장값으로 초기화할 수 있습니다.
  *
  * @example
  * ```tsx
@@ -28,9 +29,10 @@ type ChangedThoughtOverrides = Record<string, { coreSummary?: string; postOpinio
  */
 export function useChangedThoughts(
   topics: PersonalRetrospectiveTopic[],
-  preOpinions: PersonalRetrospectivePreOpinion[]
+  preOpinions: PersonalRetrospectivePreOpinion[],
+  initialOverrides?: ChangedThoughtOverrides
 ) {
-  const [overrides, setOverrides] = useState<ChangedThoughtOverrides>({})
+  const [overrides, setOverrides] = useState<ChangedThoughtOverrides>(initialOverrides ?? {})
 
   const updateField = useCallback(
     (topicId: number, field: 'coreSummary' | 'postOpinion', value: string) => {
@@ -59,7 +61,11 @@ export function useChangedThoughts(
     setOverrides({})
   }, [])
 
-  return { formValues, updateField, getPreOpinion, hasPartialInput, reset }
+  const reinit = useCallback((overrides: ChangedThoughtOverrides) => {
+    setOverrides(overrides)
+  }, [])
+
+  return { formValues, updateField, getPreOpinion, hasPartialInput, reset, reinit }
 }
 
 export type UseChangedThoughtsReturn = ReturnType<typeof useChangedThoughts>

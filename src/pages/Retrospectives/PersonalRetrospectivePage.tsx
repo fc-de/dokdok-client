@@ -1,8 +1,9 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import {
   PersonalRetrospectiveContent,
   usePersonalRetrospective,
+  usePersonalRetrospectiveEditForm,
   usePersonalRetrospectiveForm,
 } from '@/features/retrospectives'
 import SubPageHeader from '@/shared/components/SubPageHeader'
@@ -19,6 +20,8 @@ export default function PersonalRetrospectivePage() {
     gatheringId: string
     meetingId: string
   }>()
+  const [searchParams] = useSearchParams()
+  const isEditMode = searchParams.get('mode') === 'edit'
 
   const gatheringId = Number(gatheringIdParam)
   const meetingId = Number(meetingIdParam)
@@ -26,18 +29,48 @@ export default function PersonalRetrospectivePage() {
   const navigate = useNavigate()
   const { openError } = useGlobalModalStore()
 
-  const { data, isLoading, isError } = usePersonalRetrospective({ gatheringId, meetingId })
+  // 작성 모드: 작성 폼 API만 호출
+  const { data, isLoading, isError } = usePersonalRetrospective(
+    { gatheringId, meetingId },
+    !isEditMode,
+  )
+
+  // 수정 모드: 수정 폼 API만 호출
+  const {
+    data: editFormData,
+    isLoading: isEditFormLoading,
+    isError: isEditFormError,
+  } = usePersonalRetrospectiveEditForm(meetingId, isEditMode)
+
+  const activeData = isEditMode ? editFormData : data
+  const isDataReady = !!activeData
+  const isAnyLoading = isEditMode ? isEditFormLoading : isLoading
+  const isAnyError = isEditMode ? isEditFormError : isError
+
+  // 수정 모드에서는 edit form의 retrospective.changedThoughts에 저장된 preOpinion을 사용
+  const preOpinions = isEditMode
+    ? (editFormData?.retrospective.changedThoughts ?? [])
+        .filter((ct) => ct.preOpinion !== null)
+        .map((ct) => ({
+          topicId: ct.topicId,
+          topicName:
+            editFormData?.topics.find((t) => t.topicId === ct.topicId)?.topicName ?? '',
+          content: ct.preOpinion!,
+        }))
+    : (data?.preOpinions ?? [])
 
   const form = usePersonalRetrospectiveForm({
-    meetingId: data?.meetingId ?? 0,
-    topics: data?.topics ?? [],
-    preOpinions: data?.preOpinions ?? [],
+    meetingId,
+    topics: activeData?.topics ?? [],
+    preOpinions,
+    mode: isEditMode ? 'edit' : 'create',
+    editFormData: isEditMode ? editFormData : undefined,
     onSuccess: () => {
-      showToast('개인 회고가 저장되었습니다.')
+      showToast(isEditMode ? '개인 회고가 수정되었습니다.' : '개인 회고가 저장되었습니다.')
       navigate(ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId), { replace: true })
     },
     onError: (error) => {
-      openError('저장 실패', error.userMessage)
+      openError(isEditMode ? '수정 실패' : '저장 실패', error.userMessage)
     },
   })
 
@@ -46,7 +79,7 @@ export default function PersonalRetrospectivePage() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-var(--spacing-gnb-height))]">
       <SubPageHeader
-        label={data?.meetingHeaderInfo.gatheringName ?? ''}
+        label={activeData?.meetingHeaderInfo.gatheringName ?? ''}
         to={ROUTES.GATHERING_DETAIL(gatheringIdParam)}
         disableShadow
       />
@@ -62,7 +95,7 @@ export default function PersonalRetrospectivePage() {
             <div className="flex flex-col gap-xtiny">
               <h3 className="text-black typo-heading3">개인 회고</h3>
               <p className="typo-caption1 text-grey-600">
-                {data?.meetingHeaderInfo.bookTitle} · {data?.meetingHeaderInfo.bookAuthor}
+                {activeData?.meetingHeaderInfo.bookTitle} · {activeData?.meetingHeaderInfo.bookAuthor}
               </p>
             </div>
             <Button
@@ -80,19 +113,20 @@ export default function PersonalRetrospectivePage() {
 
       <div className="flex-1 bg-grey-100 pb-large">
         <div className="mx-auto max-w-layout-max px-layout-padding">
-          {isLoading && (
+          {isAnyLoading && (
             <div className="flex justify-center py-xlarge">
               <Spinner />
             </div>
           )}
 
-          {isError && (
+          {isAnyError && (
             <p className="text-grey-400 typo-body3">개인 회고 정보를 불러오지 못했습니다.</p>
           )}
 
-          {data && (
+          {isDataReady && (
             <PersonalRetrospectiveContent
-              data={data}
+              topics={activeData?.topics ?? []}
+              meetingMembers={activeData?.meetingMembers ?? []}
               form={form}
             />
           )}

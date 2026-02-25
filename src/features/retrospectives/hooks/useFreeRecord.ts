@@ -16,14 +16,17 @@ function createEntry(): FreeRecordEntryFormItem {
  *
  * @description
  * 제목+상세내용 항목의 동적 추가/삭제/수정을 관리합니다.
+ * 수정 모드에서는 initialEntries를 통해 기존 저장값으로 초기화할 수 있습니다.
  *
  * @example
  * ```tsx
  * const { entries, addEntry, removeEntry, updateEntry } = useFreeRecord()
  * ```
  */
-export function useFreeRecord() {
-  const [entries, setEntries] = useState<FreeRecordEntryFormItem[]>([createEntry()])
+export function useFreeRecord(initialEntries?: FreeRecordEntryFormItem[]) {
+  const [entries, setEntries] = useState<FreeRecordEntryFormItem[]>(
+    initialEntries ?? [createEntry()]
+  )
 
   const addEntry = useCallback(() => {
     setEntries((prev) => [...prev, createEntry()])
@@ -54,7 +57,11 @@ export function useFreeRecord() {
     setEntries([createEntry()])
   }, [])
 
-  return { entries, addEntry, removeEntry, updateEntry, isEntryPartial, hasPartialInput, reset }
+  const reinit = useCallback((entries: FreeRecordEntryFormItem[]) => {
+    setEntries(entries)
+  }, [])
+
+  return { entries, addEntry, removeEntry, updateEntry, isEntryPartial, hasPartialInput, reset, reinit }
 }
 
 export type UseFreeRecordReturn = ReturnType<typeof useFreeRecord>
