@@ -41,10 +41,14 @@ export function useOthersPerspective(initialItems?: OthersPerspectiveFormItem[])
   }, [])
 
   const updateItem = useCallback(
-    (id: string, field: keyof Omit<OthersPerspectiveFormItem, 'id'>, value: string | number | null) => {
+    (
+      id: string,
+      field: keyof Omit<OthersPerspectiveFormItem, 'id'>,
+      value: string | number | null
+    ) => {
       setItems((prev) => prev.map((item) => (item.id === id ? { ...item, [field]: value } : item)))
     },
-    [],
+    []
   )
 
   const isItemPartial = useCallback(
@@ -63,7 +67,7 @@ export function useOthersPerspective(initialItems?: OthersPerspectiveFormItem[])
         item.impact.trim() !== ''
       return hasAny && !hasAll
     },
-    [items],
+    [items]
   )
 
   const hasPartialInput = items.some((item) => {

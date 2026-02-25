@@ -48,7 +48,7 @@ export function useFreeRecord(initialEntries?: FreeRecordEntryFormItem[]) {
       const hasContent = entry.content.trim() !== ''
       return hasTitle !== hasContent
     },
-    [entries],
+    [entries]
   )
 
   const hasPartialInput = entries.some((e) => (e.title.trim() !== '') !== (e.content.trim() !== ''))
@@ -61,7 +61,16 @@ export function useFreeRecord(initialEntries?: FreeRecordEntryFormItem[]) {
     setEntries(entries)
   }, [])
 
-  return { entries, addEntry, removeEntry, updateEntry, isEntryPartial, hasPartialInput, reset, reinit }
+  return {
+    entries,
+    addEntry,
+    removeEntry,
+    updateEntry,
+    isEntryPartial,
+    hasPartialInput,
+    reset,
+    reinit,
+  }
 }
 
 export type UseFreeRecordReturn = ReturnType<typeof useFreeRecord>

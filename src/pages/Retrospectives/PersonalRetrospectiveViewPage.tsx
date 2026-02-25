@@ -47,9 +47,7 @@ export default function PersonalRetrospectiveViewPage() {
   }
 
   const handleEdit = () => {
-    navigate(
-      `${ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)}?mode=edit`
-    )
+    navigate(`${ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)}?mode=edit`)
   }
 
   return (

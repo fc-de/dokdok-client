@@ -30,7 +30,10 @@ import { personalRetrospectiveQueryKeys } from './personalRetrospectiveQueryKeys
  * const { data, isLoading } = usePersonalRetrospective({ gatheringId: 1, meetingId: 2 })
  * ```
  */
-export const usePersonalRetrospective = (params: GetPersonalRetrospectiveParams, enabled = true) => {
+export const usePersonalRetrospective = (
+  params: GetPersonalRetrospectiveParams,
+  enabled = true
+) => {
   const { gatheringId, meetingId } = params
   const isValidParams =
     !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0

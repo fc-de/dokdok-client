@@ -32,7 +32,7 @@ export default function PersonalRetrospectivePage() {
   // 작성 모드: 작성 폼 API만 호출
   const { data, isLoading, isError } = usePersonalRetrospective(
     { gatheringId, meetingId },
-    !isEditMode,
+    !isEditMode
   )
 
   // 수정 모드: 수정 폼 API만 호출
@@ -53,8 +53,7 @@ export default function PersonalRetrospectivePage() {
         .filter((ct) => ct.preOpinion !== null)
         .map((ct) => ({
           topicId: ct.topicId,
-          topicName:
-            editFormData?.topics.find((t) => t.topicId === ct.topicId)?.topicName ?? '',
+          topicName: editFormData?.topics.find((t) => t.topicId === ct.topicId)?.topicName ?? '',
           content: ct.preOpinion!,
         }))
     : (data?.preOpinions ?? [])
@@ -87,7 +86,7 @@ export default function PersonalRetrospectivePage() {
       <div
         className={cn(
           'sticky sticky-below-subheader z-30 bg-white transition-shadow',
-          isScrolled && 'shadow-drop-bottom',
+          isScrolled && 'shadow-drop-bottom'
         )}
       >
         <div className="mx-auto max-w-layout-max px-layout-padding w-full">
@@ -95,7 +94,8 @@ export default function PersonalRetrospectivePage() {
             <div className="flex flex-col gap-xtiny">
               <h3 className="text-black typo-heading3">개인 회고</h3>
               <p className="typo-caption1 text-grey-600">
-                {activeData?.meetingHeaderInfo.bookTitle} · {activeData?.meetingHeaderInfo.bookAuthor}
+                {activeData?.meetingHeaderInfo.bookTitle} ·{' '}
+                {activeData?.meetingHeaderInfo.bookAuthor}
               </p>
             </div>
             <Button

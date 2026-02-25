@@ -66,13 +66,15 @@ export function usePersonalRetrospectiveForm({
       )
     : undefined
 
-  const initialOthersPerspectiveItems = editFormData?.retrospective.othersPerspectives.map((item) => ({
-    id: crypto.randomUUID(),
-    speakerMemberId: item.meetingMemberId,
-    topicId: item.topicId,
-    opinion: item.opinionContent,
-    impact: item.impressiveReason,
-  }))
+  const initialOthersPerspectiveItems = editFormData?.retrospective.othersPerspectives.map(
+    (item) => ({
+      id: crypto.randomUUID(),
+      speakerMemberId: item.meetingMemberId,
+      topicId: item.topicId,
+      opinion: item.opinionContent,
+      impact: item.impressiveReason,
+    })
+  )
 
   const initialFreeRecordEntries = editFormData?.retrospective.freeTexts.map((entry) => ({
     id: crypto.randomUUID(),
@@ -87,17 +89,30 @@ export function usePersonalRetrospectiveForm({
   const { mutate: update, isPending: isUpdatePending } = useUpdatePersonalRetrospective()
   const [showErrors, setShowErrors] = useState(false)
   const [scrollTrigger, setScrollTrigger] = useState(0)
-  const [sectionVisibility, setSectionVisibility] = useState({
-    changedThoughts: true,
-    othersPerspective: isEditMode ? (editFormData?.retrospective.othersPerspectives.length ?? 0) > 0 : false,
-    freeRecord: isEditMode ? (editFormData?.retrospective.freeTexts.length ?? 0) > 0 : false,
-  })
+  // 사용자가 직접 토글한 섹션만 오버라이드로 관리, 나머지는 editFormData에서 파생
+  const [visibilityOverrides, setVisibilityOverrides] = useState<
+    Partial<Record<SectionKey, boolean>>
+  >({})
+
+  const sectionVisibility = {
+    changedThoughts: visibilityOverrides.changedThoughts ?? true,
+    othersPerspective:
+      visibilityOverrides.othersPerspective ??
+      (isEditMode ? (editFormData?.retrospective.othersPerspectives.length ?? 0) > 0 : false),
+    freeRecord:
+      visibilityOverrides.freeRecord ??
+      (isEditMode ? (editFormData?.retrospective.freeTexts.length ?? 0) > 0 : false),
+  }
 
   // editFormData는 비동기로 로드되므로, 도착 시점에 폼 상태를 재초기화
   useEffect(() => {
     if (!editFormData) return
 
-    const { changedThoughts: cts, othersPerspectives: ops, freeTexts: fts } = editFormData.retrospective
+    const {
+      changedThoughts: cts,
+      othersPerspectives: ops,
+      freeTexts: fts,
+    } = editFormData.retrospective
 
     changedThoughts.reinit(
       Object.fromEntries(
@@ -123,15 +138,10 @@ export function usePersonalRetrospectiveForm({
         content: entry.content ?? '',
       }))
     )
-    setSectionVisibility((prev) => ({
-      ...prev,
-      othersPerspective: ops.length > 0,
-      freeRecord: fts.length > 0,
-    }))
   }, [editFormData]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const showSection = (section: SectionKey) => {
-    setSectionVisibility((prev) => ({ ...prev, [section]: true }))
+    setVisibilityOverrides((prev) => ({ ...prev, [section]: true }))
     if (section === 'othersPerspective' && othersPerspective.items.length === 0) {
       othersPerspective.addItem()
     }
@@ -141,7 +151,7 @@ export function usePersonalRetrospectiveForm({
   }
 
   const hideSection = (section: SectionKey) => {
-    setSectionVisibility((prev) => ({ ...prev, [section]: false }))
+    setVisibilityOverrides((prev) => ({ ...prev, [section]: false }))
     if (section === 'changedThoughts') changedThoughts.reset()
     if (section === 'othersPerspective') othersPerspective.reset()
     if (section === 'freeRecord') freeRecord.reset()
@@ -164,7 +174,10 @@ export function usePersonalRetrospectiveForm({
     const requestBody = {
       changedThoughts: sectionVisibility.changedThoughts
         ? changedThoughts.formValues
-            .filter(({ coreSummary, postOpinion }) => coreSummary.trim() !== '' || postOpinion.trim() !== '')
+            .filter(
+              ({ coreSummary, postOpinion }) =>
+                coreSummary.trim() !== '' || postOpinion.trim() !== ''
+            )
             .map(({ topicId, coreSummary, postOpinion }) => ({
               topicId,
               keyIssue: toNullable(coreSummary),
@@ -178,7 +191,7 @@ export function usePersonalRetrospectiveForm({
                 item.speakerMemberId !== null &&
                 item.topicId !== null &&
                 item.opinion.trim() !== '' &&
-                item.impact.trim() !== '',
+                item.impact.trim() !== ''
             )
             .map((item) => ({
               topicId: item.topicId!,

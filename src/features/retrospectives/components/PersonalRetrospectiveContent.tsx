@@ -4,7 +4,10 @@ import { Button, TextButton } from '@/shared/ui'
 
 import type { SectionKey } from '../hooks/usePersonalRetrospectiveForm'
 import type { UsePersonalRetrospectiveFormReturn } from '../hooks/usePersonalRetrospectiveForm'
-import type { PersonalRetrospectiveMember, PersonalRetrospectiveTopic } from '../personalRetrospective.types'
+import type {
+  PersonalRetrospectiveMember,
+  PersonalRetrospectiveTopic,
+} from '../personalRetrospective.types'
 import ChangedThoughtsSection from './ChangedThoughtsSection'
 import FreeRecordSection from './FreeRecordSection'
 import OthersPerspectiveSection from './OthersPerspectiveSection'
