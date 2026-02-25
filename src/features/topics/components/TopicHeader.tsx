@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import { Check } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import type { MeetingProgressStatus } from '@/features/meetings/meetings.types'
 import { ROUTES } from '@/shared/constants'
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui'
 
@@ -21,6 +22,7 @@ type ConfirmedHeaderProps = {
   actions: { canViewPreOpinions: boolean; canWritePreOpinions: boolean }
   confirmedTopic: boolean
   confirmedTopicDate: string | null
+  progressStatus: MeetingProgressStatus
 }
 
 type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
@@ -79,7 +81,17 @@ export default function TopicHeader(props: TopicHeaderProps) {
       {props.activeTab === 'CONFIRMED' && (
         <div className="flex justify-between">
           <div className="flex flex-col gap-tiny">
-            {props.confirmedTopic ? (
+            {props.progressStatus === 'POST' ? (
+              // 약속 완료됨
+              <>
+                <p className="flex items-center text-black typo-subtitle3 gap-tiny">
+                  <Check size="20" /> 약속이 완료됐어요
+                </p>
+                <p className="typo-body4 text-grey-600">
+                  아래 주제들로 약속이 진행됐어요. 멤버들의 사전 의견을 참고해보세요.
+                </p>
+              </>
+            ) : props.confirmedTopic ? (
               // 주제 확정됨
               <>
                 <p className="flex items-center text-black typo-subtitle3 gap-tiny">
@@ -119,7 +131,9 @@ export default function TopicHeader(props: TopicHeaderProps) {
               </Tooltip>
             )}
 
-            <Button disabled={!props.actions.canWritePreOpinions}>사전 의견 작성하기</Button>
+            {props.progressStatus !== 'POST' && (
+              <Button disabled={!props.actions.canWritePreOpinions}>사전 의견 작성하기</Button>
+            )}
           </div>
         </div>
       )}
