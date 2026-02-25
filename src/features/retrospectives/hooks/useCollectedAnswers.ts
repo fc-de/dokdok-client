@@ -31,13 +31,6 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
  */
 export const useCollectedAnswers = (params: Omit<GetCollectedAnswersParams, 'cursorUserId'>) => {
   const { meetingId, pageSize = PAGE_SIZES.COLLECTED_ANSWERS } = params
-  const isValidParams =
-    !Number.isNaN(meetingId) &&
-    meetingId > 0 &&
-    Number.isInteger(meetingId) &&
-    !Number.isNaN(pageSize) &&
-    pageSize > 0 &&
-    Number.isInteger(pageSize)
 
   return useInfiniteQuery<
     GetCollectedAnswersResponse,
@@ -55,7 +48,7 @@ export const useCollectedAnswers = (params: Omit<GetCollectedAnswersParams, 'cur
         cursorUserId: pageParam?.userId,
       }),
     // meetingId가 유효할 때만 쿼리 실행
-    enabled: isValidParams,
+    enabled: meetingId > 0,
     // 초기 페이지 파라미터 (첫 페이지는 커서 파라미터 없이 요청)
     initialPageParam: null,
     // 다음 페이지 파라미터 가져오기

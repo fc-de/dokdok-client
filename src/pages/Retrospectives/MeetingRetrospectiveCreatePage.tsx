@@ -22,10 +22,16 @@ import AlertIcon from '@/shared/ui/AlertIcon'
 
 export default function MeetingRetrospectiveCreatePage() {
   const navigate = useNavigate()
-  const { gatheringId, meetingId } = useParams<{
+  const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
     gatheringId: string
     meetingId: string
   }>()
+
+  const parsedGatheringId = gatheringIdParam ? Number(gatheringIdParam) : NaN
+  const parsedMeetingId = meetingIdParam ? Number(meetingIdParam) : NaN
+
+  const gatheringId = Number.isFinite(parsedGatheringId) ? parsedGatheringId : 0
+  const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : 0
 
   // 업로드된 파일 상태
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -40,7 +46,7 @@ export default function MeetingRetrospectiveCreatePage() {
     hasNextPage,
     isFetchingNextPage,
   } = useCollectedAnswers({
-    meetingId: Number(meetingId),
+    meetingId,
   })
 
   const observerRef = useInfiniteScroll(fetchNextPage, {
@@ -77,7 +83,7 @@ export default function MeetingRetrospectiveCreatePage() {
     dropzoneRef.current?.triggerFileSelect()
   }
 
-  if (!gatheringId || !meetingId) return null
+  if (gatheringId === 0 || meetingId === 0) return null
 
   return (
     <>
