@@ -74,9 +74,11 @@ export default function PersonalRetrospectiveViewPage() {
           <div className="flex justify-between items-center h-16.25">
             <div className="flex flex-col gap-xtiny">
               <h3 className="text-black typo-heading3">개인 회고</h3>
-              <p className="typo-caption1 text-grey-600">
-                {data?.meetingHeaderInfo.bookTitle} · {data?.meetingHeaderInfo.bookAuthor}
-              </p>
+              {data && (
+                <p className="typo-caption1 text-grey-600">
+                  {data?.meetingHeaderInfo.bookTitle} · {data?.meetingHeaderInfo.bookAuthor}
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-medium">
               <TextButton onClick={handleDelete} disabled={isDeleting}>
