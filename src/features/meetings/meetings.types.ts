@@ -280,6 +280,7 @@ export interface MyMeetingListItem {
   meetingStatus: MeetingStatus | 'REJECTED' | 'DONE'
   myRole: MyMeetingRole
   progressStatus: MyMeetingProgressStatus
+  preOpinionTemplateConfirmed: boolean
 }
 
 /** 메인페이지 내 약속 커서 */
