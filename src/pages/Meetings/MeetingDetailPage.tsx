@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -17,6 +17,7 @@ import {
   ConfirmedTopicList,
   ConfirmTopicModal,
   ProposedTopicList,
+  TopicError,
   TopicHeader,
   TopicSkeleton,
   useConfirmedTopics,
@@ -36,7 +37,6 @@ export default function MeetingDetailPage() {
 
   const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
-  const hasHandledErrorRef = useRef(false)
 
   const {
     data: meeting,
@@ -57,6 +57,7 @@ export default function MeetingDetailPage() {
     data: proposedTopicsInfiniteData,
     isLoading: isProposedLoading,
     error: proposedError,
+    refetch: refetchProposed,
     fetchNextPage: fetchNextProposedPage,
     hasNextPage: hasNextProposedPage,
     isFetchingNextPage: isFetchingNextProposedPage,
@@ -70,6 +71,7 @@ export default function MeetingDetailPage() {
     data: confirmedTopicsInfiniteData,
     isLoading: isConfirmedLoading,
     error: confirmedError,
+    refetch: refetchConfirmed,
     fetchNextPage: fetchNextConfirmedPage,
     hasNextPage: hasNextConfirmedPage,
     isFetchingNextPage: isFetchingNextConfirmedPage,
@@ -78,19 +80,15 @@ export default function MeetingDetailPage() {
     meetingId: Number(meetingId),
   })
 
-  // 에러 처리 및 리다이렉트 (중복 방지)
   useEffect(() => {
-    const primaryError = meetingError || proposedError || confirmedError
-
-    if (primaryError && !hasHandledErrorRef.current) {
-      hasHandledErrorRef.current = true
-      showErrorToast(primaryError.userMessage)
+    if (meetingError) {
+      showErrorToast(meetingError.userMessage)
 
       if (gatheringId && !isNaN(Number(gatheringId))) {
         navigate(ROUTES.GATHERING_DETAIL(Number(gatheringId)), { replace: true })
       }
     }
-  }, [proposedError, confirmedError, meetingError, navigate, gatheringId])
+  }, [meetingError, navigate, gatheringId])
 
   if (!gatheringId || !meetingId) return null
 
@@ -163,7 +161,12 @@ export default function MeetingDetailPage() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="PROPOSED">
-                {isProposedLoading || !proposedTopicsInfiniteData ? (
+                {proposedError ? (
+                  <TopicError
+                    message="제안 주제를 불러오지 못했습니다"
+                    onRetry={() => refetchProposed()}
+                  />
+                ) : isProposedLoading || !proposedTopicsInfiniteData ? (
                   <TopicSkeleton />
                 ) : (
                   <div className="flex flex-col gap-base">
@@ -193,7 +196,12 @@ export default function MeetingDetailPage() {
               </TabsContent>
 
               <TabsContent value="CONFIRMED">
-                {isConfirmedLoading || !confirmedTopicsInfiniteData ? (
+                {confirmedError ? (
+                  <TopicError
+                    message="확정된 주제를 불러오지 못했습니다"
+                    onRetry={() => refetchConfirmed()}
+                  />
+                ) : isConfirmedLoading || !confirmedTopicsInfiniteData ? (
                   <TopicSkeleton />
                 ) : (
                   <div className="flex flex-col gap-base">
