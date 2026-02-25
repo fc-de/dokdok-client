@@ -28,6 +28,8 @@ export const PAGE_SIZES = {
   GATHERING_BOOKS: 12,
   /** 모임 멤버 목록 페이지 사이즈 */
   GATHERING_MEMBERS: 9,
+  /** 수집된 사전 의견 페이지 사이즈 */
+  COLLECTED_ANSWERS: 10,
   /** 내 약속 목록 페이지 사이즈 */
   MY_MEETINGS: 4,
 } as const

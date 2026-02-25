@@ -1,21 +1,63 @@
 /**
  * @file retrospectives.api.ts
- * @description 약속 회고 AI 요약 API 요청 함수
+ * @description Retrospectives API 요청 함수
  */
 
 import { api } from '@/api/client'
+import { PAGE_SIZES } from '@/shared/constants'
 
 import { RETROSPECTIVES_ENDPOINTS } from './retrospectives.endpoints'
+import { getMockCollectedAnswers } from './retrospectives.mock'
 import type {
   CreateSttJobParams,
+  GetCollectedAnswersParams,
+  GetCollectedAnswersResponse,
   PublishSummaryParams,
   RetrospectiveSummaryResponse,
   SttJobResponse,
   UpdateSummaryParams,
 } from './retrospectives.types'
 
+/** 목데이터 사용 여부 플래그 */
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
 /** STT 요청 타임아웃: 5분 (동기 API이므로 충분히 길게) */
 const STT_TIMEOUT = 5 * 60 * 1000
+
+/**
+ * 수집된 사전 의견 조회
+ *
+ * @description
+ * 약속의 수집된 사전 의견 목록을 커서 기반 페이지네이션으로 조회합니다.
+ * 사용자별로 각 주제에 대한 답변을 확인할 수 있습니다.
+ *
+ * @param params - 조회 파라미터
+ * @param params.meetingId - 약속 식별자
+ * @param params.pageSize - 페이지 크기 (기본값: 10)
+ * @param params.cursorUserId - 커서: 이전 페이지 마지막 항목의 사용자 ID
+ *
+ * @returns 수집된 사전 의견 목록
+ */
+export const getCollectedAnswers = async (
+  params: GetCollectedAnswersParams
+): Promise<GetCollectedAnswersResponse> => {
+  const { meetingId, pageSize = PAGE_SIZES.COLLECTED_ANSWERS, cursorUserId } = params
+
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockCollectedAnswers(pageSize, cursorUserId)
+  }
+
+  return api.get<GetCollectedAnswersResponse>(
+    RETROSPECTIVES_ENDPOINTS.COLLECTED_ANSWERS(meetingId),
+    {
+      params: {
+        pageSize,
+        cursorUserId,
+      },
+    }
+  )
+}
 
 /**
  * STT Job 생성 (AI 요약 트리거)
