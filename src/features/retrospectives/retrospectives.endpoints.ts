@@ -1,6 +1,10 @@
 import { API_PATHS } from '@/api'
 
 export const RETROSPECTIVES_ENDPOINTS = {
+  /** 수집된 사전 의견 조회 (GET) */
+  COLLECTED_ANSWERS: (meetingId: number) =>
+    `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/collected-answers`,
+
   /** STT Job 생성 (POST) */
   STT_JOBS: (gatheringId: number, meetingId: number) =>
     `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/stt/jobs`,

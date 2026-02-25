@@ -16,6 +16,7 @@ import {
   MeetingCreatePage,
   MeetingDetailPage,
   MeetingRetrospectiveCreatePage,
+  MeetingRetrospectiveDetailPage,
   MeetingRetrospectivePage,
   MeetingSettingPage,
   OnboardingPage,
@@ -120,6 +121,10 @@ export const router = createBrowserRouter([
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/retrospective/personal/view`,
                 element: <PersonalRetrospectiveViewPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/retrospective/detail`,
+                element: <MeetingRetrospectiveDetailPage />,
               },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/setting`,

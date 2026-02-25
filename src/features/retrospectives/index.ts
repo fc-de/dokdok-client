@@ -3,6 +3,7 @@ export * from './components'
 
 // Hooks
 export * from './hooks'
+export * from './retrospectives.endpoints'
 
 // Personal
 export * from './personal'
@@ -13,6 +14,8 @@ export { createSttJob, getSummary, publishSummary, updateSummary } from './retro
 // Types
 export type {
   CreateSttJobParams,
+  GetCollectedAnswersParams,
+  GetCollectedAnswersResponse,
   KeyPoint,
   KeyPointUpdateRequest,
   PublishSummaryParams,

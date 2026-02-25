@@ -33,8 +33,6 @@ export const useConfirmedTopics = (
   params: Omit<GetConfirmedTopicsParams, 'cursorConfirmOrder' | 'cursorTopicId'>
 ) => {
   const { gatheringId, meetingId, pageSize } = params
-  const isValidParams =
-    !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0
 
   return useInfiniteQuery<
     GetConfirmedTopicsResponse,
@@ -54,7 +52,7 @@ export const useConfirmedTopics = (
         cursorTopicId: pageParam?.topicId,
       }),
     // gatheringId와 meetingId가 유효할 때만 쿼리 실행
-    enabled: isValidParams,
+    enabled: gatheringId > 0 && meetingId > 0,
     // 초기 페이지 파라미터 (첫 페이지는 커서 파라미터 없이 요청)
     initialPageParam: null,
     // 다음 페이지 파라미터 가져오기
