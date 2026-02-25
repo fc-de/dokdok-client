@@ -213,7 +213,10 @@ export default function PersonalRetrospectiveViewContent({
             <h3 className="text-black typo-heading3">자유 기록</h3>
             <div className="flex flex-col gap-medium">
               {freeTexts.map((item) => (
-                <div key={`${item.title ?? ''}-${item.content ?? ''}`} className="flex flex-col gap-xsmall">
+                <div
+                  key={`${item.title ?? ''}-${item.content ?? ''}`}
+                  className="flex flex-col gap-xsmall"
+                >
                   {item.title && <p className="text-black typo-subtitle2">{item.title}</p>}
                   {item.content && (
                     <p className="text-black typo-body1 whitespace-pre-wrap">{item.content}</p>
