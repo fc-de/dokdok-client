@@ -12,7 +12,7 @@ export default function TopicError({
   return (
     <div className="flex flex-col items-center justify-center gap-medium py-large">
       <p className="typo-body2 text-grey-600">{message}</p>
-      <Button variant="outline" onClick={onRetry}>
+      <Button outline onClick={onRetry}>
         다시 시도
       </Button>
     </div>
