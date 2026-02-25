@@ -1,19 +1,16 @@
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
-  PersonalRetrospectiveContent,
-  usePersonalRetrospective,
-  usePersonalRetrospectiveForm,
+  PersonalRetrospectiveViewContent,
+  usePersonalRetrospectiveView,
 } from '@/features/retrospectives'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useScrollShadow } from '@/shared/hooks'
-import { showToast } from '@/shared/lib/toast'
 import { cn } from '@/shared/lib/utils'
-import { Button, Spinner } from '@/shared/ui'
-import { useGlobalModalStore } from '@/store'
+import { Button, Spinner, TextButton } from '@/shared/ui'
 
-export default function PersonalRetrospectivePage() {
+export default function PersonalRetrospectiveViewPage() {
   const isScrolled = useScrollShadow()
   const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
     gatheringId: string
@@ -24,22 +21,7 @@ export default function PersonalRetrospectivePage() {
   const meetingId = Number(meetingIdParam)
 
   const navigate = useNavigate()
-  const { openError } = useGlobalModalStore()
-
-  const { data, isLoading, isError } = usePersonalRetrospective({ gatheringId, meetingId })
-
-  const form = usePersonalRetrospectiveForm({
-    meetingId: data?.meetingId ?? 0,
-    topics: data?.topics ?? [],
-    preOpinions: data?.preOpinions ?? [],
-    onSuccess: () => {
-      showToast('개인 회고가 저장되었습니다.')
-      navigate(ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId), { replace: true })
-    },
-    onError: (error) => {
-      openError('저장 실패', error.userMessage)
-    },
-  })
+  const { data, isLoading, isError } = usePersonalRetrospectiveView(meetingId)
 
   if (!gatheringIdParam || !meetingIdParam) return null
 
@@ -54,7 +36,7 @@ export default function PersonalRetrospectivePage() {
       <div
         className={cn(
           'sticky sticky-below-subheader z-30 bg-white transition-shadow',
-          isScrolled && 'shadow-drop-bottom',
+          isScrolled && 'shadow-drop-bottom'
         )}
       >
         <div className="mx-auto max-w-layout-max px-layout-padding w-full">
@@ -65,20 +47,25 @@ export default function PersonalRetrospectivePage() {
                 {data?.meetingHeaderInfo.bookTitle} · {data?.meetingHeaderInfo.bookAuthor}
               </p>
             </div>
-            <Button
-              onClick={(e) => {
-                e.currentTarget.blur()
-                form.submit()
-              }}
-              disabled={form.isSubmitting}
-            >
-              작성 완료
-            </Button>
+            <div className="flex items-center gap-medium">
+              <TextButton
+                onClick={() => navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))}
+              >
+                삭제하기
+              </TextButton>
+              <Button
+                variant="secondary"
+                outline
+                onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId))}
+              >
+                수정하기
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 bg-grey-100 pb-large">
+      <div className="flex-1 pb-large">
         <div className="mx-auto max-w-layout-max px-layout-padding">
           {isLoading && (
             <div className="flex justify-center py-xlarge">
@@ -87,15 +74,12 @@ export default function PersonalRetrospectivePage() {
           )}
 
           {isError && (
-            <p className="text-grey-400 typo-body3">개인 회고 정보를 불러오지 못했습니다.</p>
+            <p className="text-grey-400 typo-body3 pt-large">
+              개인 회고 정보를 불러오지 못했습니다.
+            </p>
           )}
 
-          {data && (
-            <PersonalRetrospectiveContent
-              data={data}
-              form={form}
-            />
-          )}
+          {data && <PersonalRetrospectiveViewContent data={data} />}
         </div>
       </div>
     </div>

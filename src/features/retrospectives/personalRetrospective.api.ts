@@ -6,10 +6,14 @@
 import { api } from '@/api/client'
 
 import { PERSONAL_RETROSPECTIVE_ENDPOINTS } from './personalRetrospective.endpoints'
-import { getMockPersonalRetrospectiveDetail } from './personalRetrospective.mock'
+import {
+  getMockPersonalRetrospectiveDetail,
+  getMockPersonalRetrospectiveView,
+} from './personalRetrospective.mock'
 import type {
   GetPersonalRetrospectiveParams,
   GetPersonalRetrospectiveResponse,
+  GetPersonalRetrospectiveViewResponse,
   SavePersonalRetrospectiveParams,
 } from './personalRetrospective.types'
 
@@ -66,4 +70,25 @@ export const savePersonalRetrospective = async ({
   }
 
   await api.post<void>(PERSONAL_RETROSPECTIVE_ENDPOINTS.SAVE(meetingId), body)
+}
+
+/**
+ * 개인 회고 뷰 조회
+ *
+ * @description
+ * 작성된 개인 회고를 조회합니다. (바뀐 나의 생각, 타인의 관점, 자유 기록)
+ *
+ * @param meetingId - 약속 ID
+ */
+export const getPersonalRetrospectiveView = async (
+  meetingId: number
+): Promise<GetPersonalRetrospectiveViewResponse> => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockPersonalRetrospectiveView()
+  }
+
+  return api.get<GetPersonalRetrospectiveViewResponse>(
+    PERSONAL_RETROSPECTIVE_ENDPOINTS.VIEW(meetingId)
+  )
 }

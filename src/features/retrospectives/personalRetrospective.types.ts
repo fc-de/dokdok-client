@@ -169,3 +169,50 @@ export type GetPersonalRetrospectiveResponse = {
   /** 약속 참여 멤버 목록 */
   meetingMembers: PersonalRetrospectiveMember[]
 }
+
+// ─── 개인 회고 뷰(조회) API 타입 ─────────────────────────────────────────────
+
+/**
+ * 개인 회고 뷰 - 바뀐 나의 생각 항목
+ */
+export type PersonalRetrospectiveViewChangedThought = {
+  topicId: number
+  topicTitle: string
+  keyIssue: string | null
+  preOpinion: string | null
+  postOpinion: string | null
+}
+
+/**
+ * 개인 회고 뷰 - 타인의 관점 항목
+ */
+export type PersonalRetrospectiveViewOthersPerspective = {
+  topicId: number
+  topicTitle: string
+  meetingMemberId: number
+  profileImage: string | null
+  nickname: string
+  opinionContent: string
+  impressiveReason: string
+}
+
+/**
+ * 개인 회고 뷰 - 자유 기록 항목
+ */
+export type PersonalRetrospectiveViewFreeText = {
+  title: string | null
+  content: string | null
+}
+
+/**
+ * 개인 회고 뷰 조회 응답 타입
+ */
+export type GetPersonalRetrospectiveViewResponse = {
+  retrospectiveId: number
+  meetingHeaderInfo: MeetingHeaderInfo
+  retrospective: {
+    changedThoughts: PersonalRetrospectiveViewChangedThought[]
+    othersPerspectives: PersonalRetrospectiveViewOthersPerspective[]
+    freeTexts: PersonalRetrospectiveViewFreeText[]
+  }
+}
