@@ -27,7 +27,13 @@ export default function PersonalRetrospectiveViewPage() {
   const { data, isLoading, isError } = usePersonalRetrospectiveView(meetingId)
   const { mutate: deleteRetrospective, isPending: isDeleting } = useDeletePersonalRetrospective()
 
-  if (!gatheringIdParam || !meetingIdParam) return null
+  if (
+    !Number.isFinite(gatheringId) ||
+    gatheringId <= 0 ||
+    !Number.isFinite(meetingId) ||
+    meetingId <= 0
+  )
+    return null
 
   const handleDelete = async () => {
     const confirmed = await openConfirm('개인 회고 삭제', '작성한 개인 회고를 삭제하시겠습니까?', {
@@ -38,7 +44,7 @@ export default function PersonalRetrospectiveViewPage() {
 
     deleteRetrospective(meetingId, {
       onSuccess: () => {
-        navigate(ROUTES.GATHERING_DETAIL(gatheringIdParam), { replace: true })
+        navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
       },
       onError: (error) => {
         openError('삭제 실패', error.userMessage)
@@ -54,7 +60,7 @@ export default function PersonalRetrospectiveViewPage() {
     <div className="flex flex-col min-h-[calc(100vh-var(--spacing-gnb-height))]">
       <SubPageHeader
         label={data?.meetingHeaderInfo.gatheringName ?? ''}
-        to={ROUTES.GATHERING_DETAIL(gatheringIdParam)}
+        to={ROUTES.GATHERING_DETAIL(gatheringId)}
         disableShadow
       />
 

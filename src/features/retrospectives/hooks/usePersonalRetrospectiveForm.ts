@@ -158,6 +158,8 @@ export function usePersonalRetrospectiveForm({
   }
 
   const submit = () => {
+    if (isSavePending || isUpdatePending) return
+
     const hasPartial =
       (sectionVisibility.changedThoughts && changedThoughts.hasPartialInput) ||
       (sectionVisibility.othersPerspective && othersPerspective.hasPartialInput) ||

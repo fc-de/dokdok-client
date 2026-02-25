@@ -164,7 +164,7 @@ export default function OthersPerspectiveSection({
             </div>
           )
         })}
-        <Button variant="secondary" outline onClick={addItem}>
+        <Button type="button" variant="secondary" outline onClick={addItem}>
           + 관점 추가하기
         </Button>
       </Container>

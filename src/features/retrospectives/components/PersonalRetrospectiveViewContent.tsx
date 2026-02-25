@@ -180,8 +180,11 @@ export default function PersonalRetrospectiveViewContent({
           >
             <h3 className="text-black typo-heading3">타인의 관점</h3>
             <div className="flex flex-col gap-xlarge">
-              {othersPerspectives.map((item, index) => (
-                <div key={index} className="flex flex-col gap-medium">
+              {othersPerspectives.map((item) => (
+                <div
+                  key={`${item.topicId}-${item.meetingMemberId}`}
+                  className="flex flex-col gap-medium"
+                >
                   <span className="text-black typo-subtitle2">{item.topicTitle}</span>
                   <ExcerptBlock className="">
                     <p className="text-grey-700 typo-body3 whitespace-pre-wrap">

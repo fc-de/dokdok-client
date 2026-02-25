@@ -31,6 +31,7 @@ export const usePersonalRetrospectiveView = (meetingId: number) => {
     queryKey: personalRetrospectiveQueryKeys.view(meetingId),
     queryFn: () => getPersonalRetrospectiveView(meetingId),
     enabled: isValid,
+    staleTime: 10 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   })
 }
