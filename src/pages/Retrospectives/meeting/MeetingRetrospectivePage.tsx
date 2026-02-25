@@ -5,7 +5,7 @@ import {
   AiLoadingOverlay,
   AiSummaryToast,
   RetrospectiveSummarySkeleton,
-} from '@/features/retrospectives'
+} from '@/features/retrospectives/meeting'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { Button } from '@/shared/ui'

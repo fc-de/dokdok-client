@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import type { GetCollectedAnswersResponse } from '@/features/retrospectives'
-import { useCollectedAnswers } from '@/features/retrospectives'
+import {
+  type GetCollectedAnswersResponse,
+  useCollectedAnswers,
+} from '@/features/retrospectives/meeting'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
