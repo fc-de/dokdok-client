@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -36,6 +36,7 @@ export default function MeetingDetailPage() {
 
   const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
+  const hasHandledErrorRef = useRef(false)
 
   const {
     data: meeting,
@@ -77,11 +78,12 @@ export default function MeetingDetailPage() {
     meetingId: Number(meetingId),
   })
 
-  // 에러 처리 및 리다이렉트
+  // 에러 처리 및 리다이렉트 (중복 방지)
   useEffect(() => {
     const primaryError = meetingError || proposedError || confirmedError
 
-    if (primaryError) {
+    if (primaryError && !hasHandledErrorRef.current) {
+      hasHandledErrorRef.current = true
       showErrorToast(primaryError.userMessage)
 
       if (gatheringId && !isNaN(Number(gatheringId))) {

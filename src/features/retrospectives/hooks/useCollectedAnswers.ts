@@ -31,7 +31,13 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
  */
 export const useCollectedAnswers = (params: Omit<GetCollectedAnswersParams, 'cursorUserId'>) => {
   const { meetingId, pageSize = PAGE_SIZES.COLLECTED_ANSWERS } = params
-  const isValidParams = !Number.isNaN(meetingId) && meetingId > 0
+  const isValidParams =
+    !Number.isNaN(meetingId) &&
+    meetingId > 0 &&
+    Number.isInteger(meetingId) &&
+    !Number.isNaN(pageSize) &&
+    pageSize > 0 &&
+    Number.isInteger(pageSize)
 
   return useInfiniteQuery<
     GetCollectedAnswersResponse,

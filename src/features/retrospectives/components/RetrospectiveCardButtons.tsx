@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 
-import { MeetingRetroIcon, PersonalRetroIcon } from '@/features/retrospectives/components'
+import meetingRetroIcon from '@/shared/assets/icon/meeting-retro.svg'
+import personalRetroIcon from '@/shared/assets/icon/personal-retro.svg'
 import { ROUTES } from '@/shared/constants'
 
 interface RetrospectiveCardButtonsProps {
@@ -23,7 +24,7 @@ export default function RetrospectiveCardButtons({
         onClick={() => navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))}
       >
         <div className="flex gap-base">
-          <MeetingRetroIcon className="shrink-0" />
+          <img src={meetingRetroIcon} alt="약속 회고" className="shrink-0" />
           <div className="flex flex-col gap-xsmall items-start">
             <div className="flex items-center gap-xsmall">
               <span className="text-black typo-subtitle2">약속 회고</span>
@@ -44,7 +45,7 @@ export default function RetrospectiveCardButtons({
         }}
       >
         <div className="flex gap-base">
-          <PersonalRetroIcon className="shrink-0" />
+          <img src={personalRetroIcon} alt="개인 회고" className="shrink-0" />
 
           <div className="flex flex-col gap-xsmall items-start">
             <div className="flex items-center gap-xsmall">
