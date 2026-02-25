@@ -30,10 +30,16 @@ import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
   const navigate = useNavigate()
-  const { gatheringId, meetingId } = useParams<{
+  const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
     gatheringId: string
     meetingId: string
   }>()
+
+  const parsedGatheringId = gatheringIdParam ? Number(gatheringIdParam) : NaN
+  const parsedMeetingId = meetingIdParam ? Number(meetingIdParam) : NaN
+
+  const gatheringId = Number.isFinite(parsedGatheringId) ? parsedGatheringId : 0
+  const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : 0
 
   const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
@@ -42,7 +48,7 @@ export default function MeetingDetailPage() {
     data: meeting,
     isLoading: meetingLoading,
     error: meetingError,
-  } = useMeetingDetail(Number(meetingId))
+  } = useMeetingDetail(meetingId)
 
   // 사용자 선택이 없으면 progressStatus에 따라 자동 결정
   const activeTab =
@@ -62,8 +68,8 @@ export default function MeetingDetailPage() {
     hasNextPage: hasNextProposedPage,
     isFetchingNextPage: isFetchingNextProposedPage,
   } = useProposedTopics({
-    gatheringId: Number(gatheringId),
-    meetingId: Number(meetingId),
+    gatheringId: gatheringId,
+    meetingId: meetingId,
   })
 
   // 확정된 주제 조회 (무한 스크롤)
@@ -76,21 +82,21 @@ export default function MeetingDetailPage() {
     hasNextPage: hasNextConfirmedPage,
     isFetchingNextPage: isFetchingNextConfirmedPage,
   } = useConfirmedTopics({
-    gatheringId: Number(gatheringId),
-    meetingId: Number(meetingId),
+    gatheringId: gatheringId,
+    meetingId: meetingId,
   })
 
   useEffect(() => {
     if (meetingError) {
       showErrorToast(meetingError.userMessage)
 
-      if (gatheringId && !isNaN(Number(gatheringId))) {
-        navigate(ROUTES.GATHERING_DETAIL(Number(gatheringId)), { replace: true })
+      if (gatheringId !== 0) {
+        navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
       }
     }
   }, [meetingError, navigate, gatheringId])
 
-  if (!gatheringId || !meetingId) return null
+  if (gatheringId === 0 || meetingId === 0) return null
 
   return (
     <>
@@ -119,7 +125,7 @@ export default function MeetingDetailPage() {
                   buttonLabel={meeting.actionState.buttonLabel}
                   isEnabled={meeting.actionState.enabled}
                   type={meeting.actionState.type}
-                  gatheringId={Number(gatheringId)}
+                  gatheringId={gatheringId}
                   meetingId={meeting.meetingId}
                 />
               </>
@@ -130,8 +136,10 @@ export default function MeetingDetailPage() {
           <div className="flex flex-col flex-1 gap-base pb-base">
             {meeting?.progressStatus === 'POST' && (
               <RetrospectiveCardButtons
-                gatheringId={Number(gatheringId)}
-                meetingId={Number(meetingId)}
+                gatheringId={gatheringId}
+                meetingId={meetingId}
+                retrospectiveStatus={meeting.retrospectiveStatus}
+                personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
               />
             )}
 
@@ -177,8 +185,8 @@ export default function MeetingDetailPage() {
                       confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                       proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
                       onOpenChange={setIsConfirmTopicOpen}
-                      gatheringId={Number(gatheringId)}
-                      meetingId={Number(meetingId)}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                     <ProposedTopicList
                       topics={proposedTopicsInfiniteData.pages.flatMap(
@@ -188,8 +196,8 @@ export default function MeetingDetailPage() {
                       hasNextPage={hasNextProposedPage}
                       isFetchingNextPage={isFetchingNextProposedPage}
                       onLoadMore={fetchNextProposedPage}
-                      gatheringId={Number(gatheringId)}
-                      meetingId={Number(meetingId)}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                   </div>
                 )}
@@ -230,8 +238,8 @@ export default function MeetingDetailPage() {
           <ConfirmTopicModal
             open={isConfirmTopicOpen}
             onOpenChange={setIsConfirmTopicOpen}
-            gatheringId={Number(gatheringId)}
-            meetingId={Number(meetingId)}
+            gatheringId={gatheringId}
+            meetingId={meetingId}
           />
         )}
       </div>
