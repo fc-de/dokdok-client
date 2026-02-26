@@ -9,36 +9,49 @@ import { TextButton } from '@/shared/ui/TextButton'
 export interface FormPageHeaderProps {
   /** 페이지 제목 */
   title: string
-  /** 액션 버튼 텍스트 */
-  actionLabel: string
-  /** 액션 버튼 클릭 핸들러 */
-  onAction: () => void
+  /** 액션 버튼 텍스트 (children 미사용 시 필수) */
+  actionLabel?: string
+  /** 액션 버튼 클릭 핸들러 (children 미사용 시 필수) */
+  onAction?: () => void
   /** 액션 버튼 비활성화 여부 */
   isActionDisabled?: boolean
   /** 이동할 경로. 지정하지 않으면 navigate(-1)로 뒤로가기 */
   to?: string
+  /** 커스텀 뒤로가기 핸들러. 전달 시 to 대신 사용 */
+  onBack?: () => void
   /** 외부에서 전달하는 추가 클래스 */
   className?: string
+  /** 커스텀 액션 영역. 전달 시 actionLabel/onAction 대신 렌더링 */
+  children?: React.ReactNode
 }
 
 /**
- * 폼 페이지 상단 헤더 (뒤로가기 + 제목 + 액션 버튼)
+ * 폼 페이지 상단 헤더 (뒤로가기 + 제목 + 액션 영역)
  *
  * @description
  * GNB 아래에 sticky로 고정되는 폼 페이지 헤더입니다.
  * 뒤로가기, 페이지 제목, 제출/저장 버튼으로 구성됩니다.
  * 스크롤 시 하단에 shadow가 자동으로 표시됩니다.
  *
+ * children을 전달하면 액션 영역을 자유롭게 구성할 수 있습니다.
+ *
  * FullWidthLayout에서 사용하며, 전체 너비를 자연스럽게 차지합니다.
  *
  * @example
  * ```tsx
+ * // 기본: 단일 액션 버튼
  * <FormPageHeader
  *   title="약속 만들기"
  *   actionLabel="만들기"
  *   onAction={handleSubmit}
  *   isActionDisabled={isSubmitting}
  * />
+ *
+ * // 커스텀: 여러 버튼
+ * <FormPageHeader title="약속 회고">
+ *   <Button variant="secondary" outline size="small" onClick={handleEdit}>수정하기</Button>
+ *   <Button size="small" onClick={handlePublish}>약속 회고 생성하기</Button>
+ * </FormPageHeader>
  * ```
  */
 export default function FormPageHeader({
@@ -47,13 +60,17 @@ export default function FormPageHeader({
   onAction,
   isActionDisabled = false,
   to,
+  onBack,
   className,
+  children,
 }: FormPageHeaderProps) {
   const navigate = useNavigate()
   const isScrolled = useScrollShadow()
 
   const handleBack = () => {
-    if (to) {
+    if (onBack) {
+      onBack()
+    } else if (to) {
       navigate(to)
     } else {
       navigate(-1)
@@ -74,9 +91,16 @@ export default function FormPageHeader({
         </TextButton>
         <div className="flex items-center justify-between py-large">
           <h2 className="text-black typo-heading3">{title}</h2>
-          <Button className="w-fit" size="small" onClick={onAction} disabled={isActionDisabled}>
-            {actionLabel}
-          </Button>
+          {children ? (
+            <div className="flex items-center gap-xsmall">{children}</div>
+          ) : (
+            actionLabel &&
+            onAction && (
+              <Button className="w-fit" size="small" onClick={onAction} disabled={isActionDisabled}>
+                {actionLabel}
+              </Button>
+            )
+          )}
         </div>
       </div>
     </header>
