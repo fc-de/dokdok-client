@@ -26,7 +26,7 @@ import { personalRetrospectiveQueryKeys } from './personalRetrospectiveQueryKeys
  * ```
  */
 export const usePersonalRetrospectiveEditForm = (meetingId: number, enabled: boolean) => {
-  const isValid = !Number.isNaN(meetingId) && meetingId > 0
+  const isValid = Number.isFinite(meetingId) && meetingId > 0
 
   return useQuery<GetPersonalRetrospectiveEditFormResponse, ApiError>({
     queryKey: personalRetrospectiveQueryKeys.editForm(meetingId),

@@ -22,18 +22,15 @@ export default function PersonalRetrospectiveViewPage() {
   const gatheringId = Number(gatheringIdParam)
   const meetingId = Number(meetingIdParam)
 
+  const isValidIds =
+    Number.isFinite(gatheringId) && gatheringId > 0 && Number.isFinite(meetingId) && meetingId > 0
+
   const navigate = useNavigate()
   const { openConfirm, openError } = useGlobalModalStore()
-  const { data, isLoading, isError } = usePersonalRetrospectiveView(meetingId)
+  const { data, isLoading, isError } = usePersonalRetrospectiveView(isValidIds ? meetingId : -1)
   const { mutate: deleteRetrospective, isPending: isDeleting } = useDeletePersonalRetrospective()
 
-  if (
-    !Number.isFinite(gatheringId) ||
-    gatheringId <= 0 ||
-    !Number.isFinite(meetingId) ||
-    meetingId <= 0
-  )
-    return null
+  if (!isValidIds) return null
 
   const handleDelete = async () => {
     const confirmed = await openConfirm('개인 회고 삭제', '작성한 개인 회고를 삭제하시겠습니까?', {

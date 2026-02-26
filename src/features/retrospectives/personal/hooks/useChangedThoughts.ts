@@ -55,6 +55,10 @@ export function useChangedThoughts(
     postOpinion: overrides[t.topicId]?.postOpinion ?? '',
   }))
 
+  // coreSummary와 postOpinion은 각각 독립적인 선택 입력 항목입니다.
+  // 둘 중 하나만 입력하거나, 둘 다 비워도 유효한 상태이므로
+  // "부분 입력(partial input)" 개념이 존재하지 않아 항상 false로 고정합니다.
+  // (제출 시 두 필드가 모두 비어 있는 항목만 필터링됩니다.)
   const hasPartialInput = false
 
   const reset = useCallback(() => {

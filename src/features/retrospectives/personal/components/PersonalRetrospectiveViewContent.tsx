@@ -49,7 +49,9 @@ export default function PersonalRetrospectiveViewContent({
   )
 
   useEffect(() => {
-    const handleScroll = () => {
+    let timerId: ReturnType<typeof setTimeout> | null = null
+
+    const computeSection = () => {
       let current: string | null = null
       for (const { id } of anchors) {
         const el = document.getElementById(id)
@@ -61,9 +63,20 @@ export default function PersonalRetrospectiveViewContent({
       setActiveSection(current)
     }
 
-    handleScroll()
+    const handleScroll = () => {
+      if (timerId !== null) return
+      timerId = setTimeout(() => {
+        timerId = null
+        computeSection()
+      }, 100)
+    }
+
+    computeSection()
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (timerId !== null) clearTimeout(timerId)
+    }
   }, [anchors])
 
   const scrollToSection = (id: string) => {
@@ -93,7 +106,7 @@ export default function PersonalRetrospectiveViewContent({
                 >
                   <span
                     className={cn(
-                      'typo-body4 transition-colors typo-subtitle2',
+                      'transition-colors typo-subtitle2',
                       isActive ? 'text-black' : 'text-grey-700'
                     )}
                   >
@@ -186,7 +199,7 @@ export default function PersonalRetrospectiveViewContent({
                   className="flex flex-col gap-medium"
                 >
                   <span className="text-black typo-subtitle2">{item.topicTitle}</span>
-                  <ExcerptBlock className="">
+                  <ExcerptBlock>
                     <p className="text-grey-700 typo-body3 whitespace-pre-wrap">
                       {item.opinionContent}
                     </p>

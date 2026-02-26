@@ -17,12 +17,11 @@ export interface ChangedThoughtsSectionProps {
  * @description
  * 각 토픽별로 핵심 쟁점 요약, 모임 전/후 내 의견을 입력하는 폼 섹션입니다.
  * 모임 전 의견은 읽기 전용으로 표시되고, 모임 후 의견은 직접 작성합니다.
- * showErrors가 true가 되면 부분 입력된 항목의 빈 필드에 에러를 표시하고
- * 첫 번째 에러 위치로 스크롤합니다.
+ * 에러 표시 및 스크롤 처리는 상위 컴포넌트에서 담당합니다.
  *
  * @example
  * ```tsx
- * <ChangedThoughtsSection topics={topics} form={changedThoughtsForm} showErrors={showErrors} />
+ * <ChangedThoughtsSection topics={topics} form={changedThoughtsForm} onClose={handleClose} />
  * ```
  */
 export default function ChangedThoughtsSection({

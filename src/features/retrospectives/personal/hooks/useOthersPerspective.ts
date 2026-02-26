@@ -17,6 +17,20 @@ function createItem(): OthersPerspectiveFormItem {
   }
 }
 
+function isPartialItem(item: OthersPerspectiveFormItem): boolean {
+  const hasAny =
+    item.speakerMemberId !== null ||
+    item.topicId !== null ||
+    item.opinion.trim() !== '' ||
+    item.impact.trim() !== ''
+  const hasAll =
+    item.speakerMemberId !== null &&
+    item.topicId !== null &&
+    item.opinion.trim() !== '' &&
+    item.impact.trim() !== ''
+  return hasAny && !hasAll
+}
+
 /**
  * 타인의 관점 섹션 폼 상태 훅
  *
@@ -55,34 +69,12 @@ export function useOthersPerspective(initialItems?: OthersPerspectiveFormItem[])
     (id: string) => {
       const item = items.find((i) => i.id === id)
       if (!item) return false
-      const hasAny =
-        item.speakerMemberId !== null ||
-        item.topicId !== null ||
-        item.opinion.trim() !== '' ||
-        item.impact.trim() !== ''
-      const hasAll =
-        item.speakerMemberId !== null &&
-        item.topicId !== null &&
-        item.opinion.trim() !== '' &&
-        item.impact.trim() !== ''
-      return hasAny && !hasAll
+      return isPartialItem(item)
     },
     [items]
   )
 
-  const hasPartialInput = items.some((item) => {
-    const hasAny =
-      item.speakerMemberId !== null ||
-      item.topicId !== null ||
-      item.opinion.trim() !== '' ||
-      item.impact.trim() !== ''
-    const hasAll =
-      item.speakerMemberId !== null &&
-      item.topicId !== null &&
-      item.opinion.trim() !== '' &&
-      item.impact.trim() !== ''
-    return hasAny && !hasAll
-  })
+  const hasPartialInput = items.some(isPartialItem)
 
   const reset = useCallback(() => {
     setItems([])

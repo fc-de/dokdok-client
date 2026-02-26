@@ -42,6 +42,7 @@ export const usePersonalRetrospective = (
     queryKey: personalRetrospectiveQueryKeys.detail(params),
     queryFn: () => getPersonalRetrospective(params),
     enabled: isValidParams && enabled,
+    staleTime: 10 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
   })
 }
