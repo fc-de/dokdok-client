@@ -97,11 +97,11 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       {/* 감상 기록 헤더 - sticky */}
       <div
         className={cn(
-          'sticky top-[108px] z-20 bg-white transition-shadow w-screen ml-[calc(-50vw+50%)]',
+          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow',
           isSticky && 'shadow-drop-bottom'
         )}
       >
-        <div className="mx-auto max-w-layout-max px-layout-padding py-base ">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
             <Button onClick={handleCreateRecord}>기록 추가하기</Button>
@@ -163,8 +163,8 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       </div>
 
       {/* 기록 목록 - full-bleed 배경 */}
-      <div className="w-screen relative left-1/2 -translate-x-1/2 bg-grey-100">
-        <section className="max-w-[1200px] mx-auto py-xlarge">
+      <div className="bg-grey-100">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
           {isRecordsLoading ? (
             <BookLogListSkeleton />
           ) : allRecords.length === 0 ? (
@@ -246,7 +246,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
               {hasNextPage && <div ref={observerRef} className="h-10" />}
             </div>
           )}
-        </section>
+        </div>
       </div>
       <PersonalRecordModal
         open={isModalOpen}

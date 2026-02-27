@@ -1,6 +1,6 @@
 /**
  * @file keywords.api.ts
- * @description 키워드 API 함수
+ * @description 키워드 API 요청 함수
  */
 
 import { api } from '@/api'
@@ -15,6 +15,7 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 // ============================================================
 // API Functions
 // ============================================================
+
 
 /**
  * 키워드 목록 조회

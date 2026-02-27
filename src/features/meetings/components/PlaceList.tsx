@@ -3,51 +3,47 @@
  * @description 장소 검색 결과 목록 컴포넌트
  */
 
-import type { KakaoPlace } from '../kakaoMap.types'
+import type { KakaoPlace } from '@/features/kakaomap'
+import { Button } from '@/shared/ui'
 
 export type PlaceListProps = {
   /** 장소 목록 */
   places: KakaoPlace[]
-  /** 장소 클릭 핸들러 */
+  /** li 클릭 시 지도 포커스 핸들러 */
+  onPlaceFocus: (place: KakaoPlace) => void
+  /** 선택 버튼 클릭 핸들러 */
   onPlaceClick: (place: KakaoPlace) => void
-  /** 장소 hover 핸들러 */
-  onPlaceHover?: (place: KakaoPlace, index: number) => void
-  /** 장소 hover 종료 핸들러 */
-  onPlaceHoverEnd?: () => void
 }
 
-export default function PlaceList({
-  places,
-  onPlaceClick,
-  onPlaceHover,
-  onPlaceHoverEnd,
-}: PlaceListProps) {
-  if (places.length === 0) {
-    return (
-      <div className="w-[300px] flex items-center justify-center">
-        <p className="text-center text-grey-600 typo-body3">검색 결과가 없습니다</p>
-      </div>
-    )
-  }
-
+export default function PlaceList({ places, onPlaceFocus, onPlaceClick }: PlaceListProps) {
   return (
-    <div className="w-[300px] flex flex-col gap-xtiny overflow-y-auto custom-scroll">
-      {places.map((place, index) => (
-        <button
+    <ul className="flex flex-col overflow-y-auto custom-scroll">
+      {places.map((place) => (
+        <li
           key={place.id}
-          type="button"
-          onClick={() => onPlaceClick(place)}
-          onMouseEnter={() => onPlaceHover?.(place, index)}
-          onMouseLeave={onPlaceHoverEnd}
-          className="text-left transition-colors bg-white border p-small rounded-small border-grey-300 hover:bg-grey-50 cursor-pointer"
+          onClick={() => onPlaceFocus(place)}
+          className="transition-colors bg-white border-b border-grey-300 hover:bg-grey-200 cursor-pointer p-medium pb-base"
         >
-          <p className="text-black typo-subtitle5 mb-xtiny">{place.place_name}</p>
-          <p className="typo-body4 text-grey-600 line-clamp-2">
-            {place.road_address_name || place.address_name}
-          </p>
-          {place.phone && <p className="typo-body4 text-grey-500 mt-xtiny">{place.phone}</p>}
-        </button>
+          <div className="mb-tiny flex gap-xsmall items-center">
+            <p className="text-black typo-subtitle3 ">{place.place_name}</p>
+            <span className="typo-body6 text-grey-600">{place.category_group_name}</span>
+          </div>
+          <p className="typo-body4 text-grey-700 mb-xsmall">{place.road_address_name}</p>
+
+          <div className="flex justify-end">
+            <Button
+              variant="secondary"
+              outline
+              onClick={(e) => {
+                e.stopPropagation()
+                onPlaceClick(place)
+              }}
+            >
+              선택
+            </Button>
+          </div>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }

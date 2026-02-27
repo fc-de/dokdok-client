@@ -13,7 +13,10 @@ import type {
   CreateMeetingResponse,
   GetMeetingApprovalsParams,
   GetMeetingDetailResponse,
+  GetMyMeetingsParams,
   MeetingApprovalItem,
+  MyMeetingListResponse,
+  MyMeetingTabCountsResponse,
   RejectMeetingResponse,
   UpdateMeetingRequest,
   UpdateMeetingResponse,
@@ -221,4 +224,25 @@ export const updateMeeting = async (meetingId: number, data: UpdateMeetingReques
     data
   )
   return response.data
+}
+
+/**
+ * 메인페이지 내 약속 리스트 조회
+ *
+ * @param params - 조회 파라미터 (filter, cursor, size)
+ * @returns 내 약속 리스트 (커서 기반 페이지네이션)
+ */
+export const getMyMeetings = async (
+  params: GetMyMeetingsParams
+): Promise<MyMeetingListResponse> => {
+  return api.get<MyMeetingListResponse>(MEETINGS_ENDPOINTS.MY_MEETINGS, { params })
+}
+
+/**
+ * 메인페이지 내 약속 탭 카운트 조회
+ *
+ * @returns 탭별 약속 카운트 (all, upcoming, done)
+ */
+export const getMyMeetingTabCounts = async (): Promise<MyMeetingTabCountsResponse> => {
+  return api.get<MyMeetingTabCountsResponse>(MEETINGS_ENDPOINTS.MY_MEETING_TAB_COUNTS)
 }

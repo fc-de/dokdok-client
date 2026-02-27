@@ -2,6 +2,7 @@ export * from './book.api'
 export * from './book.types'
 export {
   BookCard,
+  BookCarousel,
   BookInfo,
   BookList,
   BookLogList,

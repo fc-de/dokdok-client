@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
+import { useScrollShadow } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { TextButton } from '@/shared/ui/TextButton'
 
@@ -11,6 +12,8 @@ export interface SubPageHeaderProps {
   to?: string
   /** 외부에서 전달하는 추가 클래스 */
   className?: string
+  /** 스크롤 시 하단 shadow 비활성화 */
+  disableShadow?: boolean
 }
 
 /**
@@ -20,6 +23,9 @@ export interface SubPageHeaderProps {
  * GNB 아래에 sticky로 고정되는 뒤로가기 헤더입니다.
  * 기본 동작은 브라우저 히스토리 뒤로가기이며,
  * `to` prop으로 특정 경로를 지정할 수 있습니다.
+ * 스크롤 시 하단에 shadow가 자동으로 표시됩니다.
+ *
+ * FullWidthLayout에서 사용하며, 전체 너비를 자연스럽게 차지합니다.
  *
  * @example
  * ```tsx
@@ -27,8 +33,14 @@ export interface SubPageHeaderProps {
  * <SubPageHeader label="내 책장" to="/books" />
  * ```
  */
-export default function SubPageHeader({ label = '뒤로가기', to, className }: SubPageHeaderProps) {
+export default function SubPageHeader({
+  label = '뒤로가기',
+  to,
+  className,
+  disableShadow = false,
+}: SubPageHeaderProps) {
   const navigate = useNavigate()
+  const isScrolled = useScrollShadow()
 
   const handleClick = () => {
     if (to) {
@@ -42,11 +54,12 @@ export default function SubPageHeader({ label = '뒤로가기', to, className }:
     <nav
       aria-label={`${label} 페이지로 이동`}
       className={cn(
-        'sticky top-gnb-height z-40 bg-white transition-shadow w-screen ml-[calc(-50vw+50%)]',
+        'sticky top-gnb-height z-40 bg-white transition-shadow',
+        isScrolled && !disableShadow && 'shadow-drop-bottom',
         className
       )}
     >
-      <div className="mx-auto max-w-layout-max px-layout-padding py-small">
+      <div className="mx-auto max-w-layout-max px-layout-padding py-small h-[59px] flex items-end">
         <TextButton size="medium" icon={ChevronLeft} onClick={handleClick}>
           {label}
         </TextButton>

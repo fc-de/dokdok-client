@@ -7,6 +7,7 @@ import {
   type MeetingStatus,
   useMeetingApprovals,
 } from '@/features/meetings'
+import SubPageHeader from '@/shared/components/SubPageHeader'
 import { PAGE_SIZES } from '@/shared/constants'
 import { Container } from '@/shared/ui/Container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
@@ -68,68 +69,69 @@ export default function MeetingSettingPage() {
   const confirmedCount = confirmedData?.totalCount
 
   return (
-    <div>
-      {/* 공통컴포넌트로 대체 예정 */}
-      {/* <p className="flex items-center typo-body3 text-grey-600 gap-xtiny">뒤로가기</p>
-      <h2 className="text-black typo-heading3">약속 설정</h2> */}
-
-      <Container>
-        <Container.Title>약속 관리</Container.Title>
-        <Container.Content>
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) => setActiveTab(value as MeetingTab)}
-            className="gap-0"
-          >
-            <TabsList className="border-b border-grey-300" size="medium">
-              <TabsTrigger
-                className="typo-subtitle2"
-                value="PENDING"
-                badge={isPendingLoading || isPendingError ? '-' : pendingCount}
-                size="medium"
+    <>
+      <SubPageHeader label="약속 설정" />
+      <div className="bg-grey-100">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
+          <Container>
+            <Container.Title>약속 관리</Container.Title>
+            <Container.Content>
+              <Tabs
+                value={activeTab}
+                onValueChange={(value) => setActiveTab(value as MeetingTab)}
+                className="gap-0"
               >
-                확정 대기
-              </TabsTrigger>
-              <TabsTrigger
-                className="typo-subtitle2"
-                value="CONFIRMED"
-                badge={isConfirmedLoading || isConfirmedError ? '-' : confirmedCount}
-                size="medium"
-              >
-                확정 완료
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="PENDING">
-              {isPendingLoading || isPendingError ? (
-                <MeetingApprovalListSkeleton />
-              ) : (
-                pendingData && (
-                  <MeetingApprovalList
-                    data={pendingData}
-                    gatheringId={gatheringId}
-                    currentPage={pendingPage}
-                    onPageChange={setPendingPage}
-                  />
-                )
-              )}
-            </TabsContent>
-            <TabsContent value="CONFIRMED">
-              {isConfirmedLoading || isConfirmedError ? (
-                <MeetingApprovalListSkeleton />
-              ) : (
-                confirmedData && (
-                  <MeetingApprovalList
-                    data={confirmedData}
-                    gatheringId={gatheringId}
-                    currentPage={confirmedPage}
-                    onPageChange={setConfirmedPage}
-                  />
-                )
-              )}
-            </TabsContent>
-          </Tabs>
-        </Container.Content>
-      </Container>
-    </div>
+                <TabsList className="border-b border-grey-300" size="medium">
+                  <TabsTrigger
+                    className="typo-subtitle2"
+                    value="PENDING"
+                    badge={isPendingLoading || isPendingError ? '-' : pendingCount}
+                    size="medium"
+                  >
+                    확정 대기
+                  </TabsTrigger>
+                  <TabsTrigger
+                    className="typo-subtitle2"
+                    value="CONFIRMED"
+                    badge={isConfirmedLoading || isConfirmedError ? '-' : confirmedCount}
+                    size="medium"
+                  >
+                    확정 완료
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="PENDING">
+                  {isPendingLoading || isPendingError ? (
+                    <MeetingApprovalListSkeleton />
+                  ) : (
+                    pendingData && (
+                      <MeetingApprovalList
+                        data={pendingData}
+                        gatheringId={gatheringId}
+                        currentPage={pendingPage}
+                        onPageChange={setPendingPage}
+                      />
+                    )
+                  )}
+                </TabsContent>
+                <TabsContent value="CONFIRMED">
+                  {isConfirmedLoading || isConfirmedError ? (
+                    <MeetingApprovalListSkeleton />
+                  ) : (
+                    confirmedData && (
+                      <MeetingApprovalList
+                        data={confirmedData}
+                        gatheringId={gatheringId}
+                        currentPage={confirmedPage}
+                        onPageChange={setConfirmedPage}
+                      />
+                    )
+                  )}
+                </TabsContent>
+              </Tabs>
+            </Container.Content>
+          </Container>
+        </div>
+      </div>
+    </>
   )
 }

@@ -202,6 +202,12 @@ export type MeetingDetailActionStateType =
   | 'JOIN_TIME_EXPIRED'
 
 export type MeetingProgressStatus = 'PRE' | 'ONGOING' | 'POST'
+
+/**
+ * 약속 회고 작성 상태 타입
+ */
+export type RetrospectiveStatus = 'NOT_CREATED' | 'AI_SUMMARY_COMPLETED' | 'FINAL_PUBLISHED'
+
 /**
  * 약속 상세 조회 응답 타입
  */
@@ -218,6 +224,10 @@ export type GetMeetingDetailResponse = {
   confirmedTopic: boolean
   /** 주제 확정 일시 */
   confirmedTopicDate: string | null
+  /** 약속 회고 작성 상태 */
+  retrospectiveStatus: RetrospectiveStatus
+  /** 개인 회고 작성 여부 */
+  personalRetrospectiveWritten: boolean
   /** 모임 정보 */
   gathering: {
     gatheringId: number
@@ -252,4 +262,63 @@ export type GetMeetingDetailResponse = {
     buttonLabel: string
     enabled: boolean
   }
+}
+
+// ============================================================
+// 메인페이지 내 약속 리스트 관련 타입
+// ============================================================
+
+/** 메인페이지 약속 진행 상태 (시간 기준) */
+export type MyMeetingProgressStatus = 'UPCOMING' | 'ONGOING' | 'DONE' | 'UNKNOWN'
+
+/** 메인페이지 내 역할 */
+export type MyMeetingRole = 'LEADER' | 'GATHERING_LEADER' | 'MEMBER' | 'NONE'
+
+/** 메인페이지 약속 필터 */
+export type MyMeetingFilter = 'ALL' | 'UPCOMING' | 'DONE'
+
+/** 메인페이지 내 약속 아이템 */
+export interface MyMeetingListItem {
+  meetingId: number
+  meetingName: string
+  gatheringId: number
+  gatheringName: string
+  meetingLeaderName: string
+  bookName: string
+  startDateTime: string
+  endDateTime: string
+  meetingStatus: MeetingStatus | 'REJECTED' | 'DONE'
+  myRole: MyMeetingRole
+  progressStatus: MyMeetingProgressStatus
+  preOpinionTemplateConfirmed: boolean
+}
+
+/** 메인페이지 내 약속 커서 */
+export interface MyMeetingCursor {
+  startDateTime: string
+  meetingId: number
+}
+
+/** 메인페이지 내 약속 리스트 응답 */
+export interface MyMeetingListResponse {
+  items: MyMeetingListItem[]
+  totalCount: number
+  pageSize: number
+  hasNext: boolean
+  nextCursor: MyMeetingCursor | null
+}
+
+/** 메인페이지 내 약속 조회 파라미터 */
+export interface GetMyMeetingsParams {
+  filter: MyMeetingFilter
+  startDateTime?: string
+  meetingId?: number
+  size?: number
+}
+
+/** 메인페이지 내 약속 탭 카운트 응답 */
+export interface MyMeetingTabCountsResponse {
+  all: number
+  upcoming: number
+  done: number
 }

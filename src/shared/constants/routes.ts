@@ -24,6 +24,10 @@ export const ROUTES = {
   INVITE_BASE: '/invite',
   INVITE: (invitationCode: string) => `/invite/${invitationCode}`,
 
+  // Pre-opinions
+  PRE_OPINION_WRITE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/pre-opinions/new`,
+
   // Meetings
   MEETING_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}`,
@@ -37,6 +41,14 @@ export const ROUTES = {
   // Topics
   TOPICS_CREATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/topic-create`,
+
+  // Retrospectives (약속 회고)
+  MEETING_RETROSPECTIVE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective`,
+  MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
+  MEETING_RETROSPECTIVE_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/detail`,
 
   // Records
   RECORDS: '/records',

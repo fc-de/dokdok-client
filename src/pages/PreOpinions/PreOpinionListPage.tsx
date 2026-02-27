@@ -5,9 +5,8 @@ import {
   PreOpinionDetail,
   PreOpinionMemberList,
   usePreOpinionAnswers,
-} from '@/features/preOpinions'
+} from '@/features/pre-opinion'
 import SubPageHeader from '@/shared/components/SubPageHeader'
-import { useScrollCollapse } from '@/shared/hooks'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -15,7 +14,6 @@ export default function PreOpinionListPage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
   const navigate = useNavigate()
   const openError = useGlobalModalStore((state) => state.openError)
-  const isSticky = useScrollCollapse()
   const [selectedMemberId, setSelectedMemberId] = useState<number | null>(null)
 
   const { data, isLoading, error } = usePreOpinionAnswers({
@@ -42,31 +40,33 @@ export default function PreOpinionListPage() {
 
   return (
     <>
-      <SubPageHeader className={isSticky ? 'shadow-drop-bottom' : ''} />
-      <h3 className="typo-heading3 text-black mt-large mb-[27px]">사전 의견</h3>
-      <div className="flex gap-xlarge">
-        {/* 왼쪽: 멤버 리스트 */}
-        {data && (
-          <PreOpinionMemberList
-            members={data.members}
-            selectedMemberId={activeMemberId}
-            onSelectMember={setSelectedMemberId}
-          />
-        )}
+      <SubPageHeader />
+      <div className="mx-auto max-w-layout-max px-layout-padding">
+        <h3 className="typo-heading3 text-black mt-large mb-6.75">사전 의견</h3>
+        <div className="flex gap-xlarge">
+          {/* 왼쪽: 멤버 리스트 */}
+          {data && (
+            <PreOpinionMemberList
+              members={data.members}
+              selectedMemberId={activeMemberId}
+              onSelectMember={setSelectedMemberId}
+            />
+          )}
 
-        {/* 오른쪽: 선택된 멤버의 의견 상세 */}
-        {selectedMember && data ? (
-          <PreOpinionDetail
-            member={selectedMember}
-            topics={data.topics}
-            gatheringId={Number(gatheringId)}
-            meetingId={Number(meetingId)}
-          />
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="typo-body2 text-grey-500">멤버를 선택해주세요</p>
-          </div>
-        )}
+          {/* 오른쪽: 선택된 멤버의 의견 상세 */}
+          {selectedMember && data ? (
+            <PreOpinionDetail
+              member={selectedMember}
+              topics={data.topics}
+              gatheringId={Number(gatheringId)}
+              meetingId={Number(meetingId)}
+            />
+          ) : (
+            <div className="flex-1 flex items-center justify-center">
+              <p className="typo-body2 text-grey-500">멤버를 선택해주세요</p>
+            </div>
+          )}
+        </div>
       </div>
     </>
   )
