@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import type { KeyPoint, SummaryTopic } from '@/features/retrospectives'
+import type { EditableKeyPoint, SummaryTopic } from '@/features/retrospectives'
 import {
   RetrospectiveSummarySkeleton,
   SummaryInfoBanner,
@@ -30,31 +30,38 @@ export default function MeetingRetrospectiveResultPage() {
   const mId = Number(meetingId)
 
   // 요약 데이터 조회
-  const { data: summaryData, isLoading } = useSummary(mId)
+  const { data: summaryData, isLoading, isError, refetch } = useSummary(mId)
 
   // 뮤테이션
   const updateMutation = useUpdateSummary()
   const publishMutation = usePublishSummary()
 
   // 수정 모드
+  type EditableSummaryTopic = Omit<SummaryTopic, 'keyPoints'> & { keyPoints: EditableKeyPoint[] }
+
   const [isEditing, setIsEditing] = useState(false)
-  const [editedTopics, setEditedTopics] = useState<SummaryTopic[]>([])
+  const [editedTopics, setEditedTopics] = useState<EditableSummaryTopic[]>([])
 
   // CreatePage에서 AI 요약 완료 후 도착했을 때 토스트 표시
   const fromAiSummary = (location.state as LocationState)?.fromAiSummary ?? false
 
   useEffect(() => {
     if (fromAiSummary) {
-      window.history.replaceState({}, '')
+      navigate(location.pathname, { replace: true, state: null })
       showToast('독서 모임 내용 요약이 완료됐어요')
     }
-  }, [fromAiSummary])
+  }, [fromAiSummary, navigate, location.pathname])
 
   // ─── 수정 모드 핸들러 ───
 
   const handleStartEdit = () => {
     if (!summaryData) return
-    setEditedTopics(structuredClone(summaryData.topics))
+    setEditedTopics(
+      summaryData.topics.map((topic) => ({
+        ...topic,
+        keyPoints: topic.keyPoints.map((kp) => ({ ...kp, id: crypto.randomUUID() })),
+      }))
+    )
     setIsEditing(true)
   }
 
@@ -106,7 +113,7 @@ export default function MeetingRetrospectiveResultPage() {
     })
   }
 
-  const handleKeyPointsChange = (topicIndex: number, keyPoints: KeyPoint[]) => {
+  const handleKeyPointsChange = (topicIndex: number, keyPoints: EditableKeyPoint[]) => {
     setEditedTopics((prev) => {
       const next = [...prev]
       next[topicIndex] = { ...next[topicIndex], keyPoints }
@@ -116,7 +123,7 @@ export default function MeetingRetrospectiveResultPage() {
 
   if (!gatheringId || !meetingId) return null
 
-  const topics: SummaryTopic[] = isEditing ? editedTopics : (summaryData?.topics ?? [])
+  const topics = isEditing ? editedTopics : (summaryData?.topics ?? [])
 
   return (
     <div className="min-h-screen bg-grey-100">
@@ -165,6 +172,13 @@ export default function MeetingRetrospectiveResultPage() {
         {/* 토픽 카드 */}
         {isLoading ? (
           <RetrospectiveSummarySkeleton />
+        ) : isError ? (
+          <div className="flex flex-col items-center gap-base py-xlarge">
+            <p className="typo-body4 text-grey-600">요약 정보를 불러오지 못했습니다.</p>
+            <Button size="small" onClick={() => refetch()}>
+              다시 시도
+            </Button>
+          </div>
         ) : topics.length > 0 ? (
           topics.map((topic, index) => (
             <TopicSummaryCard

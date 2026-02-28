@@ -83,7 +83,7 @@ export const createSttJob = async (
       const timer = setTimeout(resolve, 2000)
       signal?.addEventListener('abort', () => {
         clearTimeout(timer)
-        reject(new DOMException('The operation was aborted.', 'AbortError'))
+        reject(new Error('canceled'))
       })
     })
     return {
@@ -124,7 +124,7 @@ export const createSttJob = async (
 export const getSummary = async (meetingId: number): Promise<RetrospectiveSummaryResponse> => {
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 300))
-    return getMockSummary()
+    return getMockSummary(meetingId)
   }
 
   return api.get<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId))
@@ -140,7 +140,7 @@ export const updateSummary = async (
 ): Promise<RetrospectiveSummaryResponse> => {
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 300))
-    return mockUpdateSummary(params.data)
+    return mockUpdateSummary(params.meetingId, params.data)
   }
 
   const { meetingId, data } = params
@@ -157,7 +157,7 @@ export const publishSummary = async (
 ): Promise<RetrospectiveSummaryResponse> => {
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 300))
-    return mockPublishSummary()
+    return mockPublishSummary(params.meetingId)
   }
 
   return api.post<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.PUBLISH(params.meetingId))

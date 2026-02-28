@@ -6,13 +6,9 @@ import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { TextButton } from '@/shared/ui/TextButton'
 
-export interface FormPageHeaderProps {
+interface FormPageHeaderBaseProps {
   /** 페이지 제목 */
   title: string
-  /** 액션 버튼 텍스트 (children 미사용 시 필수) */
-  actionLabel?: string
-  /** 액션 버튼 클릭 핸들러 (children 미사용 시 필수) */
-  onAction?: () => void
   /** 액션 버튼 비활성화 여부 */
   isActionDisabled?: boolean
   /** 이동할 경로. 지정하지 않으면 navigate(-1)로 뒤로가기 */
@@ -21,9 +17,24 @@ export interface FormPageHeaderProps {
   onBack?: () => void
   /** 외부에서 전달하는 추가 클래스 */
   className?: string
-  /** 커스텀 액션 영역. 전달 시 actionLabel/onAction 대신 렌더링 */
-  children?: React.ReactNode
 }
+
+interface FormPageHeaderWithAction extends FormPageHeaderBaseProps {
+  /** 액션 버튼 텍스트 */
+  actionLabel: string
+  /** 액션 버튼 클릭 핸들러 */
+  onAction: () => void
+  children?: never
+}
+
+interface FormPageHeaderWithChildren extends FormPageHeaderBaseProps {
+  actionLabel?: never
+  onAction?: never
+  /** 커스텀 액션 영역. 전달 시 actionLabel/onAction 대신 렌더링 */
+  children: React.ReactNode
+}
+
+export type FormPageHeaderProps = FormPageHeaderWithAction | FormPageHeaderWithChildren
 
 /**
  * 폼 페이지 상단 헤더 (뒤로가기 + 제목 + 액션 영역)

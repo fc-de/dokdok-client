@@ -4,13 +4,16 @@ import { Card, Textarea } from '@/shared/ui'
 
 import type { KeyPoint, SummaryTopic } from '../retrospectives.types'
 
+/** 편집 모드에서 사용하는 KeyPoint 타입 (stable key용 id 포함) */
+export type EditableKeyPoint = KeyPoint & { id: string }
+
 type TopicSummaryCardProps = {
   topic: SummaryTopic
   isEditing: boolean
   editedSummary?: string
-  editedKeyPoints?: KeyPoint[]
+  editedKeyPoints?: EditableKeyPoint[]
   onSummaryChange?: (value: string) => void
-  onKeyPointsChange?: (keyPoints: KeyPoint[]) => void
+  onKeyPointsChange?: (keyPoints: EditableKeyPoint[]) => void
 }
 
 export default function TopicSummaryCard({
@@ -23,19 +26,19 @@ export default function TopicSummaryCard({
 }: TopicSummaryCardProps) {
   const { topicTitle, topicDescription, summary, keyPoints } = topic
   const displaySummary = isEditing ? (editedSummary ?? summary) : summary
-  const displayKeyPoints = isEditing ? (editedKeyPoints ?? keyPoints) : keyPoints
+  const editingKeyPoints = editedKeyPoints ?? []
 
   // ─── keyPoints 수정 핸들러 ───
 
   const handleTitleChange = (kpIndex: number, value: string) => {
     onKeyPointsChange?.(
-      displayKeyPoints.map((kp, i) => (i === kpIndex ? { ...kp, title: value } : kp))
+      editingKeyPoints.map((kp, i) => (i === kpIndex ? { ...kp, title: value } : kp))
     )
   }
 
   const handleDetailChange = (kpIndex: number, detailIndex: number, value: string) => {
     onKeyPointsChange?.(
-      displayKeyPoints.map((kp, i) =>
+      editingKeyPoints.map((kp, i) =>
         i === kpIndex
           ? { ...kp, details: kp.details.map((d, j) => (j === detailIndex ? value : d)) }
           : kp
@@ -44,16 +47,16 @@ export default function TopicSummaryCard({
   }
 
   const handleAddKeyPoint = () => {
-    onKeyPointsChange?.([...displayKeyPoints, { title: '', details: [''] }])
+    onKeyPointsChange?.([...editingKeyPoints, { title: '', details: [''], id: crypto.randomUUID() }])
   }
 
   const handleRemoveKeyPoint = (kpIndex: number) => {
-    onKeyPointsChange?.(displayKeyPoints.filter((_, i) => i !== kpIndex))
+    onKeyPointsChange?.(editingKeyPoints.filter((_, i) => i !== kpIndex))
   }
 
   const handleAddDetail = (kpIndex: number) => {
     onKeyPointsChange?.(
-      displayKeyPoints.map((kp, i) =>
+      editingKeyPoints.map((kp, i) =>
         i === kpIndex ? { ...kp, details: [...kp.details, ''] } : kp
       )
     )
@@ -61,7 +64,7 @@ export default function TopicSummaryCard({
 
   const handleRemoveDetail = (kpIndex: number, detailIndex: number) => {
     onKeyPointsChange?.(
-      displayKeyPoints.map((kp, i) =>
+      editingKeyPoints.map((kp, i) =>
         i === kpIndex ? { ...kp, details: kp.details.filter((_, j) => j !== detailIndex) } : kp
       )
     )
@@ -97,8 +100,8 @@ export default function TopicSummaryCard({
             <h5 className="typo-subtitle2 text-black">주요포인트</h5>
             {isEditing ? (
               <div className="rounded-small border border-grey-400 px-medium py-base transition-colors focus-within:border-primary-200">
-                {displayKeyPoints.map((kp, kpIndex) => (
-                  <div key={kpIndex} className={kpIndex > 0 ? 'mt-base' : ''}>
+                {editingKeyPoints.map((kp, kpIndex) => (
+                  <div key={kp.id} className={kpIndex > 0 ? 'mt-base' : ''}>
                     {/* 포인트 제목 */}
                     <div className="flex items-center gap-xsmall">
                       <span className="shrink-0 typo-subtitle2 text-black">{kpIndex + 1}.</span>
@@ -158,14 +161,14 @@ export default function TopicSummaryCard({
                 <button
                   type="button"
                   onClick={handleAddKeyPoint}
-                  className={`flex items-center gap-xtiny typo-body4 text-grey-500 hover:text-primary-400 ${displayKeyPoints.length > 0 ? 'mt-small' : ''}`}
+                  className={`flex items-center gap-xtiny typo-body4 text-grey-500 hover:text-primary-400 ${editingKeyPoints.length > 0 ? 'mt-small' : ''}`}
                 >
                   <Plus size={12} />
                   포인트 추가
                 </button>
               </div>
             ) : (
-              displayKeyPoints.map((kp, kpIndex) => (
+              keyPoints.map((kp, kpIndex) => (
                 <div key={kpIndex} className="flex flex-col gap-xtiny">
                   <p className="typo-subtitle5 text-black">
                     {kpIndex + 1}. {kp.title}
