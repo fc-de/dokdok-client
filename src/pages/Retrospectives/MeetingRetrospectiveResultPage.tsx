@@ -19,6 +19,8 @@ type LocationState = {
   fromAiSummary?: boolean
 }
 
+type EditableSummaryTopic = Omit<SummaryTopic, 'keyPoints'> & { keyPoints: EditableKeyPoint[] }
+
 export default function MeetingRetrospectiveResultPage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -37,8 +39,6 @@ export default function MeetingRetrospectiveResultPage() {
   const publishMutation = usePublishSummary()
 
   // 수정 모드
-  type EditableSummaryTopic = Omit<SummaryTopic, 'keyPoints'> & { keyPoints: EditableKeyPoint[] }
-
   const [isEditing, setIsEditing] = useState(false)
   const [editedTopics, setEditedTopics] = useState<EditableSummaryTopic[]>([])
 
@@ -52,7 +52,11 @@ export default function MeetingRetrospectiveResultPage() {
     }
   }, [fromAiSummary, navigate, location.pathname])
 
+  // ─── 유효성 검사 (모든 hook 호출 이후) ───
+  if (!gatheringId || !meetingId || !Number.isInteger(mId) || mId <= 0) return null
+
   // ─── 수정 모드 핸들러 ───
+  // guard 통과 후 TypeScript가 gatheringId, meetingId를 string으로 좁힘
 
   const handleStartEdit = () => {
     if (!summaryData) return
@@ -100,7 +104,7 @@ export default function MeetingRetrospectiveResultPage() {
       {
         onSuccess: () => {
           showToast('약속 회고가 생성되었습니다.')
-          navigate(ROUTES.MEETING_RETROSPECTIVE_DETAIL(gatheringId!, meetingId!))
+          navigate(ROUTES.MEETING_RETROSPECTIVE_DETAIL(gatheringId, meetingId))
         },
         onError: (error) => showErrorToast(error.userMessage ?? '발행에 실패했습니다.'),
       }
@@ -125,9 +129,8 @@ export default function MeetingRetrospectiveResultPage() {
     })
   }
 
-  if (!gatheringId || !meetingId || !Number.isInteger(mId) || mId <= 0) return null
-
-  const topics = isEditing ? editedTopics : (summaryData?.topics ?? [])
+  // topic 표시는 항상 서버 원본(SummaryTopic[])을 사용, 편집 상태는 별도 prop으로 전달
+  const displayTopics = summaryData?.topics ?? []
 
   return (
     <div className="min-h-screen bg-grey-100">
@@ -183,8 +186,8 @@ export default function MeetingRetrospectiveResultPage() {
               다시 시도
             </Button>
           </div>
-        ) : topics.length > 0 ? (
-          topics.map((topic, index) => (
+        ) : displayTopics.length > 0 ? (
+          displayTopics.map((topic, index) => (
             <TopicSummaryCard
               key={topic.topicId}
               topic={topic}
