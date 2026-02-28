@@ -47,7 +47,10 @@ export default function TopicSummaryCard({
   }
 
   const handleAddKeyPoint = () => {
-    onKeyPointsChange?.([...editingKeyPoints, { title: '', details: [''], id: crypto.randomUUID() }])
+    onKeyPointsChange?.([
+      ...editingKeyPoints,
+      { title: '', details: [''], id: crypto.randomUUID() },
+    ])
   }
 
   const handleRemoveKeyPoint = (kpIndex: number) => {
