@@ -59,7 +59,11 @@ export default function MeetingRetrospectiveResultPage() {
     setEditedTopics(
       summaryData.topics.map((topic) => ({
         ...topic,
-        keyPoints: topic.keyPoints.map((kp) => ({ ...kp, id: crypto.randomUUID() })),
+        keyPoints: topic.keyPoints.map((kp) => ({
+          ...kp,
+          id: crypto.randomUUID(),
+          details: kp.details.map((d) => ({ id: crypto.randomUUID(), value: d })),
+        })),
       }))
     )
     setIsEditing(true)
@@ -75,7 +79,7 @@ export default function MeetingRetrospectiveResultPage() {
             summary: t.summary,
             keyPoints: t.keyPoints.map((kp) => ({
               title: kp.title,
-              details: kp.details,
+              details: kp.details.map((d) => d.value),
             })),
           })),
         },
@@ -121,7 +125,7 @@ export default function MeetingRetrospectiveResultPage() {
     })
   }
 
-  if (!gatheringId || !meetingId) return null
+  if (!gatheringId || !meetingId || !Number.isInteger(mId) || mId <= 0) return null
 
   const topics = isEditing ? editedTopics : (summaryData?.topics ?? [])
 

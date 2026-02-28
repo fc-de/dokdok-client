@@ -4,8 +4,11 @@ import { Card, Textarea } from '@/shared/ui'
 
 import type { KeyPoint, SummaryTopic } from '../retrospectives.types'
 
+/** 편집 모드에서 사용하는 상세 항목 타입 (stable key용 id 포함) */
+export type EditableDetail = { id: string; value: string }
+
 /** 편집 모드에서 사용하는 KeyPoint 타입 (stable key용 id 포함) */
-export type EditableKeyPoint = KeyPoint & { id: string }
+export type EditableKeyPoint = Omit<KeyPoint, 'details'> & { id: string; details: EditableDetail[] }
 
 type TopicSummaryCardProps = {
   topic: SummaryTopic
@@ -36,11 +39,11 @@ export default function TopicSummaryCard({
     )
   }
 
-  const handleDetailChange = (kpIndex: number, detailIndex: number, value: string) => {
+  const handleDetailChange = (kpIndex: number, detailId: string, value: string) => {
     onKeyPointsChange?.(
       editingKeyPoints.map((kp, i) =>
         i === kpIndex
-          ? { ...kp, details: kp.details.map((d, j) => (j === detailIndex ? value : d)) }
+          ? { ...kp, details: kp.details.map((d) => (d.id === detailId ? { ...d, value } : d)) }
           : kp
       )
     )
@@ -49,7 +52,7 @@ export default function TopicSummaryCard({
   const handleAddKeyPoint = () => {
     onKeyPointsChange?.([
       ...editingKeyPoints,
-      { title: '', details: [''], id: crypto.randomUUID() },
+      { title: '', details: [{ id: crypto.randomUUID(), value: '' }], id: crypto.randomUUID() },
     ])
   }
 
@@ -60,15 +63,17 @@ export default function TopicSummaryCard({
   const handleAddDetail = (kpIndex: number) => {
     onKeyPointsChange?.(
       editingKeyPoints.map((kp, i) =>
-        i === kpIndex ? { ...kp, details: [...kp.details, ''] } : kp
+        i === kpIndex
+          ? { ...kp, details: [...kp.details, { id: crypto.randomUUID(), value: '' }] }
+          : kp
       )
     )
   }
 
-  const handleRemoveDetail = (kpIndex: number, detailIndex: number) => {
+  const handleRemoveDetail = (kpIndex: number, detailId: string) => {
     onKeyPointsChange?.(
       editingKeyPoints.map((kp, i) =>
-        i === kpIndex ? { ...kp, details: kp.details.filter((_, j) => j !== detailIndex) } : kp
+        i === kpIndex ? { ...kp, details: kp.details.filter((d) => d.id !== detailId) } : kp
       )
     )
   }
@@ -125,22 +130,22 @@ export default function TopicSummaryCard({
                     </div>
 
                     {/* 상세 내용 */}
-                    {kp.details.map((detail, detailIndex) => (
+                    {kp.details.map((detail) => (
                       <div
-                        key={detailIndex}
+                        key={detail.id}
                         className="mt-xtiny flex items-center gap-xsmall pl-base"
                       >
                         <span className="shrink-0 typo-body1 text-black">•</span>
                         <input
                           type="text"
-                          value={detail}
-                          onChange={(e) => handleDetailChange(kpIndex, detailIndex, e.target.value)}
+                          value={detail.value}
+                          onChange={(e) => handleDetailChange(kpIndex, detail.id, e.target.value)}
                           placeholder="상세 내용"
                           className="min-w-0 flex-1 bg-transparent leading-[24px] typo-body1 text-black outline-none placeholder:text-grey-500"
                         />
                         <button
                           type="button"
-                          onClick={() => handleRemoveDetail(kpIndex, detailIndex)}
+                          onClick={() => handleRemoveDetail(kpIndex, detail.id)}
                           className="shrink-0 p-xtiny text-grey-500 hover:text-accent-300"
                         >
                           <X size={14} />

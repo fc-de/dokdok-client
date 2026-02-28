@@ -79,12 +79,20 @@ export const createSttJob = async (
   signal?: AbortSignal
 ): Promise<SttJobResponse> => {
   if (USE_MOCK) {
-    await new Promise((resolve, reject) => {
-      const timer = setTimeout(resolve, 2000)
-      signal?.addEventListener('abort', () => {
+    await new Promise<void>((resolve, reject) => {
+      if (signal?.aborted) {
+        reject(new Error('canceled'))
+        return
+      }
+      const onAbort = () => {
         clearTimeout(timer)
         reject(new Error('canceled'))
-      })
+      }
+      const timer = setTimeout(() => {
+        signal?.removeEventListener('abort', onAbort)
+        resolve()
+      }, 2000)
+      signal?.addEventListener('abort', onAbort, { once: true })
     })
     return {
       jobId: 1,
