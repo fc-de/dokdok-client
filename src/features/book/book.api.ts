@@ -148,7 +148,7 @@ export async function getMyGatherings(
   params: GetGatheringsParams = {}
 ): Promise<GetGatheringsResponse> {
   if (USE_MOCK) {
-    return getMockMyGatherings()
+    return getMockMyGatherings(params)
   }
 
   try {
@@ -184,7 +184,7 @@ export async function getBookTimeline(
   params: GetBookTimelineParams = {}
 ): Promise<GetBookTimelineResponse> {
   if (USE_MOCK) {
-    return getMockBookRecords(params)
+    return getMockBookRecords(personalBookId, params)
   }
 
   return api.get<GetBookTimelineResponse>(BOOK_ENDPOINTS.RECORDS_TIMELINE(personalBookId), {
@@ -216,7 +216,7 @@ export async function getBookReviewHistory(
   params: GetBookReviewHistoryParams = {}
 ): Promise<GetBookReviewHistoryResponse> {
   if (USE_MOCK) {
-    return getMockBookReviewHistory()
+    return getMockBookReviewHistory(bookId, params)
   }
 
   try {
@@ -314,6 +314,8 @@ export async function deleteBookRecord(personalBookId: number, recordId: number)
  * ```
  */
 export async function deleteBook(bookIds: number[]): Promise<void> {
+  if (bookIds.length === 0) return
+
   if (USE_MOCK) {
     return getMockDeleteResponse()
   }

@@ -4,6 +4,7 @@ import BookInfo from '@/features/book/components/BookInfo'
 import BookLogList from '@/features/book/components/BookLogList'
 import { useBookDetail, useToggleBookReadingStatus } from '@/features/book/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { ROUTES } from '@/shared/constants/routes'
 import { useScrollCollapse } from '@/shared/hooks'
 
 export default function BookDetailPage() {
@@ -18,7 +19,7 @@ export default function BookDetailPage() {
 
   return (
     <>
-      <SubPageHeader label="내 책장" to="/books" disableShadow={isBookLogSticky} />
+      <SubPageHeader label="내 책장" to={ROUTES.BOOKS} disableShadow={isBookLogSticky} />
       <div className="mx-auto max-w-layout-max px-layout-padding">
         <BookInfo
           bookId={bookId}

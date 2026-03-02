@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { deleteBookRecord } from '@/features/book/book.api'
 import type {
@@ -49,6 +50,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
     },
+    onError: () => {
+      toast.error('기록 삭제에 실패했어요. 다시 시도해주세요.')
+    },
   })
 
   const { mutate: deletePreOpinion } = useMutation({
@@ -57,12 +61,18 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
     },
+    onError: () => {
+      toast.error('사전 의견 삭제에 실패했어요. 다시 시도해주세요.')
+    },
   })
 
   const { mutate: deleteRetrospective } = useMutation({
     mutationFn: (meetingId: number) => deletePersonalRetrospective(meetingId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+    },
+    onError: () => {
+      toast.error('회고 삭제에 실패했어요. 다시 시도해주세요.')
     },
   })
 
@@ -118,9 +128,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   }
 
   const handleEditPersonalRetrospective = (record: MeetingPersonalRecord) => {
-    navigate(
-      `${ROUTES.MEETING_RETROSPECTIVE_PERSONAL(record.gatheringId, record.meetingId)}?mode=edit`
-    )
+    navigate(`${ROUTES.PERSONAL_RETROSPECTIVE(record.gatheringId, record.meetingId)}?mode=edit`)
   }
 
   return (

@@ -9,11 +9,13 @@ import type {
   BookReview,
   CreateBookRecordBody,
   CreateBookReviewBody,
+  GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
   GetBooksParams,
   GetBooksResponse,
   GetBookTimelineParams,
   GetBookTimelineResponse,
+  GetGatheringsParams,
   GetGatheringsResponse,
   PersonalRecord,
   TimelineItem,
@@ -348,15 +350,18 @@ export const getMockBookReview = async (): Promise<BookReview> => {
 /**
  * 내 모임 목록 목데이터 반환
  */
-export const getMockMyGatherings = async (): Promise<GetGatheringsResponse> => {
+export const getMockMyGatherings = async (
+  params: GetGatheringsParams = {}
+): Promise<GetGatheringsResponse> => {
   await delay(MOCK_DELAY)
-  return mockGatheringsResponse
+  return { ...mockGatheringsResponse, pageSize: params.pageSize ?? mockGatheringsResponse.pageSize }
 }
 
 /**
  * 기록 타임라인 목데이터 반환
  */
 export const getMockBookRecords = async (
+  _personalBookId: number,
   params: GetBookTimelineParams = {}
 ): Promise<GetBookTimelineResponse> => {
   await delay(MOCK_DELAY)
@@ -366,9 +371,15 @@ export const getMockBookRecords = async (
 /**
  * 평가 히스토리 목데이터 반환
  */
-export const getMockBookReviewHistory = async (): Promise<GetBookReviewHistoryResponse> => {
+export const getMockBookReviewHistory = async (
+  _bookId: number,
+  params: GetBookReviewHistoryParams = {}
+): Promise<GetBookReviewHistoryResponse> => {
   await delay(MOCK_DELAY)
-  return mockBookReviewHistoryResponse
+  return {
+    ...mockBookReviewHistoryResponse,
+    pageSize: params.pageSize ?? mockBookReviewHistoryResponse.pageSize,
+  }
 }
 
 /**

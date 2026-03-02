@@ -49,7 +49,11 @@ function BookLogActionMenu({ onEdit, onDelete }: BookLogActionMenuProps) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="cursor-pointer p-xsmall text-grey-600 hover:text-grey-800">
+        <button
+          type="button"
+          aria-label="더보기"
+          className="cursor-pointer p-xsmall text-grey-600 hover:text-grey-800"
+        >
           <EllipsisVertical className="size-5" />
         </button>
       </PopoverTrigger>
