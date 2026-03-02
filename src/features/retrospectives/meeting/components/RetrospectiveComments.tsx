@@ -4,7 +4,7 @@
  */
 
 import { MessageCircleMore } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
@@ -49,6 +49,8 @@ export default function RetrospectiveComments({
   const {
     data: commentsData,
     isLoading,
+    isError,
+    error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -67,6 +69,13 @@ export default function RetrospectiveComments({
 
   // 댓글 총 개수
   const totalCount = commentsData?.pages[0]?.totalCount ?? 0
+
+  // 댓글 조회 에러 처리
+  useEffect(() => {
+    if (isError && error) {
+      showErrorToast(error.userMessage)
+    }
+  }, [isError, error])
 
   // 댓글 작성 핸들러
   const handleSubmit = () => {
@@ -113,7 +122,7 @@ export default function RetrospectiveComments({
 
   // 삭제 권한 확인 (약속장 또는 댓글 작성자)
   const canDelete = (commentUserId: number) => {
-    if (!currentUserId) return false
+    if (currentUserId == null) return false
     return currentUserId === meetingLeaderId || currentUserId === commentUserId
   }
 
@@ -151,7 +160,13 @@ export default function RetrospectiveComments({
       </div>
 
       {/* 댓글 목록 */}
-      {isLoading || !commentsData ? (
+      {isError ? (
+        <div className="flex items-center justify-center py-10">
+          <p className="text-grey-500 typo-body2">
+            댓글을 불러오는데 문제가 생겼습니다. 잠시 후 다시 시도해주세요.
+          </p>
+        </div>
+      ) : isLoading || !commentsData ? (
         <RetrospectiveCommentsSkeleton />
       ) : totalCount === 0 ? (
         <div className="flex items-center justify-center py-10">

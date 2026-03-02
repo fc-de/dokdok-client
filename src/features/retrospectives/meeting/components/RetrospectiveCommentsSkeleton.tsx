@@ -16,9 +16,11 @@ type RetrospectiveCommentsSkeletonProps = {
 export default function RetrospectiveCommentsSkeleton({
   count = 10,
 }: RetrospectiveCommentsSkeletonProps) {
+  const safeCount = count > 0 ? count : 10
+
   return (
     <ul>
-      {[...Array(count).keys()].map((i) => (
+      {[...Array(safeCount).keys()].map((i) => (
         <li key={i} className="border-b border-grey-300 py-large flex gap-small last:border-none">
           {/* 아바타 스켈레톤 */}
           <div className="w-10 h-10 bg-grey-200 rounded-full animate-pulse flex-shrink-0 mt-xtiny" />

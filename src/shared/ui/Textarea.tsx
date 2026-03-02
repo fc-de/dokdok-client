@@ -39,7 +39,7 @@ type TextareaProps = ComponentProps<'textarea'> & {
  * - `error`, `errorMessage`, `helperText` 를 사용하여 상태 메시지를 표시합니다.
  * - `maxLength`를 설정하면 자동으로 글자 수 카운터가 표시됩니다.
  * - `counter={false}`로 설정하면 카운터를 숨길 수 있습니다.
- * - `height` prop으로 높이를 조절할 수 있습니다 (기본값: 180px).
+ * - `height` prop으로 높이를 조절할 수 있습니다 (기본값: default 모드 180px, comment 모드 48px).
  * - `format="comment"`로 설정하면 댓글 입력창 스타일로 동작합니다 (자동 높이 조정, 최대 128px).
  * @example
  * ```tsx
@@ -57,7 +57,7 @@ function Textarea({
   maxLength,
   disabled,
   value,
-  height = 180,
+  height,
   style,
   counter = true,
   format = 'default',
@@ -70,17 +70,21 @@ function Textarea({
   const showCount = maxLength !== undefined && counter
   const showFooter = error || helperText || showCount
 
+  // format에 따라 기본 높이 설정
+  const baseHeight = height ?? (format === 'comment' ? 48 : 180)
+  const maxHeight = format === 'comment' ? 128 : baseHeight
+
   const handleInput = (e: FormEvent<HTMLTextAreaElement>) => {
     if (format === 'comment') {
       const target = e.currentTarget
       // 초기 높이로 리셋
-      target.style.height = `${height}px`
+      target.style.height = `${baseHeight}px`
       const scrollHeight = target.scrollHeight
 
       // 초기 높이보다 크면 조정
-      if (scrollHeight > height) {
+      if (scrollHeight > baseHeight) {
         target.style.height = 'auto'
-        const newHeight = Math.min(target.scrollHeight, 128)
+        const newHeight = Math.min(target.scrollHeight, maxHeight)
         target.style.height = `${newHeight}px`
       }
     }
@@ -93,8 +97,8 @@ function Textarea({
 
   const computedStyle: CSSProperties =
     format === 'comment'
-      ? { ...style, height: `${height}px`, maxHeight: '128px' }
-      : { ...style, height: `${height}px` }
+      ? { ...style, height: `${baseHeight}px`, maxHeight: `${maxHeight}px` }
+      : { ...style, height: `${baseHeight}px` }
 
   return (
     <div className="flex flex-col w-full gap-xsmall">

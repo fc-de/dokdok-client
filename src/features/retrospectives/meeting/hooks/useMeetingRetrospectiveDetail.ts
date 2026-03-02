@@ -23,11 +23,9 @@ import { retrospectiveQueryKeys } from './retrospectiveQueryKeys'
  * @returns TanStack Query 결과 객체
  */
 export const useMeetingRetrospectiveDetail = (meetingId: number) => {
-  const isValid = !Number.isNaN(meetingId) && meetingId > 0
-
   return useQuery<MeetingRetrospectiveDetailResponse, ApiError>({
     queryKey: retrospectiveQueryKeys.detail(meetingId),
     queryFn: () => getMeetingRetrospectiveDetail({ meetingId }),
-    enabled: isValid,
+    enabled: meetingId > 0,
   })
 }
