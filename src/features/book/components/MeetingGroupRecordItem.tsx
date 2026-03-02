@@ -1,5 +1,4 @@
 import type { MeetingPersonalRecord } from '@/features/book/book.types'
-import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { Division } from '@/shared/components/Division'
 import { formatToDateTimeWithDay } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui/Badge'
@@ -9,8 +8,6 @@ import ExcerptBlock from './ExcerptBlock'
 
 type MeetingGroupRecordItemProps = {
   record: MeetingPersonalRecord
-  onEdit?: () => void
-  onDelete?: () => void
 }
 
 /**
@@ -23,20 +20,17 @@ type MeetingGroupRecordItemProps = {
  * <MeetingGroupRecordItem record={meetingGroupRecord} />
  * ```
  */
-const MeetingGroupRecordItem = ({ record, onEdit, onDelete }: MeetingGroupRecordItemProps) => {
+const MeetingGroupRecordItem = ({ record }: MeetingGroupRecordItemProps) => {
   const { gatheringName, createdAt, topicGroups, freeTexts } = record
 
   return (
     <FoldedCard>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-xsmall">
-          <Badge color={'yellow'}>{gatheringName}</Badge>
-          <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
-            약속 회고
-          </p>
-          <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
-        </div>
-        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
+      <div className="flex items-center gap-xsmall">
+        <Badge color={'yellow'}>{gatheringName}</Badge>
+        <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
+          약속 회고
+        </p>
+        <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
       </div>
 
       <div className="flex flex-col">

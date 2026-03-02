@@ -230,7 +230,6 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                       <MeetingGroupRecordItem
                         key={`group-${item.retrospective.retrospectiveId}`}
                         record={item.retrospective}
-                        // TODO: 약속 회고 삭제 API 연동 필요
                       />
                     )
                   case 'PERSONAL_RETROSPECTIVE':
