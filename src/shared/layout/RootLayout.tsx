@@ -8,7 +8,7 @@ import { Outlet } from 'react-router-dom'
  */
 export default function RootLayout() {
   return (
-    <div className="min-h-screen bg-white overflow-x-clip">
+    <div className="min-h-screen bg-white">
       <Outlet />
     </div>
   )
