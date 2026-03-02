@@ -20,7 +20,8 @@ const BookLogListSkeleton = ({ count = 3 }: { count?: number }) => {
           <div
             className="flex flex-col gap-large p-xlarge bg-white rounded-medium animate-pulse"
             style={{
-              clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 40px), calc(100% - 40px) 100%, 0 100%)',
+              clipPath:
+                'polygon(0 0, 100% 0, 100% calc(100% - 40px), calc(100% - 40px) 100%, 0 100%)',
             }}
           >
             {/* 헤더: 뱃지 + 날짜 */}

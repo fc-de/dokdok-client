@@ -16,7 +16,6 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 // API Functions
 // ============================================================
 
-
 /**
  * 키워드 목록 조회
  *

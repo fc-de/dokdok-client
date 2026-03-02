@@ -51,7 +51,13 @@ const THOUGHT_MAX_LENGTH = 2000
  * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="edit" record={record} />
  * ```
  */
-function PersonalRecordModal({ open, onOpenChange, bookId, mode, record }: PersonalRecordModalProps) {
+function PersonalRecordModal({
+  open,
+  onOpenChange,
+  bookId,
+  mode,
+  record,
+}: PersonalRecordModalProps) {
   // 초기값 계산 함수
   const getInitialState = () => {
     if (mode === 'edit' && record) {

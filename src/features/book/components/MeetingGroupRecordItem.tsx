@@ -27,9 +27,7 @@ const MeetingGroupRecordItem = ({ record }: MeetingGroupRecordItemProps) => {
     <FoldedCard>
       <div className="flex items-center gap-xsmall">
         <Badge color={'yellow'}>{gatheringName}</Badge>
-        <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
-          약속 회고
-        </p>
+        <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">약속 회고</p>
         <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
       </div>
 
