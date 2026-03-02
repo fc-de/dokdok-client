@@ -260,7 +260,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                   case 'PRE_OPINION':
                     return (
                       <MeetingPreOpinionItem
-                        key={`pre-opinion-${item.preOpinion.gatheringName}-${item.preOpinion.sharedAt}`}
+                        key={`pre-opinion-${item.preOpinion.meetingId}`}
                         record={item.preOpinion}
                         onDelete={
                           isRecording
