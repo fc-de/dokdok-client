@@ -3,7 +3,7 @@
  * @description 회고 관련 Query Key Factory
  */
 
-import type { GetCollectedAnswersParams } from '../retrospectives.types'
+import type { GetCollectedAnswersParams, GetCommentsParams } from '../retrospectives.types'
 
 /**
  * Query Key Factory
@@ -21,4 +21,12 @@ export const retrospectiveQueryKeys = {
   // 회고 요약
   summaries: () => [...retrospectiveQueryKeys.all, 'summary'] as const,
   summary: (meetingId: number) => [...retrospectiveQueryKeys.summaries(), meetingId] as const,
+
+  // 약속회고 상세
+  details: () => [...retrospectiveQueryKeys.all, 'detail'] as const,
+  detail: (meetingId: number) => [...retrospectiveQueryKeys.details(), meetingId] as const,
+
+  // 댓글
+  commentsList: (params: Omit<GetCommentsParams, 'cursorCreatedAt' | 'cursorCommentId'>) =>
+    [...retrospectiveQueryKeys.all, 'comments', params] as const,
 }

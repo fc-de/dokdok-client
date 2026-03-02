@@ -7,11 +7,22 @@ import { api } from '@/api/client'
 import { PAGE_SIZES } from '@/shared/constants'
 
 import { RETROSPECTIVES_ENDPOINTS } from './retrospectives.endpoints'
-import { getMockCollectedAnswers } from './retrospectives.mock'
+import {
+  getMockCollectedAnswers,
+  getMockComments,
+  getMockMeetingRetrospectiveDetail,
+} from './retrospectives.mock'
 import type {
+  CreateCommentParams,
+  CreateCommentResponse,
   CreateSttJobParams,
+  DeleteCommentParams,
   GetCollectedAnswersParams,
   GetCollectedAnswersResponse,
+  GetCommentsParams,
+  GetCommentsResponse,
+  GetMeetingRetrospectiveDetailParams,
+  MeetingRetrospectiveDetailResponse,
   PublishSummaryParams,
   RetrospectiveSummaryResponse,
   SttJobResponse,
@@ -121,4 +132,105 @@ export const publishSummary = async (
   params: PublishSummaryParams
 ): Promise<RetrospectiveSummaryResponse> => {
   return api.post<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.PUBLISH(params.meetingId))
+}
+
+/**
+ * 약속회고 상세 조회
+ *
+ * @description
+ * 발행된 약속회고의 상세 내용을 조회합니다.
+ * 약속 정보, 모임 정보, 주제별 요약 및 주요 포인트를 포함합니다.
+ *
+ * @param params - 조회 파라미터
+ * @param params.meetingId - 약속 식별자
+ *
+ * @returns 약속회고 상세 정보
+ */
+export const getMeetingRetrospectiveDetail = async (
+  params: GetMeetingRetrospectiveDetailParams
+): Promise<MeetingRetrospectiveDetailResponse> => {
+  const { meetingId } = params
+
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockMeetingRetrospectiveDetail()
+  }
+
+  return api.get<MeetingRetrospectiveDetailResponse>(RETROSPECTIVES_ENDPOINTS.DETAIL(meetingId))
+}
+
+/**
+ * 댓글 조회
+ *
+ * @description
+ * 약속회고의 댓글 목록을 커서 기반 페이지네이션으로 조회합니다.
+ *
+ * @param params - 조회 파라미터
+ * @param params.meetingId - 약속 식별자
+ * @param params.pageSize - 페이지 크기
+ * @param params.cursorCreatedAt - 커서: 이전 페이지 마지막 항목의 작성일시
+ * @param params.cursorCommentId - 커서: 이전 페이지 마지막 항목의 댓글 ID
+ *
+ * @returns 댓글 목록
+ */
+export const getComments = async (params: GetCommentsParams): Promise<GetCommentsResponse> => {
+  const {
+    meetingId,
+    pageSize = PAGE_SIZES.RETROSPECTIVE_COMMENTS,
+    cursorCreatedAt,
+    cursorCommentId,
+  } = params
+
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return getMockComments(pageSize, cursorCreatedAt, cursorCommentId)
+  }
+
+  return api.get<GetCommentsResponse>(RETROSPECTIVES_ENDPOINTS.COMMENTS(meetingId), {
+    params: {
+      pageSize,
+      cursorCreatedAt,
+      cursorCommentId,
+    },
+  })
+}
+
+/**
+ * 댓글 작성
+ *
+ * @description
+ * 약속회고에 댓글을 작성합니다.
+ *
+ * @param params - 작성 파라미터
+ * @param params.meetingId - 약속 식별자
+ * @param params.comment - 댓글 내용
+ *
+ * @returns 작성된 댓글 정보
+ */
+export const createComment = async (
+  params: CreateCommentParams
+): Promise<CreateCommentResponse> => {
+  const { meetingId, comment } = params
+
+  return api.post<CreateCommentResponse>(RETROSPECTIVES_ENDPOINTS.COMMENTS(meetingId), {
+    comment,
+  })
+}
+
+/**
+ * 댓글 삭제
+ *
+ * @description
+ * 약속회고의 댓글을 삭제합니다.
+ *
+ * @param params - 삭제 파라미터
+ * @param params.meetingId - 약속 식별자
+ * @param params.commentId - 댓글 식별자
+ *
+ * @returns void
+ */
+export const deleteComment = async (params: DeleteCommentParams): Promise<void> => {
+  const { meetingId, commentId } = params
+
+  return api.delete<void>(RETROSPECTIVES_ENDPOINTS.COMMENT_DELETE(meetingId, commentId))
 }
