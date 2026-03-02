@@ -49,7 +49,8 @@ export interface BookListItem {
 /** 책 목록 조회 요청 파라미터 */
 export interface GetBooksParams {
   readingStatus?: BookReadingStatus
-  gatheringId?: number
+  minRating?: number
+  maxRating?: number
   sortBy?: BookSortBy
   sortOrder?: BookSortOrder
   cursorRating?: number
@@ -156,49 +157,6 @@ export interface PersonalRecord {
   createdAt: string
 }
 
-/** 모임 공동 회고 - 댓글 */
-export interface MeetingComment {
-  meetingRetrospectiveId: number
-  userId: number
-  nickname: string
-  profileImageUrl: string
-  comment: string
-  createdAt: string
-}
-
-/** 모임 공동 회고 - 핵심 포인트 */
-export interface MeetingKeyPoint {
-  title: string
-  details: string[]
-}
-
-/** 모임 공동 회고 - 토픽 */
-export interface MeetingTopic {
-  topicId: number
-  confirmOrder: number
-  topicTitle: string
-  topicDescription: string
-  summary: string
-  keyPoints: MeetingKeyPoint[]
-  comments: MeetingComment[]
-}
-
-/** 모임 공동 회고 - 소속 모임 정보 */
-export interface MeetingGathering {
-  gatheringId: number
-  gatheringName: string
-}
-
-/** 모임 공동 회고 */
-export interface MeetingGroupRecord {
-  meetingId: number
-  meetingName: string
-  meetingDate: string
-  meetingTime: string
-  gathering: MeetingGathering
-  topics: MeetingTopic[]
-}
-
 /** 모임 개인 회고 - 생각 변화 */
 export interface RetrospectiveChangedThought {
   keyIssue: string
@@ -231,6 +189,8 @@ export interface RetrospectiveFreeText {
 /** 모임 개인 회고 */
 export interface MeetingPersonalRecord {
   retrospectiveId: number
+  gatheringId: number
+  meetingId: number
   gatheringName: string
   recordType: string
   createdAt: string
@@ -249,6 +209,8 @@ export interface PreOpinionTopic {
 /** 모임 사전의견 */
 export interface MeetingPreOpinion {
   type: 'PRE_OPINION'
+  gatheringId: number
+  meetingId: number
   gatheringName: string
   sharedAt: string
   topics: PreOpinionTopic[]
@@ -328,13 +290,13 @@ export type TimelineItem =
       type: 'GROUP_RETROSPECTIVE'
       eventAt: string
       sourceId: number
-      groupRetrospective: MeetingGroupRecord
+      retrospective: MeetingPersonalRecord
     }
   | {
       type: 'PERSONAL_RETROSPECTIVE'
       eventAt: string
       sourceId: number
-      personalRetrospective: MeetingPersonalRecord
+      retrospective: MeetingPersonalRecord
     }
   | {
       type: 'PRE_OPINION'

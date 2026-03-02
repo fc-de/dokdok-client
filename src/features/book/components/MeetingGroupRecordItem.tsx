@@ -1,20 +1,22 @@
-import type { MeetingGroupRecord } from '@/features/book/book.types'
+import type { MeetingPersonalRecord } from '@/features/book/book.types'
 import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { Division } from '@/shared/components/Division'
-import { formatToDateWithDayAndTime } from '@/shared/lib/date'
+import { formatToDateTimeWithDay } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui/Badge'
 import { FoldedCard } from '@/shared/ui/FoldedCard'
 
+import ExcerptBlock from './ExcerptBlock'
+
 type MeetingGroupRecordItemProps = {
-  record: MeetingGroupRecord
+  record: MeetingPersonalRecord
   onEdit?: () => void
   onDelete?: () => void
 }
 
 /**
  * 모임 공동 회고 아이템 컴포넌트
- * - 독서 모임의 공동 회고 기록을 표시합니다.
- * - 토픽별 요약 의견과 참여자 댓글을 포함합니다.
+ * - 독서 모임의 약속 회고 기록을 표시합니다.
+ * - 토픽별 생각 변화와 타인 관점을 포함합니다.
  *
  * @example
  * ```tsx
@@ -22,73 +24,65 @@ type MeetingGroupRecordItemProps = {
  * ```
  */
 const MeetingGroupRecordItem = ({ record, onEdit, onDelete }: MeetingGroupRecordItemProps) => {
+  const { gatheringName, createdAt, topicGroups, freeTexts } = record
+
   return (
     <FoldedCard>
-      {/* 모임 헤더 */}
-      <div className="flex flex-col gap-xsmall">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-xsmall">
-            <Badge color={'yellow'}>{record.gathering.gatheringName}</Badge>
-            <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
-              약속 회고
-            </p>
-            <span className="typo-caption1 text-grey-600">
-              {formatToDateWithDayAndTime(record.meetingDate, record.meetingTime)}
-            </span>
-          </div>
-          {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-xsmall">
+          <Badge color={'yellow'}>{gatheringName}</Badge>
+          <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
+            약속 회고
+          </p>
+          <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
         </div>
+        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
       </div>
 
-      {/* 토픽 목록 */}
-      <div className="flex flex-col gap-large pl-xtiny">
-        {record.topics.map((topic, idx) => (
-          <div key={topic.topicId}>
-            <div className="flex flex-col gap-small">
-              <div className="flex flex-col gap-xxtiny">
-                <h3 className="typo-subtitle2 text-grey-800 mb-xxtiny">
-                  {'주제 ' + topic.confirmOrder}. {topic.topicTitle}
-                </h3>
-                <p className="typo-body1 text-grey-600">{topic.topicDescription}</p>
-              </div>
+      <div className="flex flex-col">
+        {/* 토픽별 회고 */}
+        {topicGroups.map((topic, index) => (
+          <div key={topic.topicId} className="flex flex-col gap-large">
+            {index > 0 && <Division className="mt-medium" />}
+            <div>
+              <h4 className="typo-subtitle2 text-grey-800 mb-xxtiny">
+                주제 {topic.confirmOrder}. {topic.topicTitle}
+              </h4>
 
-              {/* 요약 */}
-              {topic.summary && (
-                <div>
-                  <h4 className="typo-body2 text-grey-600 mb-xxtiny">핵심 요약</h4>
-                  <p className="typo-body1 text-grey-800">{topic.summary}</p>
-                </div>
-              )}
-
-              {/* 핵심 포인트 */}
-              {topic.keyPoints.length > 0 && (
-                <div>
-                  <h4 className="typo-body2 text-grey-600 mb-xxtiny">주요 포인트</h4>
-                  <div className="flex flex-col gap-small">
-                    {topic.keyPoints.map((keyPoint, idx) => (
-                      <div key={idx} className="flex flex-col gap-tiny">
-                        <span className="typo-subtitle5 text-grey-800">
-                          {idx + 1 + ') '}
-                          {keyPoint.title}
-                        </span>
-                        <ul className="flex flex-col gap-tiny pl-small">
-                          {keyPoint.details.map((detail, dIdx) => (
-                            <li
-                              key={dIdx}
-                              className="typo-body1 text-grey-600 list-disc list-inside"
-                            >
-                              {detail}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
+              {/* 생각 변화 */}
+              {topic.changedThoughts && (
+                <div className="flex flex-col gap-small">
+                  <p className="typo-body1 text-grey-700">{topic.changedThoughts.keyIssue}</p>
+                  <p className="typo-body1 text-black">{topic.changedThoughts.postOpinion}</p>
                 </div>
               )}
             </div>
 
-            {record.topics.length - 1 !== idx && <Division className="mt-medium" />}
+            {/* 타인 관점 */}
+            {topic.othersPerspectives.length > 0 && (
+              <div className="flex flex-col gap-small">
+                {topic.othersPerspectives.map((perspective) => (
+                  <div key={perspective.meetingMemberId} className="flex flex-col gap-medium">
+                    <ExcerptBlock>
+                      <p className="typo-subtitle5 text-grey-800">{perspective.opinionContent}</p>
+                      <span className="typo-body1 text-grey-600">{perspective.memberNickname}</span>
+                    </ExcerptBlock>
+                    <p className="typo-body1 text-grey-800">{perspective.impressiveReason}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* 자유 텍스트 */}
+        {freeTexts.map((text, idx) => (
+          <div key={`free-${idx}`} className="flex flex-col">
+            {(topicGroups.length > 0 || idx > 0) && <Division className="mt-medium mb-large" />}
+            <div className="flex flex-col gap-small">
+              <h5 className="typo-subtitle2 text-grey-800">{text.title}</h5>
+              <p className="typo-body1 text-black">{text.content}</p>
+            </div>
           </div>
         ))}
       </div>

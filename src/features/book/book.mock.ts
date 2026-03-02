@@ -156,62 +156,37 @@ const mockTimelineItems: TimelineItem[] = [
     type: 'GROUP_RETROSPECTIVE',
     eventAt: '2026-01-15T00:00:00',
     sourceId: 1,
-    groupRetrospective: {
+    retrospective: {
+      retrospectiveId: 2,
+      gatheringId: 1,
       meetingId: 1,
-      meetingName: '데미안을 읽어보아요',
-      meetingDate: '2026-01-15',
-      meetingTime: '19:00-20:00',
-      gathering: {
-        gatheringId: 1,
-        gatheringName: '책책책 책을 읽자',
-      },
-      topics: [
+      gatheringName: '책책책 책을 읽자',
+      recordType: '약속 회고',
+      createdAt: '2026-01-15T00:00:00',
+      topicGroups: [
         {
           topicId: 1,
-          confirmOrder: 1,
           topicTitle: '가짜 욕망, 유사 욕망',
-          topicDescription: '가짜욕망, 유사욕망에 대해 이야기해봅시다.',
-          summary: '참여자들은 『데미안』 속 싱클레어가 느꼈던 혼란을 자신들의 경험과 연결하며...',
-          keyPoints: [
+          confirmOrder: 1,
+          changedThoughts: {
+            keyIssue: '모임 전에는 진짜 욕망과 가짜 욕망을 명확히 구분할 수 있다고 생각했다.',
+            postOpinion:
+              '모임 후에는 구분 자체보다 욕망을 어떻게 바라보는지가 더 중요하다는 생각이 들었다.',
+          },
+          othersPerspectives: [
             {
-              title: '사회가 만든 욕망의 구조',
-              details: [
-                '안정적인 직업, 성과, 인정 욕구가 개인의 욕망처럼 내면화된 경험 공유',
-                '"원해서 선택했다"기보다 "선택하지 않으면 불안해서 택했다"는 표현이 반복됨',
-              ],
-            },
-            {
-              title: '유사 욕망과 진짜 욕망의 차이',
-              details: [
-                '유사 욕망은 비교와 평가 속에서 강화되며, 타인의 반응에 민감함',
-                '진짜 욕망은 오히려 혼자 있을 때 더 선명해지고, 남에게 말할수록 흐려지는 경우가 많다는 의견',
-              ],
-            },
-          ],
-          comments: [
-            {
-              meetingRetrospectiveId: 1,
-              userId: 1,
-              nickname: '사용자1',
-              profileImageUrl: 'https://placehold.co/40x40',
-              comment: '모임 하기전엔 이랬는데, 누구의 이런 말을 듣고 이렇게 생각이 바뀌었다.',
-              createdAt: '2026-01-15T15:30:00',
+              meetingMemberId: 2,
+              memberNickname: '독서왕',
+              opinionContent: '유사 욕망도 결국 나를 알아가는 과정이라고 생각해요.',
+              impressiveReason: '욕망을 부정하기보다 탐구의 대상으로 보는 시각이 인상 깊었다.',
             },
           ],
         },
+      ],
+      freeTexts: [
         {
-          topicId: 2,
-          confirmOrder: 2,
-          topicTitle: '선과 악',
-          topicDescription: '인간의 세계에서 선과 악 어느 것이 힘이 더 셀까',
-          summary: '선과 악 중 어느 쪽이 더 강한지를 묻기보다...',
-          keyPoints: [
-            {
-              title: '악이 더 강해 보이는 이유',
-              details: ['결과가 빠르고 명확하게 드러나며, 책임을 외부로 돌리기 쉬움'],
-            },
-          ],
-          comments: [],
+          title: '오늘의 한 줄',
+          content: '진짜 욕망은 혼자 있을 때 더 선명해진다.',
         },
       ],
     },
@@ -220,8 +195,10 @@ const mockTimelineItems: TimelineItem[] = [
     type: 'PERSONAL_RETROSPECTIVE',
     eventAt: '2026-01-05T21:38:00',
     sourceId: 1,
-    personalRetrospective: {
+    retrospective: {
       retrospectiveId: 1,
+      gatheringId: 2,
+      meetingId: 1,
       gatheringName: '책책책 책을 읽자',
       recordType: '개인 회고',
       createdAt: '2026-01-05T21:38:00',
@@ -280,6 +257,8 @@ const mockTimelineItems: TimelineItem[] = [
     sourceId: 1,
     preOpinion: {
       type: 'PRE_OPINION',
+      gatheringId: 1,
+      meetingId: 1,
       gatheringName: '책책책 책을 읽자',
       sharedAt: '2026-01-05T21:38:00',
       topics: [
@@ -471,7 +450,7 @@ export const getMockBooks = async (params: GetBooksParams = {}): Promise<GetBook
 // ============================================================
 
 function filterMockBooks(params: GetBooksParams): GetBooksResponse {
-  const { readingStatus, gatheringId, sortOrder = 'DESC' } = params
+  const { readingStatus, minRating, maxRating, sortBy = 'TIME', sortOrder = 'DESC' } = params
 
   let filteredItems = [...mockBookListItems]
 
@@ -480,22 +459,31 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
     filteredItems = filteredItems.filter((item) => item.bookReadingStatus === readingStatus)
   }
 
-  // 모임 필터 - gatheringId가 있으면 해당 모임에 속한 책만 필터링
-  if (gatheringId !== undefined) {
-    filteredItems = filteredItems.filter((item) =>
-      item.gatherings.some((g) => g.gatheringId === gatheringId)
-    )
+  // 별점 범위 필터
+  if (minRating !== undefined) {
+    filteredItems = filteredItems.filter((item) => item.rating !== null && item.rating >= minRating)
+  }
+  if (maxRating !== undefined) {
+    filteredItems = filteredItems.filter((item) => item.rating !== null && item.rating <= maxRating)
   }
 
-  // 정렬 처리 (bookId 기준으로 시뮬레이션)
+  // 정렬 처리
   const sortMultiplier = sortOrder === 'DESC' ? -1 : 1
-  filteredItems.sort((a, b) => sortMultiplier * (a.bookId - b.bookId))
+  if (sortBy === 'RATING') {
+    filteredItems.sort((a, b) => sortMultiplier * ((a.rating ?? 0) - (b.rating ?? 0)))
+  } else {
+    // TIME: bookId로 추가일 시뮬레이션
+    filteredItems.sort((a, b) => sortMultiplier * (a.bookId - b.bookId))
+  }
 
   const readingCount = mockBookListItems.filter(
     (item) => item.bookReadingStatus === 'READING'
   ).length
   const completedCount = mockBookListItems.filter(
     (item) => item.bookReadingStatus === 'COMPLETED'
+  ).length
+  const pendingCount = mockBookListItems.filter(
+    (item) => item.bookReadingStatus === 'PENDING'
   ).length
 
   return {
@@ -506,7 +494,7 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
     statusCounts: {
       reading: readingCount,
       completed: completedCount,
-      pending: 0,
+      pending: pendingCount,
       total: mockBookListItems.length,
     },
     totalCount: mockBookListItems.length,
@@ -533,11 +521,11 @@ function filterMockTimeline(
     const gathering = mockGatheringsResponse.items.find((g) => g.gatheringId === gatheringId)
     filtered = filtered.filter((item) => {
       if (item.type === 'READING_RECORD') return false
-      if (item.type === 'GROUP_RETROSPECTIVE')
-        return item.groupRetrospective.gathering.gatheringId === gatheringId
       if (gathering) {
+        if (item.type === 'GROUP_RETROSPECTIVE')
+          return item.retrospective.gatheringName === gathering.gatheringName
         if (item.type === 'PERSONAL_RETROSPECTIVE')
-          return item.personalRetrospective.gatheringName === gathering.gatheringName
+          return item.retrospective.gatheringName === gathering.gatheringName
         if (item.type === 'PRE_OPINION')
           return item.preOpinion.gatheringName === gathering.gatheringName
       }

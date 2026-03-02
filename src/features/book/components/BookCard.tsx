@@ -7,8 +7,8 @@ import type { BookListItem } from '../book.types'
 
 type BookCardProps = {
   book: BookListItem
-  /** 필터에서 선택된 모임명 (일치하는 Badge는 green으로 표시) */
-  selectedGatheringName?: string
+  /** 필터에서 선택된 모임 ID (일치하는 Badge는 green으로 표시) */
+  selectedGatheringId?: number
   /** 편집 모드 여부 */
   isEditMode?: boolean
   /** 선택 여부 (편집 모드에서 사용) */
@@ -38,7 +38,7 @@ type BookCardProps = {
  */
 function BookCard({
   book,
-  selectedGatheringName,
+  selectedGatheringId,
   isEditMode = false,
   isSelected = false,
   onSelectToggle,
@@ -76,7 +76,9 @@ function BookCard({
         {/* 별점 */}
         <div className="flex items-center gap-xtiny">
           <Star className="size-4 fill-grey-600 text-grey-600" />
-          <span className="typo-body4 text-grey-600">{rating !== null ? rating.toFixed(1) : '-'}</span>
+          <span className="typo-body4 text-grey-600">
+            {rating !== null ? rating.toFixed(1) : '-'}
+          </span>
         </div>
 
         {/* 모임 태그 */}
@@ -85,7 +87,7 @@ function BookCard({
             {gatherings.map((gathering) => (
               <Badge
                 key={gathering.gatheringId}
-                color={gathering.gatheringName === selectedGatheringName ? 'green' : 'grey'}
+                color={gathering.gatheringId === selectedGatheringId ? 'green' : 'grey'}
               >
                 {gathering.gatheringName}
               </Badge>

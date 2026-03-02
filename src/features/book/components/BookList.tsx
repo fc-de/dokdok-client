@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useInfiniteScroll } from '@/shared/hooks'
-import { FilterDropdown, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import type { StarRatingRange } from '@/shared/ui'
+import { FilterDropdown, StarRatingFilter, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
 import type { BookReadingStatus, BookSortOrder } from '../book.types'
 import { useBooks, useMyGatherings } from '../hooks'
@@ -56,8 +57,11 @@ function BookList({
 }: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
+  const [selectedRating, setSelectedRating] = useState<StarRatingRange | null>(null)
   const [sortOrder, setSortOrder] = useState<BookSortOrder>('DESC')
   const [openDropdown, setOpenDropdown] = useState<'gathering' | null>(null)
+
+  const selectedGatheringId = selectedGathering ? Number(selectedGathering) : undefined
 
   // 모임 목록 조회
   const {
@@ -69,15 +73,11 @@ function BookList({
 
   const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
 
-  // 선택된 모임명 찾기
-  const selectedGatheringName = gatherings.find(
-    (g) => String(g.gatheringId) === selectedGathering
-  )?.gatheringName
-
-  // 책 목록 조회 (필터 적용, 무한스크롤)
+  // 책 목록 조회 (서버 필터: 상태, 별점, 정렬)
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooks({
     readingStatus: status,
-    gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
+    minRating: selectedRating?.min,
+    maxRating: selectedRating?.max,
     sortBy: 'TIME',
     sortOrder,
   })
@@ -89,12 +89,16 @@ function BookList({
     isLoading,
   })
 
-  const handleGatheringChange = (value: string) => {
-    setSelectedGathering(value)
-  }
-
   // 모든 페이지의 책 목록 합치기 (참조 안정성을 위해 메모이제이션)
-  const books = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+  const allBooks = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+
+  // 모임 클라이언트 사이드 필터링
+  const books = useMemo(() => {
+    if (!selectedGatheringId) return allBooks
+    return allBooks.filter((book) =>
+      book.gatherings.some((g) => g.gatheringId === selectedGatheringId)
+    )
+  }, [allBooks, selectedGatheringId])
 
   // 필터링된 책 ID 목록
   const bookIds = useMemo(() => books.map((book) => book.bookId), [books])
@@ -124,7 +128,7 @@ function BookList({
             <FilterDropdown
               placeholder="독서모임"
               value={selectedGathering}
-              onChange={handleGatheringChange}
+              onChange={setSelectedGathering}
               disabled={isLoading || isGatheringsLoading || gatherings.length === 0}
               open={openDropdown === 'gathering'}
               onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
@@ -147,24 +151,32 @@ function BookList({
                 </button>
               )}
             </FilterDropdown>
+            <StarRatingFilter
+              placeholder="별점"
+              value={selectedRating}
+              onChange={setSelectedRating}
+              disabled={isLoading}
+            />
           </div>
-          <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
-            <TabsList size="small" className="gap-0">
-              <TabsTrigger value="DESC" size="small" disabled={isLoading}>
-                최신순
-              </TabsTrigger>
-              <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-              <TabsTrigger value="ASC" size="small" disabled={isLoading}>
-                오래된순
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex items-center gap-xsmall">
+            <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
+              <TabsList size="small" className="gap-0">
+                <TabsTrigger value="DESC" size="small" disabled={isLoading}>
+                  최신순
+                </TabsTrigger>
+                <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
+                <TabsTrigger value="ASC" size="small" disabled={isLoading}>
+                  오래된순
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       )}
       {isLoading ? (
         <BookListSkeleton />
       ) : isEmpty ? (
-        <BookListEmpty status={status} hasFilters={!!selectedGathering} />
+        <BookListEmpty status={status} hasFilters={!!selectedGathering || !!selectedRating} />
       ) : (
         <>
           <div className="grid grid-cols-6 gap-large mt-large">
@@ -172,7 +184,7 @@ function BookList({
               <BookCard
                 key={book.bookId}
                 book={book}
-                selectedGatheringName={selectedGatheringName}
+                selectedGatheringId={selectedGatheringId}
                 isEditMode={isEditMode}
                 isSelected={selectedBookIds?.has(book.bookId)}
                 onSelectToggle={onSelectToggle}

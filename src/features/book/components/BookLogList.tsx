@@ -1,8 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { deleteBookRecord } from '@/features/book/book.api'
-import type { PersonalRecord, RecordSortType, RecordType } from '@/features/book/book.types'
+import type {
+  MeetingPersonalRecord,
+  PersonalRecord,
+  RecordSortType,
+  RecordType,
+} from '@/features/book/book.types'
 import BookLogListSkeleton from '@/features/book/components/BookLogListSkeleton'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
@@ -10,6 +16,9 @@ import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospe
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
 import { bookRecordsKeys, useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import { deleteMyPreOpinionAnswer } from '@/features/pre-opinion/preOpinion.api'
+import { deletePersonalRetrospective } from '@/features/retrospectives/personal/personalRetrospective.api'
+import { ROUTES } from '@/shared/constants/routes'
 import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
@@ -33,9 +42,25 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
 
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { mutate: deletePersonalRecord } = useMutation({
     mutationFn: (recordId: number) => deleteBookRecord(bookId, recordId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+    },
+  })
+
+  const { mutate: deletePreOpinion } = useMutation({
+    mutationFn: (params: { gatheringId: number; meetingId: number }) =>
+      deleteMyPreOpinionAnswer(params),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+    },
+  })
+
+  const { mutate: deleteRetrospective } = useMutation({
+    mutationFn: (meetingId: number) => deletePersonalRetrospective(meetingId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
     },
@@ -90,6 +115,12 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     setModalMode('edit')
     setEditingRecord(record)
     setIsModalOpen(true)
+  }
+
+  const handleEditPersonalRetrospective = (record: MeetingPersonalRecord) => {
+    navigate(
+      `${ROUTES.MEETING_RETROSPECTIVE_PERSONAL(record.gatheringId, record.meetingId)}?mode=edit`
+    )
   }
 
   return (
@@ -197,31 +228,24 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                   case 'GROUP_RETROSPECTIVE':
                     return (
                       <MeetingGroupRecordItem
-                        key={`group-${item.groupRetrospective.meetingId}`}
-                        record={item.groupRetrospective}
-                        onDelete={
-                          isRecording
-                            ? () =>
-                                console.log(
-                                  'delete group',
-                                  item.groupRetrospective.meetingId
-                                )
-                            : undefined
-                        }
+                        key={`group-${item.retrospective.retrospectiveId}`}
+                        record={item.retrospective}
+                        // TODO: 약속 회고 삭제 API 연동 필요
                       />
                     )
                   case 'PERSONAL_RETROSPECTIVE':
                     return (
                       <MeetingRetrospectiveItem
-                        key={`retrospective-${item.personalRetrospective.retrospectiveId}`}
-                        record={item.personalRetrospective}
+                        key={`retrospective-${item.retrospective.retrospectiveId}`}
+                        record={item.retrospective}
+                        onEdit={
+                          isRecording
+                            ? () => handleEditPersonalRetrospective(item.retrospective)
+                            : undefined
+                        }
                         onDelete={
                           isRecording
-                            ? () =>
-                                console.log(
-                                  'delete retrospective',
-                                  item.personalRetrospective.retrospectiveId
-                                )
+                            ? () => deleteRetrospective(item.retrospective.meetingId)
                             : undefined
                         }
                       />
@@ -233,7 +257,11 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                         record={item.preOpinion}
                         onDelete={
                           isRecording
-                            ? () => console.log('delete pre-opinion', item.preOpinion.sharedAt)
+                            ? () =>
+                                deletePreOpinion({
+                                  gatheringId: item.preOpinion.gatheringId,
+                                  meetingId: item.preOpinion.meetingId,
+                                })
                             : undefined
                         }
                       />
