@@ -5,6 +5,9 @@ export * from './components'
 export * from './hooks'
 export * from './retrospectives.endpoints'
 
+// Personal
+export * from './personal'
+
 // API
 export { createSttJob, getSummary, publishSummary, updateSummary } from './retrospectives.api'
 
