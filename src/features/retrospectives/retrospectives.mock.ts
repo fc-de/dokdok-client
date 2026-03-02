@@ -3,7 +3,12 @@
  * @description Retrospectives API 목데이터
  */
 
-import type { CollectedAnswerItem, GetCollectedAnswersResponse } from './retrospectives.types'
+import type {
+  CollectedAnswerItem,
+  GetCollectedAnswersResponse,
+  RetrospectiveSummaryResponse,
+  UpdateSummaryRequest,
+} from './retrospectives.types'
 
 /**
  * 수집된 사전 의견 목데이터
@@ -170,6 +175,126 @@ const mockCollectedAnswers: CollectedAnswerItem[] = [
     ],
   },
 ]
+
+// ─── 회고 요약 목데이터 ───
+
+const defaultSummaryTopics: RetrospectiveSummaryResponse['topics'] = [
+  {
+    topicId: 1,
+    confirmOrder: 1,
+    topicTitle: '가짜욕망, 유사 욕망',
+    topicDescription: '우리가 흔히 자신의 욕망이라고 생각하는 것들의 본질에 대해 이야기해봅시다.',
+    summary:
+      '참여자들은 르네 지라르의 미메틱 이론을 중심으로 현대 사회에서의 욕망 모방 현상에 대해 깊이 있는 토론을 진행했습니다. SNS와 미디어가 욕망의 모방을 심화시키고 있으며, 개인의 선택이라고 생각했던 많은 것들이 실제로는 사회적 구조의 산물임을 공유했습니다.',
+    keyPoints: [
+      {
+        title: '욕망의 삼각형 이론',
+        details: [
+          '무언가를 욕망하는 이유가 대상 자체의 가치보다 타인이 그것을 욕망하기 때문이라는 관점 공유',
+          '플라톤의 동굴 비유와 연결하여 욕망의 실체와 그림자에 대한 논의',
+        ],
+      },
+      {
+        title: 'SNS와 욕망의 모방',
+        details: [
+          '타인의 삶을 끊임없이 들여다보며 욕망이 더욱 심화되는 현상',
+          '광고와 미디어가 소비 욕구를 조작하는 메커니즘 분석',
+        ],
+      },
+      {
+        title: '개인적 경험과 성찰',
+        details: [
+          '직업 선택이나 인생 목표에서 부모님과 주변의 기대가 미친 영향 공유',
+          '무의식적으로 따라온 욕망들을 의식적으로 바라보게 된 경험',
+        ],
+      },
+    ],
+  },
+  {
+    topicId: 2,
+    confirmOrder: 2,
+    topicTitle: '진정한 자아 찾기',
+    topicDescription: '타인의 욕망에서 벗어나 진정한 자아를 찾는 방법에 대해 논의합니다.',
+    summary:
+      '진정한 자아를 찾는 과정은 외부가 아닌 내부를 향한 탐구이며, 고정된 실체가 아니라 끊임없이 발견하고 구성해나가는 여정이라는 데 공감대가 형성되었습니다. 용기와 성찰의 시간이 필요하다는 의견이 주를 이루었습니다.',
+    keyPoints: [
+      {
+        title: '자아 탐구의 방향',
+        details: [
+          '진정한 자아는 외부가 아닌 내부를 향한 탐구에서 시작',
+          '고정된 실체가 아닌 끊임없이 구성해나가는 과정으로 이해',
+        ],
+      },
+      {
+        title: '실천 방법',
+        details: [
+          '명상과 성찰의 시간을 통해 내면의 목소리에 귀 기울이기',
+          '바쁜 일상 속에서도 자신과 대화하는 시간 확보의 중요성',
+        ],
+      },
+    ],
+  },
+]
+
+/** meetingId별 회고 요약 목데이터 저장소 */
+const mockSummaryByMeeting: Record<number, RetrospectiveSummaryResponse> = {}
+
+const getOrCreateMockSummary = (meetingId: number): RetrospectiveSummaryResponse => {
+  if (!mockSummaryByMeeting[meetingId]) {
+    mockSummaryByMeeting[meetingId] = {
+      meetingId,
+      isPublished: false,
+      publishedAt: null,
+      topics: structuredClone(defaultSummaryTopics),
+    }
+  }
+  return mockSummaryByMeeting[meetingId]
+}
+
+/**
+ * 회고 요약 목데이터 반환 함수
+ */
+export const getMockSummary = (meetingId: number): RetrospectiveSummaryResponse => {
+  return structuredClone(getOrCreateMockSummary(meetingId))
+}
+
+/**
+ * 회고 요약 수정 목데이터 처리
+ */
+export const mockUpdateSummary = (
+  meetingId: number,
+  data: UpdateSummaryRequest
+): RetrospectiveSummaryResponse => {
+  const current = getOrCreateMockSummary(meetingId)
+  mockSummaryByMeeting[meetingId] = {
+    ...current,
+    topics: current.topics.map((topic) => {
+      const updated = data.topics.find((t) => t.topicId === topic.topicId)
+      if (!updated) return topic
+      return {
+        ...topic,
+        summary: updated.summary,
+        keyPoints: updated.keyPoints,
+      }
+    }),
+  }
+  return structuredClone(mockSummaryByMeeting[meetingId])
+}
+
+/**
+ * 회고 요약 발행 목데이터 처리
+ */
+export const mockPublishSummary = (meetingId: number): RetrospectiveSummaryResponse => {
+  const current = getOrCreateMockSummary(meetingId)
+  mockSummaryByMeeting[meetingId] = {
+    ...current,
+    isPublished: true,
+    publishedAt: new Date().toISOString(),
+  }
+  return structuredClone(mockSummaryByMeeting[meetingId])
+}
+
+// ─── 수집된 사전 의견 ───
 
 /**
  * 수집된 사전 의견 목데이터 반환 함수
