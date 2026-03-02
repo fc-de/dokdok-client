@@ -102,6 +102,7 @@ export default function BookListPage() {
   // 편집 모드 진입
   const handleEnterEditMode = () => {
     setSelectedBookIds(new Set())
+    setFilteredBookIds([])
     navigate(`${ROUTES.BOOKS}?edit=true`)
   }
 
