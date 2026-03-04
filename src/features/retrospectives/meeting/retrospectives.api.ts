@@ -12,6 +12,8 @@ import {
   getMockComments,
   getMockMeetingRetrospectiveDetail,
   getMockSummary,
+  mockCreateComment,
+  mockDeleteComment,
   mockPublishSummary,
   mockUpdateSummary,
 } from './retrospectives.mock'
@@ -199,7 +201,7 @@ export const getMeetingRetrospectiveDetail = async (
 
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 500))
-    return getMockMeetingRetrospectiveDetail()
+    return getMockMeetingRetrospectiveDetail(meetingId)
   }
 
   return api.get<MeetingRetrospectiveDetailResponse>(RETROSPECTIVES_ENDPOINTS.DETAIL(meetingId))
@@ -258,6 +260,11 @@ export const createComment = async (
 ): Promise<CreateCommentResponse> => {
   const { meetingId, comment } = params
 
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return mockCreateComment(comment)
+  }
+
   return api.post<CreateCommentResponse>(RETROSPECTIVES_ENDPOINTS.COMMENTS(meetingId), {
     comment,
   })
@@ -277,6 +284,11 @@ export const createComment = async (
  */
 export const deleteComment = async (params: DeleteCommentParams): Promise<void> => {
   const { meetingId, commentId } = params
+
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return mockDeleteComment(commentId)
+  }
 
   return api.delete<void>(RETROSPECTIVES_ENDPOINTS.COMMENT_DELETE(meetingId, commentId))
 }

@@ -417,9 +417,16 @@ const mockMeetingRetrospectiveDetail: MeetingRetrospectiveDetailResponse = {
  *
  * @description
  * 실제 API 호출을 시뮬레이션하여 약속회고 상세 목데이터를 반환합니다.
+ *
+ * @param meetingId - 약속 식별자
  */
-export const getMockMeetingRetrospectiveDetail = (): MeetingRetrospectiveDetailResponse => {
-  return mockMeetingRetrospectiveDetail
+export const getMockMeetingRetrospectiveDetail = (
+  meetingId: number
+): MeetingRetrospectiveDetailResponse => {
+  return structuredClone({
+    ...mockMeetingRetrospectiveDetail,
+    meetingId,
+  })
 }
 
 /**
@@ -592,5 +599,41 @@ export const getMockComments = (
     hasNext,
     nextCursor,
     totalCount: cursorCreatedAt === undefined ? mockComments.length : undefined,
+  }
+}
+
+/**
+ * 댓글 작성 목데이터 처리
+ *
+ * @description
+ * 새 댓글을 mockComments 배열에 추가하고 작성된 댓글을 반환합니다.
+ */
+export const mockCreateComment = (comment: string): RetrospectiveComment => {
+  const maxId = Math.max(...mockComments.map((c) => c.commentId), 0)
+  const newComment: RetrospectiveComment = {
+    commentId: maxId + 1,
+    userId: 1,
+    nickname: '곰곰',
+    profileImageUrl: 'https://i.pravatar.cc/150?img=1',
+    comment,
+    createdAt: new Date().toISOString(),
+  }
+
+  // 최신 댓글이 맨 앞에 오도록 배열 앞에 추가
+  mockComments.unshift(newComment)
+
+  return newComment
+}
+
+/**
+ * 댓글 삭제 목데이터 처리
+ *
+ * @description
+ * mockComments 배열에서 해당 댓글을 제거합니다.
+ */
+export const mockDeleteComment = (commentId: number): void => {
+  const index = mockComments.findIndex((c) => c.commentId === commentId)
+  if (index !== -1) {
+    mockComments.splice(index, 1)
   }
 }
