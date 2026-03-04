@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
+  AiLoadingOverlay,
   type GetCollectedAnswersResponse,
   useCollectedAnswers,
+  useCreateSttJob,
 } from '@/features/retrospectives/meeting'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
@@ -39,6 +41,9 @@ export default function MeetingRetrospectiveCreatePage() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const dropzoneRef = useRef<DropzoneHandle>(null)
 
+  // STT Job 생성 mutation
+  const sttMutation = useCreateSttJob()
+
   // 수집된 사전 의견 조회
   const {
     data: collectedAnswersData,
@@ -67,6 +72,24 @@ export default function MeetingRetrospectiveCreatePage() {
   // 수집된 사전 의견 총 개수
   const totalCount = collectedAnswersData?.pages[0]?.totalCount ?? 0
   const hasData = totalCount > 0
+
+  // AI 요약 시작
+  const handleStartAiSummary = () => {
+    sttMutation.mutate(
+      { gatheringId, meetingId, file: uploadedFile ?? undefined },
+      {
+        onSuccess: () => {
+          navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), {
+            state: { fromAiSummary: true },
+          })
+        },
+        onError: (err) => {
+          if (err.message === 'canceled') return
+          showErrorToast(err.userMessage ?? '요약 생성에 실패했습니다.')
+        },
+      }
+    )
+  }
 
   // 파일 업로드 핸들러
   const handleFileChange = (file: File | null) => {
@@ -103,13 +126,9 @@ export default function MeetingRetrospectiveCreatePage() {
           <Button
             variant="ai"
             size="small"
-            onClick={() =>
-              navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), {
-                state: { fromAiSummary: true },
-              })
-            }
+            onClick={handleStartAiSummary}
             className="px-medium"
-            disabled={totalCount === 0}
+            disabled={totalCount === 0 || sttMutation.isPending}
           >
             AI 요약 시작하기
           </Button>
@@ -211,7 +230,7 @@ export default function MeetingRetrospectiveCreatePage() {
         </div>
       </div>
 
-      {/* TODO: AI 요약 중 모달 */}
+      <AiLoadingOverlay isOpen={sttMutation.isPending} onCancel={() => sttMutation.cancel()} />
     </>
   )
 }

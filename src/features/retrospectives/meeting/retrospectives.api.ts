@@ -11,6 +11,9 @@ import {
   getMockCollectedAnswers,
   getMockComments,
   getMockMeetingRetrospectiveDetail,
+  getMockSummary,
+  mockPublishSummary,
+  mockUpdateSummary,
 } from './retrospectives.mock'
 import type {
   CreateCommentParams,
@@ -84,6 +87,34 @@ export const createSttJob = async (
   params: CreateSttJobParams,
   signal?: AbortSignal
 ): Promise<SttJobResponse> => {
+  if (USE_MOCK) {
+    await new Promise<void>((resolve, reject) => {
+      if (signal?.aborted) {
+        reject(new Error('canceled'))
+        return
+      }
+      const onAbort = () => {
+        clearTimeout(timer)
+        reject(new Error('canceled'))
+      }
+      const timer = setTimeout(() => {
+        signal?.removeEventListener('abort', onAbort)
+        resolve()
+      }, 2000)
+      signal?.addEventListener('abort', onAbort, { once: true })
+    })
+    return {
+      jobId: 1,
+      meetingId: params.meetingId,
+      userId: 1,
+      status: 'DONE',
+      summary: null,
+      highlights: null,
+      errorMessage: null,
+      createdAt: new Date().toISOString(),
+    }
+  }
+
   const { gatheringId, meetingId, file } = params
 
   const formData = new FormData()
@@ -108,6 +139,11 @@ export const createSttJob = async (
  * @param meetingId - 약속 식별자
  */
 export const getSummary = async (meetingId: number): Promise<RetrospectiveSummaryResponse> => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return getMockSummary(meetingId)
+  }
+
   return api.get<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId))
 }
 
@@ -119,6 +155,11 @@ export const getSummary = async (meetingId: number): Promise<RetrospectiveSummar
 export const updateSummary = async (
   params: UpdateSummaryParams
 ): Promise<RetrospectiveSummaryResponse> => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return mockUpdateSummary(params.meetingId, params.data)
+  }
+
   const { meetingId, data } = params
   return api.patch<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.SUMMARY(meetingId), data)
 }
@@ -131,6 +172,11 @@ export const updateSummary = async (
 export const publishSummary = async (
   params: PublishSummaryParams
 ): Promise<RetrospectiveSummaryResponse> => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    return mockPublishSummary(params.meetingId)
+  }
+
   return api.post<RetrospectiveSummaryResponse>(RETROSPECTIVES_ENDPOINTS.PUBLISH(params.meetingId))
 }
 

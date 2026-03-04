@@ -34,15 +34,12 @@ export default function RetrospectiveCardButtons({
     }
   }
 
-  // 개인 회고 라우트 결정 (추후 라우트 반영 예정)
+  // 개인 회고 라우트 결정
   const getPersonalRetrospectiveRoute = () => {
-    // TODO: ROUTES.PERSONAL_RETROSPECTIVE, ROUTES.PERSONAL_RETROSPECTIVE_VIEW 추가 후 활성화
     if (personalRetrospectiveWritten) {
-      // return ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId)
-      return '#'
+      return ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId)
     }
-    // return ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)
-    return '#'
+    return ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)
   }
 
   return (
@@ -70,12 +67,7 @@ export default function RetrospectiveCardButtons({
       <button
         type="button"
         className="flex flex-1 items-center gap-base rounded-base bg-white p-large shadow-drop cursor-pointer"
-        onClick={() => {
-          // TODO: ROUTES.PERSONAL_RETROSPECTIVE, ROUTES.PERSONAL_RETROSPECTIVE_VIEW 추가 후 실제 navigate 활성화
-          const route = getPersonalRetrospectiveRoute()
-          console.log('개인 회고 라우트:', route)
-          // navigate(route)
-        }}
+        onClick={() => navigate(getPersonalRetrospectiveRoute())}
       >
         <div className="flex gap-base">
           <img src={personalRetroIcon} alt="개인 회고" className="shrink-0" />
