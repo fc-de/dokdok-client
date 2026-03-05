@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { PAGE_ACCESS_ERROR_CODES } from '@/api/errors'
 import type { GetCollectedAnswersResponse } from '@/features/retrospectives'
 import { AiLoadingOverlay, useCollectedAnswers, useCreateSttJob } from '@/features/retrospectives'
 import SubPageHeader from '@/shared/components/SubPageHeader'
@@ -58,8 +59,10 @@ export default function MeetingRetrospectiveCreatePage() {
   })
 
   // 에러 처리 및 리다이렉트
+  // 권한 에러(PAGE_ACCESS_ERROR_CODES)는 usePermissionRedirect 전역 핸들러에서 처리하므로 제외
   useEffect(() => {
     if (error && gatheringId && meetingId) {
+      if (PAGE_ACCESS_ERROR_CODES.has(error.code)) return
       showErrorToast(error.userMessage)
       navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), { replace: true })
     }

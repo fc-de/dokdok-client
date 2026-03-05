@@ -20,7 +20,7 @@ import { ROUTES } from '@/shared/constants'
 import { queryClient } from '@/shared/lib/tanstack-query/queryClient'
 
 import { apiClient } from './client'
-import { ApiError } from './errors'
+import { ApiError, type ErrorCodeType, ErrorMessage, PAGE_ACCESS_ERROR_CODES } from './errors'
 import { logger } from './logger'
 import { setupRetryInterceptor } from './retry'
 
@@ -118,6 +118,15 @@ export const setupInterceptors = (): void => {
 
       // 서버 에러 응답에서 code와 message 추출
       const { code, message } = (error.response?.data as { code?: string; message?: string }) ?? {}
+
+      // 페이지 접근 권한 에러: React에 커스텀 이벤트로 전달
+      // usePermissionRedirect 훅에서 listen하여 토스트 + 홈 리다이렉트 처리
+      if (code && PAGE_ACCESS_ERROR_CODES.has(code)) {
+        const errorMessage = ErrorMessage[code as ErrorCodeType] ?? '접근 권한이 없습니다.'
+        window.dispatchEvent(
+          new CustomEvent('permission-denied', { detail: { message: errorMessage } })
+        )
+      }
 
       // AxiosError를 ApiError로 변환하여 reject
       // 이를 통해 사용처에서 error.is(ErrorCode.XXX)로 에러 유형 판단 가능

@@ -296,6 +296,23 @@ export const ErrorMessage: Record<ErrorCodeType, string> = {
 } as const
 
 /**
+ * 페이지 접근 권한 에러 코드
+ *
+ * @description
+ * 이 코드들이 발생하면 해당 페이지에 접근 권한이 없음을 의미합니다.
+ * interceptors.ts에서 감지하여 홈으로 리다이렉트합니다.
+ * 액션 레벨 에러(리더 강퇴 불가, 리뷰 접근 등)는 포함하지 않습니다.
+ */
+export const PAGE_ACCESS_ERROR_CODES: Set<string> = new Set([
+  ErrorCode.NOT_GATHERING_MEMBER,
+  ErrorCode.NOT_GATHERING_LEADER,
+  ErrorCode.NOT_GATHERING_MEETING,
+  ErrorCode.NOT_MEETING_MEMBER,
+  ErrorCode.NOT_MEETING_LEADER,
+  ErrorCode.NO_ACCESS_RETROSPECTIVE,
+])
+
+/**
  * API 에러 클래스
  *
  * @description
