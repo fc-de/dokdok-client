@@ -17,7 +17,9 @@ export function usePermissionRedirect() {
 
   useEffect(() => {
     const handler = (e: Event) => {
-      const { message } = (e as CustomEvent<{ message: string }>).detail
+      if (!(e instanceof CustomEvent) || !e.detail) return
+      const message =
+        typeof e.detail.message === 'string' ? e.detail.message : '접근 권한이 없습니다.'
       showErrorToast(message)
       navigate(ROUTES.HOME, { replace: true })
     }

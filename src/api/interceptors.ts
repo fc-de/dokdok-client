@@ -34,6 +34,10 @@ import { setupRetryInterceptor } from './retry'
  */
 let isInitialized = false
 
+/** 중복 permission-denied 이벤트 방지용 타임스탬프 */
+let lastPermissionDeniedAt = 0
+const PERMISSION_DENIED_DEDUP_MS = 1000
+
 /**
  * API 클라이언트 인터셉터 초기화
  *
@@ -121,11 +125,16 @@ export const setupInterceptors = (): void => {
 
       // 페이지 접근 권한 에러: React에 커스텀 이벤트로 전달
       // usePermissionRedirect 훅에서 listen하여 토스트 + 홈 리다이렉트 처리
+      // 동시에 여러 쿼리가 실패해도 1초 내 중복 이벤트는 억제
       if (code && PAGE_ACCESS_ERROR_CODES.has(code)) {
-        const errorMessage = ErrorMessage[code as ErrorCodeType] ?? '접근 권한이 없습니다.'
-        window.dispatchEvent(
-          new CustomEvent('permission-denied', { detail: { message: errorMessage } })
-        )
+        const now = Date.now()
+        if (now - lastPermissionDeniedAt >= PERMISSION_DENIED_DEDUP_MS) {
+          lastPermissionDeniedAt = now
+          const errorMessage = ErrorMessage[code as ErrorCodeType] ?? '접근 권한이 없습니다.'
+          window.dispatchEvent(
+            new CustomEvent('permission-denied', { detail: { message: errorMessage } })
+          )
+        }
       }
 
       // AxiosError를 ApiError로 변환하여 reject
