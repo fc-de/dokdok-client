@@ -1,9 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { toast } from 'sonner'
 
-import { deleteBookRecord } from '@/features/book/book.api'
 import type {
   MeetingPersonalRecord,
   PersonalRecord,
@@ -16,9 +13,7 @@ import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionI
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
-import { bookRecordsKeys, useBookRecords, useMyGatherings } from '@/features/book/hooks'
-import { deleteMyPreOpinionAnswer } from '@/features/pre-opinion/preOpinion.api'
-import { deletePersonalRetrospective } from '@/features/retrospectives/personal/personalRetrospective.api'
+import { useBookLogDeleteActions, useBookRecords, useMyGatherings } from '@/features/book/hooks'
 import { ROUTES } from '@/shared/constants/routes'
 import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
@@ -44,37 +39,8 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
 
   const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const { mutate: deletePersonalRecord } = useMutation({
-    mutationFn: (recordId: number) => deleteBookRecord(bookId, recordId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
-    },
-    onError: () => {
-      toast.error('기록 삭제에 실패했어요. 다시 시도해주세요.')
-    },
-  })
-
-  const { mutate: deletePreOpinion } = useMutation({
-    mutationFn: (params: { gatheringId: number; meetingId: number }) =>
-      deleteMyPreOpinionAnswer(params),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
-    },
-    onError: () => {
-      toast.error('사전 의견 삭제에 실패했어요. 다시 시도해주세요.')
-    },
-  })
-
-  const { mutate: deleteRetrospective } = useMutation({
-    mutationFn: (meetingId: number) => deletePersonalRetrospective(meetingId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
-    },
-    onError: () => {
-      toast.error('회고 삭제에 실패했어요. 다시 시도해주세요.')
-    },
-  })
+  const { deletePersonalRecord, deletePreOpinion, deleteRetrospective } =
+    useBookLogDeleteActions(bookId)
 
   const {
     data: gatheringsData,
