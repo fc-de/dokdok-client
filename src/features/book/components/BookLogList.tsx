@@ -1,19 +1,22 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import type {
-  MeetingGroupRecord,
   MeetingPersonalRecord,
-  MeetingPreOpinion,
   PersonalRecord,
   RecordSortType,
   RecordType,
 } from '@/features/book/book.types'
-import BookLogModal from '@/features/book/components/BookLogModal'
+import BookLogListSkeleton from '@/features/book/components/BookLogListSkeleton'
 import MeetingGroupRecordItem from '@/features/book/components/MeetingGroupRecordItem'
 import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionItem'
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
-import { useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
+import { useBookLogDeleteActions, useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import { ROUTES } from '@/shared/constants/routes'
+import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
+import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
@@ -25,13 +28,8 @@ type BookLogListProps = {
 
 type OpenDropdown = 'gathering' | 'recordType' | null
 
-type RecordItem =
-  | { type: 'personal'; date: Date; data: PersonalRecord }
-  | { type: 'meetingGroup'; date: Date; data: MeetingGroupRecord }
-  | { type: 'meetingPersonal'; date: Date; data: MeetingPersonalRecord }
-  | { type: 'meetingPreOpinion'; date: Date; data: MeetingPreOpinion }
-
 const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
+  const isSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
@@ -39,6 +37,10 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
+
+  const navigate = useNavigate()
+  const { deletePersonalRecord, deletePreOpinion, deleteRetrospective } =
+    useBookLogDeleteActions(bookId)
 
   const {
     data: gatheringsData,
@@ -48,43 +50,26 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
   } = useMyGatherings()
 
   const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
-  const { data: recordsData } = useBookRecords(bookId, {
+
+  const {
+    data: recordsData,
+    isLoading: isRecordsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useBookRecords(bookId, {
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
     recordType: recordType || undefined,
     sort: sortType,
   })
 
-  // 모든 레코드를 통합하여 날짜순으로 정렬
-  const allRecords = useMemo((): RecordItem[] => {
-    if (!recordsData) return []
+  const allRecords = recordsData?.pages.flatMap((page) => page.items) ?? []
 
-    const records: RecordItem[] = []
-
-    recordsData.personalRecords.forEach((record) => {
-      records.push({ type: 'personal', date: new Date(record.createdAt), data: record })
-    })
-
-    recordsData.meetingGroupRecords.forEach((record) => {
-      records.push({ type: 'meetingGroup', date: new Date(record.meetingDate), data: record })
-    })
-
-    recordsData.meetingPersonalRecords.forEach((record) => {
-      records.push({ type: 'meetingPersonal', date: new Date(record.createdAt), data: record })
-    })
-
-    recordsData.meetingPreOpinions?.forEach((record) => {
-      records.push({ type: 'meetingPreOpinion', date: new Date(record.sharedAt), data: record })
-    })
-
-    // 정렬: LATEST면 최신순(내림차순), OLDEST면 오래된순(오름차순)
-    records.sort((a, b) => {
-      return sortType === 'LATEST'
-        ? b.date.getTime() - a.date.getTime()
-        : a.date.getTime() - b.date.getTime()
-    })
-
-    return records
-  }, [recordsData, sortType])
+  const observerRef = useInfiniteScroll(fetchNextPage, {
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isRecordsLoading,
+  })
 
   const handleGatheringChange = (value: string) => {
     setSelectedGathering(value)
@@ -108,10 +93,19 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     setIsModalOpen(true)
   }
 
+  const handleEditPersonalRetrospective = (record: MeetingPersonalRecord) => {
+    navigate(`${ROUTES.PERSONAL_RETROSPECTIVE(record.gatheringId, record.meetingId)}?mode=edit`)
+  }
+
   return (
     <section>
       {/* 감상 기록 헤더 - sticky */}
-      <div className="sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white shadow-drop-bottom">
+      <div
+        className={cn(
+          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow',
+          isSticky && 'shadow-drop-bottom'
+        )}
+      >
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
@@ -176,7 +170,9 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="bg-grey-100">
         <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
-          {allRecords.length === 0 ? (
+          {isRecordsLoading ? (
+            <BookLogListSkeleton />
+          ) : allRecords.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-base text-center">
               <p className="typo-subtitle2 text-grey-600">
                 아직 감상 기록이 없어요.
@@ -186,47 +182,60 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
             </div>
           ) : (
             <div className="flex flex-col gap-xlarge">
-              {allRecords.map((item, idx) => {
+              {allRecords.map((item) => {
                 switch (item.type) {
-                  case 'personal':
+                  case 'READING_RECORD':
                     return (
                       <PersonalRecordItem
-                        key={`personal-${item.data.recordId}`}
-                        record={item.data}
-                        onEdit={isRecording ? () => handleEditRecord(item.data) : undefined}
+                        key={`personal-${item.readingRecord.recordId}`}
+                        record={item.readingRecord}
+                        onEdit={
+                          isRecording ? () => handleEditRecord(item.readingRecord) : undefined
+                        }
+                        onDelete={
+                          isRecording
+                            ? () => deletePersonalRecord(item.readingRecord.recordId)
+                            : undefined
+                        }
                       />
                     )
-                  case 'meetingGroup':
+                  case 'GROUP_RETROSPECTIVE':
                     return (
                       <MeetingGroupRecordItem
-                        key={`group-${item.data.meetingId}`}
-                        record={item.data}
-                        onEdit={
-                          isRecording
-                            ? () => console.log('edit group', item.data.meetingId)
-                            : undefined
-                        }
+                        key={`group-${item.retrospective.retrospectiveId}`}
+                        record={item.retrospective}
                       />
                     )
-                  case 'meetingPersonal':
+                  case 'PERSONAL_RETROSPECTIVE':
                     return (
                       <MeetingRetrospectiveItem
-                        key={`retrospective-${item.data.retrospectiveId}`}
-                        record={item.data}
+                        key={`retrospective-${item.retrospective.retrospectiveId}`}
+                        record={item.retrospective}
                         onEdit={
                           isRecording
-                            ? () => console.log('edit retrospective', item.data.retrospectiveId)
+                            ? () => handleEditPersonalRetrospective(item.retrospective)
+                            : undefined
+                        }
+                        onDelete={
+                          isRecording
+                            ? () => deleteRetrospective(item.retrospective.meetingId)
                             : undefined
                         }
                       />
                     )
-                  case 'meetingPreOpinion':
+                  case 'PRE_OPINION':
                     return (
                       <MeetingPreOpinionItem
-                        key={`pre-opinion-${item.data.gatheringName}-${item.data.sharedAt}`}
-                        record={item.data}
-                        onEdit={
-                          isRecording ? () => console.log('edit pre-opinion', idx) : undefined
+                        key={`pre-opinion-${item.preOpinion.meetingId}`}
+                        record={item.preOpinion}
+                        onDelete={
+                          isRecording
+                            ? () =>
+                                deletePreOpinion({
+                                  gatheringId: item.preOpinion.gatheringId,
+                                  meetingId: item.preOpinion.meetingId,
+                                })
+                            : undefined
                         }
                       />
                     )
@@ -234,11 +243,13 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
                     return null
                 }
               })}
+              {isFetchingNextPage && <BookLogListSkeleton count={2} />}
+              {hasNextPage && <div ref={observerRef} className="h-10" />}
             </div>
           )}
         </div>
       </div>
-      <BookLogModal
+      <PersonalRecordModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
         bookId={bookId}

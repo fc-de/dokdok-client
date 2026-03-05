@@ -6,6 +6,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { getBookDetail, toggleBookReadingStatus } from '../book.api'
+import type { BookDetail } from '../book.types'
 
 /** 책 상세 쿼리 키 팩토리 */
 export const bookKeys = {
@@ -54,6 +55,26 @@ export function useToggleBookReadingStatus(bookId: number) {
 
   return useMutation({
     mutationFn: () => toggleBookReadingStatus(bookId),
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: bookKeys.detail(bookId) })
+
+      const previousData = queryClient.getQueryData<BookDetail>(bookKeys.detail(bookId))
+
+      queryClient.setQueryData<BookDetail>(bookKeys.detail(bookId), (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          bookReadingStatus: old.bookReadingStatus === 'READING' ? 'COMPLETED' : 'READING',
+        }
+      })
+
+      return { previousData }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(bookKeys.detail(bookId), context.previousData)
+      }
+    },
     onSuccess: (data) => {
       queryClient.setQueryData(bookKeys.detail(bookId), data)
     },

@@ -16,11 +16,11 @@ export default function ReadingBooksSection() {
   const [activeTab, setActiveTab] = useState<BookTab>('all')
   const navigate = useNavigate()
 
-  const { data, isLoading } = useBooks({ status: 'READING' })
+  const { data, isLoading } = useBooks({ readingStatus: 'READING' })
   const showSkeleton = useDeferredLoading(isLoading)
 
   const books = data?.pages.flatMap((page) => page.items) ?? []
-  const totalCount = data?.pages[0]?.readingCount ?? 0
+  const totalCount = data?.pages[0]?.statusCounts.reading ?? 0
 
   return (
     <section className="flex flex-col gap-medium">

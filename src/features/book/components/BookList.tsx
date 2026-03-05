@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import {
-  FilterDropdown,
-  StarRatingFilter,
-  type StarRatingRange,
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from '@/shared/ui'
+import { useInfiniteScroll } from '@/shared/hooks'
+import type { StarRatingRange } from '@/shared/ui'
+import { FilterDropdown, StarRatingFilter, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
-import type { BookReadingStatus, RecordSortType } from '../book.types'
+import type { BookReadingStatus, BookSortOrder } from '../book.types'
 import { useBooks, useMyGatherings } from '../hooks'
 import BookCard from './BookCard'
 
@@ -62,12 +57,11 @@ function BookList({
 }: BookListProps) {
   // 필터 상태
   const [selectedGathering, setSelectedGathering] = useState<string>('')
-  const [rating, setRating] = useState<StarRatingRange | null>(null)
-  const [sortType, setSortType] = useState<RecordSortType>('LATEST')
+  const [selectedRating, setSelectedRating] = useState<StarRatingRange | null>(null)
+  const [sortOrder, setSortOrder] = useState<BookSortOrder>('DESC')
   const [openDropdown, setOpenDropdown] = useState<'gathering' | null>(null)
 
-  // 무한스크롤 감지용 ref
-  const loadMoreRef = useRef<HTMLDivElement>(null)
+  const selectedGatheringId = selectedGathering ? Number(selectedGathering) : undefined
 
   // 모임 목록 조회
   const {
@@ -79,44 +73,32 @@ function BookList({
 
   const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
 
-  // 선택된 모임명 찾기
-  const selectedGatheringName = gatherings.find(
-    (g) => String(g.gatheringId) === selectedGathering
-  )?.gatheringName
-
-  // 책 목록 조회 (필터 적용, 무한스크롤)
+  // 책 목록 조회 (서버 필터: 상태, 별점, 정렬)
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooks({
-    status,
-    gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
-    ratingMin: rating?.min,
-    ratingMax: rating?.max,
-    sort: sortType,
+    readingStatus: status,
+    minRating: selectedRating?.min,
+    maxRating: selectedRating?.max,
+    sortBy: 'TIME',
+    sortOrder,
   })
 
-  // 무한스크롤 Intersection Observer
-  useEffect(() => {
-    const target = loadMoreRef.current
-    if (!target) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-      },
-      { threshold: 0.1 }
-    )
-
-    observer.observe(target)
-    return () => observer.disconnect()
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
-
-  const handleGatheringChange = (value: string) => {
-    setSelectedGathering(value)
-  }
+  // 무한스크롤
+  const loadMoreRef = useInfiniteScroll(fetchNextPage, {
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  })
 
   // 모든 페이지의 책 목록 합치기 (참조 안정성을 위해 메모이제이션)
-  const books = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+  const allBooks = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data?.pages])
+
+  // 모임 클라이언트 사이드 필터링
+  const books = useMemo(() => {
+    if (!selectedGatheringId) return allBooks
+    return allBooks.filter((book) =>
+      book.gatherings.some((g) => g.gatheringId === selectedGatheringId)
+    )
+  }, [allBooks, selectedGatheringId])
 
   // 필터링된 책 ID 목록
   const bookIds = useMemo(() => books.map((book) => book.bookId), [books])
@@ -140,57 +122,61 @@ function BookList({
 
   return (
     <div>
-      <div className="flex justify-between mt-medium">
-        <div className="flex flex-wrap gap-xsmall">
-          <FilterDropdown
-            placeholder="독서모임"
-            value={selectedGathering}
-            onChange={handleGatheringChange}
-            disabled={isLoading || isGatheringsLoading || gatherings.length === 0}
-            open={openDropdown === 'gathering'}
-            onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
-          >
-            {gatherings.map((gathering) => (
-              <FilterDropdown.Option
-                key={gathering.gatheringId}
-                value={String(gathering.gatheringId)}
-              >
-                {gathering.gatheringName}
-              </FilterDropdown.Option>
-            ))}
-            {hasNextGatherings && (
-              <button
-                type="button"
-                className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
-                onClick={() => fetchNextGatherings()}
-              >
-                더 보기
-              </button>
-            )}
-          </FilterDropdown>
-          <StarRatingFilter
-            placeholder="별점"
-            value={rating}
-            onChange={setRating}
-            disabled={isLoading}
-          />
+      {!isEditMode && (
+        <div className="flex justify-between mt-medium">
+          <div className="flex flex-wrap gap-xsmall">
+            <FilterDropdown
+              placeholder="독서모임"
+              value={selectedGathering}
+              onChange={setSelectedGathering}
+              disabled={isLoading || isGatheringsLoading || gatherings.length === 0}
+              open={openDropdown === 'gathering'}
+              onOpenChange={(open) => setOpenDropdown(open ? 'gathering' : null)}
+            >
+              {gatherings.map((gathering) => (
+                <FilterDropdown.Option
+                  key={gathering.gatheringId}
+                  value={String(gathering.gatheringId)}
+                >
+                  {gathering.gatheringName}
+                </FilterDropdown.Option>
+              ))}
+              {hasNextGatherings && (
+                <button
+                  type="button"
+                  className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
+                  onClick={() => fetchNextGatherings()}
+                >
+                  더 보기
+                </button>
+              )}
+            </FilterDropdown>
+            <StarRatingFilter
+              placeholder="별점"
+              value={selectedRating}
+              onChange={setSelectedRating}
+              disabled={isLoading}
+            />
+          </div>
+          <div className="flex items-center gap-xsmall">
+            <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
+              <TabsList size="small" className="gap-0">
+                <TabsTrigger value="DESC" size="small" disabled={isLoading}>
+                  최신순
+                </TabsTrigger>
+                <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
+                <TabsTrigger value="ASC" size="small" disabled={isLoading}>
+                  오래된순
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
-        <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
-          <TabsList size="small" className="gap-0">
-            <TabsTrigger value="LATEST" size="small" disabled={isLoading}>
-              최신순
-            </TabsTrigger>
-            <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-            <TabsTrigger value="OLDEST" size="small" disabled={isLoading}>
-              오래된순
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
+      )}
       {isLoading ? (
         <BookListSkeleton />
       ) : isEmpty ? (
-        <BookListEmpty status={status} hasFilters={!!selectedGathering || !!rating} />
+        <BookListEmpty status={status} hasFilters={!!selectedGathering || !!selectedRating} />
       ) : (
         <>
           <div className="grid grid-cols-6 gap-large mt-large">
@@ -198,7 +184,7 @@ function BookList({
               <BookCard
                 key={book.bookId}
                 book={book}
-                selectedGatheringName={selectedGatheringName}
+                selectedGatheringId={selectedGatheringId}
                 isEditMode={isEditMode}
                 isSelected={selectedBookIds?.has(book.bookId)}
                 onSelectToggle={onSelectToggle}
@@ -206,9 +192,8 @@ function BookList({
             ))}
           </div>
           {/* 무한스크롤 트리거 */}
-          <div ref={loadMoreRef} className="h-10">
-            {isFetchingNextPage && <BookListLoadingMore />}
-          </div>
+          {isFetchingNextPage && <BookListSkeleton />}
+          <div ref={loadMoreRef} className="h-10" />
         </>
       )}
     </div>
@@ -228,14 +213,6 @@ function BookListSkeleton() {
           </div>
         </div>
       ))}
-    </div>
-  )
-}
-
-function BookListLoadingMore() {
-  return (
-    <div className="flex justify-center py-medium">
-      <div className="size-6 border-2 border-grey-300 border-t-grey-600 rounded-full animate-spin" />
     </div>
   )
 }

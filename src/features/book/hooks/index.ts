@@ -1,4 +1,5 @@
 export * from './useBookDetail'
+export * from './useBookLogDeleteActions'
 export * from './useBookRecords'
 export * from './useBookReview'
 export * from './useBookReviewHistory'

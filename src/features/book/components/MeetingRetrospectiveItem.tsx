@@ -1,15 +1,16 @@
 import type { MeetingPersonalRecord } from '@/features/book/book.types'
+import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { Division } from '@/shared/components/Division'
 import { formatToDateTimeWithDay } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui'
 import { FoldedCard } from '@/shared/ui/FoldedCard'
-import { TextButton } from '@/shared/ui/TextButton'
 
 import ExcerptBlock from './ExcerptBlock'
 
 type MeetingRetrospectiveItemProps = {
   record: MeetingPersonalRecord
   onEdit?: () => void
+  onDelete?: () => void
 }
 
 /**
@@ -22,7 +23,7 @@ type MeetingRetrospectiveItemProps = {
  * <MeetingRetrospectiveItem record={meetingPersonalRecord} />
  * ```
  */
-const MeetingRetrospectiveItem = ({ record, onEdit }: MeetingRetrospectiveItemProps) => {
+const MeetingRetrospectiveItem = ({ record, onEdit, onDelete }: MeetingRetrospectiveItemProps) => {
   const { gatheringName, createdAt, topicGroups, freeTexts } = record
 
   return (
@@ -35,11 +36,7 @@ const MeetingRetrospectiveItem = ({ record, onEdit }: MeetingRetrospectiveItemPr
           </p>
           <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
         </div>
-        {onEdit && (
-          <TextButton size={'medium'} onClick={onEdit}>
-            수정하기
-          </TextButton>
-        )}
+        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
       </div>
 
       <div className="flex flex-col">
