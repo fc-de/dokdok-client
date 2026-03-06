@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import type { GetCollectedAnswersResponse } from '@/features/retrospectives'
-import { AiLoadingOverlay, useCollectedAnswers, useCreateSttJob } from '@/features/retrospectives'
+import {
+  AiLoadingOverlay,
+  type GetCollectedAnswersResponse,
+  useCollectedAnswers,
+  useCreateSttJob,
+} from '@/features/retrospectives/meeting'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'

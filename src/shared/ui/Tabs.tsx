@@ -69,7 +69,7 @@ function TabsTrigger({ className, size: sizeProp, badge, children, ...props }: T
         ],
         // Medium
         size === 'medium' && [
-          'typo-subtitle3 text-grey-700 pb-[12px]',
+          'typo-subtitle3 text-grey-700 py-small',
           'data-[state=active]:typo-subtitle2 data-[state=active]:text-black',
           'data-[state=active]:border-b-2 data-[state=active]:border-black',
         ],
