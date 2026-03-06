@@ -201,7 +201,7 @@ export const getMeetingRetrospectiveDetail = async (
 
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 500))
-    return getMockMeetingRetrospectiveDetail(meetingId)
+    return getMockMeetingRetrospectiveDetail()
   }
 
   return api.get<MeetingRetrospectiveDetailResponse>(RETROSPECTIVES_ENDPOINTS.DETAIL(meetingId))

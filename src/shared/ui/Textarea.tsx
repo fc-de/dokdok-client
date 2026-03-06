@@ -1,6 +1,5 @@
 import { cva } from 'class-variance-authority'
 import type { ChangeEvent, ComponentProps, CSSProperties, FormEvent } from 'react'
-import { useRef } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -65,7 +64,6 @@ function Textarea({
   onInput,
   ...props
 }: TextareaProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const currentLength = typeof value === 'string' ? value.length : 0
   const showCount = maxLength !== undefined && counter
   const showFooter = error || helperText || showCount
@@ -103,7 +101,6 @@ function Textarea({
   return (
     <div className="flex flex-col w-full gap-xsmall">
       <textarea
-        ref={textareaRef}
         data-slot="textarea"
         disabled={disabled}
         maxLength={maxLength}

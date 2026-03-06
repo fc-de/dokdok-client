@@ -417,16 +417,9 @@ const mockMeetingRetrospectiveDetail: MeetingRetrospectiveDetailResponse = {
  *
  * @description
  * 실제 API 호출을 시뮬레이션하여 약속회고 상세 목데이터를 반환합니다.
- *
- * @param meetingId - 약속 식별자
  */
-export const getMockMeetingRetrospectiveDetail = (
-  meetingId: number
-): MeetingRetrospectiveDetailResponse => {
-  return structuredClone({
-    ...mockMeetingRetrospectiveDetail,
-    meetingId,
-  })
+export const getMockMeetingRetrospectiveDetail = (): MeetingRetrospectiveDetailResponse => {
+  return mockMeetingRetrospectiveDetail
 }
 
 /**
@@ -435,7 +428,7 @@ export const getMockMeetingRetrospectiveDetail = (
 const mockComments: RetrospectiveComment[] = [
   {
     commentId: 1,
-    userId: 1,
+    userId: 12,
     nickname: '곰곰',
     profileImageUrl: 'https://i.pravatar.cc/150?img=1',
     comment:

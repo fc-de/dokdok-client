@@ -10,6 +10,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Avatar, AvatarFallback, AvatarImage, Button, Textarea, TextButton } from '@/shared/ui'
+import { useGlobalModalStore } from '@/store'
 
 import {
   useCreateRetrospectiveComment,
@@ -61,6 +62,8 @@ export default function RetrospectiveComments({
     isFetchingNextPage,
   })
 
+  const openConfirm = useGlobalModalStore().openConfirm
+
   // 댓글 작성
   const createMutation = useCreateRetrospectiveComment()
 
@@ -101,8 +104,9 @@ export default function RetrospectiveComments({
   }
 
   // 댓글 삭제 핸들러
-  const handleDelete = (commentId: number) => {
-    if (!confirm('댓글을 삭제하시겠습니까?')) return
+  const handleDelete = async (commentId: number) => {
+    const confirmed = await openConfirm('댓글 삭제', '댓글을 삭제하시겠습니까?')
+    if (!confirmed) return
 
     deleteMutation.mutate(
       {
