@@ -23,6 +23,8 @@ type ConfirmedHeaderProps = {
   confirmedTopic: boolean
   confirmedTopicDate: string | null
   progressStatus: MeetingProgressStatus
+  gatheringId: number
+  meetingId: number
 }
 
 type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
@@ -114,7 +116,11 @@ export default function TopicHeader(props: TopicHeaderProps) {
 
           <div className="flex gap-xsmall">
             {props.actions.canViewPreOpinions ? (
-              <Button variant="secondary" outline>
+              <Button
+                variant="secondary"
+                outline
+                onClick={() => navigate(ROUTES.PRE_OPINIONS(props.gatheringId, props.meetingId))}
+              >
                 사전 의견 확인하기
               </Button>
             ) : (
@@ -132,7 +138,14 @@ export default function TopicHeader(props: TopicHeaderProps) {
             )}
 
             {props.progressStatus !== 'POST' && (
-              <Button disabled={!props.actions.canWritePreOpinions}>사전 의견 작성하기</Button>
+              <Button
+                disabled={!props.actions.canWritePreOpinions}
+                onClick={() =>
+                  navigate(ROUTES.PRE_OPINION_WRITE(props.gatheringId, props.meetingId))
+                }
+              >
+                사전 의견 작성하기
+              </Button>
             )}
           </div>
         </div>
