@@ -2,6 +2,7 @@ import { Info } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { PAGE_ACCESS_ERROR_CODES } from '@/api/errors'
 import {
   TOPIC_TYPE_META,
   TOPIC_TYPE_OPTIONS,
@@ -66,6 +67,7 @@ export default function TopicCreatePage() {
           navigate(-1)
         },
         onError: (error) => {
+          if (PAGE_ACCESS_ERROR_CODES.has(error.code)) return
           openError('주제 제안 실패', error.userMessage)
         },
       }

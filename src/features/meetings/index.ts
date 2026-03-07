@@ -30,6 +30,7 @@ export type {
   MyMeetingRole,
   MyMeetingTabCountsResponse,
   RejectMeetingResponse,
+  RetrospectiveStatus,
   UpdateMeetingRequest,
   UpdateMeetingResponse,
 } from './meetings.types'

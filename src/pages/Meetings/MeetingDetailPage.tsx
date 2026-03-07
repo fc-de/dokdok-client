@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import {
   MeetingDetailButton,
@@ -7,7 +7,7 @@ import {
   MeetingDetailInfo,
   useMeetingDetail,
 } from '@/features/meetings'
-import { RetrospectiveCardButtons } from '@/features/retrospectives'
+import { RetrospectiveCardButtons } from '@/features/retrospectives/meeting'
 import type {
   GetConfirmedTopicsResponse,
   GetProposedTopicsResponse,
@@ -17,6 +17,7 @@ import {
   ConfirmedTopicList,
   ConfirmTopicModal,
   ProposedTopicList,
+  TopicError,
   TopicHeader,
   TopicSkeleton,
   useConfirmedTopics,
@@ -28,31 +29,47 @@ import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
-  const { gatheringId, meetingId } = useParams<{
+  const navigate = useNavigate()
+  const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
     gatheringId: string
     meetingId: string
   }>()
 
-  const [activeTab, setActiveTab] = useState<TopicStatus>('PROPOSED')
+  const parsedGatheringId = gatheringIdParam ? Number(gatheringIdParam) : NaN
+  const parsedMeetingId = meetingIdParam ? Number(meetingIdParam) : NaN
+
+  const gatheringId = Number.isFinite(parsedGatheringId) ? parsedGatheringId : 0
+  const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : 0
+
+  const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
 
   const {
     data: meeting,
     isLoading: meetingLoading,
     error: meetingError,
-  } = useMeetingDetail(Number(meetingId))
+  } = useMeetingDetail(meetingId)
+
+  // 사용자 선택이 없으면 progressStatus에 따라 자동 결정
+  const activeTab =
+    userSelectedTab !== null
+      ? userSelectedTab
+      : meeting?.progressStatus === 'POST'
+        ? 'CONFIRMED'
+        : 'PROPOSED'
 
   // 제안된 주제 조회 (무한 스크롤)
   const {
     data: proposedTopicsInfiniteData,
     isLoading: isProposedLoading,
     error: proposedError,
+    refetch: refetchProposed,
     fetchNextPage: fetchNextProposedPage,
     hasNextPage: hasNextProposedPage,
     isFetchingNextPage: isFetchingNextProposedPage,
   } = useProposedTopics({
-    gatheringId: Number(gatheringId),
-    meetingId: Number(meetingId),
+    gatheringId: gatheringId,
+    meetingId: meetingId,
   })
 
   // 확정된 주제 조회 (무한 스크롤)
@@ -60,29 +77,26 @@ export default function MeetingDetailPage() {
     data: confirmedTopicsInfiniteData,
     isLoading: isConfirmedLoading,
     error: confirmedError,
+    refetch: refetchConfirmed,
     fetchNextPage: fetchNextConfirmedPage,
     hasNextPage: hasNextConfirmedPage,
     isFetchingNextPage: isFetchingNextConfirmedPage,
   } = useConfirmedTopics({
-    gatheringId: Number(gatheringId),
-    meetingId: Number(meetingId),
+    gatheringId: gatheringId,
+    meetingId: meetingId,
   })
 
-  // 에러 처리
   useEffect(() => {
-    if (proposedError) {
-      showErrorToast(proposedError.userMessage)
-    }
-    if (confirmedError) {
-      showErrorToast(confirmedError.userMessage)
-    }
     if (meetingError) {
       showErrorToast(meetingError.userMessage)
-    }
-    // navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
-  }, [proposedError, confirmedError, meetingError])
 
-  if (!gatheringId || !meetingId) return null
+      if (gatheringId !== 0) {
+        navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
+      }
+    }
+  }, [meetingError, navigate, gatheringId])
+
+  if (gatheringId === 0 || meetingId === 0) return null
 
   return (
     <>
@@ -111,7 +125,7 @@ export default function MeetingDetailPage() {
                   buttonLabel={meeting.actionState.buttonLabel}
                   isEnabled={meeting.actionState.enabled}
                   type={meeting.actionState.type}
-                  gatheringId={Number(gatheringId)}
+                  gatheringId={gatheringId}
                   meetingId={meeting.meetingId}
                 />
               </>
@@ -122,8 +136,10 @@ export default function MeetingDetailPage() {
           <div className="flex flex-col flex-1 gap-base pb-base">
             {meeting?.progressStatus === 'POST' && (
               <RetrospectiveCardButtons
-                gatheringId={Number(gatheringId)}
-                meetingId={Number(meetingId)}
+                gatheringId={gatheringId}
+                meetingId={meetingId}
+                retrospectiveStatus={meeting.retrospectiveStatus}
+                personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
               />
             )}
 
@@ -131,7 +147,7 @@ export default function MeetingDetailPage() {
 
             <Tabs
               value={activeTab}
-              onValueChange={(value) => setActiveTab(value as TopicStatus)}
+              onValueChange={(value) => setUserSelectedTab(value as TopicStatus)}
               className="gap-medium"
             >
               <TabsList className="border-b border-grey-300" size="medium">
@@ -153,7 +169,12 @@ export default function MeetingDetailPage() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="PROPOSED">
-                {isProposedLoading || !proposedTopicsInfiniteData ? (
+                {proposedError ? (
+                  <TopicError
+                    message="제안 주제를 불러오지 못했습니다"
+                    onRetry={() => refetchProposed()}
+                  />
+                ) : isProposedLoading || !proposedTopicsInfiniteData ? (
                   <TopicSkeleton />
                 ) : (
                   <div className="flex flex-col gap-base">
@@ -164,8 +185,8 @@ export default function MeetingDetailPage() {
                       confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                       proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
                       onOpenChange={setIsConfirmTopicOpen}
-                      gatheringId={Number(gatheringId)}
-                      meetingId={Number(meetingId)}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                     <ProposedTopicList
                       topics={proposedTopicsInfiniteData.pages.flatMap(
@@ -175,15 +196,20 @@ export default function MeetingDetailPage() {
                       hasNextPage={hasNextProposedPage}
                       isFetchingNextPage={isFetchingNextProposedPage}
                       onLoadMore={fetchNextProposedPage}
-                      gatheringId={Number(gatheringId)}
-                      meetingId={Number(meetingId)}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                   </div>
                 )}
               </TabsContent>
 
               <TabsContent value="CONFIRMED">
-                {isConfirmedLoading || !confirmedTopicsInfiniteData ? (
+                {confirmedError ? (
+                  <TopicError
+                    message="확정된 주제를 불러오지 못했습니다"
+                    onRetry={() => refetchConfirmed()}
+                  />
+                ) : isConfirmedLoading || !confirmedTopicsInfiniteData ? (
                   <TopicSkeleton />
                 ) : (
                   <div className="flex flex-col gap-base">
@@ -192,6 +218,9 @@ export default function MeetingDetailPage() {
                       confirmedTopic={meeting?.confirmedTopic ?? false}
                       actions={confirmedTopicsInfiniteData.pages[0].actions}
                       confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                      progressStatus={meeting?.progressStatus ?? 'PRE'}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                     <ConfirmedTopicList
                       topics={confirmedTopicsInfiniteData.pages.flatMap(
@@ -211,8 +240,8 @@ export default function MeetingDetailPage() {
           <ConfirmTopicModal
             open={isConfirmTopicOpen}
             onOpenChange={setIsConfirmTopicOpen}
-            gatheringId={Number(gatheringId)}
-            meetingId={Number(meetingId)}
+            gatheringId={gatheringId}
+            meetingId={meetingId}
           />
         )}
       </div>

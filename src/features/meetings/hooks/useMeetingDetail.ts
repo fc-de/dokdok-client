@@ -23,20 +23,11 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  *
  */
 export const useMeetingDetail = (meetingId: number) => {
-  const isValidMeetingId = !Number.isNaN(meetingId) && meetingId > 0
-
-  // 유효하지 않은 meetingId는 detail 키 대신 details 키 사용
-  // NaN이 null로 직렬화되어 캐시 충돌하는 것을 방지
-  const queryKey = isValidMeetingId
-    ? meetingQueryKeys.detail(meetingId)
-    : meetingQueryKeys.details()
-
   return useQuery<GetMeetingDetailResponse, ApiError>({
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps
-    queryKey,
+    queryKey: meetingQueryKeys.detail(meetingId),
     queryFn: () => getMeetingDetail(meetingId),
     // meetingId가 유효할 때만 쿼리 실행
-    enabled: isValidMeetingId,
+    enabled: meetingId > 0,
     // 캐시 데이터 10분간 유지 (전역 설정 staleTime: 5분 사용)
     gcTime: 10 * 60 * 1000,
   })

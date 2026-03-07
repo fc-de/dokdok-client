@@ -47,6 +47,13 @@ export const ROUTES = {
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective`,
   MEETING_RETROSPECTIVE_CREATE: (gatheringId: number | string, meetingId: number | string) =>
     `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/create`,
+  MEETING_RETROSPECTIVE_DETAIL: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/detail`,
+  // Retrospectives (개인 회고)
+  PERSONAL_RETROSPECTIVE: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/personal`,
+  PERSONAL_RETROSPECTIVE_VIEW: (gatheringId: number | string, meetingId: number | string) =>
+    `/gatherings/${gatheringId}/meetings/${meetingId}/retrospective/personal/view`,
 
   // Records
   RECORDS: '/records',

@@ -202,6 +202,12 @@ export type MeetingDetailActionStateType =
   | 'JOIN_TIME_EXPIRED'
 
 export type MeetingProgressStatus = 'PRE' | 'ONGOING' | 'POST'
+
+/**
+ * 약속 회고 작성 상태 타입
+ */
+export type RetrospectiveStatus = 'NOT_CREATED' | 'AI_SUMMARY_COMPLETED' | 'FINAL_PUBLISHED'
+
 /**
  * 약속 상세 조회 응답 타입
  */
@@ -218,6 +224,10 @@ export type GetMeetingDetailResponse = {
   confirmedTopic: boolean
   /** 주제 확정 일시 */
   confirmedTopicDate: string | null
+  /** 약속 회고 작성 상태 */
+  retrospectiveStatus: RetrospectiveStatus
+  /** 개인 회고 작성 여부 */
+  personalRetrospectiveWritten: boolean
   /** 모임 정보 */
   gathering: {
     gatheringId: number
@@ -280,6 +290,7 @@ export interface MyMeetingListItem {
   meetingStatus: MeetingStatus | 'REJECTED' | 'DONE'
   myRole: MyMeetingRole
   progressStatus: MyMeetingProgressStatus
+  preOpinionTemplateConfirmed: boolean
 }
 
 /** 메인페이지 내 약속 커서 */

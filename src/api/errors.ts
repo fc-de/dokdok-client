@@ -27,6 +27,7 @@
  */
 export const ErrorCode = {
   // Global - 기본 에러
+  SERVER_ERROR: 'E000',
   INVALID_ENUM_VALUE: 'E001',
   INVALID_REQUEST_FORMAT: 'E002',
   STATUS_ALREADY_SET: 'E003',
@@ -110,6 +111,8 @@ export const ErrorCode = {
   INVALID_MAX_PARTICIPANTS: 'M013',
   MAX_PARTICIPANTS_LESS_THAN_CURRENT: 'M014',
   MEETING_DELETE_NOT_ALLOWED: 'M015',
+  MEETING_JOIN_TIME_EXPIRED: 'M016',
+  MEETING_UPDATE_TIME_EXPIRED: 'M017',
 
   // Topic
   TOPIC_NOT_FOUND: 'E101',
@@ -127,6 +130,8 @@ export const ErrorCode = {
   MEETING_RETROSPECTIVE_NOT_FOUND: 'R103',
   RETROSPECTIVE_ALREADY_DELETED: 'R104',
   NO_ACCESS_RETROSPECTIVE: 'R105',
+  AI_SUMMARY_NOT_FOUND: 'R106',
+  RETROSPECTIVE_ALREADY_CREATED: 'R108',
 
   // Storage
   STORAGE_FILE_UPLOAD_FAILED: 'S001',
@@ -164,6 +169,7 @@ export type ErrorCodeType = (typeof ErrorCode)[keyof typeof ErrorCode]
  */
 export const ErrorMessage: Record<ErrorCodeType, string> = {
   // Global - 기본 에러
+  [ErrorCode.SERVER_ERROR]: '서버 에러가 발생했습니다. 담당자에게 문의 바랍니다.',
   [ErrorCode.INVALID_ENUM_VALUE]: '유효하지 않은 값입니다.',
   [ErrorCode.INVALID_REQUEST_FORMAT]: '잘못된 요청 형식입니다.',
   [ErrorCode.STATUS_ALREADY_SET]: '이미 해당 상태입니다.',
@@ -250,6 +256,8 @@ export const ErrorMessage: Record<ErrorCodeType, string> = {
   [ErrorCode.MAX_PARTICIPANTS_LESS_THAN_CURRENT]:
     '현재 참가 확정된 인원 수보다 적게 수정할 수 없습니다.',
   [ErrorCode.MEETING_DELETE_NOT_ALLOWED]: '약속 시작 24시간 이내에는 삭제할 수 없습니다.',
+  [ErrorCode.MEETING_JOIN_TIME_EXPIRED]: '약속 시작 24시간 이내에는 참가 신청할 수 없습니다.',
+  [ErrorCode.MEETING_UPDATE_TIME_EXPIRED]: '약속 시작 24시간 이내에는 수정할 수 없습니다.',
 
   // Topic
   [ErrorCode.TOPIC_NOT_FOUND]: '주제를 찾을 수 없습니다.',
@@ -267,6 +275,8 @@ export const ErrorMessage: Record<ErrorCodeType, string> = {
   [ErrorCode.MEETING_RETROSPECTIVE_NOT_FOUND]: '공동 회고 내용을 찾을 수 없습니다.',
   [ErrorCode.RETROSPECTIVE_ALREADY_DELETED]: '이미 삭제된 개인 회고입니다.',
   [ErrorCode.NO_ACCESS_RETROSPECTIVE]: '회고에 접근할 권한이 없습니다.',
+  [ErrorCode.AI_SUMMARY_NOT_FOUND]: 'AI 요약을 찾을 수 없습니다.',
+  [ErrorCode.RETROSPECTIVE_ALREADY_CREATED]: '이미 약속 회고가 생성되었습니다.',
 
   // Storage
   [ErrorCode.STORAGE_FILE_UPLOAD_FAILED]: '파일 업로드에 실패했습니다.',
@@ -284,6 +294,23 @@ export const ErrorMessage: Record<ErrorCodeType, string> = {
   [ErrorCode.INVALID_KAKAO_EMAIL]: '카카오 이메일 정보가 올바르지 않습니다.',
   [ErrorCode.INVALID_KAKAO_RESPONSE]: '카카오 응답 데이터가 올바르지 않습니다.',
 } as const
+
+/**
+ * 페이지 접근 권한 에러 코드
+ *
+ * @description
+ * 이 코드들이 발생하면 해당 페이지에 접근 권한이 없음을 의미합니다.
+ * interceptors.ts에서 감지하여 홈으로 리다이렉트합니다.
+ * 액션 레벨 에러(리더 강퇴 불가, 리뷰 접근 등)는 포함하지 않습니다.
+ */
+export const PAGE_ACCESS_ERROR_CODES: Set<string> = new Set([
+  ErrorCode.NOT_GATHERING_MEMBER,
+  ErrorCode.NOT_GATHERING_LEADER,
+  ErrorCode.NOT_GATHERING_MEETING,
+  ErrorCode.NOT_MEETING_MEMBER,
+  ErrorCode.NOT_MEETING_LEADER,
+  ErrorCode.NO_ACCESS_RETROSPECTIVE,
+])
 
 /**
  * API 에러 클래스

@@ -115,6 +115,7 @@
   --spacing-landing-max: 1340px;
   --spacing-layout-padding: 120px;
   --spacing-gnb-height: 64px;
+  --spacing-sub-page-header-height: 59px;
 
   /* font-size tokens */
   --text-heading1: 36px;
@@ -203,6 +204,24 @@
   }
 }
 
+@utility custom-scroll-grey {
+  &::-webkit-scrollbar {
+    /* ✅ 전체 영역 6+8+8 */
+    width: 22px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    /* ✅ 실제 보이는 thumb */
+    background-color: var(--color-grey-400);
+    border-radius: 30px;
+    border: 8px solid var(--color-grey-100);
+  }
+}
+
 @utility select-scroll-visible {
   /* shadcn select는 런타임에 스크롤을 숨기기 때문에 important사용*/
   scrollbar-width: auto !important;
@@ -224,4 +243,14 @@
 @utility shadow-drop-bottom {
   /* 아래쪽에만 그림자 (sticky 헤더용) */
   box-shadow: 0 4px 8px -4px rgba(17, 17, 17, 0.08);
+}
+
+@utility sticky-below-subheader {
+  /* GNB + SubPageHeader */
+  top: calc(var(--spacing-gnb-height) + var(--spacing-sub-page-header-height));
+}
+
+@utility sticky-retro-view-nav {
+  /* GNB + SubPageHeader + 페이지 헤더 바(65px) + 패딩(24px) */
+  top: calc(var(--spacing-gnb-height) + var(--spacing-sub-page-header-height) + 65px + 24px);
 }

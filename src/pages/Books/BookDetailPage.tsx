@@ -4,6 +4,8 @@ import BookInfo from '@/features/book/components/BookInfo'
 import BookLogList from '@/features/book/components/BookLogList'
 import { useBookDetail, useToggleBookReadingStatus } from '@/features/book/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { ROUTES } from '@/shared/constants/routes'
+import { useScrollCollapse } from '@/shared/hooks'
 
 export default function BookDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -13,10 +15,11 @@ export default function BookDetailPage() {
   const { mutate: toggleReadingStatus } = useToggleBookReadingStatus(bookId)
 
   const isRecording = bookDetail?.bookReadingStatus === 'READING'
+  const isBookLogSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
 
   return (
     <>
-      <SubPageHeader label="내 책장" to="/books" />
+      <SubPageHeader label="내 책장" to={ROUTES.BOOKS} disableShadow={isBookLogSticky} />
       <div className="mx-auto max-w-layout-max px-layout-padding">
         <BookInfo
           bookId={bookId}

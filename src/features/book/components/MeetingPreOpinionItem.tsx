@@ -1,13 +1,14 @@
 import type { MeetingPreOpinion } from '@/features/book/book.types'
+import BookLogActionMenu from '@/features/book/components/BookLogActionMenu'
 import { Division } from '@/shared/components/Division'
 import { formatToDateTimeWithDay } from '@/shared/lib/date'
 import { Badge } from '@/shared/ui/Badge'
 import { FoldedCard } from '@/shared/ui/FoldedCard'
-import { TextButton } from '@/shared/ui/TextButton'
 
 type MeetingPreOpinionItemProps = {
   record: MeetingPreOpinion
   onEdit?: () => void
+  onDelete?: () => void
 }
 
 /**
@@ -19,7 +20,7 @@ type MeetingPreOpinionItemProps = {
  * <MeetingPreOpinionItem record={meetingPreOpinion} />
  * ```
  */
-const MeetingPreOpinionItem = ({ record, onEdit }: MeetingPreOpinionItemProps) => {
+const MeetingPreOpinionItem = ({ record, onEdit, onDelete }: MeetingPreOpinionItemProps) => {
   const sortedTopics = [...record.topics].sort((a, b) => a.confirmOrder - b.confirmOrder)
 
   return (
@@ -32,7 +33,7 @@ const MeetingPreOpinionItem = ({ record, onEdit }: MeetingPreOpinionItemProps) =
           </p>
           <p className="text-grey-600 typo-body4">{formatToDateTimeWithDay(record.sharedAt)}</p>
         </div>
-        {onEdit && <TextButton size={'medium'}>수정하기</TextButton>}
+        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
       </div>
 
       {sortedTopics.map((topic, idx) => (
@@ -44,7 +45,7 @@ const MeetingPreOpinionItem = ({ record, onEdit }: MeetingPreOpinionItemProps) =
               </h4>
               <p className="mt-xxtiny typo-body1 text-grey-700">{topic.topicDescription}</p>
             </div>
-            <p className="typo-body1 text-black">{topic.answer}</p>
+            {topic.answer && <p className="typo-body1 text-black">{topic.answer}</p>}
           </div>
           {idx !== sortedTopics.length - 1 && <Division className="mt-medium" />}
         </div>

@@ -1,12 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import type { SearchBookItem } from '@/features/book'
 import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
+import SubPageHeader from '@/shared/components/SubPageHeader'
+import { ROUTES } from '@/shared/constants/routes'
 import { showToast } from '@/shared/lib/toast'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 import { useGlobalModalStore } from '@/store'
 
 export default function BookListPage() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { mutateAsync: deleteBook } = useDeleteBook()
   const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
   const { openConfirm } = useGlobalModalStore()
@@ -14,8 +20,8 @@ export default function BookListPage() {
   // 현재 활성 탭 상태
   const [activeTab, setActiveTab] = useState<'all' | 'reading' | 'completed'>('all')
 
-  // 편집 모드 상태
-  const [isEditMode, setIsEditMode] = useState(false)
+  // 편집 모드 상태 (URL 쿼리 파라미터 기반)
+  const isEditMode = searchParams.get('edit') === 'true'
   const [selectedBookIds, setSelectedBookIds] = useState<Set<number>>(new Set())
 
   // 편집 모드 ref (콜백 안정성을 위해)
@@ -34,10 +40,10 @@ export default function BookListPage() {
   const { data: countData } = useBooks()
 
   // 첫 페이지에서 카운트 정보 가져오기
-  const firstPage = countData?.pages[0]
-  const totalCount = firstPage?.totalCount ?? 0
-  const readingCount = firstPage?.readingCount ?? 0
-  const completedCount = firstPage?.completedCount ?? 0
+  const statusCounts = countData?.pages[0]?.statusCounts
+  const totalCount = statusCounts?.total ?? 0
+  const readingCount = statusCounts?.reading ?? 0
+  const completedCount = statusCounts?.completed ?? 0
 
   // 선택 토글
   const handleSelectToggle = (bookId: number) => {
@@ -82,46 +88,22 @@ export default function BookListPage() {
     if (!confirmed) return
 
     const bookIds = [...selectedBookIds]
-    const results = await Promise.allSettled(bookIds.map((id) => deleteBook(id)))
 
-    // 성공한 ID만 선택 해제
-    const succeededIds = new Set(
-      results
-        .map((result, index) => (result.status === 'fulfilled' ? bookIds[index] : null))
-        .filter((id): id is number => id !== null)
-    )
-
-    const failedCount = results.filter((r) => r.status === 'rejected').length
-
-    if (failedCount > 0) {
-      await openConfirm(
-        '삭제 실패',
-        `${bookIds.length}권 중 ${failedCount}권 삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.`,
-        { confirmText: '확인' }
-      )
-    }
-
-    // 성공한 항목만 선택에서 제거
-    setSelectedBookIds((prev) => {
-      const next = new Set(prev)
-      succeededIds.forEach((id) => {
-        next.delete(id)
+    try {
+      await deleteBook(bookIds)
+      navigate(ROUTES.BOOKS)
+    } catch {
+      await openConfirm('삭제 실패', '책 삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
+        confirmText: '확인',
       })
-      return next
-    })
-
-    if (failedCount === 0) {
-      setIsEditMode(false)
     }
   }
 
-  // 편집 모드 토글
-  const handleEditModeToggle = () => {
-    if (isEditMode) {
-      // 편집 모드 종료 시 선택 초기화
-      setSelectedBookIds(new Set())
-    }
-    setIsEditMode(!isEditMode)
+  // 편집 모드 진입
+  const handleEnterEditMode = () => {
+    setSelectedBookIds(new Set())
+    setFilteredBookIds([])
+    navigate(`${ROUTES.BOOKS}?edit=true`)
   }
 
   // 탭 변경 핸들러
@@ -152,6 +134,36 @@ export default function BookListPage() {
   const isAllSelected =
     filteredBookIds.length > 0 && filteredBookIds.every((id) => selectedBookIds.has(id))
 
+  if (isEditMode) {
+    return (
+      <div>
+        <SubPageHeader label="내 책장" to={ROUTES.BOOKS} />
+        <div className="flex justify-between items-center pb-tiny mb-[37px]">
+          <h3 className="typo-heading3 text-black">내 책장 편집하기</h3>
+          <div className="flex gap-xsmall items-center">
+            <TextButton onClick={handleSelectAll}>
+              {isAllSelected ? '전체해제' : '전체선택'}
+            </TextButton>
+            <TextButton
+              onClick={handleDelete}
+              disabled={selectedBookIds.size === 0}
+              className="text-grey-700"
+            >
+              삭제하기
+            </TextButton>
+          </div>
+        </div>
+        <p className="typo-subtitle1 text-grey-700">{selectedBookIds.size}개 선택</p>
+        <BookList
+          isEditMode
+          selectedBookIds={selectedBookIds}
+          onSelectToggle={handleSelectToggle}
+          onFilteredBooksChange={handleFilteredBooksChange}
+        />
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1 className="typo-heading1 text-black mt-xlarge mb-medium">내 책장</h1>
@@ -169,41 +181,31 @@ export default function BookListPage() {
             </TabsTrigger>
           </TabsList>
           <div className="flex gap-xsmall items-center">
-            {isEditMode ? (
-              <>
-                <TextButton onClick={handleSelectAll}>
-                  {isAllSelected ? '전체해제' : '전체선택'}
-                </TextButton>
-                <TextButton
-                  onClick={handleDelete}
-                  disabled={selectedBookIds.size === 0}
-                  className="text-grey-700"
-                >
-                  삭제하기
-                </TextButton>
-                {/* <TextButton onClick={handleEditModeToggle}>취소</TextButton> */}
-              </>
+            <Button
+              variant="secondary"
+              outline
+              disabled={totalCount === 0}
+              onClick={handleEnterEditMode}
+            >
+              편집하기
+            </Button>
+            {totalCount === 0 ? (
+              <Tooltip dismissable>
+                <TooltipTrigger asChild>
+                  <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>책을 추가해 감상 기록을 남겨보세요!</p>
+                </TooltipContent>
+              </Tooltip>
             ) : (
-              <>
-                <Button
-                  variant="secondary"
-                  outline
-                  disabled={totalCount === 0}
-                  onClick={handleEditModeToggle}
-                >
-                  편집하기
-                </Button>
-                <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
-              </>
+              <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
             )}
           </div>
         </div>
         <TabsContent value="all">
           <BookList
             isActive={activeTab === 'all'}
-            isEditMode={isEditMode}
-            selectedBookIds={selectedBookIds}
-            onSelectToggle={handleSelectToggle}
             onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>
@@ -211,9 +213,6 @@ export default function BookListPage() {
           <BookList
             status="READING"
             isActive={activeTab === 'reading'}
-            isEditMode={isEditMode}
-            selectedBookIds={selectedBookIds}
-            onSelectToggle={handleSelectToggle}
             onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>
@@ -221,9 +220,6 @@ export default function BookListPage() {
           <BookList
             status="COMPLETED"
             isActive={activeTab === 'completed'}
-            isEditMode={isEditMode}
-            selectedBookIds={selectedBookIds}
-            onSelectToggle={handleSelectToggle}
             onFilteredBooksChange={handleFilteredBooksChange}
           />
         </TabsContent>

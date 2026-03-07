@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom'
 
+import { usePermissionRedirect } from '@/shared/hooks'
+
 /**
  * RootLayout (앱 전체 래퍼)
  *
@@ -7,6 +9,8 @@ import { Outlet } from 'react-router-dom'
  * - 시각적 레이아웃은 MainLayout, AuthLayout에서 담당
  */
 export default function RootLayout() {
+  usePermissionRedirect()
+
   return (
     <div className="min-h-screen bg-white">
       <Outlet />

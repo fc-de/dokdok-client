@@ -1,7 +1,7 @@
-import { Info } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '@/shared/lib/utils'
+import AlertIcon from '@/shared/ui/AlertIcon'
 
 import { FilledInfoIcon } from '../assets/icon/FilledInfo'
 
@@ -67,7 +67,7 @@ function Title({ className, children, required, errorMessage, infoMessage, badge
         </div>
         {errorMessage && (
           <span className="flex items-center typo-body3 text-accent-300 gap-tiny">
-            <Info size="16" /> {errorMessage}
+            <AlertIcon className="text-accent-300" /> {errorMessage}
           </span>
         )}
       </div>
