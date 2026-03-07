@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { PAGE_ACCESS_ERROR_CODES } from '@/api/errors'
 import {
   AiLoadingOverlay,
   type GetCollectedAnswersResponse,
@@ -62,8 +63,10 @@ export default function MeetingRetrospectiveCreatePage() {
   })
 
   // 에러 처리 및 리다이렉트
+  // 권한 에러(PAGE_ACCESS_ERROR_CODES)는 usePermissionRedirect 전역 핸들러에서 처리하므로 제외
   useEffect(() => {
     if (error && gatheringId && meetingId) {
+      if (PAGE_ACCESS_ERROR_CODES.has(error.code)) return
       showErrorToast(error.userMessage)
       navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), { replace: true })
     }
@@ -85,6 +88,7 @@ export default function MeetingRetrospectiveCreatePage() {
         },
         onError: (err) => {
           if (err.message === 'canceled') return
+          if (PAGE_ACCESS_ERROR_CODES.has(err.code)) return
           showErrorToast(err.userMessage ?? '요약 생성에 실패했습니다.')
         },
       }
