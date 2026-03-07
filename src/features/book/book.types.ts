@@ -6,7 +6,13 @@
 import type { CursorPaginatedResponse } from '@/api/types'
 
 /** 책 읽기 상태 */
-export type BookReadingStatus = 'READING' | 'COMPLETED'
+export type BookReadingStatus = 'READING' | 'COMPLETED' | 'PENDING'
+
+/** 책 목록 정렬 기준 */
+export type BookSortBy = 'TIME' | 'RATING'
+
+/** 정렬 방향 */
+export type BookSortOrder = 'DESC' | 'ASC'
 
 /** 책 상세 정보 */
 export interface BookDetail {
@@ -22,6 +28,12 @@ export interface BookDetail {
 // Book List (책 목록) 관련 타입
 // ============================================================
 
+/** 책 목록 아이템 - 소속 모임 정보 */
+export interface BookListGathering {
+  gatheringId: number
+  gatheringName: string
+}
+
 /** 책 목록 아이템 */
 export interface BookListItem {
   bookId: number
@@ -30,33 +42,42 @@ export interface BookListItem {
   authors: string
   bookReadingStatus: BookReadingStatus
   thumbnail: string
-  rating: number
-  gatheringNames: string[]
+  rating: number | null
+  gatherings: BookListGathering[]
 }
 
 /** 책 목록 조회 요청 파라미터 */
 export interface GetBooksParams {
-  status?: BookReadingStatus
-  gatheringId?: number
-  ratingMin?: number
-  ratingMax?: number
-  sort?: RecordSortType
-  pageSize?: number
+  readingStatus?: BookReadingStatus
+  minRating?: number
+  maxRating?: number
+  sortBy?: BookSortBy
+  sortOrder?: BookSortOrder
+  cursorRating?: number
   cursorAddedAt?: string
   cursorBookId?: number
+  size?: number
 }
 
 /** 책 목록 조회 커서 */
 export interface BookListCursor {
+  rating: number
   addedAt: string
   bookId: number
 }
 
+/** 책 목록 상태별 카운트 */
+export interface BookStatusCounts {
+  reading: number
+  completed: number
+  pending: number
+  total: number
+}
+
 /** 책 목록 조회 응답 */
 export interface GetBooksResponse extends CursorPaginatedResponse<BookListItem, BookListCursor> {
+  statusCounts: BookStatusCounts
   totalCount: number
-  readingCount: number
-  completedCount: number
 }
 
 /** 리뷰 키워드 종류 */
@@ -136,49 +157,6 @@ export interface PersonalRecord {
   createdAt: string
 }
 
-/** 모임 공동 회고 - 댓글 */
-export interface MeetingComment {
-  meetingRetrospectiveId: number
-  userId: number
-  nickname: string
-  profileImageUrl: string
-  comment: string
-  createdAt: string
-}
-
-/** 모임 공동 회고 - 핵심 포인트 */
-export interface MeetingKeyPoint {
-  title: string
-  details: string[]
-}
-
-/** 모임 공동 회고 - 토픽 */
-export interface MeetingTopic {
-  topicId: number
-  confirmOrder: number
-  topicTitle: string
-  topicDescription: string
-  summary: string
-  keyPoints: MeetingKeyPoint[]
-  comments: MeetingComment[]
-}
-
-/** 모임 공동 회고 - 소속 모임 정보 */
-export interface MeetingGathering {
-  gatheringId: number
-  gatheringName: string
-}
-
-/** 모임 공동 회고 */
-export interface MeetingGroupRecord {
-  meetingId: number
-  meetingName: string
-  meetingDate: string
-  meetingTime: string
-  gathering: MeetingGathering
-  topics: MeetingTopic[]
-}
-
 /** 모임 개인 회고 - 생각 변화 */
 export interface RetrospectiveChangedThought {
   keyIssue: string
@@ -211,6 +189,8 @@ export interface RetrospectiveFreeText {
 /** 모임 개인 회고 */
 export interface MeetingPersonalRecord {
   retrospectiveId: number
+  gatheringId: number
+  meetingId: number
   gatheringName: string
   recordType: string
   createdAt: string
@@ -223,12 +203,14 @@ export interface PreOpinionTopic {
   confirmOrder: number
   topicTitle: string
   topicDescription: string
-  answer: string
+  answer: string | null
 }
 
 /** 모임 사전의견 */
 export interface MeetingPreOpinion {
   type: 'PRE_OPINION'
+  gatheringId: number
+  meetingId: number
   gatheringName: string
   sharedAt: string
   topics: PreOpinionTopic[]
@@ -279,20 +261,58 @@ export interface UpdateBookRecordBody {
   }
 }
 
-/** 감상 기록 조회 요청 파라미터 */
-export interface GetBookRecordsParams {
+/** 기록 타임라인 조회 요청 파라미터 */
+export interface GetBookTimelineParams {
   gatheringId?: number
   recordType?: RecordType
   sort?: RecordSortType
+  pageSize?: number
+  cursorEventAt?: string
+  cursorSourceId?: number
 }
 
-/** 감상 기록 조회 응답 */
-export interface GetBookRecordsResponse {
-  personalRecords: PersonalRecord[]
-  meetingGroupRecords: MeetingGroupRecord[]
-  meetingPersonalRecords: MeetingPersonalRecord[]
-  meetingPreOpinions: MeetingPreOpinion[]
+/** 타임라인 아이템 타입 */
+export type TimelineItemType =
+  | 'READING_RECORD'
+  | 'GROUP_RETROSPECTIVE'
+  | 'PERSONAL_RETROSPECTIVE'
+  | 'PRE_OPINION'
+
+/** 타임라인 아이템 (통합 타입) */
+export type TimelineItem =
+  | {
+      type: 'READING_RECORD'
+      eventAt: string
+      sourceId: number
+      readingRecord: PersonalRecord
+    }
+  | {
+      type: 'GROUP_RETROSPECTIVE'
+      eventAt: string
+      sourceId: number
+      retrospective: MeetingPersonalRecord
+    }
+  | {
+      type: 'PERSONAL_RETROSPECTIVE'
+      eventAt: string
+      sourceId: number
+      retrospective: MeetingPersonalRecord
+    }
+  | {
+      type: 'PRE_OPINION'
+      eventAt: string
+      sourceId: number
+      preOpinion: MeetingPreOpinion
+    }
+
+/** 타임라인 커서 */
+export interface TimelineCursor {
+  eventAt: string
+  sourceId: number
 }
+
+/** 기록 타임라인 조회 응답 */
+export type GetBookTimelineResponse = CursorPaginatedResponse<TimelineItem, TimelineCursor>
 
 /** 책 평가 생성 요청 바디 */
 export interface CreateBookReviewBody {

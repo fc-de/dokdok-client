@@ -4,12 +4,17 @@
  */
 
 import { api } from '@/api'
-import { KEYWORDS_ENDPOINTS } from '@/features/keywords/keywords.endpoints'
-import { getMockKeywords } from '@/features/keywords/keywords.mock'
-import type { GetKeywordsResponse } from '@/features/keywords/keywords.types'
+
+import { KEYWORDS_ENDPOINTS } from './keywords.endpoints'
+import { getMockKeywords } from './keywords.mock'
+import type { GetKeywordsResponse } from './keywords.types'
 
 /** 목데이터 사용 여부 플래그 */
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+
+// ============================================================
+// API Functions
+// ============================================================
 
 /**
  * 키워드 목록 조회
@@ -25,7 +30,6 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
  */
 export async function getKeywords(): Promise<GetKeywordsResponse> {
   if (USE_MOCK) {
-    await new Promise((resolve) => setTimeout(resolve, 500))
     return getMockKeywords()
   }
 

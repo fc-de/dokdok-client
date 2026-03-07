@@ -7,7 +7,7 @@ import {
   MeetingDetailInfo,
   useMeetingDetail,
 } from '@/features/meetings'
-import { RetrospectiveCardButtons } from '@/features/retrospectives'
+import { RetrospectiveCardButtons } from '@/features/retrospectives/meeting'
 import type {
   GetConfirmedTopicsResponse,
   GetProposedTopicsResponse,

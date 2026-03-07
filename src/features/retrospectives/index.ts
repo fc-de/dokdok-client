@@ -1,29 +1,5 @@
-// Components
-export * from './components'
+// Meeting Retrospectives (약속 회고)
+export * from './meeting'
 
-// Hooks
-export * from './hooks'
-export * from './retrospectives.endpoints'
-
-// Personal
+// Personal Retrospectives (개인 회고)
 export * from './personal'
-
-// API
-export { createSttJob, getSummary, publishSummary, updateSummary } from './retrospectives.api'
-
-// Types
-export type {
-  CreateSttJobParams,
-  GetCollectedAnswersParams,
-  GetCollectedAnswersResponse,
-  KeyPoint,
-  KeyPointUpdateRequest,
-  PublishSummaryParams,
-  RetrospectiveSummaryResponse,
-  SttJobResponse,
-  SttJobStatus,
-  SummaryTopic,
-  UpdateSummaryParams,
-  UpdateSummaryRequest,
-  UpdateSummaryTopicRequest,
-} from './retrospectives.types'

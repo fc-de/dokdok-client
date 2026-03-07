@@ -12,14 +12,14 @@ import { bookKeys } from './useBookDetail'
 /** 책 목록 쿼리 키 확장 */
 export const bookListKeys = {
   ...bookKeys,
-  list: (params?: Omit<GetBooksParams, 'cursorAddedAt' | 'cursorBookId'>) =>
+  list: (params?: Omit<GetBooksParams, 'cursorRating' | 'cursorAddedAt' | 'cursorBookId'>) =>
     [...bookKeys.all, 'list', params ?? {}] as const,
 }
 
 /**
  * 책 목록을 조회하는 훅 (무한스크롤 지원)
  *
- * @param params - 필터링/정렬 파라미터 (status, gatheringId, rating, sort)
+ * @param params - 필터링/정렬 파라미터 (readingStatus, gatheringId, sortBy, sortOrder)
  *
  * @example
  * ```tsx
@@ -29,7 +29,7 @@ export const bookListKeys = {
  *     fetchNextPage,
  *     hasNextPage,
  *     isFetchingNextPage,
- *   } = useBooks({ status: 'READING' })
+ *   } = useBooks({ readingStatus: 'READING' })
  *
  *   const books = data?.pages.flatMap(page => page.items) ?? []
  *   const totalCount = data?.pages[0]?.totalCount ?? 0
@@ -46,12 +46,15 @@ export const bookListKeys = {
  * }
  * ```
  */
-export function useBooks(params?: Omit<GetBooksParams, 'cursorAddedAt' | 'cursorBookId'>) {
+export function useBooks(
+  params?: Omit<GetBooksParams, 'cursorRating' | 'cursorAddedAt' | 'cursorBookId'>
+) {
   return useInfiniteQuery({
     queryKey: bookListKeys.list(params),
     queryFn: ({ pageParam }) =>
       getBooks({
         ...params,
+        cursorRating: pageParam?.rating,
         cursorAddedAt: pageParam?.addedAt,
         cursorBookId: pageParam?.bookId,
       }),

@@ -14,17 +14,14 @@ import { bookListKeys } from './useBooks'
  * @example
  * ```tsx
  * const { mutate, mutateAsync } = useDeleteBook()
- * mutate(bookId)
- *
- * // 여러 책 삭제
- * await Promise.all(bookIds.map(id => mutateAsync(id)))
+ * mutate([1, 2, 3])
  * ```
  */
 export function useDeleteBook() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (bookId: number) => deleteBook(bookId),
+    mutationFn: (bookIds: number[]) => deleteBook(bookIds),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookListKeys.all })
     },

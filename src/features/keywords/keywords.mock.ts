@@ -3,11 +3,12 @@
  * @description 키워드 API 목데이터
  */
 
-import type { GetKeywordsResponse } from '@/features/keywords/keywords.types'
+import type { GetKeywordsResponse } from './keywords.types'
 
-/**
- * 키워드 목록 조회 목데이터
- */
+// ============================================================
+// Mock Data
+// ============================================================
+
 const mockKeywordsResponse: GetKeywordsResponse = {
   keywords: [
     // ============================================================
@@ -712,12 +713,19 @@ const mockKeywordsResponse: GetKeywordsResponse = {
   ],
 }
 
+// ============================================================
+// Mock Helper Functions
+// ============================================================
+
+/** 목데이터 응답 지연 시뮬레이션 (ms) */
+const MOCK_DELAY = 500
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
 /**
- * 키워드 목록 조회 목데이터 반환 함수
- *
- * @description
- * 실제 API 호출을 시뮬레이션하여 키워드 목데이터를 반환합니다.
+ * 키워드 목록 목데이터 반환
  */
-export const getMockKeywords = (): GetKeywordsResponse => {
+export const getMockKeywords = async (): Promise<GetKeywordsResponse> => {
+  await delay(MOCK_DELAY)
   return mockKeywordsResponse
 }

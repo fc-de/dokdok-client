@@ -28,6 +28,7 @@ type InputProps = React.ComponentProps<'input'> & {
   helperText?: string
   maxLength?: number
   label?: string
+  counter?: boolean
 }
 
 /**
@@ -35,19 +36,33 @@ type InputProps = React.ComponentProps<'input'> & {
  * - `label`을 전달하면 입력 필드 상단에 라벨이 표시됩니다.
  * - `error`, `errorMessage`, `helperText` 를 사용하여 상태 메시지를 표시합니다.
  * - `maxLength`를 설정하면 자동으로 글자 수 카운터가 표시됩니다.
+ * - `counter={false}`로 설정하면 카운터를 숨길 수 있습니다.
  * @example
  * ```tsx
  * <Input label="이름" placeholder="이름을 입력하세요" />
  * <Input error errorMessage="올바른 이메일을 입력하세요" />
  * <Input maxLength={50} helperText="최대 50자까지 입력 가능합니다" />
+ * <Input maxLength={100} counter={false} helperText="카운터 없이 maxLength 제한" />
  * ```
  */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(function Input(
-  { className, type, label, error, errorMessage, helperText, maxLength, disabled, value, ...props },
+  {
+    className,
+    type,
+    label,
+    error,
+    errorMessage,
+    helperText,
+    maxLength,
+    disabled,
+    value,
+    counter = true,
+    ...props
+  },
   ref
 ) {
   const currentLength = typeof value === 'string' ? value.length : 0
-  const showCount = maxLength !== undefined
+  const showCount = maxLength !== undefined && counter
   const showFooter = error || helperText || showCount
 
   return (

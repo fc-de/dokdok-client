@@ -50,14 +50,7 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
 
         {/* 실제 책 커버 */}
         <div className="relative z-10 w-full h-full py-[100px] flex items-center justify-center">
-          <img
-            src={data?.thumbnail}
-            alt="책 표지"
-            className="
-        max-h-full max-w-full object-contain
-        filter shadow-drop
-      "
-          />
+          <img src={data?.thumbnail} alt="책 표지" className="h-full w-auto filter shadow-drop" />
         </div>
       </section>
 
