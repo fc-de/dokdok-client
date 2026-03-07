@@ -219,6 +219,8 @@ export default function MeetingDetailPage() {
                       actions={confirmedTopicsInfiniteData.pages[0].actions}
                       confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
                       progressStatus={meeting?.progressStatus ?? 'PRE'}
+                      gatheringId={gatheringId}
+                      meetingId={meetingId}
                     />
                     <ConfirmedTopicList
                       topics={confirmedTopicsInfiniteData.pages.flatMap(
