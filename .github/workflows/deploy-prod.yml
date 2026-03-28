@@ -1,4 +1,4 @@
-name: Deploy Frontend
+name: Deploy Frontend (Prod)
 
 on:
   pull_request:
@@ -30,8 +30,8 @@ jobs:
       - name: Build
         run: pnpm build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
-          VITE_APP_URL: ${{ secrets.VITE_APP_URL }}
+          VITE_API_URL: ${{ secrets.VITE_PROD_API_URL }}
+          VITE_APP_URL: ${{ secrets.VITE_PROD_APP_URL }}
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
 
       - name: Deploy to EC2
@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: 'dist/*'
-          target: '/tmp/fe-deploy'
+          target: '/tmp/fe-deploy-prod'
           strip_components: 1
 
       - name: Move files and set permissions
@@ -51,10 +51,9 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            sudo mkdir -p /tmp/fe-deploy
-            sudo chown -R www-data:www-data /tmp/fe-deploy
-            sudo chmod -R 755 /tmp/fe-deploy
-            sudo rm -rf /var/www/dokdok-old
-            sudo mv /var/www/dokdok /var/www/dokdok-old
-            sudo mv /tmp/fe-deploy /var/www/dokdok
-            sudo rm -rf /var/www/dokdok-old
+            sudo mkdir -p /opt/dokdok/prod/fe/dokdok-client/dist
+            sudo rm -rf /opt/dokdok/prod/fe/dokdok-client/dist/*
+            sudo mv /tmp/fe-deploy-prod/* /opt/dokdok/prod/fe/dokdok-client/dist/
+            sudo chown -R www-data:www-data /opt/dokdok/prod/fe/dokdok-client/dist
+            sudo chmod -R 755 /opt/dokdok/prod/fe/dokdok-client/dist
+            sudo rm -rf /tmp/fe-deploy-prod

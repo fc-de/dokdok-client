@@ -1,0 +1,59 @@
+name: Deploy Frontend (Dev)
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [closed]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_DEV_API_URL }}
+          VITE_APP_URL: ${{ secrets.VITE_DEV_APP_URL }}
+          VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
+
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: 'dist/*'
+          target: '/tmp/fe-deploy-dev'
+          strip_components: 1
+
+      - name: Move files and set permissions
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo mkdir -p /opt/dokdok/dev/fe/dokdok-client/dist
+            sudo rm -rf /opt/dokdok/dev/fe/dokdok-client/dist/*
+            sudo mv /tmp/fe-deploy-dev/* /opt/dokdok/dev/fe/dokdok-client/dist/
+            sudo chown -R www-data:www-data /opt/dokdok/dev/fe/dokdok-client/dist
+            sudo chmod -R 755 /opt/dokdok/dev/fe/dokdok-client/dist
+            sudo rm -rf /tmp/fe-deploy-dev
