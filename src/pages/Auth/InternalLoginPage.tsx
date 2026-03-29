@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { internalLogin } from '@/features/auth/auth.api'
 import { authQueryKeys } from '@/features/auth/hooks/authQueryKeys'
 import { ROUTES } from '@/shared/constants'
-import { Button } from '@/shared/ui/Button'
-import { Input } from '@/shared/ui/Input'
+import { Button, Input } from '@/shared/ui'
 
 export default function InternalLoginPage() {
   const navigate = useNavigate()
