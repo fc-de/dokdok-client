@@ -30,3 +30,11 @@ export const logout = async () => {
   const { data } = await apiClient.post<ApiResponse<null>>(AUTH_ENDPOINTS.LOGOUT)
   return data
 }
+
+export const internalLogin = async (loginId: string, password: string) => {
+  const { data } = await apiClient.post<ApiResponse<null>>(AUTH_ENDPOINTS.INTERNAL_LOGIN, {
+    loginId,
+    password,
+  })
+  return data
+}
