@@ -106,7 +106,9 @@ export const setupInterceptors = (): void => {
       if (error.response?.status === 401) {
         const currentPath = window.location.pathname
         const isAlreadyOnLogin =
-          currentPath === ROUTES.LOGIN || currentPath === ROUTES.INTERNAL_LOGIN
+          currentPath === ROUTES.LOGIN ||
+          currentPath === ROUTES.INTERNAL_LOGIN ||
+          currentPath === ROUTES.KAKAO_LOGIN
         const isInvitePage = currentPath.startsWith(ROUTES.INVITE_BASE)
 
         const isLandingPage = currentPath === ROUTES.LANDING
