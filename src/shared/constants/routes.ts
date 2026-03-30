@@ -2,7 +2,6 @@ export const ROUTES = {
   // Auth
   LOGIN: '/login',
   KAKAO_LOGIN: '/login/kakao',
-  INTERNAL_LOGIN: '/internal-login',
   ONBOARDING: '/onboarding',
 
   HOME: '/',

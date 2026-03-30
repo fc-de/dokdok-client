@@ -59,12 +59,14 @@ export default function InternalLoginPage() {
         <Button type="submit" size="large" disabled={!loginId || !password || isLoading}>
           {isLoading ? '로그인 중...' : '로그인'}
         </Button>
-        <Link
-          to={ROUTES.KAKAO_LOGIN}
-          className="typo-body3 text-center text-grey-500 hover:text-grey-700"
-        >
-          카카오 로그인
-        </Link>
+        {!isLoading && (
+          <Link
+            to={ROUTES.KAKAO_LOGIN}
+            className="typo-body3 text-center text-grey-500 hover:text-grey-700"
+          >
+            카카오 로그인
+          </Link>
+        )}
       </form>
     </div>
   )
