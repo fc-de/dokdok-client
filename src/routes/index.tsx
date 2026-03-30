@@ -52,12 +52,13 @@ export const router = createBrowserRouter([
         children: [
           {
             element: <AuthLayout />,
-            children: [
-              { path: ROUTES.LOGIN, element: <LoginPage /> },
-              ...(import.meta.env.VITE_ENABLE_INTERNAL_LOGIN === 'true'
-                ? [{ path: ROUTES.INTERNAL_LOGIN, element: <InternalLoginPage /> }]
-                : []),
-            ],
+            children:
+              import.meta.env.VITE_ENABLE_INTERNAL_LOGIN === 'true'
+                ? [
+                    { path: ROUTES.LOGIN, element: <InternalLoginPage /> },
+                    { path: ROUTES.KAKAO_LOGIN, element: <LoginPage /> },
+                  ]
+                : [{ path: ROUTES.LOGIN, element: <LoginPage /> }],
           },
         ],
       },
