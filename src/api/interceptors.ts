@@ -105,7 +105,8 @@ export const setupInterceptors = (): void => {
       // 401 응답은 세션이 만료되었거나 유효하지 않음을 의미합니다.
       if (error.response?.status === 401) {
         const currentPath = window.location.pathname
-        const isAlreadyOnLogin = currentPath === ROUTES.LOGIN
+        const isAlreadyOnLogin =
+          currentPath === ROUTES.LOGIN || currentPath === ROUTES.INTERNAL_LOGIN
         const isInvitePage = currentPath.startsWith(ROUTES.INVITE_BASE)
 
         const isLandingPage = currentPath === ROUTES.LANDING
@@ -115,7 +116,6 @@ export const setupInterceptors = (): void => {
           // React Query 캐시 전체 삭제 (인증 정보 포함)
           // 세션이 만료되었으므로 모든 캐시된 데이터는 더 이상 유효하지 않음
           queryClient.clear()
-          alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.')
           window.location.href = ROUTES.LOGIN
         }
       }

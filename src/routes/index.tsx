@@ -10,6 +10,7 @@ import {
   GatheringListPage,
   GatheringSettingPage,
   HomePage,
+  InternalLoginPage,
   InvitePage,
   LandingPage,
   LoginPage,
@@ -51,7 +52,12 @@ export const router = createBrowserRouter([
         children: [
           {
             element: <AuthLayout />,
-            children: [{ path: ROUTES.LOGIN, element: <LoginPage /> }],
+            children: [
+              { path: ROUTES.LOGIN, element: <LoginPage /> },
+              ...(import.meta.env.VITE_ENABLE_INTERNAL_LOGIN === 'true'
+                ? [{ path: ROUTES.INTERNAL_LOGIN, element: <InternalLoginPage /> }]
+                : []),
+            ],
           },
         ],
       },

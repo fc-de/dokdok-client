@@ -1,6 +1,7 @@
 export const ROUTES = {
   // Auth
   LOGIN: '/login',
+  INTERNAL_LOGIN: '/internal-login',
   ONBOARDING: '/onboarding',
 
   HOME: '/',
