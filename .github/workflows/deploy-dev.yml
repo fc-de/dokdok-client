@@ -33,6 +33,7 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_DEV_API_URL }}
           VITE_APP_URL: ${{ secrets.VITE_DEV_APP_URL }}
           VITE_KAKAO_MAP_KEY: ${{ secrets.VITE_KAKAO_MAP_KEY }}
+          VITE_ENABLE_INTERNAL_LOGIN: ${{ secrets.VITE_ENABLE_INTERNAL_LOGIN }}
 
       - name: Deploy to EC2
         uses: appleboy/scp-action@v0.1.7
