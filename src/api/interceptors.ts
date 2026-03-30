@@ -105,8 +105,7 @@ export const setupInterceptors = (): void => {
       // 401 응답은 세션이 만료되었거나 유효하지 않음을 의미합니다.
       if (error.response?.status === 401) {
         const currentPath = window.location.pathname
-        const isAlreadyOnLogin =
-          currentPath === ROUTES.LOGIN || currentPath === ROUTES.KAKAO_LOGIN
+        const isAlreadyOnLogin = currentPath === ROUTES.LOGIN || currentPath === ROUTES.KAKAO_LOGIN
         const isInvitePage = currentPath.startsWith(ROUTES.INVITE_BASE)
 
         const isLandingPage = currentPath === ROUTES.LANDING
