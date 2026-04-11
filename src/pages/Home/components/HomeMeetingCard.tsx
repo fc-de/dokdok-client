@@ -58,7 +58,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
   const handleActionClick = (e: MouseEvent) => {
     e.stopPropagation()
     if (isUpcoming && preOpinionTemplateConfirmed) {
-      navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))
+      navigate(ROUTES.PRE_OPINION_WRITE(gatheringId, meetingId))
     }
     // TODO: 종료 → 개인 회고 작성 페이지 연결
   }
