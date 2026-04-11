@@ -31,7 +31,7 @@ export default function PersonalRetrospectivePage() {
 
   // 작성 모드: 작성 폼 API만 호출
   const { data, isLoading, isError } = usePersonalRetrospective(
-    { gatheringId, meetingId },
+    { meetingId },
     !isEditMode
   )
 

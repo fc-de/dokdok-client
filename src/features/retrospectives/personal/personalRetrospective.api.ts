@@ -35,7 +35,6 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
  * @returns 개인 회고 응답 데이터
  */
 export const getPersonalRetrospective = async ({
-  gatheringId,
   meetingId,
 }: GetPersonalRetrospectiveParams): Promise<GetPersonalRetrospectiveResponse> => {
   if (USE_MOCK) {
@@ -44,7 +43,7 @@ export const getPersonalRetrospective = async ({
   }
 
   const data = await api.get<GetPersonalRetrospectiveResponse>(
-    PERSONAL_RETROSPECTIVE_ENDPOINTS.DETAIL(gatheringId, meetingId)
+    PERSONAL_RETROSPECTIVE_ENDPOINTS.FORM(meetingId)
   )
 
   return {
