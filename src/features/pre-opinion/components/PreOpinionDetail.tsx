@@ -1,5 +1,9 @@
+import { useNavigate } from 'react-router-dom'
+
 import { useAuth } from '@/features/auth'
 import { StarRate } from '@/shared/components/StarRate'
+import { ROUTES } from '@/shared/constants/routes'
+import { showToast } from '@/shared/lib/toast'
 import { Avatar, AvatarFallback, AvatarImage, Badge, TextButton } from '@/shared/ui'
 import { Chip } from '@/shared/ui/Chip'
 import { useGlobalModalStore } from '@/store'
@@ -27,6 +31,7 @@ type PreOpinionDetailProps = {
  * ```
  */
 function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinionDetailProps) {
+  const navigate = useNavigate()
   const { data: currentUser } = useAuth()
   const { openConfirm, openError } = useGlobalModalStore()
   const { bookReview, topicOpinions, memberInfo } = member
@@ -42,6 +47,10 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
     if (!confirmed) return
 
     deleteMutation.mutate(undefined, {
+      onSuccess: () => {
+        showToast('사전의견 삭제가 완료되었어요.')
+        navigate(ROUTES.MEETING_DETAIL(gatheringId, meetingId))
+      },
       onError: (error) => openError('에러', error.userMessage),
     })
   }

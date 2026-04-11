@@ -5,9 +5,9 @@ export const PRE_OPINION_ENDPOINTS = {
   ANSWERS: (gatheringId: number, meetingId: number) =>
     `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/answers`,
 
-  // 내 사전 의견 삭제 (DELETE /api/gatherings/{gatheringId}/meetings/{meetingId}/topics/answers/me)
+  // 내 사전 의견 삭제 (DELETE /api/gatherings/{gatheringId}/meetings/{meetingId}/answers/me)
   DELETE_MY_ANSWER: (gatheringId: number, meetingId: number) =>
-    `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/topics/answers/me`,
+    `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/answers/me`,
   // 사전 의견 조회 (GET /api/gatherings/{gatheringId}/meetings/{meetingId}/answers/me)
   DETAIL: (gatheringId: number, meetingId: number) =>
     `${API_PATHS.GATHERINGS}/${gatheringId}/meetings/${meetingId}/answers/me`,
