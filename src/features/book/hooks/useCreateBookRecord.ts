@@ -5,6 +5,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { showToast } from '@/shared/lib/toast'
+
 import { createBookRecord } from '../book.api'
 import type { CreateBookRecordBody } from '../book.types'
 import { bookRecordsKeys } from './useBookRecords'
@@ -27,6 +29,7 @@ export function useCreateBookRecord(personalBookId: number) {
     mutationFn: (body: CreateBookRecordBody) => createBookRecord(personalBookId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+      showToast('기록이 저장되었어요.')
     },
   })
 }

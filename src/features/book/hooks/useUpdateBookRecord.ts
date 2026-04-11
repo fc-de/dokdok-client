@@ -5,6 +5,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
+import { showToast } from '@/shared/lib/toast'
+
 import { updateBookRecord } from '../book.api'
 import type { UpdateBookRecordBody } from '../book.types'
 import { bookRecordsKeys } from './useBookRecords'
@@ -28,6 +30,7 @@ export function useUpdateBookRecord(personalBookId: number, recordId: number) {
     mutationFn: (body: UpdateBookRecordBody) => updateBookRecord(personalBookId, recordId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bookRecordsKeys.all })
+      showToast('수정이 완료되었어요.')
     },
   })
 }

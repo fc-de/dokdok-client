@@ -153,7 +153,7 @@ export interface PersonalRecord {
   recordId: number
   recordType: RecordType
   recordContent: string
-  meta: PersonalRecordMeta
+  meta: PersonalRecordMeta | null
   bookId: number
   createdAt: string
 }

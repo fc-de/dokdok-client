@@ -30,7 +30,7 @@ export default function BookDetailPage() {
           onToggleRecording={() => toggleReadingStatus()}
         />
       </div>
-      <BookLogList bookId={bookId} isRecording={isRecording} />
+      <BookLogList personalBookId={bookDetail?.personalBookId ?? 0} isRecording={isRecording} />
     </>
   )
 }

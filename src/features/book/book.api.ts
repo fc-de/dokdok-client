@@ -287,7 +287,7 @@ export async function updateBookRecord(
     return getMockUpdateBookRecord(personalBookId, recordId, body)
   }
 
-  return api.put<PersonalRecord>(BOOK_ENDPOINTS.RECORD_UPDATE(personalBookId, recordId), body)
+  return api.patch<PersonalRecord>(BOOK_ENDPOINTS.RECORD_UPDATE(personalBookId, recordId), body)
 }
 
 /**
