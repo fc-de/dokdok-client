@@ -43,18 +43,19 @@ export function useBookDetail(bookId: number) {
  * 책 읽기 상태를 토글하는 mutation 훅
  *
  * @param bookId - 토글할 책 ID
+ * @param personalBookId - 개인 책 ID
  *
  * @example
  * ```tsx
- * const { mutate: toggleStatus } = useToggleBookReadingStatus(bookId)
+ * const { mutate: toggleStatus } = useToggleBookReadingStatus(bookId, personalBookId)
  * <Switch onCheckedChange={() => toggleStatus()} />
  * ```
  */
-export function useToggleBookReadingStatus(bookId: number) {
+export function useToggleBookReadingStatus(bookId: number, personalBookId: number) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: () => toggleBookReadingStatus(bookId),
+    mutationFn: () => toggleBookReadingStatus(bookId, personalBookId),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: bookKeys.detail(bookId) })
 

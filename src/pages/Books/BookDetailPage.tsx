@@ -12,7 +12,10 @@ export default function BookDetailPage() {
   const bookId = Number(id)
 
   const { data: bookDetail } = useBookDetail(bookId)
-  const { mutate: toggleReadingStatus } = useToggleBookReadingStatus(bookId)
+  const { mutate: toggleReadingStatus } = useToggleBookReadingStatus(
+    bookId,
+    bookDetail?.personalBookId ?? 0
+  )
 
   const isRecording = bookDetail?.bookReadingStatus === 'READING'
   const isBookLogSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })

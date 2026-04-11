@@ -17,6 +17,7 @@ export type BookSortOrder = 'DESC' | 'ASC'
 /** 책 상세 정보 */
 export interface BookDetail {
   bookId: number
+  personalBookId: number
   title: string
   publisher: string
   authors: string
