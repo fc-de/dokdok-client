@@ -27,7 +27,7 @@ function TopicItem({ topic, onChange }: TopicItemProps) {
       </Container.Title>
       <Container.Content>
         <div className="flex flex-col gap-small">
-          <p className="typo-body4 text-grey-600">{topic.topicDescription}</p>
+          <p className="typo-body4 text-grey-600 whitespace-pre-line">{topic.topicDescription}</p>
           <Textarea
             placeholder="자유롭게 작성해주세요"
             value={value}

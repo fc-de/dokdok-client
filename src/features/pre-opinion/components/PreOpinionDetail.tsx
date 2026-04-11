@@ -132,10 +132,10 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
                     </h4>
                     <Badge>{topic.topicTypeLabel}</Badge>
                   </div>
-                  <p className="typo-body4 text-grey-600">{topic.description}</p>
+                  <p className="typo-body4 text-grey-600 whitespace-pre-line">{topic.description}</p>
                 </div>
                 {opinion.content && (
-                  <p className="typo-body1 text-black mt-base">{opinion.content}</p>
+                  <p className="typo-body1 text-black mt-base whitespace-pre-line">{opinion.content}</p>
                 )}
               </div>
             )
