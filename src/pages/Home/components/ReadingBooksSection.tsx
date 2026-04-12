@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 
-import { BookCarousel, useBooks } from '@/features/book'
+import type { SearchBookItem } from '@/features/book'
+import { BookCarousel, BookSearchModal, useBooks, useCreateBook } from '@/features/book'
 import { ROUTES } from '@/shared/constants'
 import { useDeferredLoading } from '@/shared/hooks'
+import { showToast } from '@/shared/lib/toast'
 import { Button, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import { useGlobalModalStore } from '@/store'
 
 import HomeBookCard from './HomeBookCard'
 import HomeSectionHeader from './HomeSectionHeader'
@@ -14,7 +16,9 @@ type BookTab = 'all' | 'pre' | 'post'
 export default function ReadingBooksSection() {
   // TODO: pre/post 탭 활성화 시 activeTab을 useBooks filter 파라미터로 연결 필요
   const [activeTab, setActiveTab] = useState<BookTab>('all')
-  const navigate = useNavigate()
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
+  const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
+  const { openConfirm } = useGlobalModalStore()
 
   const { data, isLoading } = useBooks({ readingStatus: 'READING' })
   const showSkeleton = useDeferredLoading(isLoading)
@@ -64,12 +68,7 @@ export default function ReadingBooksSection() {
               첫 번째 책을 등록하고 독서 기록을 시작해 보세요!
             </p>
           </div>
-          <Button
-            variant="secondary"
-            outline
-            size="small"
-            onClick={() => navigate(ROUTES.BOOK_SEARCH)}
-          >
+          <Button variant="secondary" outline size="small" onClick={() => setIsSearchModalOpen(true)}>
             책 추가하기
           </Button>
         </div>
@@ -86,6 +85,28 @@ export default function ReadingBooksSection() {
           ))}
         </BookCarousel>
       )}
+
+      <BookSearchModal
+        open={isSearchModalOpen}
+        onOpenChange={setIsSearchModalOpen}
+        onSelectBook={async (book: SearchBookItem) => {
+          try {
+            await createBook({
+              title: book.title,
+              authors: book.authors.join(', '),
+              publisher: book.publisher,
+              isbn: book.isbn,
+              thumbnail: book.thumbnail,
+            })
+            showToast('책이 추가되었습니다.')
+          } catch {
+            openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
+              confirmText: '확인',
+            })
+          }
+        }}
+        isPending={isCreating}
+      />
     </section>
   )
 }
