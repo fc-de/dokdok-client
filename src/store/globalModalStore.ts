@@ -41,6 +41,8 @@ export type ModalState = {
 export type ConfirmModalOptions = {
   /** 확인 버튼 텍스트 (기본값: '확인') */
   confirmText?: string
+  /** 취소 버튼 텍스트 (기본값: '취소') */
+  cancelText?: string
   /** 확인 버튼 variant (기본값: 'primary') */
   variant?: Extract<ModalButtonVariant, 'primary' | 'danger'>
 }
@@ -129,7 +131,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
         description,
         buttons: [
           {
-            text: '취소',
+            text: options?.cancelText || '취소',
             variant: 'secondary',
             onClick: handleCancel,
           },

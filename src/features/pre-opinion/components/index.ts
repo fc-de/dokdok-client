@@ -1,5 +1,6 @@
 export * from './BookReviewSection'
 export * from './PreOpinionDetail'
 export * from './PreOpinionMemberList'
+export * from './PreOpinionReviewContent'
 export * from './PreOpinionWriteHeader'
 export * from './TopicItem'
