@@ -106,11 +106,7 @@ export default function FormPageHeader({
         <div className="flex items-center justify-between py-large">
           <div>
             <h2 className="text-black typo-heading3">{title}</h2>
-            {subTitle && (
-              <p className="text-grey-600 typo-caption1 pt-tiny">
-                {subTitle}
-              </p>
-            )}
+            {subTitle && <p className="text-grey-600 typo-caption1 pt-tiny">{subTitle}</p>}
           </div>
           {children ? (
             <div className="flex items-center gap-xsmall">{children}</div>
