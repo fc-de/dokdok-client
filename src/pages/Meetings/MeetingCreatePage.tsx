@@ -425,6 +425,7 @@ export default function MeetingCreatePage() {
                   errorMessage={errors?.maxParticipants ?? undefined}
                   value={maxParticipants ?? ''}
                   onChange={(e) => setMaxParticipants(e.target.value)}
+                  onWheel={(e) => e.currentTarget.blur()}
                   min={1}
                   max={gatheringMaxCount}
                 />
