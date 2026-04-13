@@ -8,7 +8,8 @@ import {
   useCollectedAnswers,
   useCreateSttJob,
 } from '@/features/retrospectives/meeting'
-import SubPageHeader from '@/shared/components/SubPageHeader'
+import FormPageHeader from '@/shared/components/FormPageHeader'
+// import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
 import { showErrorToast } from '@/shared/lib/toast'
@@ -116,28 +117,42 @@ export default function MeetingRetrospectiveCreatePage() {
 
   return (
     <>
-      <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId)} />
+      <FormPageHeader
+        title="약속 회고"
+        subTitle="사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요"
+        to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
+      >
+        <Button
+          variant="ai"
+          size="small"
+          onClick={handleStartAiSummary}
+          className="px-medium"
+          disabled={totalCount === 0 || sttMutation.isPending}
+        >
+          AI 요약 시작하기
+        </Button>
+      </FormPageHeader>
+      {/* <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} /> */}
 
       {/* 헤더: 타이틀 + 설명 + AI 요약 시작하기 버튼 */}
-      <div className="sticky top-[calc(var(--spacing-gnb-height)+59px)] z-30 bg-white shadow-drop-bottom">
-        <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between pb-small">
-          <div className="flex flex-col gap-xtiny">
-            <h3 className="text-black typo-heading3">약속 회고</h3>
-            <p className="text-grey-600 typo-caption1">
-              사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요
-            </p>
-          </div>
-          <Button
-            variant="ai"
-            size="small"
-            onClick={handleStartAiSummary}
-            className="px-medium"
-            disabled={totalCount === 0 || sttMutation.isPending}
-          >
-            AI 요약 시작하기
-          </Button>
+
+      {/* <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between pb-small">
+        <div className="flex flex-col gap-xtiny">
+          <h3 className="text-black typo-heading3">약속 회고</h3>
+          <p className="text-grey-600 typo-caption1">
+            사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요
+          </p>
         </div>
-      </div>
+        <Button
+          variant="ai"
+          size="small"
+          onClick={handleStartAiSummary}
+          className="px-medium"
+          disabled={totalCount === 0 || sttMutation.isPending}
+        >
+          AI 요약 시작하기
+        </Button>
+      </div> */}
 
       {/* 두 패널 영역 */}
       <div className="mx-auto max-w-layout-max px-layout-padding flex gap-medium mt-base">

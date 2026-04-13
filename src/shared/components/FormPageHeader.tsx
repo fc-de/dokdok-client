@@ -9,6 +9,8 @@ import { TextButton } from '@/shared/ui/TextButton'
 interface FormPageHeaderBaseProps {
   /** 페이지 제목 */
   title: string
+  /** 페이지 소제목 */
+  subTitle?: string
   /** 액션 버튼 비활성화 여부 */
   isActionDisabled?: boolean
   /** 이동할 경로. 지정하지 않으면 navigate(-1)로 뒤로가기 */
@@ -66,6 +68,7 @@ export type FormPageHeaderProps = FormPageHeaderWithAction | FormPageHeaderWithC
  * ```
  */
 export default function FormPageHeader({
+  subTitle,
   title,
   actionLabel,
   onAction,
@@ -101,7 +104,14 @@ export default function FormPageHeader({
           뒤로가기
         </TextButton>
         <div className="flex items-center justify-between py-large">
-          <h2 className="text-black typo-heading3">{title}</h2>
+          <div>
+            <h2 className="text-black typo-heading3">{title}</h2>
+            {subTitle && (
+              <p className="text-grey-600 typo-caption1 pt-tiny">
+                {subTitle}
+              </p>
+            )}
+          </div>
           {children ? (
             <div className="flex items-center gap-xsmall">{children}</div>
           ) : (
