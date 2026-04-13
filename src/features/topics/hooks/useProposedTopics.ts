@@ -62,6 +62,5 @@ export const useProposedTopics = (
     // 캐시 데이터 10분간 유지
     gcTime: 10 * 60 * 1000,
     staleTime: 0,
-    // 탭 포커스 시 자동 refetch 비활성화 (라우팅 재진입 시에만 갱신)
   })
 }
