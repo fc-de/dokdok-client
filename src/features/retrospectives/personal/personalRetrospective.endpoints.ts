@@ -2,8 +2,7 @@ import { API_PATHS } from '@/api'
 
 export const PERSONAL_RETROSPECTIVE_ENDPOINTS = {
   // 개인 회고 입력 폼 조회 (GET /api/meetings/{meetingId}/retrospectives/personal/form)
-  FORM: (meetingId: number) =>
-    `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal/form`,
+  FORM: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal/form`,
   // 개인 회고 저장 (POST /api/meetings/{meetingId}/retrospectives/personal)
   SAVE: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/retrospectives/personal`,
   // 개인 회고 뷰 조회 (GET /api/meetings/{meetingId}/retrospectives/personal)

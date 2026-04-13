@@ -68,7 +68,12 @@ export default function ReadingBooksSection() {
               첫 번째 책을 등록하고 독서 기록을 시작해 보세요!
             </p>
           </div>
-          <Button variant="secondary" outline size="small" onClick={() => setIsSearchModalOpen(true)}>
+          <Button
+            variant="secondary"
+            outline
+            size="small"
+            onClick={() => setIsSearchModalOpen(true)}
+          >
             책 추가하기
           </Button>
         </div>

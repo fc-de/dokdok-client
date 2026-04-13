@@ -30,10 +30,7 @@ export default function PersonalRetrospectivePage() {
   const { openError } = useGlobalModalStore()
 
   // 작성 모드: 작성 폼 API만 호출
-  const { data, isLoading, isError } = usePersonalRetrospective(
-    { meetingId },
-    !isEditMode
-  )
+  const { data, isLoading, isError } = usePersonalRetrospective({ meetingId }, !isEditMode)
 
   // 수정 모드: 수정 폼 API만 호출
   const {
