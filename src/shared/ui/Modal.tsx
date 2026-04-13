@@ -225,12 +225,12 @@ function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
 }
 
 const modalFooterVariants = cva(
-  ['flex items-center shrink-0', 'px-xlarge pt-base pb-large border-t border-grey-300'],
+  ['flex items-center shrink-0', 'px-xlarge pt-base pb-large border-t border-grey-300 justify-end'],
   {
     variants: {
       variant: {
-        double: 'justify-end gap-small',
-        full: 'justify-stretch',
+        double: 'gap-small',
+        full: '',
       },
     },
     defaultVariants: {
