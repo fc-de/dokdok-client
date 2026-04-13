@@ -14,6 +14,11 @@ import { ROUTES } from '@/shared/constants/routes'
 import { Card, Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
+function normalizeAnswer(raw: string): string | null {
+  const trimmed = raw.trim()
+  return trimmed || null
+}
+
 export default function PreOpinionWritePage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
   const numGatheringId = Number(gatheringId)
@@ -95,10 +100,9 @@ export default function PreOpinionWritePage() {
       const raw = answersRef.current.has(topic.topicId)
         ? answersRef.current.get(topic.topicId)!
         : (topic.content ?? '')
-      const trimmed = raw.trim()
       return {
         topicId: topic.topicId,
-        content: trimmed || null,
+        content: normalizeAnswer(raw),
       }
     })
 
@@ -142,9 +146,11 @@ export default function PreOpinionWritePage() {
       description: t.topicDescription,
       topicTypeLabel: t.topicTypeLabel,
       confirmOrder: t.confirmOrder,
-      content: answersRef.current.has(t.topicId)
-        ? answersRef.current.get(t.topicId)!
-        : (t.content ?? null),
+      content: normalizeAnswer(
+        answersRef.current.has(t.topicId)
+          ? answersRef.current.get(t.topicId)!
+          : (t.content ?? ''),
+      ),
     }))
 
     setPreviewSnapshot({
