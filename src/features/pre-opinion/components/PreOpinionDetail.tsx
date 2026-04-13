@@ -56,9 +56,9 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
 
   const bookKeywords = bookReview?.keywordInfo.filter((k) => k.type === 'BOOK') ?? []
   const impressionKeywords = bookReview?.keywordInfo.filter((k) => k.type === 'IMPRESSION') ?? []
-  const topicsWithContent = topics.flatMap((topic) => {
+  const topicsWithContent = topics.map((topic) => {
     const opinion = topicOpinions.find((o) => o.topicId === topic.topicId)
-    return opinion ? [{ ...topic, content: opinion.content }] : []
+    return { ...topic, content: opinion?.content ?? null }
   })
 
   return (

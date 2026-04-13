@@ -219,7 +219,7 @@ export default function PreOpinionWritePage() {
           rating={previewSnapshot.rating}
           keywordIds={previewSnapshot.keywordIds}
           topics={previewSnapshot.topics}
-          isSubmitting={isSubmitting}
+          isPending={isSaving || isSubmitting}
           onConfirmShare={handleConfirmShare}
           onGoToPreOpinions={() => navigate(ROUTES.PRE_OPINIONS(numGatheringId, numMeetingId))}
           onGoToBook={() => navigate(ROUTES.BOOK_DETAIL(preOpinion.book.bookId))}

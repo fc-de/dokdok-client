@@ -20,7 +20,7 @@ interface PreOpinionSharePreviewModalProps {
   rating: number
   keywordIds: number[]
   topics: ReviewTopicItem[]
-  isSubmitting: boolean
+  isPending: boolean
   onConfirmShare: () => Promise<void>
   onGoToPreOpinions: () => void
   onGoToBook: () => void
@@ -42,7 +42,7 @@ interface PreOpinionSharePreviewModalProps {
  *   rating={4.5}
  *   keywordIds={[1, 2, 3]}
  *   topics={topics}
- *   isSubmitting={false}
+ *   isPending={false}
  *   onConfirmShare={handleShare}
  *   onGoToPreOpinions={() => navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))}
  *   onGoToBook={() => navigate(ROUTES.BOOK_DETAIL(bookId))}
@@ -55,7 +55,7 @@ function PreOpinionSharePreviewModal({
   rating,
   keywordIds,
   topics,
-  isSubmitting,
+  isPending,
   onConfirmShare,
   onGoToPreOpinions,
   onGoToBook,
@@ -110,8 +110,8 @@ function PreOpinionSharePreviewModal({
           />
         </ModalBody>
         <ModalFooter variant="full">
-          <Button className="w-full" onClick={handleShare} disabled={isSubmitting}>
-            {isSubmitting ? '공유 중...' : '공유하기'}
+          <Button className="w-full" onClick={handleShare} disabled={isPending}>
+            {isPending ? '공유 중...' : '공유하기'}
           </Button>
         </ModalFooter>
       </ModalContent>
