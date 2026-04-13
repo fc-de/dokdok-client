@@ -147,9 +147,7 @@ export default function PreOpinionWritePage() {
       topicTypeLabel: t.topicTypeLabel,
       confirmOrder: t.confirmOrder,
       content: normalizeAnswer(
-        answersRef.current.has(t.topicId)
-          ? answersRef.current.get(t.topicId)!
-          : (t.content ?? ''),
+        answersRef.current.has(t.topicId) ? answersRef.current.get(t.topicId)! : (t.content ?? '')
       ),
     }))
 
