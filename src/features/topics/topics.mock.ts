@@ -438,6 +438,7 @@ export const getMockProposedTopics = (
     actions: {
       canConfirm: true,
       canSuggest: true,
+      canLike: true,
     },
   }
 }

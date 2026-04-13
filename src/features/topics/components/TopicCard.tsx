@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Badge, Card, LikeButton, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -18,7 +20,7 @@ type TopicCardProps = {
   topicId?: number
 }
 
-export default function TopicCard({
+function TopicCard({
   title,
   topicTypeLabel,
   description,
@@ -108,3 +110,5 @@ export default function TopicCard({
     </Card>
   )
 }
+
+export default memo(TopicCard)

@@ -3,29 +3,28 @@ import { Check } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 import type { MeetingProgressStatus } from '@/features/meetings/meetings.types'
+import type { ConfirmedTopicActions, ProposedTopicActions } from '@/features/topics/topics.types'
 import { ROUTES } from '@/shared/constants'
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui'
 
 type ProposedHeaderProps = {
   activeTab: 'PROPOSED'
-  actions: { canConfirm: boolean; canSuggest: boolean }
   confirmedTopic: boolean
   confirmedTopicDate: string | null
   proposedTopicsCount: number
   onOpenChange: (open: boolean) => void
   gatheringId: number
   meetingId: number
-}
+} & ProposedTopicActions
 
 type ConfirmedHeaderProps = {
   activeTab: 'CONFIRMED'
-  actions: { canViewPreOpinions: boolean; canWritePreOpinions: boolean }
   confirmedTopic: boolean
   confirmedTopicDate: string | null
   progressStatus: MeetingProgressStatus
   gatheringId: number
   meetingId: number
-}
+} & ConfirmedTopicActions
 
 type TopicHeaderProps = ProposedHeaderProps | ConfirmedHeaderProps
 

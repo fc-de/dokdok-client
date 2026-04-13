@@ -1,7 +1,6 @@
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
 
 import type { ProposedTopicItem } from '../topics.types'
-import DefaultTopicCard from './DefaultTopicCard'
 import TopicCard from './TopicCard'
 import TopicListSkeleton from './TopicListSkeleton'
 
@@ -13,6 +12,7 @@ type ProposedTopicListProps = {
   gatheringId: number
   meetingId: number
   confirmedTopic: boolean
+  canLike: boolean
 }
 
 export default function ProposedTopicList({
@@ -23,6 +23,7 @@ export default function ProposedTopicList({
   gatheringId,
   meetingId,
   confirmedTopic,
+  canLike,
 }: ProposedTopicListProps) {
   // 무한 스크롤: IntersectionObserver로 다음 페이지 로드
   const observerRef = useInfiniteScroll(onLoadMore, {
@@ -32,13 +33,11 @@ export default function ProposedTopicList({
 
   return (
     <div className="flex flex-col gap-small">
-      {/* 기본 주제는 항상 표시 */}
-      <DefaultTopicCard />
-
       {/* 제안된 주제 목록 */}
-      {topics.length > 0 && (
-        <ul className="flex flex-col gap-small">
-          {topics.map((topic) => (
+
+      <ul className="flex flex-col gap-small">
+        {topics.length > 0 ? (
+          topics.map((topic) => (
             <li key={topic.topicId}>
               <TopicCard
                 title={topic.title}
@@ -51,12 +50,16 @@ export default function ProposedTopicList({
                 gatheringId={gatheringId}
                 meetingId={meetingId}
                 topicId={topic.topicId}
-                isLikeDisabled={confirmedTopic}
+                isLikeDisabled={confirmedTopic || !canLike}
               />
             </li>
-          ))}
-        </ul>
-      )}
+          ))
+        ) : (
+          <li className="flex items-center justify-center py-large border-none mt-base">
+            <p className="typo-body3 text-grey-600">제안된 주제가 없습니다.</p>
+          </li>
+        )}
+      </ul>
 
       {/* 무한 스크롤 로딩 상태 */}
       {isFetchingNextPage && <TopicListSkeleton />}
