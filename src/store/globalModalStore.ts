@@ -37,6 +37,17 @@ export type ModalState = {
   buttons: ModalButton[]
 }
 
+/** Alert 모달 옵션 */
+export type AlertModalOptions = {
+  /** 보조 액션 버튼 (예: '내 책장 보기') */
+  secondaryAction?: {
+    /** 버튼 텍스트 */
+    text: string
+    /** 클릭 핸들러 */
+    onClick: () => void
+  }
+}
+
 /** Confirm 모달 옵션 */
 export type ConfirmModalOptions = {
   /** 확인 버튼 텍스트 (기본값: '확인') */
@@ -50,7 +61,12 @@ export type ConfirmModalOptions = {
 /** 전역 모달 스토어 타입 */
 type GlobalModalStore = ModalState & {
   /** Alert 모달 열기 */
-  openAlert: (title: string, description: string, onClose?: () => void) => void
+  openAlert: (
+    title: string,
+    description: string,
+    onClose?: () => void,
+    options?: AlertModalOptions
+  ) => void
   /** Error 모달 열기 */
   openError: (title: string, description: string, onClose?: () => void) => void
   /** Confirm 모달 열기 (Promise 반환) */
@@ -74,22 +90,40 @@ const initialState: ModalState = {
 export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
   ...initialState,
 
-  openAlert: (title: string, description: string, onClose?: () => void) => {
+  openAlert: (
+    title: string,
+    description: string,
+    onClose?: () => void,
+    options?: AlertModalOptions
+  ) => {
+    const buttons: ModalButton[] = []
+
+    if (options?.secondaryAction) {
+      buttons.push({
+        text: options.secondaryAction.text,
+        variant: 'secondary',
+        onClick: () => {
+          get().close()
+          options.secondaryAction!.onClick()
+        },
+      })
+    }
+
+    buttons.push({
+      text: '확인',
+      variant: 'primary',
+      onClick: () => {
+        get().close()
+        onClose?.()
+      },
+    })
+
     set({
       isOpen: true,
       type: 'alert',
       title,
       description,
-      buttons: [
-        {
-          text: '확인',
-          variant: 'primary',
-          onClick: () => {
-            get().close()
-            onClose?.()
-          },
-        },
-      ],
+      buttons,
     })
   },
 

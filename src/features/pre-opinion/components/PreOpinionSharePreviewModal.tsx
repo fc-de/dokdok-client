@@ -60,7 +60,7 @@ function PreOpinionSharePreviewModal({
   onGoToPreOpinions,
   onGoToBook,
 }: PreOpinionSharePreviewModalProps) {
-  const { openConfirm } = useGlobalModalStore()
+  const { openAlert } = useGlobalModalStore()
   const { data: keywordsData } = useKeywords()
 
   const bookKeywords =
@@ -77,16 +77,9 @@ function PreOpinionSharePreviewModal({
     try {
       await onConfirmShare()
       onClose()
-      const confirmed = await openConfirm(
-        '사전 의견이 공유됐어요',
-        '내 책장 기록에도 함께 반영됐어요',
-        { confirmText: '확인', cancelText: '내 책장 보기' }
-      )
-      if (confirmed) {
-        onGoToPreOpinions()
-      } else {
-        onGoToBook()
-      }
+      openAlert('사전 의견이 공유됐어요', '내 책장 기록에도 함께 반영됐어요', onGoToPreOpinions, {
+        secondaryAction: { text: '내 책장 보기', onClick: onGoToBook },
+      })
     } catch {
       // 오류는 페이지에서 openError로 처리됨
     }
