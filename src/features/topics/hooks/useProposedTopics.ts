@@ -61,5 +61,6 @@ export const useProposedTopics = (
     },
     // 캐시 데이터 10분간 유지
     gcTime: 10 * 60 * 1000,
+    staleTime: 0,
   })
 }

@@ -25,6 +25,7 @@ import {
 } from '@/features/topics'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { useDeferredLoading } from '@/shared/hooks'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
@@ -62,6 +63,7 @@ export default function MeetingDetailPage() {
   const {
     data: proposedTopicsInfiniteData,
     isLoading: isProposedLoading,
+    isRefetching: isProposedRefetching,
     error: proposedError,
     refetch: refetchProposed,
     fetchNextPage: fetchNextProposedPage,
@@ -71,6 +73,8 @@ export default function MeetingDetailPage() {
     gatheringId: gatheringId,
     meetingId: meetingId,
   })
+
+  const showProposedSkeleton = useDeferredLoading(isProposedRefetching || isProposedLoading)
 
   // 확정된 주제 조회 (무한 스크롤)
   const {
@@ -147,7 +151,11 @@ export default function MeetingDetailPage() {
 
             <Tabs
               value={activeTab}
-              onValueChange={(value) => setUserSelectedTab(value as TopicStatus)}
+              onValueChange={(value) => {
+                const tab = value as TopicStatus
+                setUserSelectedTab(tab)
+                if (tab === 'PROPOSED') void refetchProposed()
+              }}
               className="gap-medium"
             >
               <TabsList className="border-b border-grey-300" size="medium">
@@ -174,7 +182,7 @@ export default function MeetingDetailPage() {
                     message="제안 주제를 불러오지 못했습니다"
                     onRetry={() => refetchProposed()}
                   />
-                ) : isProposedLoading || !proposedTopicsInfiniteData ? (
+                ) : showProposedSkeleton || !proposedTopicsInfiniteData ? (
                   <TopicSkeleton />
                 ) : (
                   <div className="flex flex-col gap-base">
@@ -198,6 +206,7 @@ export default function MeetingDetailPage() {
                       onLoadMore={fetchNextProposedPage}
                       gatheringId={gatheringId}
                       meetingId={meetingId}
+                      canLike={proposedTopicsInfiniteData.pages[0].actions.canLike}
                     />
                   </div>
                 )}

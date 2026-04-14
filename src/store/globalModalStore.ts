@@ -1,6 +1,11 @@
 /**
  * @file globalModalStore.ts
  * @description 전역 모달 상태 관리 스토어 (Zustand)
+ *
+ * 이 스토어의 상태를 구독하여 실제 모달을 렌더링하는 컴포넌트:
+ * {@link GlobalModalHost} → src/shared/ui/GlobalModalHost.tsx
+ *
+ * GlobalModalHost가 App.tsx에 마운트되어 있어야 모달이 화면에 표시됩니다.
  */
 
 import { create } from 'zustand'

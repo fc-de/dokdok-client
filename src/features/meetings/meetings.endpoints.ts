@@ -22,8 +22,8 @@ export const MEETINGS_ENDPOINTS = {
   // 약속 참가신청 (POST /api/meetings/{meetingId}/join)
   JOIN: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/join`,
 
-  // 약속 참가취소 (DELETE /api/meetings/{meetingId}/join)
-  CANCEL_JOIN: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/join`,
+  // 약속 참가취소 (DELETE /api/meetings/{meetingId}/cancel)
+  CANCEL_JOIN: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}/cancel`,
 
   // 약속 수정 (PATCH /api/meetings/{meetingId})
   UPDATE: (meetingId: number) => `${API_PATHS.MEETINGS}/${meetingId}`,

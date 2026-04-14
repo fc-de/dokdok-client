@@ -1,6 +1,11 @@
 /**
  * @file GlobalModalHost.tsx
  * @description 전역 모달 호스트 컴포넌트
+ *
+ * useGlobalModalStore의 상태를 구독하여 모달을 렌더링합니다.
+ * {@link useGlobalModalStore} → src/store/globalModalStore.ts
+ *
+ * 반드시 App.tsx 최상단에 한 번만 마운트하세요.
  */
 
 import { Button } from '@/shared/ui/Button'
@@ -8,6 +13,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalTitle,
@@ -56,6 +62,7 @@ export function GlobalModalHost() {
       <ModalContent variant="normal" className="h-auto w-fit min-w-md">
         <ModalHeader hideCloseButton>
           <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
+          <ModalDescription className="sr-only">{description}</ModalDescription>
         </ModalHeader>
         <ModalBody>
           <p className="whitespace-pre-line typo-body4 text-grey-700">{description}</p>

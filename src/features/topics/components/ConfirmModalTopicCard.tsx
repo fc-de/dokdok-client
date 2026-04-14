@@ -40,7 +40,7 @@ export default function ConfirmModalTopicCard({
               </Badge>
             </div>
           </div>
-          <p className="typo-body4 text-grey-700">{description}</p>
+          <p className="typo-body4 text-grey-700 whitespace-pre-wrap">{description}</p>
           <p className="typo-body6 text-grey-600">제안 : {createdByNickname}</p>
         </div>
       </Card>

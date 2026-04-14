@@ -19,7 +19,7 @@ import { topicQueryKeys } from './topicQueryKeys'
  * 주제 좋아요를 토글하고 낙관적 업데이트를 적용합니다.
  * - onMutate: 즉시 UI 업데이트 (isLiked 토글, likeCount 증감)
  * - onError: 실패 시 이전 상태로 롤백
- * - onSettled: 서버 데이터와 동기화
+ * - 목록 순서는 새로고침 시에만 변경됨 (자동 리페치 없음)
  *
  * @example
  * ```tsx
@@ -47,10 +47,9 @@ export const useLikeTopic = () => {
 
     // 낙관적 업데이트: 즉시 UI 업데이트
     onMutate: async (variables) => {
-      const { topicId } = variables
+      const { gatheringId, meetingId, topicId } = variables
 
-      // Partial matching을 위한 base 쿼리 키 (pageSize와 무관하게 모든 쿼리 매칭)
-      const baseQueryKey = topicQueryKeys.proposedLists()
+      const baseQueryKey = topicQueryKeys.proposedList({ gatheringId, meetingId })
 
       // 진행 중인 모든 관련 쿼리 취소 (낙관적 업데이트 덮어쓰기 방지)
       await queryClient.cancelQueries({ queryKey: baseQueryKey })
@@ -98,14 +97,6 @@ export const useLikeTopic = () => {
           queryClient.setQueryData(queryKey, data)
         })
       }
-    },
-
-    // 성공/실패 여부와 상관없이 서버 데이터와 동기화
-    onSettled: () => {
-      // 모든 제안된 주제 목록 쿼리 무효화
-      queryClient.invalidateQueries({
-        queryKey: topicQueryKeys.proposedLists(),
-      })
     },
   })
 }

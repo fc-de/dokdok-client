@@ -131,30 +131,19 @@ export type GetConfirmedTopicsParams = {
   cursorTopicId?: number
 }
 
-/**
- * 제안된 주제 조회 응답 타입
- */
-export type GetProposedTopicsResponse = CursorPaginatedResponse<
-  ProposedTopicItem,
-  ProposedTopicCursor
-> & {
-  /** 액션 권한 정보 */
+/** 제안된 주제 액션 버튼 타입 */
+export type ProposedTopicActions = {
   actions: {
     /** 주제 확정 가능 여부 */
     canConfirm: boolean
     /** 주제 제안 가능 여부 */
     canSuggest: boolean
+    /** 좋야요 가능 여부 */
+    canLike: boolean
   }
 }
-
-/**
- * 확정된 주제 조회 응답 타입
- */
-export type GetConfirmedTopicsResponse = CursorPaginatedResponse<
-  ConfirmedTopicItem,
-  ConfirmedTopicCursor
-> & {
-  /** 액션 권한 정의 */
+/** 확정된 주제 액션 버튼 타입 */
+export type ConfirmedTopicActions = {
   actions: {
     /** 사전 의견 조회 가능 여부 */
     canViewPreOpinions: boolean
@@ -162,6 +151,24 @@ export type GetConfirmedTopicsResponse = CursorPaginatedResponse<
     canWritePreOpinions: boolean
   }
 }
+
+/**
+ * 제안된 주제 조회 응답 타입
+ */
+export type GetProposedTopicsResponse = CursorPaginatedResponse<
+  ProposedTopicItem,
+  ProposedTopicCursor
+> &
+  ProposedTopicActions
+
+/**
+ * 확정된 주제 조회 응답 타입
+ */
+export type GetConfirmedTopicsResponse = CursorPaginatedResponse<
+  ConfirmedTopicItem,
+  ConfirmedTopicCursor
+> &
+  ConfirmedTopicActions
 
 /**
  * 주제 삭제 요청 파라미터

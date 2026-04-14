@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Badge, Card, LikeButton, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -18,7 +20,7 @@ type TopicCardProps = {
   topicId?: number
 }
 
-export default function TopicCard({
+function TopicCard({
   title,
   topicTypeLabel,
   description,
@@ -94,7 +96,7 @@ export default function TopicCard({
           </TextButton>
         )}
       </div>
-      <p className="typo-body4 text-grey-700">{description}</p>
+      <p className="typo-body4 text-grey-700 whitespace-pre-wrap">{description}</p>
       <div className="flex justify-between items-end">
         <p className="typo-body6 text-grey-600">제안 : {createdByNickname}</p>
         <LikeButton
@@ -108,3 +110,5 @@ export default function TopicCard({
     </Card>
   )
 }
+
+export default memo(TopicCard)
