@@ -39,7 +39,15 @@ export default function PreOpinionWritePage() {
   })
 
   const reviewRef = useRef<BookReviewFormValues>({ rating: 0, keywordIds: [], isValid: false })
-  const [formReviewValid, setFormReviewValid] = useState<boolean | null>(null)
+  const [reviewValidFor, setReviewValidFor] = useState<{
+    gatheringId: number
+    meetingId: number
+    isValid: boolean
+  } | null>(null)
+  const formReviewValid =
+    reviewValidFor?.gatheringId === numGatheringId && reviewValidFor?.meetingId === numMeetingId
+      ? reviewValidFor.isValid
+      : null
   const isReviewValid = formReviewValid ?? !!preOpinion?.review
   const answersRef = useRef<Map<number, string>>(new Map())
 
@@ -49,6 +57,11 @@ export default function PreOpinionWritePage() {
     keywordIds: number[]
     topics: SharePreviewTopic[]
   } | null>(null)
+
+  useEffect(() => {
+    reviewRef.current = { rating: 0, keywordIds: [], isValid: false }
+    answersRef.current = new Map()
+  }, [numGatheringId, numMeetingId])
 
   useEffect(() => {
     if (!preOpinion?.review) return
@@ -84,10 +97,17 @@ export default function PreOpinionWritePage() {
     meetingId: numMeetingId,
   })
 
-  const handleReviewChange = useCallback((values: BookReviewFormValues) => {
-    reviewRef.current = values
-    setFormReviewValid(values.isValid)
-  }, [])
+  const handleReviewChange = useCallback(
+    (values: BookReviewFormValues) => {
+      reviewRef.current = values
+      setReviewValidFor({
+        gatheringId: numGatheringId,
+        meetingId: numMeetingId,
+        isValid: values.isValid,
+      })
+    },
+    [numGatheringId, numMeetingId]
+  )
 
   const handleTopicChange = useCallback((topicId: number, content: string) => {
     answersRef.current.set(topicId, content)
