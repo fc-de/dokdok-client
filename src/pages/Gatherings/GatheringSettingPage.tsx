@@ -297,7 +297,7 @@ export default function GatheringSettingPage() {
                             <MemberCard
                               key={member.gatheringMemberId}
                               member={member}
-                              actions={['remove']}
+                              actions={member.role === 'LEADER' ? [] : ['remove']}
                               onAction={handleMemberAction}
                               disabled={removeMemberMutation.isPending}
                             />
