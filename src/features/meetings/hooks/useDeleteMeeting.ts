@@ -11,6 +11,7 @@ import { gatheringQueryKeys } from '@/features/gatherings'
 import { deleteMeeting } from '@/features/meetings'
 
 import { meetingQueryKeys } from './meetingQueryKeys'
+import { myMeetingQueryKeys } from './myMeetingQueryKeys'
 
 /**
  * 약속 삭제 mutation 훅
@@ -19,6 +20,9 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  * 약속을 삭제하고 관련 쿼리 캐시를 무효화합니다.
  * - 약속 승인 리스트 캐시 무효화
  * - 약속 승인 카운트 캐시 무효화
+ * - 모임 약속 리스트 캐시 무효화
+ * - 내 약속 탭 카운트 캐시 무효화
+ * - 내 약속 목록 캐시 무효화
  *
  * @example
  * const deleteMutation = useDeleteMeeting()
@@ -34,7 +38,12 @@ export const useDeleteMeeting = (gatheringId: number) => {
       queryClient.invalidateQueries({
         queryKey: meetingQueryKeys.approvals(),
       })
+      // 모임 약속 리스트 캐시 무효화
       queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.meetings(gatheringId) })
+      // 내 약속 탭 카운트 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: myMeetingQueryKeys.tabCounts() })
+      // 내 약속 목록 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: myMeetingQueryKeys.lists() })
     },
   })
 }
