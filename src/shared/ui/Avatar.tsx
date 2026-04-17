@@ -316,9 +316,9 @@ function AvatarGroupCount({
           align="start"
           sideOffset={8}
           className={cn(
-            'z-50 min-w-40 rounded-small bg-grey-800 p-base text-white',
+            'z-50 min-w-40 rounded-small bg-grey-800/95 backdrop-blur-sm p-base text-white',
             'data-[state=open]:animate-in data-[state=closed]:animate-out',
-            'max-h-32 overflow-auto custom-scroll-dark'
+            'max-h-36 overflow-auto custom-scroll-dark'
           )}
         >
           <ul className="flex flex-col gap-small">

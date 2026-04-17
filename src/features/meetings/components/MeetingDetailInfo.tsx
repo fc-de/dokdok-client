@@ -64,7 +64,7 @@ export default function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
             {leader && (
               <div className="flex items-center gap-small">
                 <p>약속장</p>
-                <Avatar variant="host">
+                <Avatar variant="host" title={leader.nickname}>
                   <AvatarImage src={leader.profileImageUrl} alt={leader.nickname} />
                   <AvatarFallback>{leader.nickname[0]}</AvatarFallback>
                 </Avatar>
@@ -77,7 +77,7 @@ export default function MeetingDetailInfo({ meeting }: MeetingDetailInfoProps) {
                 <p>멤버</p>
                 <AvatarGroup>
                   {displayedMembers.map((member) => (
-                    <Avatar key={member.userId}>
+                    <Avatar key={member.userId} title={member.nickname}>
                       <AvatarImage src={member.profileImageUrl} alt={member.nickname} />
                       <AvatarFallback>{member.nickname[0]}</AvatarFallback>
                     </Avatar>

@@ -44,7 +44,7 @@ export default function GatheringDetailInfo({
           {leader && (
             <div className="flex items-center gap-2">
               <span className="text-grey-600 typo-body2 font-semibold">모임장</span>
-              <Avatar variant="leader" size="sm">
+              <Avatar variant="leader" size="sm" title={leader.nickname}>
                 <AvatarImage src={leader.profileImageUrl ?? undefined} alt={leader.nickname} />
                 <AvatarFallback>{leader.nickname.slice(0, 1)}</AvatarFallback>
               </Avatar>
@@ -53,33 +53,36 @@ export default function GatheringDetailInfo({
 
           {/* 멤버 아바타 그룹 (멤버가 있을 때만) */}
           {otherMembers.length > 0 && (
-            <AvatarGroup>
-              {visibleMembers.map((member) => (
-                <Avatar key={member.gatheringMemberId} size="sm">
-                  <AvatarImage src={member.profileImageUrl ?? undefined} alt={member.nickname} />
-                  <AvatarFallback>{member.nickname.slice(0, 1)}</AvatarFallback>
-                </Avatar>
-              ))}
-              {remainingCount > 0 && (
-                <AvatarGroupCount
-                  items={otherMembers.slice(MAX_VISIBLE_MEMBERS).map((m) => ({
-                    id: String(m.gatheringMemberId),
-                    name: m.nickname,
-                    src: m.profileImageUrl ?? undefined,
-                  }))}
-                  preview={
-                    otherMembers[MAX_VISIBLE_MEMBERS]
-                      ? {
-                          name: otherMembers[MAX_VISIBLE_MEMBERS].nickname,
-                          src: otherMembers[MAX_VISIBLE_MEMBERS].profileImageUrl ?? undefined,
-                        }
-                      : undefined
-                  }
-                >
-                  +{remainingCount}
-                </AvatarGroupCount>
-              )}
-            </AvatarGroup>
+            <div className="flex items-center gap-2">
+              <span className="text-grey-600 typo-body2 font-semibold">멤버</span>
+              <AvatarGroup>
+                {visibleMembers.map((member) => (
+                  <Avatar key={member.gatheringMemberId} size="sm" title={member.nickname}>
+                    <AvatarImage src={member.profileImageUrl ?? undefined} alt={member.nickname} />
+                    <AvatarFallback>{member.nickname.slice(0, 1)}</AvatarFallback>
+                  </Avatar>
+                ))}
+                {remainingCount > 0 && (
+                  <AvatarGroupCount
+                    items={otherMembers.slice(MAX_VISIBLE_MEMBERS).map((m) => ({
+                      id: String(m.gatheringMemberId),
+                      name: m.nickname,
+                      src: m.profileImageUrl ?? undefined,
+                    }))}
+                    preview={
+                      otherMembers[MAX_VISIBLE_MEMBERS]
+                        ? {
+                            name: otherMembers[MAX_VISIBLE_MEMBERS].nickname,
+                            src: otherMembers[MAX_VISIBLE_MEMBERS].profileImageUrl ?? undefined,
+                          }
+                        : undefined
+                    }
+                  >
+                    +{remainingCount}
+                  </AvatarGroupCount>
+                )}
+              </AvatarGroup>
+            </div>
           )}
         </div>
       </div>
