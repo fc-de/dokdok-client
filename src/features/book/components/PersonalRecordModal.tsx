@@ -23,7 +23,7 @@ import { Textarea } from '@/shared/ui/Textarea'
 type PersonalRecordModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  bookId: number
+  personalBookId: number
   mode: 'create' | 'edit'
   record?: PersonalRecord
 }
@@ -45,16 +45,16 @@ const THOUGHT_MAX_LENGTH = 2000
  * @example
  * ```tsx
  * // 생성 모드
- * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="create" />
+ * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} personalBookId={1} mode="create" />
  *
  * // 수정 모드
- * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} bookId={1} mode="edit" record={record} />
+ * <PersonalRecordModal open={isOpen} onOpenChange={setIsOpen} personalBookId={1} mode="edit" record={record} />
  * ```
  */
 function PersonalRecordModal({
   open,
   onOpenChange,
-  bookId,
+  personalBookId,
   mode,
   record,
 }: PersonalRecordModalProps) {
@@ -73,8 +73,8 @@ function PersonalRecordModal({
         return {
           recordType: 'QUOTE' as RecordType,
           memoContent: '',
-          quoteContent: record.meta.excerpt || '',
-          pageNumber: record.meta.page || '',
+          quoteContent: record.meta?.excerpt || '',
+          pageNumber: record.meta?.page || '',
           thought: record.recordContent,
         }
       }
@@ -109,9 +109,9 @@ function PersonalRecordModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, record])
 
-  const { mutate: createRecord, isPending: isCreating } = useCreateBookRecord(bookId)
+  const { mutate: createRecord, isPending: isCreating } = useCreateBookRecord(personalBookId)
   const { mutate: updateRecord, isPending: isUpdating } = useUpdateBookRecord(
-    bookId,
+    personalBookId,
     record?.recordId ?? 0
   )
   const resetForm = () => {

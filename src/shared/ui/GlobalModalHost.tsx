@@ -48,13 +48,13 @@ import { useGlobalModalStore } from '@/store'
  * ```
  */
 export function GlobalModalHost() {
-  const { isOpen, type, title, description, buttons } = useGlobalModalStore()
+  const { isOpen, title, description, buttons } = useGlobalModalStore()
 
   if (!isOpen) {
     return null
   }
 
-  const footerVariant = type === 'confirm' ? 'double' : 'full'
+  const footerVariant = buttons.length >= 2 ? 'double' : 'full'
   //에러, 얼럿일 경우 디자인 맞춰서 수정해야 함
 
   return (

@@ -22,13 +22,13 @@ import { FilterDropdown } from '@/shared/ui/FilterDropdown'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
 type BookLogListProps = {
-  bookId: number
+  personalBookId: number
   isRecording: boolean
 }
 
 type OpenDropdown = 'gathering' | 'recordType' | null
 
-const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
+const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
   const isSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
@@ -40,7 +40,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
 
   const navigate = useNavigate()
   const { deletePersonalRecord, deletePreOpinion, deleteRetrospective } =
-    useBookLogDeleteActions(bookId)
+    useBookLogDeleteActions(personalBookId)
 
   const {
     data: gatheringsData,
@@ -57,7 +57,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useBookRecords(bookId, {
+  } = useBookRecords(personalBookId, {
     gatheringId: selectedGathering ? Number(selectedGathering) : undefined,
     recordType: recordType || undefined,
     sort: sortType,
@@ -252,7 +252,7 @@ const BookLogList = ({ bookId, isRecording }: BookLogListProps) => {
       <PersonalRecordModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}
-        bookId={bookId}
+        personalBookId={personalBookId}
         mode={modalMode}
         record={editingRecord ?? undefined}
       />

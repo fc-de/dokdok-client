@@ -71,19 +71,25 @@ export async function getBookDetail(bookId: number): Promise<BookDetail> {
  * 책 읽기 상태 토글 (READING ↔ COMPLETED)
  *
  * @param bookId - 토글할 책 ID
+ * @param personalBookId - 개인 책 ID
  * @returns 변경된 책 상세 정보
  *
  * @example
  * ```typescript
- * await toggleBookReadingStatus(1)
+ * await toggleBookReadingStatus(1, 42)
  * ```
  */
-export async function toggleBookReadingStatus(bookId: number): Promise<BookDetail> {
+export async function toggleBookReadingStatus(
+  bookId: number,
+  personalBookId: number
+): Promise<BookDetail> {
   if (USE_MOCK) {
     return getMockToggleBookReadingStatus(bookId)
   }
 
-  return api.post<BookDetail>(BOOK_ENDPOINTS.TOGGLE_READING(bookId))
+  return api.patch<BookDetail>(BOOK_ENDPOINTS.TOGGLE_READING(bookId), undefined, {
+    params: { personalBookId },
+  })
 }
 
 /**
@@ -281,7 +287,7 @@ export async function updateBookRecord(
     return getMockUpdateBookRecord(personalBookId, recordId, body)
   }
 
-  return api.put<PersonalRecord>(BOOK_ENDPOINTS.RECORD_UPDATE(personalBookId, recordId), body)
+  return api.patch<PersonalRecord>(BOOK_ENDPOINTS.RECORD_UPDATE(personalBookId, recordId), body)
 }
 
 /**

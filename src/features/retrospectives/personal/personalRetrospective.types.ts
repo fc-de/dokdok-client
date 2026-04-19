@@ -40,11 +40,9 @@ export type PersonalRetrospectiveMember = {
 }
 
 /**
- * 개인 회고 조회 요청 파라미터
+ * 개인 회고 입력 폼 조회 요청 파라미터
  */
 export type GetPersonalRetrospectiveParams = {
-  /** 모임 ID */
-  gatheringId: number
   /** 약속 ID */
   meetingId: number
 }

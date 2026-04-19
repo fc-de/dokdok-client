@@ -34,9 +34,8 @@ export const usePersonalRetrospective = (
   params: GetPersonalRetrospectiveParams,
   enabled = true
 ) => {
-  const { gatheringId, meetingId } = params
-  const isValidParams =
-    !Number.isNaN(gatheringId) && gatheringId > 0 && !Number.isNaN(meetingId) && meetingId > 0
+  const { meetingId } = params
+  const isValidParams = !Number.isNaN(meetingId) && meetingId > 0
 
   return useQuery<GetPersonalRetrospectiveResponse, ApiError>({
     queryKey: personalRetrospectiveQueryKeys.detail(params),

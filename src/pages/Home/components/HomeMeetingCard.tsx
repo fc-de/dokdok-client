@@ -58,7 +58,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
   const handleActionClick = (e: MouseEvent) => {
     e.stopPropagation()
     if (isUpcoming && preOpinionTemplateConfirmed) {
-      navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))
+      navigate(ROUTES.PRE_OPINION_WRITE(gatheringId, meetingId))
     }
     if (isDone) {
       navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))

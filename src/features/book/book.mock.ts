@@ -28,6 +28,7 @@ import type {
 
 const mockBookDetail: BookDetail = {
   bookId: 1,
+  personalBookId: 100,
   title: '물고기는 존재하지 않는다',
   publisher: '곰출판',
   authors: '룰루 밀러',

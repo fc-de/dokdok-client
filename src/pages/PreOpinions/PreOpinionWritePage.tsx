@@ -3,12 +3,21 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import type { BookReviewFormValues } from '@/features/book/components/BookReviewForm'
 import BookReviewSection from '@/features/pre-opinion/components/BookReviewSection'
+import PreOpinionSharePreviewModal, {
+  type SharePreviewTopic,
+} from '@/features/pre-opinion/components/PreOpinionSharePreviewModal'
 import PreOpinionWriteHeader from '@/features/pre-opinion/components/PreOpinionWriteHeader'
 import TopicItem from '@/features/pre-opinion/components/TopicItem'
 import { usePreOpinion, useSavePreOpinion, useSubmitPreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { ROUTES } from '@/shared/constants/routes'
 import { Card, Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
+
+function normalizeAnswer(raw: string): string | null {
+  const trimmed = raw.trim()
+  return trimmed || null
+}
 
 export default function PreOpinionWritePage() {
   const { gatheringId, meetingId } = useParams<{ gatheringId: string; meetingId: string }>()
@@ -30,9 +39,29 @@ export default function PreOpinionWritePage() {
   })
 
   const reviewRef = useRef<BookReviewFormValues>({ rating: 0, keywordIds: [], isValid: false })
-  const [formReviewValid, setFormReviewValid] = useState<boolean | null>(null)
+  const [reviewValidFor, setReviewValidFor] = useState<{
+    gatheringId: number
+    meetingId: number
+    isValid: boolean
+  } | null>(null)
+  const formReviewValid =
+    reviewValidFor?.gatheringId === numGatheringId && reviewValidFor?.meetingId === numMeetingId
+      ? reviewValidFor.isValid
+      : null
   const isReviewValid = formReviewValid ?? !!preOpinion?.review
   const answersRef = useRef<Map<number, string>>(new Map())
+
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [previewSnapshot, setPreviewSnapshot] = useState<{
+    rating: number
+    keywordIds: number[]
+    topics: SharePreviewTopic[]
+  } | null>(null)
+
+  useEffect(() => {
+    reviewRef.current = { rating: 0, keywordIds: [], isValid: false }
+    answersRef.current = new Map()
+  }, [numGatheringId, numMeetingId])
 
   useEffect(() => {
     if (!preOpinion?.review) return
@@ -68,10 +97,17 @@ export default function PreOpinionWritePage() {
     meetingId: numMeetingId,
   })
 
-  const handleReviewChange = useCallback((values: BookReviewFormValues) => {
-    reviewRef.current = values
-    setFormReviewValid(values.isValid)
-  }, [])
+  const handleReviewChange = useCallback(
+    (values: BookReviewFormValues) => {
+      reviewRef.current = values
+      setReviewValidFor({
+        gatheringId: numGatheringId,
+        meetingId: numMeetingId,
+        isValid: values.isValid,
+      })
+    },
+    [numGatheringId, numMeetingId]
+  )
 
   const handleTopicChange = useCallback((topicId: number, content: string) => {
     answersRef.current.set(topicId, content)
@@ -84,10 +120,9 @@ export default function PreOpinionWritePage() {
       const raw = answersRef.current.has(topic.topicId)
         ? answersRef.current.get(topic.topicId)!
         : (topic.content ?? '')
-      const trimmed = raw.trim()
       return {
         topicId: topic.topicId,
-        content: trimmed || null,
+        content: normalizeAnswer(raw),
       }
     })
 
@@ -122,7 +157,29 @@ export default function PreOpinionWritePage() {
     })
   }, [buildSaveBody, save, openError])
 
-  const handleSubmit = useCallback(async () => {
+  const handleOpenPreview = useCallback(() => {
+    if (!preOpinion) return
+
+    const topics: SharePreviewTopic[] = preOpinion.preOpinion.topics.map((t) => ({
+      topicId: t.topicId,
+      title: t.topicTitle,
+      description: t.topicDescription,
+      topicTypeLabel: t.topicTypeLabel,
+      confirmOrder: t.confirmOrder,
+      content: normalizeAnswer(
+        answersRef.current.has(t.topicId) ? answersRef.current.get(t.topicId)! : (t.content ?? '')
+      ),
+    }))
+
+    setPreviewSnapshot({
+      rating: reviewRef.current.rating,
+      keywordIds: reviewRef.current.keywordIds,
+      topics,
+    })
+    setIsPreviewOpen(true)
+  }, [preOpinion])
+
+  const handleConfirmShare = useCallback(async () => {
     const saveBody = buildSaveBody()
     if (!saveBody) return
     const submitBody = buildSubmitBody()
@@ -132,14 +189,13 @@ export default function PreOpinionWritePage() {
       await saveAsync(saveBody)
     } catch {
       openError('오류', '사전 의견 저장 중 오류가 발생했습니다.')
-      return
+      throw new Error('save failed')
     }
 
-    try {
-      await submitAsync(submitBody)
-    } catch {
+    await submitAsync(submitBody).catch(() => {
       openError('오류', '사전 의견 제출 중 오류가 발생했습니다.')
-    }
+      throw new Error('submit failed')
+    })
   }, [buildSaveBody, buildSubmitBody, saveAsync, submitAsync, openError])
 
   if (isLoading || !preOpinion) {
@@ -160,15 +216,15 @@ export default function PreOpinionWritePage() {
         book={preOpinion.book}
         updatedAt={preOpinion.preOpinion.updatedAt}
         onSave={handleSave}
-        onSubmit={handleSubmit}
+        onSubmit={handleOpenPreview}
         isSaving={isSaving}
         isSubmitting={isSubmitting}
         isReviewValid={isReviewValid}
       />
 
       <div className="bg-grey-100">
-        <section className="max-w-[1200px] mx-auto py-large flex flex-col gap-base">
-          <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
+        <section className="max-w-300 mx-auto py-large flex flex-col gap-base">
+          <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-2.5 rounded-small">
             <p className="typo-caption1">
               작성하신 사전 의견은 약속 당일이 되면 멤버들에게 자동으로 공개돼요.
             </p>
@@ -179,6 +235,20 @@ export default function PreOpinionWritePage() {
           ))}
         </section>
       </div>
+
+      {previewSnapshot && (
+        <PreOpinionSharePreviewModal
+          open={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          rating={previewSnapshot.rating}
+          keywordIds={previewSnapshot.keywordIds}
+          topics={previewSnapshot.topics}
+          isPending={isSaving || isSubmitting}
+          onConfirmShare={handleConfirmShare}
+          onGoToPreOpinions={() => navigate(ROUTES.PRE_OPINIONS(numGatheringId, numMeetingId))}
+          onGoToBook={() => navigate(ROUTES.BOOK_DETAIL(preOpinion.book.bookId))}
+        />
+      )}
     </>
   )
 }

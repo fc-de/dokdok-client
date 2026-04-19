@@ -39,10 +39,10 @@ const PersonalRecordItem = ({ record, onEdit, onDelete }: PersonalRecordItemProp
 
       <div className="flex flex-col gap-medium">
         {/* 발췌 텍스트 + 페이지 번호 */}
-        {record.meta.excerpt && (
+        {record.meta?.excerpt && (
           <ExcerptBlock>
             <p className="typo-subtitle5 text-grey-800">{record.meta.excerpt}</p>
-            {record.meta.page && (
+            {record.meta?.page && (
               <span className="typo-body1 text-grey-600">
                 {record.meta.page}
                 {record.meta.page.endsWith('p') ? '' : 'p'}

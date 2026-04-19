@@ -69,7 +69,7 @@ const PreOpinionWriteHeader = ({
               onClick={onSave}
               disabled={isSaving || !isReviewValid}
             >
-              {isSaving ? '저장 중...' : '저장하기'}
+              {isSaving ? '저장 중...' : '임시저장'}
             </Button>
             <Button onClick={onSubmit} disabled={isSubmitting || isSaving || !isReviewValid}>
               {isSubmitting ? '공유 중...' : '공유하기'}

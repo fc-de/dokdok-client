@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 
 import { deleteMyPreOpinionAnswer } from '@/features/pre-opinion/preOpinion.api'
 import { deletePersonalRetrospective } from '@/features/retrospectives/personal/personalRetrospective.api'
+import { showToast } from '@/shared/lib/toast'
 
 import { deleteBookRecord } from '../book.api'
 import { bookRecordsKeys } from './useBookRecords'
@@ -37,7 +38,10 @@ export function useBookLogDeleteActions(bookId: number) {
 
   const { mutate: deletePersonalRecord } = useMutation({
     mutationFn: (recordId: number) => deleteBookRecord(bookId, recordId),
-    onSuccess: invalidateBookRecords,
+    onSuccess: () => {
+      invalidateBookRecords()
+      showToast('기록이 삭제되었어요.')
+    },
     onError: () => toast.error('기록 삭제에 실패했어요. 다시 시도해주세요.'),
   })
 
