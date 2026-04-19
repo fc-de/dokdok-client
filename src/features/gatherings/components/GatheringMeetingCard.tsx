@@ -31,28 +31,36 @@ export default function GatheringMeetingCard({
   const formattedDate = formatToDateTimeRange(startDateTime, endDateTime)
 
   const isOngoing = status === 'IN_PROGRESS'
+  const isUpcoming = status === 'UPCOMING'
+  const isDone = status === 'DONE'
+
+  const showPreAnswer = isUpcoming && meeting.meetingStatus === 'CONFIRMED'
+  const showMeetingReview = isDone
+  const showPersonalReview = isDone
 
   const handleClick = () => {
     navigate(ROUTES.MEETING_DETAIL(gatheringId, meetingId))
   }
 
-  // 사전답변, 약속회고, 개인회고 버튼 핸들러
+  // TODO: 백엔드 API에 preOpinionSubmitted 필드 추가 후
+  // preOpinionSubmitted ? PRE_OPINIONS(조회) : PRE_OPINION_WRITE(작성) 으로 분기
   const handlePreAnswerClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    // TODO: 사전답변 작성/조회 페이지로 이동
-    console.log('사전답변 클릭')
+    navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))
   }
 
+  // TODO: 백엔드 API에 retrospectiveStatus 필드 추가 후
+  // RetrospectiveCardButtons와 동일하게 상태별 라우트 분기 적용
   const handleMeetingReviewClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    // TODO: 약속회고 페이지로 이동
-    console.log('약속회고 클릭')
+    navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))
   }
 
+  // TODO: 백엔드 API에 personalRetrospectiveWritten 필드 추가 후
+  // personalRetrospectiveWritten ? PERSONAL_RETROSPECTIVE_VIEW(조회) : PERSONAL_RETROSPECTIVE(작성) 으로 분기
   const handlePersonalReviewClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    // TODO: 개인회고 작성/조회 페이지로 이동
-    console.log('개인회고 클릭')
+    navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))
   }
 
   // 약속 중 카드 (빨간 배경)
@@ -90,7 +98,6 @@ export default function GatheringMeetingCard({
   }
 
   // 예정/종료 카드
-  const isUpcoming = status === 'UPCOMING'
   const statusLabel = isUpcoming ? '예정' : '종료'
   const badgeColor = isUpcoming ? 'yellow' : 'grey'
   const ddayColor = isUpcoming ? 'text-yellow-300' : 'text-grey-600'
@@ -132,39 +139,44 @@ export default function GatheringMeetingCard({
 
       {/* 우측: 사전답변, 약속회고, 개인회고 버튼 */}
       <div className="flex items-center gap-base">
-        {/* 사전답변 */}
-        <button
-          type="button"
-          className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
-          onClick={handlePreAnswerClick}
-        >
-          <FileQuestion className="size-5 text-grey-600" />
-          <span className="typo-body5 font-semibold text-grey-600">사전답변</span>
-        </button>
+        {showPreAnswer && (
+          <button
+            type="button"
+            className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
+            onClick={handlePreAnswerClick}
+          >
+            <FileQuestion className="size-5 text-grey-600" />
+            <span className="typo-body5 font-semibold text-grey-600">사전답변</span>
+          </button>
+        )}
 
-        <div className="w-px h-12 bg-grey-300" />
+        {showPreAnswer && (showMeetingReview || showPersonalReview) && (
+          <div className="w-px h-12 bg-grey-300" />
+        )}
 
-        {/* 약속회고 */}
-        <button
-          type="button"
-          className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
-          onClick={handleMeetingReviewClick}
-        >
-          <BarChart3 className="size-5 text-grey-600" />
-          <span className="typo-body5 font-semibold text-grey-600">약속회고</span>
-        </button>
+        {showMeetingReview && (
+          <button
+            type="button"
+            className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
+            onClick={handleMeetingReviewClick}
+          >
+            <BarChart3 className="size-5 text-grey-600" />
+            <span className="typo-body5 font-semibold text-grey-600">약속회고</span>
+          </button>
+        )}
 
-        <div className="w-px h-12 bg-grey-300" />
+        {showMeetingReview && showPersonalReview && <div className="w-px h-12 bg-grey-300" />}
 
-        {/* 개인회고 */}
-        <button
-          type="button"
-          className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
-          onClick={handlePersonalReviewClick}
-        >
-          <NotebookPen className="size-5 text-grey-600" />
-          <span className="typo-body5 font-semibold text-grey-600">개인회고</span>
-        </button>
+        {showPersonalReview && (
+          <button
+            type="button"
+            className="flex flex-col items-center gap-xtiny p-tiny w-16 rounded-tiny cursor-pointer hover:bg-grey-100"
+            onClick={handlePersonalReviewClick}
+          >
+            <NotebookPen className="size-5 text-grey-600" />
+            <span className="typo-body5 font-semibold text-grey-600">개인회고</span>
+          </button>
+        )}
       </div>
     </div>
   )
