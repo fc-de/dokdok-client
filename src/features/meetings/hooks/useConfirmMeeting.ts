@@ -46,6 +46,8 @@ export const useConfirmMeeting = (gatheringId: number) => {
       queryClient.invalidateQueries({ queryKey: myMeetingQueryKeys.tabCounts() })
       // 내 약속 목록 캐시 무효화
       queryClient.invalidateQueries({ queryKey: myMeetingQueryKeys.lists() })
+      // 모임 책장 캐시 무효화 (약속 확정 시 책이 모임 책장에 반영됨)
+      queryClient.invalidateQueries({ queryKey: gatheringQueryKeys.books(gatheringId) })
     },
   })
 }
