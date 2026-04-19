@@ -139,28 +139,30 @@ export default function GatheringMeetingSection({
           </Tabs>
         </div>
 
-        {/* 버튼들 (모임장만) */}
-        {isLeader && (
-          <div className="flex items-center gap-xsmall">
+        {/* 버튼들 */}
+        <div className="flex items-center gap-xsmall">
+          {/* 약속 설정: 모임장만 */}
+          {isLeader && (
             <Button variant="secondary" outline size="small" onClick={handleMeetingSettings}>
               약속 설정
             </Button>
-            {showCreateTooltip ? (
-              <Tooltip dismissable onOpenChange={(open) => !open && setShowCreateTooltip(false)}>
-                <TooltipTrigger asChild>
-                  <Button size="small" onClick={handleCreateMeeting}>
-                    약속 만들기
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>약속을 만들어 함께 책을 읽어보세요!</TooltipContent>
-              </Tooltip>
-            ) : (
-              <Button size="small" onClick={handleCreateMeeting}>
-                약속 만들기
-              </Button>
-            )}
-          </div>
-        )}
+          )}
+          {/* 약속 만들기: 모든 멤버 */}
+          {showCreateTooltip ? (
+            <Tooltip dismissable onOpenChange={(open) => !open && setShowCreateTooltip(false)}>
+              <TooltipTrigger asChild>
+                <Button size="small" onClick={handleCreateMeeting}>
+                  약속 만들기
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>약속을 만들어 함께 책을 읽어보세요!</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button size="small" onClick={handleCreateMeeting}>
+              약속 만들기
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* 약속 목록 */}
