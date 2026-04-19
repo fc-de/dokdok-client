@@ -44,5 +44,12 @@ export function PrivateRoute() {
     return <Navigate to={ROUTES.HOME} replace />
   }
 
+  // 초대 링크 비로그인 접근 후 로그인 완료 시 초대 페이지로 복귀
+  const pendingRedirect = sessionStorage.getItem('postLoginRedirect')
+  if (pendingRedirect) {
+    sessionStorage.removeItem('postLoginRedirect')
+    return <Navigate to={pendingRedirect} replace />
+  }
+
   return <Outlet />
 }
