@@ -38,9 +38,10 @@ export default function InvitePage() {
   const handleJoin = () => {
     if (!invitationCode) return
 
-    // 비로그인 시 로그인 페이지로 이동
+    // 비로그인 시 초대 경로를 저장하고 로그인 페이지로 이동
     if (!isLoggedIn) {
-      navigate(ROUTES.LOGIN, { state: { from: location.pathname } })
+      sessionStorage.setItem('postLoginRedirect', location.pathname)
+      navigate(ROUTES.LOGIN)
       return
     }
 

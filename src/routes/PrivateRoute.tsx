@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 import { ApiError } from '@/api'
@@ -8,8 +9,15 @@ import { ErrorFallback, Spinner } from '@/shared/ui'
 export function PrivateRoute() {
   const { data: user, isLoading, isError, error, refetch } = useAuth()
   const location = useLocation()
+  const pendingRedirect = sessionStorage.getItem('postLoginRedirect')
 
   const isOnboardingPage = location.pathname === ROUTES.ONBOARDING
+
+  useEffect(() => {
+    if (pendingRedirect) {
+      sessionStorage.removeItem('postLoginRedirect')
+    }
+  }, [pendingRedirect])
 
   if (isLoading) {
     return (
@@ -42,6 +50,11 @@ export function PrivateRoute() {
   // 온보딩 완료된 사용자가 온보딩 페이지 접근 시 → 메인으로 리다이렉트
   if (isOnboardingPage) {
     return <Navigate to={ROUTES.HOME} replace />
+  }
+
+  // 초대 링크 비로그인 접근 후 로그인 완료 시 초대 페이지로 복귀
+  if (pendingRedirect) {
+    return <Navigate to={pendingRedirect} replace />
   }
 
   return <Outlet />
