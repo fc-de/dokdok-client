@@ -102,8 +102,8 @@ export interface SummaryTopic {
   confirmOrder: number
   topicTitle: string
   topicDescription: string
-  summary: string
-  keyPoints: KeyPoint[]
+  summary: string | null
+  keyPoints: KeyPoint[] | null
 }
 
 /** 회고 요약 응답 (GET, PATCH, POST publish 공통) */

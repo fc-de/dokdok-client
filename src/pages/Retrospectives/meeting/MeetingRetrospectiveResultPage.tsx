@@ -17,6 +17,7 @@ import { Button } from '@/shared/ui'
 
 type LocationState = {
   fromAiSummary?: boolean
+  aiSuccess?: boolean
 }
 
 type EditableSummaryTopic = Omit<SummaryTopic, 'keyPoints'> & { keyPoints: EditableKeyPoint[] }
@@ -43,14 +44,19 @@ export default function MeetingRetrospectiveResultPage() {
   const [editedTopics, setEditedTopics] = useState<EditableSummaryTopic[]>([])
 
   // CreatePage에서 AI 요약 완료 후 도착했을 때 토스트 표시
-  const fromAiSummary = (location.state as LocationState)?.fromAiSummary ?? false
+  const [fromAiSummary] = useState(() => (location.state as LocationState)?.fromAiSummary ?? false)
+  const [aiSuccess] = useState(() => (location.state as LocationState)?.aiSuccess ?? true)
 
   useEffect(() => {
     if (fromAiSummary) {
       navigate(location.pathname, { replace: true, state: null })
-      showToast('독서 모임 내용 요약이 완료됐어요')
+      if (aiSuccess) {
+        showToast('독서 모임 내용 요약이 완료됐어요')
+      } else {
+        showErrorToast('AI 요약에 실패했습니다. 직접 수정하여 완성해주세요.')
+      }
     }
-  }, [fromAiSummary, navigate, location.pathname])
+  }, [fromAiSummary, aiSuccess, navigate, location.pathname])
 
   // ─── 유효성 검사 (모든 hook 호출 이후) ───
   if (!gatheringId || !meetingId || !Number.isInteger(mId) || mId <= 0) return null
@@ -63,7 +69,7 @@ export default function MeetingRetrospectiveResultPage() {
     setEditedTopics(
       summaryData.topics.map((topic) => ({
         ...topic,
-        keyPoints: topic.keyPoints.map((kp) => ({
+        keyPoints: (topic.keyPoints ?? []).map((kp) => ({
           ...kp,
           id: crypto.randomUUID(),
           details: kp.details.map((d) => ({ id: crypto.randomUUID(), value: d })),
@@ -80,7 +86,7 @@ export default function MeetingRetrospectiveResultPage() {
         data: {
           topics: editedTopics.map((t) => ({
             topicId: t.topicId,
-            summary: t.summary,
+            summary: t.summary ?? '',
             keyPoints: t.keyPoints.map((kp) => ({
               title: kp.title,
               details: kp.details.map((d) => d.value),
@@ -174,7 +180,9 @@ export default function MeetingRetrospectiveResultPage() {
       {/* 회고 콘텐츠 영역 */}
       <div className="mx-auto max-w-layout-max px-layout-padding mt-base flex flex-col gap-medium pb-xlarge">
         {/* 안내 배너 (미발행 + 보기 모드일 때) */}
-        {summaryData && !summaryData.isPublished && !isEditing && <SummaryInfoBanner />}
+        {summaryData && !summaryData.isPublished && !isEditing && (
+          <SummaryInfoBanner variant={aiSuccess ? 'success' : 'error'} />
+        )}
 
         {/* 토픽 카드 */}
         {isLoading ? (
@@ -192,7 +200,7 @@ export default function MeetingRetrospectiveResultPage() {
               key={topic.topicId}
               topic={topic}
               isEditing={isEditing}
-              editedSummary={isEditing ? editedTopics[index]?.summary : undefined}
+              editedSummary={isEditing ? (editedTopics[index]?.summary ?? undefined) : undefined}
               editedKeyPoints={isEditing ? editedTopics[index]?.keyPoints : undefined}
               onSummaryChange={(v) => handleSummaryChange(index, v)}
               onKeyPointsChange={(kps) => handleKeyPointsChange(index, kps)}
