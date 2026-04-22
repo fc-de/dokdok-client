@@ -180,8 +180,9 @@ export default function MeetingRetrospectiveResultPage() {
       {/* 회고 콘텐츠 영역 */}
       <div className="mx-auto max-w-layout-max px-layout-padding mt-base flex flex-col gap-medium pb-xlarge">
         {/* 안내 배너 (미발행 + 보기 모드일 때) */}
-        {summaryData && !summaryData.isPublished && !isEditing && (
-          <SummaryInfoBanner variant={aiSuccess ? 'success' : 'error'} />
+        {!isEditing && !aiSuccess && <SummaryInfoBanner variant="error" />}
+        {!isEditing && aiSuccess && summaryData && !summaryData.isPublished && (
+          <SummaryInfoBanner variant="success" />
         )}
 
         {/* 토픽 카드 */}
