@@ -94,7 +94,7 @@ export default function TopicSummaryCard({
             <h5 className="typo-subtitle2 text-black">핵심요약</h5>
             {isEditing ? (
               <Textarea
-                value={displaySummary}
+                value={displaySummary ?? ''}
                 onChange={(e) => onSummaryChange?.(e.target.value)}
                 height={80}
               />
@@ -176,7 +176,7 @@ export default function TopicSummaryCard({
                 </button>
               </div>
             ) : (
-              keyPoints.map((kp, kpIndex) => (
+              (keyPoints ?? []).map((kp, kpIndex) => (
                 <div key={kpIndex} className="flex flex-col gap-xtiny">
                   <p className="typo-subtitle5 text-black">
                     {kpIndex + 1}. {kp.title}

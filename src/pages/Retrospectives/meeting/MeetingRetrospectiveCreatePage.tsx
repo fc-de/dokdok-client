@@ -82,9 +82,10 @@ export default function MeetingRetrospectiveCreatePage() {
     sttMutation.mutate(
       { gatheringId, meetingId, file: uploadedFile ?? undefined },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          // AI 요약 실패해서 data.status가 DONE이 아니어도 결과 페이지로 우선 이동
           navigate(ROUTES.MEETING_RETROSPECTIVE(gatheringId, meetingId), {
-            state: { fromAiSummary: true },
+            state: { fromAiSummary: true, aiSuccess: data.status === 'DONE' },
           })
         },
         onError: (err) => {
