@@ -24,7 +24,15 @@ export default function GatheringMeetingCard({
 }: GatheringMeetingCardProps) {
   const navigate = useNavigate()
 
-  const { meetingId, meetingName, bookName, startDateTime, endDateTime, hasPreOpinion, hasPersonalRetrospective } = meeting
+  const {
+    meetingId,
+    meetingName,
+    bookName,
+    startDateTime,
+    endDateTime,
+    hasPreOpinion,
+    hasPersonalRetrospective,
+  } = meeting
 
   const status = getMeetingDisplayStatus(startDateTime, endDateTime)
   const ddayText = getDdayText(startDateTime, endDateTime)
