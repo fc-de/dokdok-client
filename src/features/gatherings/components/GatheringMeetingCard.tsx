@@ -24,7 +24,7 @@ export default function GatheringMeetingCard({
 }: GatheringMeetingCardProps) {
   const navigate = useNavigate()
 
-  const { meetingId, meetingName, bookName, startDateTime, endDateTime } = meeting
+  const { meetingId, meetingName, bookName, startDateTime, endDateTime, hasPreOpinion, hasPersonalRetrospective } = meeting
 
   const status = getMeetingDisplayStatus(startDateTime, endDateTime)
   const ddayText = getDdayText(startDateTime, endDateTime)
@@ -42,25 +42,27 @@ export default function GatheringMeetingCard({
     navigate(ROUTES.MEETING_DETAIL(gatheringId, meetingId))
   }
 
-  // TODO: 백엔드 API에 preOpinionSubmitted 필드 추가 후
-  // preOpinionSubmitted ? PRE_OPINIONS(조회) : PRE_OPINION_WRITE(작성) 으로 분기
   const handlePreAnswerClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate(ROUTES.PRE_OPINIONS(gatheringId, meetingId))
+    navigate(
+      hasPreOpinion
+        ? ROUTES.PRE_OPINIONS(gatheringId, meetingId)
+        : ROUTES.PRE_OPINION_WRITE(gatheringId, meetingId)
+    )
   }
 
-  // TODO: 백엔드 API에 retrospectiveStatus 필드 추가 후
-  // RetrospectiveCardButtons와 동일하게 상태별 라우트 분기 적용
   const handleMeetingReviewClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     navigate(ROUTES.MEETING_RETROSPECTIVE_CREATE(gatheringId, meetingId))
   }
 
-  // TODO: 백엔드 API에 personalRetrospectiveWritten 필드 추가 후
-  // personalRetrospectiveWritten ? PERSONAL_RETROSPECTIVE_VIEW(조회) : PERSONAL_RETROSPECTIVE(작성) 으로 분기
   const handlePersonalReviewClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))
+    navigate(
+      hasPersonalRetrospective
+        ? ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId)
+        : ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)
+    )
   }
 
   // 약속 중 카드 (빨간 배경)

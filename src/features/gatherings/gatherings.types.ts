@@ -165,6 +165,10 @@ export interface GatheringMeetingItem {
   endDateTime: string
   /** 약속 상태 */
   meetingStatus: MeetingStatus
+  /** 사전답변 제출 여부 */
+  hasPreOpinion: boolean
+  /** 개인 회고 작성 여부 */
+  hasPersonalRetrospective: boolean
 }
 
 /** 모임 약속 목록 응답 (페이지 기반) */
