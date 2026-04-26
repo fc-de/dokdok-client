@@ -160,10 +160,6 @@ export default function GatheringMeetingCard({
           </button>
         )}
 
-        {showPreAnswer && (showMeetingReview || showPersonalReview) && (
-          <div className="w-px h-12 bg-grey-300" />
-        )}
-
         {showMeetingReview && (
           <button
             type="button"
