@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { ApiError } from '@/api/errors'
 import type { ApiResponse } from '@/api/types'
+import { gatheringQueryKeys } from '@/features/gatherings'
 import {
   createMeeting,
   type CreateMeetingRequest,
@@ -26,10 +27,14 @@ export const useCreateMeeting = () => {
 
   return useMutation<ApiResponse<CreateMeetingResponse>, ApiError, CreateMeetingRequest>({
     mutationFn: (data: CreateMeetingRequest) => createMeeting(data),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       // 약속 승인 관련 모든 캐시 무효화
       queryClient.invalidateQueries({
         queryKey: meetingQueryKeys.approvals(),
+      })
+      // 모임 책장 캐시 무효화 (약속 생성 시 책이 모임 책장에 추가됨)
+      queryClient.invalidateQueries({
+        queryKey: gatheringQueryKeys.books(variables.gatheringId),
       })
     },
   })
