@@ -14,17 +14,34 @@ import HomeSectionHeader from './HomeSectionHeader'
 type BookTab = 'all' | 'pre' | 'post'
 
 export default function ReadingBooksSection() {
-  // TODO: pre/post 탭 활성화 시 activeTab을 useBooks filter 파라미터로 연결 필요
   const [activeTab, setActiveTab] = useState<BookTab>('all')
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
   const { openConfirm } = useGlobalModalStore()
 
-  const { data, isLoading } = useBooks({ readingStatus: 'READING' })
+  const allBooksQuery = useBooks({ readingStatus: 'READING' })
+  const beforeBooksQuery = useBooks({
+    readingStatus: 'READING',
+    meetingProgressStatus: 'BEFORE',
+  })
+  const afterBooksQuery = useBooks({
+    readingStatus: 'READING',
+    meetingProgressStatus: 'AFTER',
+  })
+  const activeQuery = {
+    all: allBooksQuery,
+    pre: beforeBooksQuery,
+    post: afterBooksQuery,
+  }[activeTab]
+
+  const { data, isLoading } = activeQuery
   const showSkeleton = useDeferredLoading(isLoading)
 
   const books = data?.pages.flatMap((page) => page.items) ?? []
-  const totalCount = data?.pages[0]?.statusCounts.reading ?? 0
+  const totalCount = allBooksQuery.data?.pages[0]?.statusCounts.reading ?? 0
+  const beforeCount = beforeBooksQuery.data?.pages[0]?.totalCount ?? 0
+  const afterCount = afterBooksQuery.data?.pages[0]?.totalCount ?? 0
+  const isFilteredEmpty = activeTab !== 'all'
 
   return (
     <section className="flex flex-col gap-medium">
@@ -38,10 +55,10 @@ export default function ReadingBooksSection() {
             <TabsTrigger value="all" badge={totalCount}>
               전체
             </TabsTrigger>
-            <TabsTrigger value="pre" badge={0} disabled>
+            <TabsTrigger value="pre" badge={beforeCount}>
               약속 전
             </TabsTrigger>
-            <TabsTrigger value="post" badge={0} disabled>
+            <TabsTrigger value="post" badge={afterCount}>
               약속 후
             </TabsTrigger>
           </TabsList>
@@ -63,19 +80,27 @@ export default function ReadingBooksSection() {
       ) : books.length === 0 ? (
         <div className="flex h-85 flex-col items-center justify-center gap-medium rounded-base border border-grey-300">
           <div className="flex flex-col items-center gap-xtiny">
-            <p className="text-grey-600 typo-subtitle2">내 책장이 비어있어요.</p>
+            <p className="text-grey-600 typo-subtitle2">
+              {isFilteredEmpty
+                ? `${activeTab === 'pre' ? '약속 전' : '약속 후'} 상태인 책이 없어요.`
+                : '내 책장이 비어있어요.'}
+            </p>
             <p className="text-grey-600 typo-body3">
-              첫 번째 책을 등록하고 독서 기록을 시작해 보세요!
+              {isFilteredEmpty
+                ? '다른 상태의 책을 확인해 보세요.'
+                : '첫 번째 책을 등록하고 독서 기록을 시작해 보세요!'}
             </p>
           </div>
-          <Button
-            variant="secondary"
-            outline
-            size="small"
-            onClick={() => setIsSearchModalOpen(true)}
-          >
-            책 추가하기
-          </Button>
+          {!isFilteredEmpty && (
+            <Button
+              variant="secondary"
+              outline
+              size="small"
+              onClick={() => setIsSearchModalOpen(true)}
+            >
+              책 추가하기
+            </Button>
+          )}
         </div>
       ) : (
         <BookCarousel>
@@ -86,6 +111,7 @@ export default function ReadingBooksSection() {
               title={book.title}
               authors={book.authors}
               thumbnail={book.thumbnail}
+              meetingProgressStatus={book.meetingProgressStatus}
             />
           ))}
         </BookCarousel>

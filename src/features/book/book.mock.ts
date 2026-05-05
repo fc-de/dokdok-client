@@ -43,6 +43,7 @@ const mockBookListItems: BookListItem[] = [
     publisher: '곰 출판',
     authors: '룰루 밀러',
     bookReadingStatus: 'READING',
+    meetingProgressStatus: 'BEFORE',
     thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9791189327156.jpg',
     rating: 0.5,
     gatherings: [
@@ -56,6 +57,7 @@ const mockBookListItems: BookListItem[] = [
     publisher: '민음사',
     authors: '헤르만 헤세',
     bookReadingStatus: 'READING',
+    meetingProgressStatus: 'AFTER',
     thumbnail: 'https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788937460449.jpg',
     rating: 4.5,
     gatherings: [{ gatheringId: 2, gatheringName: '주말 독서 모임' }],
@@ -66,6 +68,7 @@ const mockBookListItems: BookListItem[] = [
     publisher: '민음사',
     authors: '조지 오웰',
     bookReadingStatus: 'COMPLETED',
+    meetingProgressStatus: null,
     thumbnail:
       'https://i.namu.wiki/i/OuId9i6YhTdBIk5XDIZWVre8GtdOv_OaaXSL_WlGUvPisTnbN2jwn0lf_b8sJp_bjBLoKgl6Fa4-enbgZJIRLA.webp',
     rating: 5,
@@ -462,13 +465,27 @@ export const getMockBooks = async (params: GetBooksParams = {}): Promise<GetBook
 // ============================================================
 
 function filterMockBooks(params: GetBooksParams): GetBooksResponse {
-  const { readingStatus, minRating, maxRating, sortBy = 'TIME', sortOrder = 'DESC' } = params
+  const {
+    readingStatus,
+    minRating,
+    maxRating,
+    meetingProgressStatus,
+    sortBy = 'TIME',
+    sortOrder = 'DESC',
+  } = params
 
   let filteredItems = [...mockBookListItems]
 
   // 상태 필터
   if (readingStatus) {
     filteredItems = filteredItems.filter((item) => item.bookReadingStatus === readingStatus)
+  }
+
+  // 약속 진행 상태 필터
+  if (meetingProgressStatus) {
+    filteredItems = filteredItems.filter(
+      (item) => item.meetingProgressStatus === meetingProgressStatus
+    )
   }
 
   // 별점 범위 필터
@@ -509,7 +526,7 @@ function filterMockBooks(params: GetBooksParams): GetBooksResponse {
       pending: pendingCount,
       total: mockBookListItems.length,
     },
-    totalCount: mockBookListItems.length,
+    totalCount: filteredItems.length,
   }
 }
 
