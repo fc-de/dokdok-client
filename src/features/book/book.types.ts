@@ -8,6 +8,9 @@ import type { CursorPaginatedResponse } from '@/api/types'
 /** 책 읽기 상태 */
 export type BookReadingStatus = 'READING' | 'COMPLETED' | 'PENDING'
 
+/** 책과 연결된 약속 진행 상태 */
+export type BookMeetingProgressStatus = 'BEFORE' | 'AFTER'
+
 /** 책 목록 정렬 기준 */
 export type BookSortBy = 'TIME' | 'RATING'
 
@@ -42,6 +45,7 @@ export interface BookListItem {
   publisher: string
   authors: string
   bookReadingStatus: BookReadingStatus
+  meetingProgressStatus: BookMeetingProgressStatus | null
   thumbnail: string
   rating: number | null
   gatherings: BookListGathering[]
@@ -52,6 +56,7 @@ export interface GetBooksParams {
   readingStatus?: BookReadingStatus
   minRating?: number
   maxRating?: number
+  meetingProgressStatus?: BookMeetingProgressStatus
   sortBy?: BookSortBy
   sortOrder?: BookSortOrder
   cursorRating?: number
