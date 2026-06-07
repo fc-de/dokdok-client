@@ -1,5 +1,6 @@
 import type { CursorPaginatedResponse, PaginatedResponse } from '@/api'
-import type { MeetingStatus } from '@/features/meetings'
+import type { MeetingStatus, MyMeetingRole } from '@/features/meetings'
+import type { TopicType } from '@/features/topics/topics.types'
 
 /** 모임 기본 정보 (공통) */
 export interface GatheringBase {
@@ -163,6 +164,12 @@ export interface GatheringMeetingItem {
   startDateTime: string
   /** 종료 일시 (ISO 8601) */
   endDateTime: string
+  /** 주제 유형 목록 */
+  topicTypes: TopicType[]
+  /** 현재 사용자의 약속 참여 여부 */
+  joined: boolean
+  /** 현재 사용자의 약속 내 역할 */
+  myRole: MyMeetingRole
   /** 약속 상태 */
   meetingStatus: MeetingStatus
   /** 사전답변 제출 여부 */
