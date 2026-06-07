@@ -61,10 +61,20 @@ export default function InvitePage() {
         }
       },
       onError: (error) => {
-        if (error instanceof ApiError && error.is(ErrorCode.ALREADY_GATHERING_MEMBER)) {
-          openAlert('이미 가입된 모임', '이미 가입된 모임입니다.')
-          navigate(ROUTES.GATHERINGS)
-          return
+        if (error instanceof ApiError) {
+          if (error.is(ErrorCode.ALREADY_GATHERING_MEMBER)) {
+            openAlert('이미 가입된 모임', '이미 가입된 모임입니다.')
+            navigate(ROUTES.GATHERINGS)
+            return
+          }
+          if (error.is(ErrorCode.JOIN_REQUEST_ALREADY_PENDING)) {
+            openAlert(
+              '가입 신청 완료',
+              '이미 가입 요청이 진행 중이에요. 모임장의 승인을 기다려주세요.'
+            )
+            navigate(ROUTES.GATHERINGS)
+            return
+          }
         }
         openError('오류', '가입 신청 중 오류가 발생했습니다.')
       },
