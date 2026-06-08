@@ -52,7 +52,7 @@ const PersonalRecordItem = ({ record, onEdit, onDelete }: PersonalRecordItemProp
         )}
 
         {/* 개인 감상/메모 */}
-        <p className="typo-body1 text-grey-800">{record.recordContent}</p>
+        <p className="typo-body1 text-grey-800 whitespace-pre-wrap">{record.recordContent}</p>
       </div>
     </FoldedCard>
   )
