@@ -113,6 +113,7 @@ export const ErrorCode = {
   MEETING_DELETE_NOT_ALLOWED: 'M015',
   MEETING_JOIN_TIME_EXPIRED: 'M016',
   MEETING_UPDATE_TIME_EXPIRED: 'M017',
+  MEETING_CONFIRM_TIME_CONFLICT: 'M024',
 
   // Topic
   TOPIC_NOT_FOUND: 'E101',
@@ -258,6 +259,8 @@ export const ErrorMessage: Record<ErrorCodeType, string> = {
   [ErrorCode.MEETING_DELETE_NOT_ALLOWED]: '약속 시작 24시간 이내에는 삭제할 수 없습니다.',
   [ErrorCode.MEETING_JOIN_TIME_EXPIRED]: '약속 시작 24시간 이내에는 참가 신청할 수 없습니다.',
   [ErrorCode.MEETING_UPDATE_TIME_EXPIRED]: '약속 시작 24시간 이내에는 수정할 수 없습니다.',
+  [ErrorCode.MEETING_CONFIRM_TIME_CONFLICT]:
+    '모임 내 같은 시간대에 이미 확정된 약속이 있어 승인할 수 없습니다.',
 
   // Topic
   [ErrorCode.TOPIC_NOT_FOUND]: '주제를 찾을 수 없습니다.',
