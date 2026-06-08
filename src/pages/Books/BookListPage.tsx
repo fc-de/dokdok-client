@@ -138,34 +138,36 @@ export default function BookListPage() {
     return (
       <div>
         <SubPageHeader label="내 책장" to={ROUTES.BOOKS} />
-        <div className="flex justify-between items-center pb-tiny mb-[37px]">
-          <h3 className="typo-heading3 text-black">내 책장 편집하기</h3>
-          <div className="flex gap-xsmall items-center">
-            <TextButton onClick={handleSelectAll}>
-              {isAllSelected ? '전체해제' : '전체선택'}
-            </TextButton>
-            <TextButton
-              onClick={handleDelete}
-              disabled={selectedBookIds.size === 0}
-              className="text-grey-700"
-            >
-              삭제하기
-            </TextButton>
+        <div className="mx-auto max-w-layout-max px-layout-padding">
+          <div className="flex justify-between items-center pb-tiny mb-[37px]">
+            <h3 className="typo-heading3 text-black">내 책장 편집하기</h3>
+            <div className="flex gap-xsmall items-center">
+              <TextButton onClick={handleSelectAll}>
+                {isAllSelected ? '전체해제' : '전체선택'}
+              </TextButton>
+              <TextButton
+                onClick={handleDelete}
+                disabled={selectedBookIds.size === 0}
+                className="text-grey-700"
+              >
+                삭제하기
+              </TextButton>
+            </div>
           </div>
+          <p className="typo-subtitle1 text-grey-700">{selectedBookIds.size}개 선택</p>
+          <BookList
+            isEditMode
+            selectedBookIds={selectedBookIds}
+            onSelectToggle={handleSelectToggle}
+            onFilteredBooksChange={handleFilteredBooksChange}
+          />
         </div>
-        <p className="typo-subtitle1 text-grey-700">{selectedBookIds.size}개 선택</p>
-        <BookList
-          isEditMode
-          selectedBookIds={selectedBookIds}
-          onSelectToggle={handleSelectToggle}
-          onFilteredBooksChange={handleFilteredBooksChange}
-        />
       </div>
     )
   }
 
   return (
-    <div>
+    <div className="mx-auto max-w-layout-max px-layout-padding">
       <h1 className="typo-heading1 text-black mt-xlarge mb-medium">내 책장</h1>
       <Tabs value={activeTab} onValueChange={handleTabChange}>
         <div className="flex justify-between items-center">
