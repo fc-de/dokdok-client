@@ -110,9 +110,9 @@ function Textarea({
         style={computedStyle}
         className={cn(
           textareaVariants({ state: error ? 'error' : 'default' }),
-          'custom-scroll',
-          disabled && 'pointer-events-none border-0 bg-grey-300 text-grey-700',
-          format === 'comment' && 'overflow-y-auto',
+          disabled ? 'custom-scroll-grey200' : 'custom-scroll',
+          'overflow-y-auto',
+          disabled && 'border-0 bg-grey-300 text-grey-700',
           className
         )}
         {...props}
