@@ -9,6 +9,7 @@ import type {
 import { useCreateBookRecord, useUpdateBookRecord } from '@/features/book/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
+import { useGlobalModalStore } from '@/store'
 import { Input } from '@/shared/ui/Input'
 import {
   Modal,
@@ -114,6 +115,8 @@ function PersonalRecordModal({
     personalBookId,
     record?.recordId ?? 0
   )
+  const { openAlert } = useGlobalModalStore()
+
   const resetForm = () => {
     setMemoContent('')
     setQuoteContent('')
@@ -130,6 +133,20 @@ function PersonalRecordModal({
 
   const handleSave = () => {
     if (mode === 'edit' && !record) return
+
+    if (recordType === 'MEMO' && !memoContent.trim()) {
+      openAlert('입력 필요', '메모 내용을 입력해주세요.')
+      return
+    }
+    if (recordType === 'QUOTE' && !quoteContent.trim()) {
+      openAlert('입력 필요', '기억하고 싶은 문장을 입력해주세요.')
+      return
+    }
+    if (recordType === 'QUOTE' && !pageNumber.trim()) {
+      openAlert('입력 필요', '페이지 번호를 입력해주세요.')
+      return
+    }
+
     const body: CreateBookRecordBody | UpdateBookRecordBody =
       recordType === 'MEMO'
         ? { recordType: 'MEMO', recordContent: memoContent }
