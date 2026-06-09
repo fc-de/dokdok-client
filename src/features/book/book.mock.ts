@@ -537,7 +537,7 @@ function filterMockTimeline(
   const {
     gatheringId,
     recordType,
-    sort = 'LATEST',
+    sort = 'DESC',
     pageSize = 10,
     cursorEventAt,
     cursorSourceId,
@@ -570,7 +570,7 @@ function filterMockTimeline(
   }
 
   // 정렬
-  const sortMultiplier = sort === 'LATEST' ? -1 : 1
+  const sortMultiplier = sort === 'DESC' ? -1 : 1
   filtered.sort(
     (a, b) => sortMultiplier * (new Date(a.eventAt).getTime() - new Date(b.eventAt).getTime())
   )

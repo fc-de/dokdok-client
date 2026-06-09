@@ -27,7 +27,7 @@ export const bookRecordsKeys = {
  * ```tsx
  * function BookLogList({ bookId }: { bookId: number }) {
  *   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
- *     useBookRecords(bookId, { sort: 'LATEST' })
+ *     useBookRecords(bookId, { sort: 'DESC' })
  *
  *   const records = data?.pages.flatMap(page => page.items) ?? []
  *

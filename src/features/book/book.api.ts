@@ -182,7 +182,7 @@ export async function getMyGatherings(
  *
  * @example
  * ```typescript
- * const timeline = await getBookTimeline(1, { sort: 'LATEST' })
+ * const timeline = await getBookTimeline(1, { sort: 'DESC' })
  * ```
  */
 export async function getBookTimeline(

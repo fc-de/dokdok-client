@@ -33,7 +33,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
-  const [sortType, setSortType] = useState<RecordSortType>('LATEST')
+  const [sortType, setSortType] = useState<RecordSortType>('DESC')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
@@ -154,11 +154,11 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
             </div>
             <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
               <TabsList size="small" className="gap-0">
-                <TabsTrigger value="LATEST" size="small">
+                <TabsTrigger value="DESC" size="small">
                   최신순
                 </TabsTrigger>
                 <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-                <TabsTrigger value="OLDEST" size="small">
+                <TabsTrigger value="ASC" size="small">
                   오래된순
                 </TabsTrigger>
               </TabsList>

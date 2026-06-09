@@ -145,7 +145,7 @@ export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 export type RecordType = 'MEMO' | 'QUOTE'
 
 /** 정렬 방식 */
-export type RecordSortType = 'LATEST' | 'OLDEST'
+export type RecordSortType = 'DESC' | 'ASC'
 
 /** 개인 회고 메타 정보 */
 export interface PersonalRecordMeta {
