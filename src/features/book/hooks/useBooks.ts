@@ -53,6 +53,7 @@ export function useBooks(
     queryKey: bookListKeys.list(params),
     queryFn: ({ pageParam }) =>
       getBooks({
+        size: 15,
         ...params,
         cursorRating: pageParam?.rating,
         cursorAddedAt: pageParam?.addedAt,
