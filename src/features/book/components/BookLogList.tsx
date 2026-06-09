@@ -109,7 +109,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-            <Button onClick={handleCreateRecord}>기록 추가하기</Button>
+            {isRecording && <Button onClick={handleCreateRecord}>기록 추가하기</Button>}
           </div>
           <div className="flex justify-between">
             <div className="flex flex-wrap gap-xsmall">
