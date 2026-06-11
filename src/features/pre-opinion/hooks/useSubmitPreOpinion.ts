@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
+import { myMeetingQueryKeys } from '@/features/meetings/hooks/myMeetingQueryKeys'
 import { topicQueryKeys } from '@/features/topics/hooks/topicQueryKeys'
 
 import { submitPreOpinion } from '../preOpinion.api'
@@ -37,6 +38,8 @@ export function useSubmitPreOpinion({ gatheringId, meetingId }: GetPreOpinionPar
         // confirmed 전체 무효화: 제출 후 어떤 gatheringId/meetingId 조합이 영향 받는지
         // 특정할 수 없으므로 confirmed 범위 전체를 무효화합니다.
         queryClient.invalidateQueries({ queryKey: topicQueryKeys.confirmed() }),
+        // 홈 '내 약속' 카드의 사전의견 제출여부(hasPreOpinion) 갱신
+        queryClient.invalidateQueries({ queryKey: myMeetingQueryKeys.all }),
       ])
     },
   })
