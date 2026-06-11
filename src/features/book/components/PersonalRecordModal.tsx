@@ -9,7 +9,6 @@ import type {
 import { useCreateBookRecord, useUpdateBookRecord } from '@/features/book/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
-import { useGlobalModalStore } from '@/store'
 import { Input } from '@/shared/ui/Input'
 import {
   Modal,
@@ -20,6 +19,7 @@ import {
   ModalTitle,
 } from '@/shared/ui/Modal'
 import { Textarea } from '@/shared/ui/Textarea'
+import { useGlobalModalStore } from '@/store'
 
 type PersonalRecordModalProps = {
   open: boolean
