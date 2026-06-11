@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { cn } from '@/shared/lib/utils'
 import { Button, TextButton } from '@/shared/ui'
 
 import type { SectionKey } from '../hooks/usePersonalRetrospectiveForm'
@@ -97,7 +98,7 @@ export default function PersonalRetrospectiveContent({
             variant="secondary"
             outline
             onClick={() => setIsDropdownOpen((prev) => !prev)}
-            className="w-full"
+            className="w-full h-auto py-base typo-body2"
           >
             + 문항 추가하기
           </Button>
@@ -105,14 +106,19 @@ export default function PersonalRetrospectiveContent({
           {isDropdownOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
-              <div className="flex flex-col py-tiny absolute top-full left-0 right-0 mt-base z-20 overflow-hidden rounded-base border border-grey-300 bg-white shadow-drop">
-                {availableOptions.map(({ type, label }) => (
+              <div className="flex flex-col absolute top-full left-0 right-0 mt-base z-20 overflow-hidden rounded-base bg-white shadow-drop">
+                {availableOptions.map(({ type, label }, index) => (
                   <TextButton
                     key={type}
                     onClick={() => handleAddSection(type)}
-                    className="px-base py-xsmall text-black"
+                    className={cn(
+                      'px-medium py-base text-black hover:bg-grey-300 typo-subtitle4',
+                      index > 0 && 'border-t border-grey-400',
+                      index === 0 && 'rounded-t-base',
+                      index === availableOptions.length - 1 && 'rounded-b-base'
+                    )}
                   >
-                    {label}
+                    + {label}
                   </TextButton>
                 ))}
               </div>
