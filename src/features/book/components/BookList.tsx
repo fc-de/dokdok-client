@@ -77,7 +77,11 @@ function BookList({
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } = useBooks({
     readingStatus: status,
     minRating: selectedRating?.min,
-    maxRating: selectedRating?.max,
+    // 0.5점 단위 별점(예: 3.5)도 함께 조회되도록 max 구간을 .9까지 확장
+    maxRating:
+      selectedRating?.max !== undefined
+        ? Math.round((selectedRating.max + 0.9) * 10) / 10
+        : undefined,
     sortBy: 'TIME',
     sortOrder,
   })
