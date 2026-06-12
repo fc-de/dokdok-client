@@ -42,6 +42,8 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
     myRole,
     progressStatus,
     preOpinionTemplateConfirmed,
+    hasPreOpinion,
+    hasPersonalRetrospective,
   } = meeting
 
   const status = STATUS_CONFIG[progressStatus]
@@ -58,10 +60,20 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
   const handleActionClick = (e: MouseEvent) => {
     e.stopPropagation()
     if (isUpcoming && preOpinionTemplateConfirmed) {
-      navigate(ROUTES.PRE_OPINION_WRITE(gatheringId, meetingId))
+      // 이미 제출한 경우 작성 페이지가 아닌 조회 페이지로 이동
+      navigate(
+        hasPreOpinion
+          ? ROUTES.PRE_OPINIONS(gatheringId, meetingId)
+          : ROUTES.PRE_OPINION_WRITE(gatheringId, meetingId)
+      )
     }
     if (isDone) {
-      navigate(ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId))
+      // 이미 작성한 경우 작성 페이지가 아닌 조회 페이지로 이동
+      navigate(
+        hasPersonalRetrospective
+          ? ROUTES.PERSONAL_RETROSPECTIVE_VIEW(gatheringId, meetingId)
+          : ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)
+      )
     }
   }
 
@@ -121,12 +133,12 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
           disabled={!preOpinionTemplateConfirmed}
           onClick={handleActionClick}
         >
-          사전 의견 작성하기
+          {hasPreOpinion ? '사전 의견 보기' : '사전 의견 작성하기'}
         </Button>
       )}
       {isDone && (
         <Button variant="primary" size="small" className="shrink-0" onClick={handleActionClick}>
-          개인 회고 작성하기
+          {hasPersonalRetrospective ? '개인 회고 보기' : '개인 회고 작성하기'}
         </Button>
       )}
     </div>
