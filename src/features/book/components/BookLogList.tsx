@@ -13,7 +13,7 @@ import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionI
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
-import { useBookLogDeleteActions, useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import { useBookGatherings, useBookLogDeleteActions, useBookRecords } from '@/features/book/hooks'
 import { ROUTES } from '@/shared/constants/routes'
 import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
@@ -42,14 +42,8 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
   const { deletePersonalRecord, deletePreOpinion, deleteRetrospective } =
     useBookLogDeleteActions(personalBookId)
 
-  const {
-    data: gatheringsData,
-    isLoading: isGatheringsLoading,
-    fetchNextPage: fetchNextGatherings,
-    hasNextPage: hasNextGatherings,
-  } = useMyGatherings()
-
-  const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
+  const { data: gatherings = [], isLoading: isGatheringsLoading } =
+    useBookGatherings(personalBookId)
 
   const {
     data: recordsData,
@@ -130,15 +124,6 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
                     {gathering.gatheringName}
                   </FilterDropdown.Option>
                 ))}
-                {hasNextGatherings && (
-                  <button
-                    type="button"
-                    className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
-                    onClick={() => fetchNextGatherings()}
-                  >
-                    더 보기
-                  </button>
-                )}
               </FilterDropdown>
               <FilterDropdown
                 placeholder="기록 유형"

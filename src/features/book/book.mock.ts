@@ -9,6 +9,7 @@ import type {
   BookReview,
   CreateBookRecordBody,
   CreateBookReviewBody,
+  GetBookGatheringsResponse,
   GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
   GetBooksParams,
@@ -359,6 +360,20 @@ export const getMockMyGatherings = async (
 ): Promise<GetGatheringsResponse> => {
   await delay(MOCK_DELAY)
   return { ...mockGatheringsResponse, pageSize: params.pageSize ?? mockGatheringsResponse.pageSize }
+}
+
+/**
+ * 책에 연결된 모임 목록 목데이터 반환
+ */
+export const getMockBookGatherings = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _personalBookId: number
+): Promise<GetBookGatheringsResponse> => {
+  await delay(MOCK_DELAY)
+  return mockGatheringsResponse.items.map(({ gatheringId, gatheringName }) => ({
+    gatheringId,
+    gatheringName,
+  }))
 }
 
 /**

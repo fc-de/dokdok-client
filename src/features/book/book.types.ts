@@ -137,6 +137,9 @@ export interface GetGatheringsParams {
 /** 모임 목록 조회 응답 */
 export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 
+/** 책에 연결된 모임 목록 조회 응답 */
+export type GetBookGatheringsResponse = BookListGathering[]
+
 // ============================================================
 // Book Records (감상 기록) 관련 타입
 // ============================================================

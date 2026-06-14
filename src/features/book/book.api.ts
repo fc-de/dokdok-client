@@ -9,6 +9,7 @@ import { ApiError, ErrorCode } from '@/api/errors'
 import { BOOK_ENDPOINTS } from './book.endpoints'
 import {
   getMockBookDetail,
+  getMockBookGatherings,
   getMockBookRecords,
   getMockBookReview,
   getMockBookReviewHistory,
@@ -26,6 +27,7 @@ import type {
   CreateBookBody,
   CreateBookRecordBody,
   CreateBookReviewBody,
+  GetBookGatheringsResponse,
   GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
   GetBooksParams,
@@ -165,6 +167,30 @@ export async function getMyGatherings(
     }
     throw error
   }
+}
+
+/**
+ * 책에 연결된 모임 목록 조회
+ *
+ * 책 상세페이지의 기록 타임라인에서 모임 종류 필터로 사용됩니다.
+ *
+ * @param personalBookId - 개인 책 ID
+ * @returns 책에 연결된 모임 목록
+ *
+ * @example
+ * ```typescript
+ * const gatherings = await getBookGatherings(1)
+ * console.log(gatherings[0].gatheringName)
+ * ```
+ */
+export async function getBookGatherings(
+  personalBookId: number
+): Promise<GetBookGatheringsResponse> {
+  if (USE_MOCK) {
+    return getMockBookGatherings(personalBookId)
+  }
+
+  return api.get<GetBookGatheringsResponse>(BOOK_ENDPOINTS.GATHERINGS(personalBookId))
 }
 
 // ============================================================
