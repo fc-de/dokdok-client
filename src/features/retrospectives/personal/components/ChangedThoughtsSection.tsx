@@ -68,6 +68,7 @@ export default function ChangedThoughtsSection({
                         <Textarea
                           value={getPreOpinion(item.topicId)}
                           disabled
+                          scrollable
                           height={160}
                           className="bg-grey-200 text-black"
                         />
