@@ -5,6 +5,8 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 
+import { PAGE_SIZES } from '@/shared/constants/pagination'
+
 import { getBooks } from '../book.api'
 import type { GetBooksParams, GetBooksResponse } from '../book.types'
 import { bookKeys } from './useBookDetail'
@@ -53,7 +55,7 @@ export function useBooks(
     queryKey: bookListKeys.list(params),
     queryFn: ({ pageParam }) =>
       getBooks({
-        size: 15,
+        size: PAGE_SIZES.BOOKS,
         ...params,
         cursorRating: pageParam?.rating,
         cursorAddedAt: pageParam?.addedAt,
