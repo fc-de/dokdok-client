@@ -1,4 +1,5 @@
 export * from './useDebounce'
+export * from './useDevice'
 export * from './useDeferredLoading'
 export * from './useInfiniteScroll'
 export * from './usePermissionRedirect'
