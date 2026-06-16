@@ -1,6 +1,6 @@
 export * from './useDebounce'
-export * from './useDevice'
 export * from './useDeferredLoading'
+export * from './useDevice'
 export * from './useInfiniteScroll'
 export * from './usePermissionRedirect'
 export * from './useScrollCollapse'
