@@ -362,18 +362,24 @@ export const getMockMyGatherings = async (
   return { ...mockGatheringsResponse, pageSize: params.pageSize ?? mockGatheringsResponse.pageSize }
 }
 
+// personalBookId → 해당 책에 속한 gatheringId 목록 매핑
+const MOCK_PERSONAL_BOOK_GATHERING_IDS: Record<number, number[]> = {
+  100: [1, 4], // bookId: 1 (물고기는 존재하지 않는다)
+  101: [2], // bookId: 2 (데미안)
+  102: [], // bookId: 3 (1984)
+}
+
 /**
  * 책에 연결된 모임 목록 목데이터 반환
  */
 export const getMockBookGatherings = async (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _personalBookId: number
+  personalBookId: number
 ): Promise<GetBookGatheringsResponse> => {
   await delay(MOCK_DELAY)
-  return mockGatheringsResponse.items.map(({ gatheringId, gatheringName }) => ({
-    gatheringId,
-    gatheringName,
-  }))
+  const gatheringIds = MOCK_PERSONAL_BOOK_GATHERING_IDS[personalBookId] ?? []
+  return mockGatheringsResponse.items
+    .filter(({ gatheringId }) => gatheringIds.includes(gatheringId))
+    .map(({ gatheringId, gatheringName }) => ({ gatheringId, gatheringName }))
 }
 
 /**
