@@ -67,3 +67,56 @@
   font-size: var(--text-caption2);
   font-weight: var(--font-weight-medium);
 }
+
+/* Mobile Typography */
+@utility typo-m-heading1 {
+  font-size: var(--text-m-heading1);
+  font-weight: var(--font-weight-semibold);
+}
+@utility typo-m-heading2 {
+  font-size: var(--text-m-heading2);
+  font-weight: var(--font-weight-semibold);
+}
+@utility typo-m-heading3 {
+  font-size: var(--text-m-heading3);
+  font-weight: var(--font-weight-semibold);
+}
+
+@utility typo-m-subtitle1 {
+  font-size: var(--text-m-subtitle1);
+  font-weight: var(--font-weight-semibold);
+}
+@utility typo-m-subtitle2 {
+  font-size: var(--text-m-subtitle2);
+  font-weight: var(--font-weight-medium);
+}
+@utility typo-m-subtitle3 {
+  font-size: var(--text-m-subtitle3);
+  font-weight: var(--font-weight-regular);
+}
+
+@utility typo-m-body1 {
+  font-size: var(--text-m-body1);
+  font-weight: var(--font-weight-regular);
+}
+@utility typo-m-body2 {
+  font-size: var(--text-m-body2);
+  font-weight: var(--font-weight-semibold);
+}
+@utility typo-m-body3 {
+  font-size: var(--text-m-body3);
+  font-weight: var(--font-weight-medium);
+}
+@utility typo-m-body4 {
+  font-size: var(--text-m-body4);
+  font-weight: var(--font-weight-regular);
+}
+
+@utility typo-m-caption1 {
+  font-size: var(--text-m-caption1);
+  font-weight: var(--font-weight-medium);
+}
+@utility typo-m-caption2 {
+  font-size: var(--text-m-caption2);
+  font-weight: var(--font-weight-medium);
+}

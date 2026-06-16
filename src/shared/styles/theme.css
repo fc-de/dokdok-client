@@ -94,6 +94,7 @@
   --color-purple-100: #f7f0fd;
 
   /* Round tokens */
+  --radius_xtiny: 4px;
   --radius-tiny: 6px;
   --radius-small: 8px;
   --radius-base: 12px;
@@ -108,6 +109,7 @@
   --spacing-base: 16px;
   --spacing-medium: 20px;
   --spacing-large: 24px;
+  --spacing-xlarge_m: 32px;
   --spacing-xlarge: 40px;
 
   /* Layout tokens */
@@ -125,7 +127,7 @@
   --text-subtitle1: 18px;
   --text-subtitle2: 16px;
   --text-subtitle3: 16px;
-  --text-subtitle4: 15px;
+  --text-subtitle4: 16px;
   --text-subtitle5: 15px;
 
   --text-body1: 15px;
@@ -138,6 +140,20 @@
   --text-caption1: 13px;
   --text-caption2: 12px;
 
+  /* mobile font-size tokens */
+  --text-m-heading1: 24px;
+  --text-m-heading2: 20px;
+  --text-m-heading3: 18px;
+  --text-m-subtitle1: 16px;
+  --text-m-subtitle2: 16px;
+  --text-m-subtitle3: 16px;
+  --text-m-body1: 15px;
+  --text-m-body2: 14px;
+  --text-m-body3: 14px;
+  --text-m-body4: 14px;
+  --text-m-caption1: 13px;
+  --text-m-caption2: 12px;
+
   /* font-weight tokens */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -145,6 +161,9 @@
 
   /* shadow */
   --shadow-drop: 0 2px 16px 0 rgba(17, 17, 17, 0.06);
+  --shadow-dropdown: 0 10px 15px -3px rgba(17, 17, 17, 0.1);
+  --shadow-bottom: 0 -2px 16px 0 rgba(17, 17, 17, 0.06);
+  --shadow-fab: 0 2px 16px 0 rgba(17, 17, 17, 0.12);
 }
 
 /* Custom Utilities */
