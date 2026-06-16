@@ -4,7 +4,7 @@ const MOBILE_BREAKPOINT = 1024
 
 export function useDevice() {
   const [isMobile, setIsMobile] = useState(
-    () => window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`).matches,
+    () => window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`).matches
   )
 
   useEffect(() => {
