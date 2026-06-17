@@ -6,6 +6,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import type { ApiError } from '@/api'
+import { bookKeys } from '@/features/book/hooks/useBookDetail'
 import { topicQueryKeys } from '@/features/topics/hooks/topicQueryKeys'
 
 import { submitPreOpinion } from '../preOpinion.api'
@@ -17,7 +18,7 @@ import { preOpinionQueryKeys } from './preOpinionQueryKeys'
  *
  * @description
  * 작성한 사전 의견을 멤버들에게 공유합니다.
- * 성공 시 사전 의견 조회 쿼리를 무효화합니다.
+ * 성공 시 사전 의견 조회 쿼리와 책 관련 쿼리를 무효화합니다.
  *
  * @example
  * ```tsx
@@ -37,6 +38,7 @@ export function useSubmitPreOpinion({ gatheringId, meetingId }: GetPreOpinionPar
         // confirmed 전체 무효화: 제출 후 어떤 gatheringId/meetingId 조합이 영향 받는지
         // 특정할 수 없으므로 confirmed 범위 전체를 무효화합니다.
         queryClient.invalidateQueries({ queryKey: topicQueryKeys.confirmed() }),
+        queryClient.invalidateQueries({ queryKey: bookKeys.all }),
       ])
     },
   })
