@@ -35,5 +35,5 @@ export const PAGE_SIZES = {
   /** 회고 댓글 페이지 사이즈 */
   RETROSPECTIVE_COMMENTS: 10,
   /** 책 목록 페이지 사이즈 */
-  BOOKS: 10,
+  BOOKS: 12,
 } as const
