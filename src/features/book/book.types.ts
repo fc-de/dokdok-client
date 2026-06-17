@@ -277,6 +277,7 @@ export interface GetBookTimelineParams {
   sort?: RecordSortType
   pageSize?: number
   cursorEventAt?: string
+  cursorType?: TimelineItemType
   cursorSourceId?: number
 }
 
