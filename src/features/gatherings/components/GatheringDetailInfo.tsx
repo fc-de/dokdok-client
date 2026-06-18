@@ -33,7 +33,7 @@ export default function GatheringDetailInfo({
         <div className="flex items-center gap-3 text-grey-700 typo-subtitle2">
           <span>시작한지 {daysFromCreation}일</span>
           <span className="h-3.5 w-px bg-grey-600" />
-          <span>약속 {totalMeetings}회</span>
+          <span>약속 {totalMeetings}회 진행</span>
           <span className="h-3.5 w-px bg-grey-600" />
           <span>총 구성원 {totalMembers}명</span>
         </div>
