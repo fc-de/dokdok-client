@@ -291,6 +291,8 @@ export interface MyMeetingListItem {
   myRole: MyMeetingRole
   progressStatus: MyMeetingProgressStatus
   preOpinionTemplateConfirmed: boolean
+  hasPreOpinion: boolean
+  hasPersonalRetrospective: boolean
 }
 
 /** 메인페이지 내 약속 커서 */

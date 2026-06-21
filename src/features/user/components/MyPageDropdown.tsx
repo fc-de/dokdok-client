@@ -1,4 +1,5 @@
 import { useLogout } from '@/features/auth'
+import { showToast } from '@/shared/lib/toast'
 import { Button, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -55,7 +56,10 @@ export function MyPageDropdown({ onClose }: MyPageDropdownProps) {
     if (!canSave) return
 
     updateNickname(nickname, {
-      onSuccess: () => onClose?.(),
+      onSuccess: () => {
+        showToast('닉네임이 변경되었어요')
+        onClose?.()
+      },
     })
   }
 

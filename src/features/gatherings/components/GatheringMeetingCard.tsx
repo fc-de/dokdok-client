@@ -30,6 +30,8 @@ export default function GatheringMeetingCard({
     bookName,
     startDateTime,
     endDateTime,
+    meetingStatus,
+    joined,
     hasPreOpinion,
     hasPersonalRetrospective,
   } = meeting
@@ -42,7 +44,8 @@ export default function GatheringMeetingCard({
   const isUpcoming = status === 'UPCOMING'
   const isDone = status === 'DONE'
 
-  const showPreAnswer = isUpcoming && meeting.meetingStatus === 'CONFIRMED'
+  // 참여한 약속에만 사전답변 노출 (미참여자가 클릭 시 사전의견 페이지에서 튕기는 문제 방지)
+  const showPreAnswer = isUpcoming && meetingStatus === 'CONFIRMED' && joined
   const showMeetingReview = isDone
   const showPersonalReview = isDone
 

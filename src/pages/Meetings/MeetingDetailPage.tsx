@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { useAuth } from '@/features/auth'
 import {
   MeetingDetailButton,
   MeetingDetailHeader,
@@ -89,6 +90,12 @@ export default function MeetingDetailPage() {
     gatheringId: gatheringId,
     meetingId: meetingId,
   })
+
+  const userId = useAuth().data?.userId
+  const isParticipating = useMemo(
+    () => meeting?.participants.members.some((member) => member.userId === userId) ?? false,
+    [meeting?.participants.members, userId]
+  )
 
   useEffect(() => {
     if (meetingError) {
@@ -230,6 +237,7 @@ export default function MeetingDetailPage() {
                       progressStatus={meeting?.progressStatus ?? 'PRE'}
                       gatheringId={gatheringId}
                       meetingId={meetingId}
+                      isParticipating={isParticipating}
                     />
                     <ConfirmedTopicList
                       topics={confirmedTopicsInfiniteData.pages.flatMap(
