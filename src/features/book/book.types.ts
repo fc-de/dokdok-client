@@ -137,6 +137,9 @@ export interface GetGatheringsParams {
 /** 모임 목록 조회 응답 */
 export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 
+/** 책에 연결된 모임 목록 조회 응답 */
+export type GetBookGatheringsResponse = BookListGathering[]
+
 // ============================================================
 // Book Records (감상 기록) 관련 타입
 // ============================================================
@@ -145,7 +148,7 @@ export type GetGatheringsResponse = CursorPaginatedResponse<Gathering, string>
 export type RecordType = 'MEMO' | 'QUOTE'
 
 /** 정렬 방식 */
-export type RecordSortType = 'LATEST' | 'OLDEST'
+export type RecordSortType = 'DESC' | 'ASC'
 
 /** 개인 회고 메타 정보 */
 export interface PersonalRecordMeta {
@@ -274,6 +277,7 @@ export interface GetBookTimelineParams {
   sort?: RecordSortType
   pageSize?: number
   cursorEventAt?: string
+  cursorType?: TimelineItemType
   cursorSourceId?: number
 }
 

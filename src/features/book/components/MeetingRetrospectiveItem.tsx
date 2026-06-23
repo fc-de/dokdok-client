@@ -52,8 +52,12 @@ const MeetingRetrospectiveItem = ({ record, onEdit, onDelete }: MeetingRetrospec
               {/* 생각 변화 */}
               {topic.changedThoughts && (
                 <div className="flex flex-col gap-small">
-                  <p className="typo-body1 text-grey-700">{topic.changedThoughts.keyIssue}</p>
-                  <p className="typo-body1 text-black">{topic.changedThoughts.postOpinion}</p>
+                  <p className="typo-body1 text-grey-700 whitespace-pre-wrap">
+                    {topic.changedThoughts.keyIssue}
+                  </p>
+                  <p className="typo-body1 text-black whitespace-pre-wrap">
+                    {topic.changedThoughts.postOpinion}
+                  </p>
                 </div>
               )}
             </div>
@@ -67,7 +71,9 @@ const MeetingRetrospectiveItem = ({ record, onEdit, onDelete }: MeetingRetrospec
                       <p className="typo-subtitle5 text-grey-800">{perspective.opinionContent}</p>
                       <span className="typo-body1 text-grey-600">{perspective.memberNickname}</span>
                     </ExcerptBlock>
-                    <p className="typo-body1 text-grey-800">{perspective.impressiveReason}</p>
+                    <p className="typo-body1 text-grey-800 whitespace-pre-wrap">
+                      {perspective.impressiveReason}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -80,8 +86,8 @@ const MeetingRetrospectiveItem = ({ record, onEdit, onDelete }: MeetingRetrospec
           <div key={`free-${idx}`} className="flex flex-col">
             {(topicGroups.length > 0 || idx > 0) && <Division className="mt-medium mb-large" />}
             <div className="flex flex-col gap-small">
-              <h5 className="typo-subtitle2 text-grey-800">{text.title}</h5>
-              <p className="typo-body1 text-black">{text.content}</p>
+              <h5 className="typo-subtitle2 text-grey-800 whitespace-pre-wrap">{text.title}</h5>
+              <p className="typo-body1 text-black whitespace-pre-wrap">{text.content}</p>
             </div>
           </div>
         ))}

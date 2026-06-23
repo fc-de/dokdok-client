@@ -12,6 +12,7 @@ import {
 } from '@/shared/ui'
 
 import type { UseOthersPerspectiveReturn } from '../hooks/useOthersPerspective'
+import { OTHERS_PERSPECTIVE_LIMITS } from '../personalRetrospective.constants'
 import type {
   PersonalRetrospectiveMember,
   PersonalRetrospectiveTopic,
@@ -65,7 +66,10 @@ export default function OthersPerspectiveSection({
           const speakerError = showErrors && isPartial && item.speakerMemberId === null
           const topicError = showErrors && isPartial && item.topicId === null
           const opinionError = showErrors && isPartial && item.opinion.trim() === ''
+          const opinionExceeded = item.opinion.length >= OTHERS_PERSPECTIVE_LIMITS.OPINION_MAX
           const impactError = showErrors && isPartial && item.impact.trim() === ''
+          const impactExceeded =
+            item.impact.length >= OTHERS_PERSPECTIVE_LIMITS.IMPRESSIVE_REASON_MAX
 
           return (
             <div
@@ -129,8 +133,13 @@ export default function OthersPerspectiveSection({
                   placeholder="의견의 내용을 작성해주세요"
                   value={item.opinion}
                   onChange={(e) => updateItem(item.id, 'opinion', e.target.value)}
-                  error={opinionError}
-                  errorMessage={opinionError ? '내용을 입력해주세요' : undefined}
+                  maxLength={OTHERS_PERSPECTIVE_LIMITS.OPINION_MAX}
+                  error={opinionError || opinionExceeded}
+                  errorMessage={
+                    opinionExceeded
+                      ? `${OTHERS_PERSPECTIVE_LIMITS.OPINION_MAX.toLocaleString()}자 이내로 작성이 가능해요`
+                      : '내용을 입력해주세요'
+                  }
                 />
               </div>
 
@@ -143,8 +152,13 @@ export default function OthersPerspectiveSection({
                   value={item.impact}
                   onChange={(e) => updateItem(item.id, 'impact', e.target.value)}
                   height={104}
-                  error={impactError}
-                  errorMessage={impactError ? '내용을 입력해주세요' : undefined}
+                  maxLength={OTHERS_PERSPECTIVE_LIMITS.IMPRESSIVE_REASON_MAX}
+                  error={impactError || impactExceeded}
+                  errorMessage={
+                    impactExceeded
+                      ? `${OTHERS_PERSPECTIVE_LIMITS.IMPRESSIVE_REASON_MAX.toLocaleString()}자 이내로 작성이 가능해요`
+                      : '내용을 입력해주세요'
+                  }
                 />
               </div>
 

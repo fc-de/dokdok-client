@@ -13,7 +13,7 @@ import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionI
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
-import { useBookLogDeleteActions, useBookRecords, useMyGatherings } from '@/features/book/hooks'
+import { useBookGatherings, useBookLogDeleteActions, useBookRecords } from '@/features/book/hooks'
 import { ROUTES } from '@/shared/constants/routes'
 import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
@@ -33,7 +33,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
-  const [sortType, setSortType] = useState<RecordSortType>('LATEST')
+  const [sortType, setSortType] = useState<RecordSortType>('DESC')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
   const [editingRecord, setEditingRecord] = useState<PersonalRecord | null>(null)
@@ -42,14 +42,8 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
   const { deletePersonalRecord, deletePreOpinion, deleteRetrospective } =
     useBookLogDeleteActions(personalBookId)
 
-  const {
-    data: gatheringsData,
-    isLoading: isGatheringsLoading,
-    fetchNextPage: fetchNextGatherings,
-    hasNextPage: hasNextGatherings,
-  } = useMyGatherings()
-
-  const gatherings = gatheringsData?.pages.flatMap((page) => page.items) ?? []
+  const { data: gatherings = [], isLoading: isGatheringsLoading } =
+    useBookGatherings(personalBookId)
 
   const {
     data: recordsData,
@@ -109,7 +103,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
         <div className="mx-auto max-w-layout-max px-layout-padding py-base">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-            <Button onClick={handleCreateRecord}>기록 추가하기</Button>
+            {isRecording && <Button onClick={handleCreateRecord}>기록 추가하기</Button>}
           </div>
           <div className="flex justify-between">
             <div className="flex flex-wrap gap-xsmall">
@@ -130,15 +124,6 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
                     {gathering.gatheringName}
                   </FilterDropdown.Option>
                 ))}
-                {hasNextGatherings && (
-                  <button
-                    type="button"
-                    className="w-full py-xsmall typo-caption1 text-grey-500 hover:text-grey-700"
-                    onClick={() => fetchNextGatherings()}
-                  >
-                    더 보기
-                  </button>
-                )}
               </FilterDropdown>
               <FilterDropdown
                 placeholder="기록 유형"
@@ -154,11 +139,11 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
             </div>
             <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
               <TabsList size="small" className="gap-0">
-                <TabsTrigger value="LATEST" size="small">
+                <TabsTrigger value="DESC" size="small">
                   최신순
                 </TabsTrigger>
                 <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-                <TabsTrigger value="OLDEST" size="small">
+                <TabsTrigger value="ASC" size="small">
                   오래된순
                 </TabsTrigger>
               </TabsList>

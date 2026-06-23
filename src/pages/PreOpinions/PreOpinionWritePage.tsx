@@ -95,6 +95,7 @@ export default function PreOpinionWritePage() {
   const { mutateAsync: submitAsync, isPending: isSubmitting } = useSubmitPreOpinion({
     gatheringId: numGatheringId,
     meetingId: numMeetingId,
+    bookId: preOpinion?.book.bookId,
   })
 
   const handleReviewChange = useCallback(

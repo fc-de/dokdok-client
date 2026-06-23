@@ -1,8 +1,17 @@
 import { Trash2, X } from 'lucide-react'
 
-import { Button, Container, Input, Textarea } from '@/shared/ui'
+import {
+  Button,
+  Container,
+  Input,
+  Textarea,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/shared/ui'
 
 import type { UseFreeRecordReturn } from '../hooks/useFreeRecord'
+import { FREE_RECORD_LIMITS } from '../personalRetrospective.constants'
 
 export interface FreeRecordSectionProps {
   form: UseFreeRecordReturn
@@ -42,7 +51,9 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
         {entries.map((entry) => {
           const isPartial = form.isEntryPartial(entry.id)
           const titleError = showErrors && isPartial && entry.title.trim() === ''
+          const titleExceeded = entry.title.length >= FREE_RECORD_LIMITS.TITLE_MAX
           const contentError = showErrors && isPartial && entry.content.trim() === ''
+          const contentExceeded = entry.content.length >= FREE_RECORD_LIMITS.CONTENT_MAX
 
           return (
             <div
@@ -56,8 +67,13 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                   placeholder="제목을 작성해주세요"
                   value={entry.title}
                   onChange={(e) => updateEntry(entry.id, 'title', e.target.value)}
-                  error={titleError}
-                  errorMessage={titleError ? '내용을 입력해주세요' : undefined}
+                  maxLength={FREE_RECORD_LIMITS.TITLE_MAX}
+                  error={titleError || titleExceeded}
+                  errorMessage={
+                    titleExceeded
+                      ? `${FREE_RECORD_LIMITS.TITLE_MAX}자 이내로 작성이 가능해요`
+                      : '내용을 입력해주세요'
+                  }
                 />
               </div>
               <div className="flex flex-col gap-tiny">
@@ -67,8 +83,13 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                   value={entry.content}
                   onChange={(e) => updateEntry(entry.id, 'content', e.target.value)}
                   height={104}
-                  error={contentError}
-                  errorMessage={contentError ? '내용을 입력해주세요' : undefined}
+                  maxLength={FREE_RECORD_LIMITS.CONTENT_MAX}
+                  error={contentError || contentExceeded}
+                  errorMessage={
+                    contentExceeded
+                      ? `${FREE_RECORD_LIMITS.CONTENT_MAX.toLocaleString()}자 이내로 작성이 가능해요`
+                      : '내용을 입력해주세요'
+                  }
                 />
               </div>
 
@@ -88,9 +109,26 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
             </div>
           )
         })}
-        <Button variant="secondary" outline onClick={addEntry}>
-          + 항목 추가하기
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="w-full">
+              <Button
+                variant="secondary"
+                outline
+                onClick={addEntry}
+                disabled={entries.length >= FREE_RECORD_LIMITS.LIST_MAX}
+                className="w-full"
+              >
+                + 항목 추가하기
+              </Button>
+            </span>
+          </TooltipTrigger>
+          {entries.length >= FREE_RECORD_LIMITS.LIST_MAX && (
+            <TooltipContent side="top">
+              최대 {FREE_RECORD_LIMITS.LIST_MAX}개까지 추가할 수 있어요
+            </TooltipContent>
+          )}
+        </Tooltip>
       </Container>
     </section>
   )

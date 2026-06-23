@@ -9,6 +9,7 @@ import type {
   BookReview,
   CreateBookRecordBody,
   CreateBookReviewBody,
+  GetBookGatheringsResponse,
   GetBookReviewHistoryParams,
   GetBookReviewHistoryResponse,
   GetBooksParams,
@@ -119,6 +120,16 @@ const mockGatheringsResponse: GetGatheringsResponse = {
       totalMeetings: 1,
       currentUserRole: 'MEMBER',
       daysFromJoined: 60,
+    },
+    {
+      gatheringId: 4,
+      gatheringName: '자연과학 읽기 모임',
+      isFavorite: true,
+      gatheringStatus: 'ACTIVE',
+      totalMembers: 6,
+      totalMeetings: 4,
+      currentUserRole: 'MEMBER',
+      daysFromJoined: 15,
     },
   ],
   pageSize: 10,
@@ -361,6 +372,26 @@ export const getMockMyGatherings = async (
   return { ...mockGatheringsResponse, pageSize: params.pageSize ?? mockGatheringsResponse.pageSize }
 }
 
+// personalBookId → 해당 책에 속한 gatheringId 목록 매핑
+const MOCK_PERSONAL_BOOK_GATHERING_IDS: Record<number, number[]> = {
+  100: [1, 4], // bookId: 1 (물고기는 존재하지 않는다)
+  101: [2], // bookId: 2 (데미안)
+  102: [], // bookId: 3 (1984)
+}
+
+/**
+ * 책에 연결된 모임 목록 목데이터 반환
+ */
+export const getMockBookGatherings = async (
+  personalBookId: number
+): Promise<GetBookGatheringsResponse> => {
+  await delay(MOCK_DELAY)
+  const gatheringIds = MOCK_PERSONAL_BOOK_GATHERING_IDS[personalBookId] ?? []
+  return mockGatheringsResponse.items
+    .filter(({ gatheringId }) => gatheringIds.includes(gatheringId))
+    .map(({ gatheringId, gatheringName }) => ({ gatheringId, gatheringName }))
+}
+
 /**
  * 기록 타임라인 목데이터 반환
  */
@@ -537,7 +568,7 @@ function filterMockTimeline(
   const {
     gatheringId,
     recordType,
-    sort = 'LATEST',
+    sort = 'DESC',
     pageSize = 10,
     cursorEventAt,
     cursorSourceId,
@@ -570,7 +601,7 @@ function filterMockTimeline(
   }
 
   // 정렬
-  const sortMultiplier = sort === 'LATEST' ? -1 : 1
+  const sortMultiplier = sort === 'DESC' ? -1 : 1
   filtered.sort(
     (a, b) => sortMultiplier * (new Date(a.eventAt).getTime() - new Date(b.eventAt).getTime())
   )

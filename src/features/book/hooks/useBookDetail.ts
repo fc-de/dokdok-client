@@ -78,6 +78,7 @@ export function useToggleBookReadingStatus(bookId: number, personalBookId: numbe
     },
     onSuccess: (data) => {
       queryClient.setQueryData(bookKeys.detail(bookId), data)
+      queryClient.invalidateQueries({ queryKey: bookKeys.all })
     },
   })
 }

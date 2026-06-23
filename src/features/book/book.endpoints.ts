@@ -45,4 +45,7 @@ export const BOOK_ENDPOINTS = {
 
   // 도서 검색 (GET /api/book/search)
   SEARCH: `${API_PATHS.BOOK}/search`,
+
+  // 책에 연결된 모임 목록 조회 (GET /api/book/{personalBookId}/gatherings)
+  GATHERINGS: (personalBookId: number) => `${API_PATHS.BOOK}/${personalBookId}/gatherings`,
 } as const

@@ -34,4 +34,6 @@ export const PAGE_SIZES = {
   MY_MEETINGS: 4,
   /** 회고 댓글 페이지 사이즈 */
   RETROSPECTIVE_COMMENTS: 10,
+  /** 책 목록 페이지 사이즈 */
+  BOOKS: 12,
 } as const

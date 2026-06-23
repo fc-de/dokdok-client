@@ -31,6 +31,7 @@ type TextareaProps = ComponentProps<'textarea'> & {
   height?: number
   counter?: boolean
   format?: 'default' | 'comment'
+  scrollable?: boolean
 }
 
 /**
@@ -40,11 +41,14 @@ type TextareaProps = ComponentProps<'textarea'> & {
  * - `counter={false}`로 설정하면 카운터를 숨길 수 있습니다.
  * - `height` prop으로 높이를 조절할 수 있습니다 (기본값: default 모드 180px, comment 모드 48px).
  * - `format="comment"`로 설정하면 댓글 입력창 스타일로 동작합니다 (자동 높이 조정, 최대 128px).
+ * - `scrollable`을 true로 설정하면 내용이 높이를 초과할 때 세로 스크롤이 활성화됩니다.
+ *   `format="comment"` (maxHeight 제한으로 내용이 잘릴 수 있는 경우)나 `disabled` (전체 내용을 읽어야 하는 경우)에 사용하세요.
  * @example
  * ```tsx
  * <Textarea height={240} maxLength={500} />
  * <Textarea error errorMessage="최소 10자 이상 입력해주세요" />
- * <Textarea format="comment" maxLength={500} placeholder="댓글을 입력하세요" />
+ * <Textarea format="comment" scrollable maxLength={500} placeholder="댓글을 입력하세요" />
+ * <Textarea disabled scrollable value={content} />
  * <Textarea maxLength={100} counter={false} />
  * ```
  */
@@ -60,6 +64,7 @@ function Textarea({
   style,
   counter = true,
   format = 'default',
+  scrollable = format === 'comment',
   onChange,
   onInput,
   ...props
@@ -110,9 +115,9 @@ function Textarea({
         style={computedStyle}
         className={cn(
           textareaVariants({ state: error ? 'error' : 'default' }),
-          'custom-scroll',
-          disabled && 'pointer-events-none border-0 bg-grey-300 text-grey-700',
-          format === 'comment' && 'overflow-y-auto',
+          disabled ? 'custom-scroll-grey200' : 'custom-scroll',
+          scrollable && 'overflow-y-auto',
+          disabled && 'border-0 bg-grey-300 text-grey-700',
           className
         )}
         {...props}

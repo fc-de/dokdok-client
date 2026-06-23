@@ -79,7 +79,6 @@ export const router = createBrowserRouter([
             children: [
               { path: ROUTES.HOME, element: <HomePage /> },
               { path: ROUTES.HOME_ALIAS, element: <Navigate to={ROUTES.HOME} replace /> },
-              { path: ROUTES.BOOKS, element: <BookListPage /> },
               { path: ROUTES.GATHERINGS, element: <GatheringListPage /> },
               { path: ROUTES.GATHERING_CREATE, element: <CreateGatheringPage /> },
               { path: ROUTES.RECORDS, element: <RecordListPage /> },
@@ -91,6 +90,7 @@ export const router = createBrowserRouter([
             element: <FullWidthLayout />,
             children: [
               // 도서
+              { path: ROUTES.BOOKS, element: <BookListPage /> },
               { path: `${ROUTES.BOOKS}/:id`, element: <BookDetailPage /> },
               { path: `${ROUTES.BOOKS}/:id/reviews`, element: <BookReviewHistoryPage /> },
               // 모임

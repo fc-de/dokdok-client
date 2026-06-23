@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import { Container, Input, Textarea } from '@/shared/ui'
 
 import type { UseChangedThoughtsReturn } from '../hooks/useChangedThoughts'
+import { CHANGED_THOUGHTS_LIMITS } from '../personalRetrospective.constants'
 import type { PersonalRetrospectiveTopic } from '../personalRetrospective.types'
 
 export interface ChangedThoughtsSectionProps {
@@ -49,17 +50,21 @@ export default function ChangedThoughtsSection({
           <div className="flex flex-col gap-xlarge">
             {formValues.map((item) => {
               return (
-                <div key={item.topicId}>
-                  <p className="text-black typo-subtitle3 mb-small">
-                    {topics.find((t) => t.topicId === item.topicId)?.topicName}
-                  </p>
+                <div key={item.topicId} className="flex flex-col gap-[20px]">
+                  <div>
+                    <p className="text-black typo-subtitle3 mb-small">
+                      {topics.find((t) => t.topicId === item.topicId)?.topicName}
+                    </p>
 
-                  <Input
-                    placeholder="핵심 쟁점을 요약해주세요"
-                    value={item.coreSummary}
-                    onChange={(e) => updateField(item.topicId, 'coreSummary', e.target.value)}
-                    className="mb-medium"
-                  />
+                    <Input
+                      placeholder="핵심 쟁점을 요약해주세요"
+                      value={item.coreSummary}
+                      onChange={(e) => updateField(item.topicId, 'coreSummary', e.target.value)}
+                      maxLength={CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX}
+                      error={item.coreSummary.length >= CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX}
+                      errorMessage={`${CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX}자 이내로 작성이 가능해요`}
+                    />
+                  </div>
 
                   {getPreOpinion(item.topicId) ? (
                     <div className="grid grid-cols-2 gap-base">
@@ -68,7 +73,8 @@ export default function ChangedThoughtsSection({
                         <Textarea
                           value={getPreOpinion(item.topicId)}
                           disabled
-                          height={160}
+                          scrollable
+                          height={180}
                           className="bg-grey-200 text-black"
                         />
                       </div>
@@ -78,7 +84,12 @@ export default function ChangedThoughtsSection({
                           placeholder="감상문을 입력해주세요"
                           value={item.postOpinion}
                           onChange={(e) => updateField(item.topicId, 'postOpinion', e.target.value)}
-                          height={160}
+                          height={154}
+                          maxLength={CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX}
+                          error={
+                            item.postOpinion.length >= CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX
+                          }
+                          errorMessage={`${CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX.toLocaleString()}자 이내로 작성이 가능해요`}
                         />
                       </div>
                     </div>
@@ -90,6 +101,9 @@ export default function ChangedThoughtsSection({
                         value={item.postOpinion}
                         onChange={(e) => updateField(item.topicId, 'postOpinion', e.target.value)}
                         height={104}
+                        maxLength={CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX}
+                        error={item.postOpinion.length >= CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX}
+                        errorMessage={`${CHANGED_THOUGHTS_LIMITS.POST_OPINION_MAX.toLocaleString()}자 이내로 작성이 가능해요`}
                       />
                     </div>
                   )}
