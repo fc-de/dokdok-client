@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
+import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
   Avatar,
@@ -9,6 +10,15 @@ import {
   AvatarGroupCount,
   AvatarImage,
   Badge,
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetClose,
+  BottomSheetContent,
+  BottomSheetDescription,
+  BottomSheetFooter,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetTrigger,
   Button,
   Card,
   Checkbox,
@@ -76,6 +86,7 @@ function ComponentGuidePage() {
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
     { id: 'pagination', name: 'Pagination', category: '내비게이션' },
     { id: 'modal', name: 'Modal', category: '오버레이' },
+    { id: 'bottomSheet', name: 'BottomSheet', category: '오버레이' },
     { id: 'tooltip', name: 'Tooltip', category: '오버레이' },
     { id: 'toast', name: 'Toast', category: '오버레이' },
   ]
@@ -162,6 +173,7 @@ function ComponentGuidePage() {
           {selectedSection === 'tabs' && <TabsSection />}
           {selectedSection === 'pagination' && <PaginationSection />}
           {selectedSection === 'modal' && <ModalSection />}
+          {selectedSection === 'bottomSheet' && <BottomSheetSection />}
           {selectedSection === 'tooltip' && <TooltipSection />}
           {selectedSection === 'toast' && <ToastSection />}
         </div>
@@ -1667,6 +1679,237 @@ function ModalSection() {
             </ModalFooter>
           </ModalContent>
         </Modal>
+      </Showcase>
+    </Section>
+  )
+}
+
+function BottomSheetSection() {
+  return (
+    <Section
+      title="BottomSheet"
+      description="화면 하단에서 슬라이드 업으로 열리는 모바일용 시트 컴포넌트"
+    >
+      <Showcase
+        title="기본 사용"
+        description="드래그 핸들 + 헤더 + 본문 + 푸터"
+        code={`<BottomSheet>
+  <BottomSheetTrigger asChild>
+    <Button>시트 열기</Button>
+  </BottomSheetTrigger>
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>시트 제목</BottomSheetTitle>
+    </BottomSheetHeader>
+    <BottomSheetBody>
+      <p>시트 내용이 들어갑니다.</p>
+    </BottomSheetBody>
+    <BottomSheetFooter>
+      <Button className="w-full">확인</Button>
+    </BottomSheetFooter>
+  </BottomSheetContent>
+</BottomSheet>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button>기본 시트 열기</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>시트 제목</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <div className="space-y-medium">
+                <p className="typo-body2 text-grey-700">
+                  화면 하단에서 슬라이드 업으로 열리는 BottomSheet입니다. 콘텐츠 높이에 맞게
+                  자동으로 크기가 조정되며, 최대 85vh를 초과하지 않습니다.
+                </p>
+                <Input label="이름" placeholder="이름을 입력하세요" />
+              </div>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="w-full">
+                  확인
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="버튼 두 개 (취소 + 확인)"
+        description="Footer에 버튼 두 개를 나란히 배치"
+        code={`<BottomSheetFooter>
+  <BottomSheetClose asChild>
+    <Button variant="secondary" className="flex-1">취소</Button>
+  </BottomSheetClose>
+  <Button className="flex-1">확인</Button>
+</BottomSheetFooter>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">버튼 두 개</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>정말 삭제하시겠어요?</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <p className="typo-body2 text-grey-700">삭제된 데이터는 복구할 수 없습니다.</p>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button variant="secondary" size="medium" className="flex-1">
+                  취소
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button variant="danger" size="medium" className="flex-1">
+                  삭제
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="타이틀만 (X 없음)"
+        description="hideCloseButton으로 X 버튼 숨기기. 필터, 선택 등 명시적 닫기가 필요 없는 경우"
+        code={`<BottomSheetHeader hideCloseButton>
+  <BottomSheetTitle>필터</BottomSheetTitle>
+</BottomSheetHeader>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">타이틀만</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader hideCloseButton>
+              <BottomSheetTitle>필터</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <p className="typo-body2 text-grey-700">
+                X 버튼 없이 타이틀만 있는 헤더입니다. Footer 버튼으로 닫을 수 있습니다.
+              </p>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="secondary" className="flex-1">
+                  초기화
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="flex-1">
+                  확인
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="Alert 패턴"
+        description="헤더 없이 아이콘 + 타이틀 + 설명을 본문에 중앙 정렬. 확인/취소 액션에 사용"
+        code={`<BottomSheetContent>
+  <BottomSheetBody className="text-center py-large">
+    <CircleAlertIcon />
+    <BottomSheetTitle className="mb-xsmall">삭제를 진행할까요?</BottomSheetTitle>
+    <BottomSheetDescription>
+      모임의 모든 정보와 기록이 사라지며,{'\n'}
+      다시 되돌릴 수 없어요. 정말 이 모임을 삭제할까요?
+    </BottomSheetDescription>
+  </BottomSheetBody>
+  <BottomSheetFooter>
+    <BottomSheetClose asChild>
+      <Button variant="secondary" className="flex-1">취소</Button>
+    </BottomSheetClose>
+    <Button variant="danger" className="flex-1">삭제</Button>
+  </BottomSheetFooter>
+</BottomSheetContent>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="danger" outline>
+              Alert 시트
+            </Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetBody className="flex flex-col items-center text-center py-large">
+              <img src={CircleAlertIcon} />
+              <BottomSheetTitle className="mb-xsmall">삭제를 진행할까요?</BottomSheetTitle>
+              <BottomSheetDescription>
+                모임의 모든 정보와 기록이 사라지며,
+                <br />
+                다시 되돌릴 수 없어요. 정말 이 모임을 삭제할까요?
+              </BottomSheetDescription>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="secondary" className="flex-1">
+                  취소
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="danger" className="flex-1">
+                  삭제
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="스크롤 테스트"
+        description="콘텐츠가 많을 경우 최대 85vh에서 Body 영역만 스크롤"
+        code={`<BottomSheetBody>
+  {/* 긴 내용 - max-h 85vh까지 늘어나고, Body만 스크롤 */}
+</BottomSheetBody>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">스크롤 테스트</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>긴 콘텐츠</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <div className="space-y-medium">
+                {[...Array(12).keys()].map((i) => (
+                  <Card key={i}>
+                    <p className="typo-body2">
+                      스크롤 테스트용 콘텐츠 #{i + 1}. 85vh를 초과하면 Body 영역에서만 스크롤이
+                      발생합니다.
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="w-full">
+                  닫기
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• Default 패턴: BottomSheetHeader (타이틀 + X 버튼) + Body + Footer</p>
+          <p>• hideCloseButton 패턴: X 없이 타이틀만. Footer 버튼으로 닫기</p>
+          <p>• Alert 패턴: Header 생략, Body에 아이콘 + 타이틀 + 설명 중앙 정렬</p>
+          <p>• 오버레이 클릭 또는 ESC 키로 닫힘</p>
+          <p>• 콘텐츠 높이에 맞게 자동 조정, 최대 85vh</p>
+          <p>• Footer에 safe-area-inset-bottom 자동 적용 (iOS 홈바 대응)</p>
+        </div>
       </Showcase>
     </Section>
   )
