@@ -252,7 +252,7 @@ function BottomSheetFooter({ className, ...props }: React.HTMLAttributes<HTMLDiv
       data-slot="bottom-sheet-footer"
       className={cn(
         'flex items-center gap-small shrink-0',
-        'px-large pt-small pb-large',
+        'px-large pt-small pb-[calc(24px+env(safe-area-inset-bottom))]',
         className
       )}
       {...props}
