@@ -84,6 +84,7 @@ export default function MeetingCreatePage() {
   }, [gatheringId, gatheringError, meetingError, navigate, openError])
 
   const gatheringMaxCount = gathering?.totalMembers || 1
+  const isLeader = gathering?.currentUserRole === 'LEADER'
 
   // 폼 로직 및 유효성 검사 (커스텀 훅으로 분리)
   const {
@@ -202,7 +203,11 @@ export default function MeetingCreatePage() {
 
     createMutation.mutate(createData, {
       onSuccess: () => {
-        openAlert('약속 생성 완료', '약속이 성공적으로 생성되었습니다.', () => {
+        const title = isLeader ? '약속 생성 완료' : '약속 신청 완료'
+        const message = isLeader
+          ? '약속이 성공적으로 생성되었습니다.'
+          : '약속이 신청됐어요. 모임장이 승인하면 약속이 만들어져요.'
+        openAlert(title, message, () => {
           navigate(ROUTES.GATHERING_DETAIL(gatheringId), { replace: true })
         })
       },
@@ -216,10 +221,13 @@ export default function MeetingCreatePage() {
   const handleSubmit = async () => {
     if (!validateForm()) return
 
-    const confirmed = await openConfirm(
-      isEditMode ? '약속 수정' : '약속 생성',
-      isEditMode ? '약속을 수정하시겠습니까?' : '약속을 생성하시겠습니까?'
-    )
+    const confirmTitle = isEditMode ? '약속 수정' : isLeader ? '약속 생성' : '약속 신청'
+    const confirmMessage = isEditMode
+      ? '약속을 수정하시겠습니까?'
+      : isLeader
+        ? '약속을 생성하시겠습니까?'
+        : '이대로 약속을 신청할까요?'
+    const confirmed = await openConfirm(confirmTitle, confirmMessage)
     if (!confirmed) return
 
     if (isEditMode && meetingId) {
