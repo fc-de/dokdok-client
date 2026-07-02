@@ -878,7 +878,7 @@ function TextareaSection() {
   return (
     <Section title="Textarea" description="커스텀 높이를 지원하는 여러 줄 텍스트 입력">
       <Showcase title="기본" code={`<Textarea placeholder="메시지를 입력하세요..." />`}>
-        <Textarea placeholder="메시지를 입력하세요..." className="w-96" />
+        <Textarea placeholder="메시지를 입력하세요..." className="max-lg:w-full w-96" />
       </Showcase>
 
       <Showcase
@@ -894,7 +894,7 @@ function TextareaSection() {
           value={value}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)}
           maxLength={200}
-          className="w-96"
+          className="max-lg:w-full w-96"
         />
       </Showcase>
 
@@ -910,7 +910,7 @@ function TextareaSection() {
           placeholder="필수 입력 항목"
           error
           errorMessage="이 항목은 필수입니다"
-          className="w-96"
+          className="max-lg:w-full w-96"
         />
       </Showcase>
 
@@ -919,7 +919,7 @@ function TextareaSection() {
         description="height prop (default: 180px)"
         code={`<Textarea placeholder="커스텀 높이" height={120} />`}
       >
-        <Textarea placeholder="커스텀 높이" height={120} className="w-96" />
+        <Textarea placeholder="커스텀 높이" height={120} className="max-lg:w-full w-96" />
       </Showcase>
     </Section>
   )
