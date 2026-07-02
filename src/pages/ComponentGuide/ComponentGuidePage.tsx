@@ -102,7 +102,7 @@ function ComponentGuidePage() {
   return (
     <div className="flex h-screen bg-grey-100">
       {/* Sidebar */}
-      <aside className="sticky top-0 w-64 h-screen overflow-y-auto bg-white border-r border-grey-300 p-medium custom-scroll">
+      <aside className="max-lg:hidden sticky top-0 w-64 h-screen overflow-y-auto bg-white border-r border-grey-300 p-medium custom-scroll">
         <div className="mb-large">
           <h1 className="typo-heading2 text-grey-900 mb-small">컴포넌트 가이드</h1>
           <p className="typo-caption1 text-grey-600">{sections.length}개 컴포넌트</p>
@@ -148,8 +148,30 @@ function ComponentGuidePage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto p-large custom-scroll">
-        <div className="">
+      <main className="flex-1 overflow-y-auto custom-scroll flex flex-col">
+        {/* Mobile navigation */}
+        <div className="lg:hidden sticky top-0 z-10 bg-grey-100 px-base pt-base pb-medium">
+          <h1 className="typo-subtitle1 text-grey-900 mb-small">컴포넌트 가이드</h1>
+          <select
+            value={selectedSection}
+            onChange={(e) => setSelectedSection(e.target.value)}
+            className="w-full border border-grey-400 rounded-small px-base py-small typo-body1 bg-white text-black outline-none focus:border-primary-300"
+          >
+            {categories.map((category) => (
+              <optgroup key={category} label={category}>
+                {sections
+                  .filter((s) => s.category === category)
+                  .map((section) => (
+                    <option key={section.id} value={section.id}>
+                      {section.name}
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+
+        <div className="p-large max-lg:px-base max-lg:pb-base">
           {selectedSection === 'button' && <ButtonSection />}
           {selectedSection === 'textButton' && <TextButtonSection />}
           {selectedSection === 'likeButton' && <LikeButtonSection />}
