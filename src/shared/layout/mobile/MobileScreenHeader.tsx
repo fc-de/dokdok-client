@@ -53,16 +53,16 @@ export default function MobileScreenHeader({
     <header
       className={cn(
         preview ? 'relative z-10' : 'sticky top-0 z-40 lg:hidden',
-        'h-[49px] bg-white px-[20px] transition-shadow',
-        isScrolled && 'shadow-[0px_2px_16px_0px_#1111110F]',
+        'h-12.25 bg-white px-5 transition-shadow',
+        isScrolled && 'shadow-drop',
         className
       )}
       {...props}
     >
-      <div className="grid h-full grid-cols-[44px_minmax(0,1fr)_minmax(0,72px)] items-center">
+      <div className="grid h-full grid-cols-[2.75rem_minmax(0,1fr)_minmax(0,4.5rem)] items-center">
         <button
           type="button"
-          className="-ml-[10px] flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="-ml-2.5 flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={handleBack}
           aria-label={leftAriaLabel ?? defaultLeftLabel}
         >
@@ -74,7 +74,7 @@ export default function MobileScreenHeader({
         {headerAction ? (
           <button
             type="button"
-            className="max-w-[72px] justify-self-end truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"
+            className="max-w-18 justify-self-end truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"
             onClick={headerAction.onClick}
             disabled={headerAction.disabled}
             aria-label={headerAction.ariaLabel ?? headerAction.label}

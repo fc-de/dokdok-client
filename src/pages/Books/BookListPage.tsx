@@ -5,6 +5,7 @@ import type { SearchBookItem } from '@/features/book'
 import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants/routes'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showToast } from '@/shared/lib/toast'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
@@ -139,7 +140,7 @@ export default function BookListPage() {
       <div>
         <SubPageHeader label="내 책장" to={ROUTES.BOOKS} />
         <div className="mx-auto max-w-layout-max px-layout-padding">
-          <div className="flex justify-between items-center pb-tiny mb-[37px]">
+          <div className="flex justify-between items-center pb-tiny mb-9.25">
             <h3 className="typo-heading3 text-black">내 책장 편집하기</h3>
             <div className="flex gap-xsmall items-center">
               <TextButton onClick={handleSelectAll}>
@@ -167,87 +168,89 @@ export default function BookListPage() {
   }
 
   return (
-    <div className="mx-auto max-w-layout-max px-layout-padding">
-      <h1 className="typo-heading1 text-black mt-xlarge mb-medium">내 책장</h1>
-      <Tabs value={activeTab} onValueChange={handleTabChange}>
-        <div className="flex justify-between items-center">
-          <TabsList size="large">
-            <TabsTrigger value="all" badge={totalCount}>
-              전체
-            </TabsTrigger>
-            <TabsTrigger value="reading" badge={readingCount}>
-              기록 중
-            </TabsTrigger>
-            <TabsTrigger value="completed" badge={completedCount}>
-              기록 완료
-            </TabsTrigger>
-          </TabsList>
-          <div className="flex gap-xsmall items-center">
-            <Button
-              variant="secondary"
-              outline
-              disabled={totalCount === 0}
-              onClick={handleEnterEditMode}
-            >
-              편집하기
-            </Button>
-            {totalCount === 0 ? (
-              <Tooltip dismissable>
-                <TooltipTrigger asChild>
-                  <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>책을 추가해 감상 기록을 남겨보세요!</p>
-                </TooltipContent>
-              </Tooltip>
-            ) : (
-              <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
-            )}
+    <MobileLayoutFrame variant="main">
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
+        <h1 className="typo-heading1 text-black mt-xlarge mb-medium max-lg:mt-0">내 책장</h1>
+        <Tabs value={activeTab} onValueChange={handleTabChange}>
+          <div className="flex justify-between items-center">
+            <TabsList size="large">
+              <TabsTrigger value="all" badge={totalCount}>
+                전체
+              </TabsTrigger>
+              <TabsTrigger value="reading" badge={readingCount}>
+                기록 중
+              </TabsTrigger>
+              <TabsTrigger value="completed" badge={completedCount}>
+                기록 완료
+              </TabsTrigger>
+            </TabsList>
+            <div className="flex gap-xsmall items-center">
+              <Button
+                variant="secondary"
+                outline
+                disabled={totalCount === 0}
+                onClick={handleEnterEditMode}
+              >
+                편집하기
+              </Button>
+              {totalCount === 0 ? (
+                <Tooltip dismissable>
+                  <TooltipTrigger asChild>
+                    <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>책을 추가해 감상 기록을 남겨보세요!</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+              )}
+            </div>
           </div>
-        </div>
-        <TabsContent value="all">
-          <BookList
-            isActive={activeTab === 'all'}
-            onFilteredBooksChange={handleFilteredBooksChange}
-          />
-        </TabsContent>
-        <TabsContent value="reading">
-          <BookList
-            status="READING"
-            isActive={activeTab === 'reading'}
-            onFilteredBooksChange={handleFilteredBooksChange}
-          />
-        </TabsContent>
-        <TabsContent value="completed">
-          <BookList
-            status="COMPLETED"
-            isActive={activeTab === 'completed'}
-            onFilteredBooksChange={handleFilteredBooksChange}
-          />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="all">
+            <BookList
+              isActive={activeTab === 'all'}
+              onFilteredBooksChange={handleFilteredBooksChange}
+            />
+          </TabsContent>
+          <TabsContent value="reading">
+            <BookList
+              status="READING"
+              isActive={activeTab === 'reading'}
+              onFilteredBooksChange={handleFilteredBooksChange}
+            />
+          </TabsContent>
+          <TabsContent value="completed">
+            <BookList
+              status="COMPLETED"
+              isActive={activeTab === 'completed'}
+              onFilteredBooksChange={handleFilteredBooksChange}
+            />
+          </TabsContent>
+        </Tabs>
 
-      <BookSearchModal
-        open={isSearchModalOpen}
-        onOpenChange={setIsSearchModalOpen}
-        onSelectBook={async (book: SearchBookItem) => {
-          try {
-            await createBook({
-              title: book.title,
-              authors: book.authors.join(', '),
-              publisher: book.publisher,
-              isbn: book.isbn,
-              thumbnail: book.thumbnail,
-            })
-            showToast('책이 추가되었습니다.')
-          } catch {
-            openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
-              confirmText: '확인',
-            })
-          }
-        }}
-        isPending={isCreating}
-      />
-    </div>
+        <BookSearchModal
+          open={isSearchModalOpen}
+          onOpenChange={setIsSearchModalOpen}
+          onSelectBook={async (book: SearchBookItem) => {
+            try {
+              await createBook({
+                title: book.title,
+                authors: book.authors.join(', '),
+                publisher: book.publisher,
+                isbn: book.isbn,
+                thumbnail: book.thumbnail,
+              })
+              showToast('책이 추가되었습니다.')
+            } catch {
+              openConfirm('등록 실패', '책 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
+                confirmText: '확인',
+              })
+            }
+          }}
+          isPending={isCreating}
+        />
+      </div>
+    </MobileLayoutFrame>
   )
 }

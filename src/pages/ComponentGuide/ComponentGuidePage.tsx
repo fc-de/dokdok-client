@@ -286,7 +286,7 @@ function Showcase({
 function PhonePreview({ children, height = 420 }: { children: React.ReactNode; height?: number }) {
   return (
     <div
-      className="relative w-[375px] max-w-full overflow-hidden rounded-medium border border-grey-300 bg-white shadow-drop"
+      className="relative w-93.75 max-w-full overflow-hidden rounded-medium border border-grey-300 bg-white shadow-drop"
       style={{ height }}
     >
       {children}
@@ -313,7 +313,7 @@ function MobileLayoutSection() {
       >
         <PhonePreview height={180}>
           <MobileMainHeader preview onNotificationClick={() => showToast('알림')} />
-          <div className="px-[20px] py-large">
+          <div className="px-5 py-large">
             <p className="typo-m-heading3 text-black">메인 콘텐츠 영역</p>
             <p className="typo-m-body2 text-grey-600 mt-xtiny">
               로고는 좌측 20px, 알림/프로필은 우측에 배치됩니다.
@@ -336,7 +336,7 @@ function MobileLayoutSection() {
         <div className="flex flex-wrap gap-medium">
           <PhonePreview height={150}>
             <MobileScreenHeader variant="content" title="타이틀" preview />
-            <div className="px-[20px] py-large typo-m-body2 text-grey-600">
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
               콘텐츠 UI: 이전 버튼과 중앙 타이틀을 사용합니다.
             </div>
           </PhonePreview>
@@ -347,7 +347,7 @@ function MobileLayoutSection() {
               headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
               preview
             />
-            <div className="px-[20px] py-large typo-m-body2 text-grey-600">
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
               독립 화면 UI: 닫기 버튼과 우측 액션을 사용합니다.
             </div>
           </PhonePreview>
@@ -360,7 +360,7 @@ function MobileLayoutSection() {
         code={`<MobileBottomNavigation preview />`}
       >
         <PhonePreview height={220}>
-          <div className="px-[20px] py-large">
+          <div className="px-5 py-large">
             <p className="typo-m-heading3 text-black">하단 GNB 프리뷰</p>
             <p className="typo-m-body2 text-grey-600 mt-xtiny">
               높이 68px, 아이콘 24px, 라벨 typo-body5 기준입니다.
@@ -376,7 +376,7 @@ function MobileLayoutSection() {
         code={`<MobileBottomCTA label="완료하기" onClick={handleSubmit} preview />`}
       >
         <PhonePreview height={220}>
-          <div className="px-[20px] py-large">
+          <div className="px-5 py-large">
             <p className="typo-m-heading3 text-black">입력 폼 영역</p>
             <p className="typo-m-body2 text-grey-600 mt-xtiny">
               CTA 영역은 20px 좌우 여백과 하단 shadow를 가집니다.
@@ -410,7 +410,7 @@ function MobileLayoutSection() {
               onNotificationClick={() => showToast('알림')}
               preview
             >
-              <div className="px-[20px] py-large">
+              <div className="px-5 py-large">
                 <p className="typo-m-heading3 text-black">메인 UI</p>
                 <p className="typo-m-body2 text-grey-600 mt-xtiny">
                   상단 메인 헤더와 하단 GNB가 함께 렌더링됩니다.
@@ -426,7 +426,7 @@ function MobileLayoutSection() {
               bottomCTA={{ label: '만들기', onClick: () => showToast('만들기') }}
               preview
             >
-              <div className="px-[20px] py-large">
+              <div className="px-5 py-large">
                 <p className="typo-m-heading3 text-black">독립 화면 UI</p>
                 <p className="typo-m-body2 text-grey-600 mt-xtiny">
                   상단 앱바와 하단 CTA가 함께 렌더링됩니다.

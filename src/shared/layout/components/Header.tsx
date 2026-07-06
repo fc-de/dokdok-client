@@ -42,8 +42,21 @@ export default function Header() {
     showToast('준비중입니다.')
   }
 
+  const searchParams = new URLSearchParams(location.search)
+  const isBookMainPage = location.pathname === ROUTES.BOOKS && searchParams.get('edit') !== 'true'
+  const hideOnMobileMainPage =
+    location.pathname === ROUTES.HOME ||
+    location.pathname === ROUTES.HOME_ALIAS ||
+    location.pathname === ROUTES.GATHERINGS ||
+    isBookMainPage
+
   return (
-    <header className="sticky top-0 z-20 h-gnb-height bg-white">
+    <header
+      className={cn(
+        'sticky top-0 z-20 h-gnb-height bg-white',
+        hideOnMobileMainPage && 'max-lg:hidden'
+      )}
+    >
       <nav className="mx-auto flex h-full max-w-layout-max items-center justify-between px-layout-padding">
         {/* 좌측: 로고 + 네비게이션 */}
         <div className="flex items-center gap-11.75">

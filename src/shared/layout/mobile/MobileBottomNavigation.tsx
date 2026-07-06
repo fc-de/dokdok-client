@@ -33,7 +33,7 @@ export default function MobileBottomNavigation({
         className
       )}
     >
-      <ul className="mx-auto grid h-[68px] max-w-md grid-cols-3 px-[20px]">
+      <ul className="mx-auto grid h-17 max-w-md grid-cols-3 px-5">
         {items.map(({ label, path, icon, end }) => (
           <li key={path}>
             <NavLink
@@ -41,7 +41,7 @@ export default function MobileBottomNavigation({
               end={end}
               className={({ isActive }) =>
                 cn(
-                  'flex h-full flex-col items-center justify-center gap-[2px] rounded-xsmall text-grey-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'flex h-full flex-col items-center justify-center gap-0.5 rounded-xsmall text-grey-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isActive && 'text-primary-300'
                 )
               }
@@ -50,7 +50,7 @@ export default function MobileBottomNavigation({
                 <>
                   {createElement(icon, {
                     'aria-hidden': true,
-                    className: cn('size-6', isActive ? 'stroke-[2.4px]' : 'stroke-2'),
+                    className: cn('size-6 stroke-2', isActive && 'fill-current'),
                   })}
                   <span className="typo-body5 font-medium">{label}</span>
                 </>

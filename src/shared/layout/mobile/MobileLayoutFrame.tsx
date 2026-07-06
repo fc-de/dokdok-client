@@ -63,8 +63,8 @@ export default function MobileLayoutFrame({
 
       <div
         className={cn(
-          hasMainNavigation && 'pb-[calc(68px+env(safe-area-inset-bottom))] lg:pb-0',
-          hasBottomCTA && 'pb-[calc(86px+env(safe-area-inset-bottom))] lg:pb-0',
+          hasMainNavigation && 'pb-[calc(4.25rem+env(safe-area-inset-bottom))] lg:pb-0',
+          hasBottomCTA && 'pb-[calc(5.375rem+env(safe-area-inset-bottom))] lg:pb-0',
           contentClassName
         )}
       >

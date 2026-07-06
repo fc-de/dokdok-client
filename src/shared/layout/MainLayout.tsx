@@ -14,7 +14,7 @@ export default function MainLayout() {
   return (
     <>
       <Header />
-      <main className="mx-auto max-w-layout-max px-layout-padding">
+      <main className="mx-auto max-w-layout-max px-layout-padding max-lg:px-0">
         <Outlet />
       </main>
     </>

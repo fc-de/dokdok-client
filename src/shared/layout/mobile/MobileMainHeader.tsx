@@ -9,6 +9,7 @@ import LogoIcon from '@/shared/assets/images/logo-icon.png'
 import LogoText from '@/shared/assets/images/logo-text.png'
 import { ROUTES } from '@/shared/constants/routes'
 import { useScrollShadow } from '@/shared/hooks'
+import { showToast } from '@/shared/lib/toast'
 import { cn } from '@/shared/lib/utils'
 import {
   Avatar,
@@ -41,21 +42,21 @@ export default function MobileMainHeader({
       className={cn(
         preview ? 'relative z-10 bg-white' : 'sticky top-0 z-40 bg-white lg:hidden',
         'transition-shadow',
-        isScrolled && 'shadow-[0px_2px_16px_0px_#1111110F]',
+        isScrolled && 'shadow-drop',
         className
       )}
     >
-      <div className="flex h-[52px] items-center justify-between px-[20px]">
+      <div className="flex h-13 items-center justify-between px-5">
         <Link to={ROUTES.HOME} className="flex items-center gap-xsmall" aria-label="홈으로 이동">
           <img src={LogoIcon} alt="" className="h-5.25 w-6.75" />
           <img src={LogoText} alt="독크독크" className="h-5.25 w-19" />
         </Link>
 
-        <div className="flex items-center gap-[16px]">
+        <div className="flex items-center">
           <button
             type="button"
-            className="flex size-11 items-center justify-center rounded-full text-grey-600 transition-colors hover:text-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            onClick={onNotificationClick}
+            className="flex size-11 -mr-0.5 items-center justify-center rounded-full text-grey-600 transition-colors hover:text-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={onNotificationClick ?? (() => showToast('준비중입니다.'))}
             aria-label="알림"
           >
             <Bell aria-hidden className="size-6 fill-current stroke-current" />
@@ -65,10 +66,10 @@ export default function MobileMainHeader({
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="flex size-11 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                className="flex size-11 -mr-2 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 aria-label="마이페이지 메뉴"
               >
-                <Avatar className="size-[28px]">
+                <Avatar className="size-7">
                   <AvatarImage src={user?.profileImageUrl ?? ''} alt="프로필 이미지" />
                   <AvatarFallback>
                     <img src={UserAvatarIcon} alt="기본 프로필 이미지" className="size-5" />

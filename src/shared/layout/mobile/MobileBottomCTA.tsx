@@ -21,7 +21,7 @@ export default function MobileBottomCTA({
     <div
       className={cn(
         preview ? 'absolute inset-x-0 bottom-0 z-10' : 'fixed inset-x-0 bottom-0 z-50 lg:hidden',
-        'bg-white px-[20px] pt-[12px] pb-[calc(20px+env(safe-area-inset-bottom))] shadow-[0px_-2px_16px_0px_#1111110F]',
+        'bg-white px-5 pt-3 pb-[calc(var(--spacing-medium)+env(safe-area-inset-bottom))] shadow-bottom',
         className
       )}
     >
