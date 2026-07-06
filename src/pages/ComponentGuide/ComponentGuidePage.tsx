@@ -26,6 +26,7 @@ import {
   Container,
   DatePicker,
   FilterDropdown,
+  FloatingButton,
   Input,
   LikeButton,
   Modal,
@@ -66,6 +67,7 @@ function ComponentGuidePage() {
     { id: 'button', name: 'Button', category: '인터랙션' },
     { id: 'textButton', name: 'TextButton', category: '인터랙션' },
     { id: 'likeButton', name: 'LikeButton', category: '인터랙션' },
+    { id: 'floatingButton', name: 'FloatingButton', category: '인터랙션' },
     { id: 'badge', name: 'Badge', category: '표시' },
     { id: 'chip', name: 'Chip', category: '표시' },
     { id: 'userChip', name: 'UserChip', category: '표시' },
@@ -175,6 +177,7 @@ function ComponentGuidePage() {
           {selectedSection === 'button' && <ButtonSection />}
           {selectedSection === 'textButton' && <TextButtonSection />}
           {selectedSection === 'likeButton' && <LikeButtonSection />}
+          {selectedSection === 'floatingButton' && <FloatingButtonSection />}
           {selectedSection === 'badge' && <BadgeSection />}
           {selectedSection === 'chip' && <ChipSection />}
           {selectedSection === 'userChip' && <UserChipSection />}
@@ -423,6 +426,59 @@ const [count, setCount] = useState(42)
         />
         <LikeButton count={0} isLiked={false} />
         <LikeButton count={999} isLiked={true} disabled />
+      </Showcase>
+    </Section>
+  )
+}
+
+function FloatingButtonSection() {
+  return (
+    <Section
+      title="FloatingButton"
+      description="모바일 전용 고정 위치 플로팅 버튼 (1024px 미만에서만 표시)"
+    >
+      <Showcase
+        title="스타일"
+        description="pill 형태, shadow-fab 적용. 모바일에서 우측 하단에 fixed로 노출됩니다."
+        code={`<FloatingButton>+ 만들기</FloatingButton>
+<FloatingButton variant="cta">+ 만들기</FloatingButton>
+<FloatingButton variant="secondary">+ 추가</FloatingButton>`}
+      >
+        <FloatingButton variant="primary" className="flex! relative! bottom-auto! right-auto!">
+          + 만들기
+        </FloatingButton>
+        <FloatingButton variant="cta" className="flex! relative! bottom-auto! right-auto!">
+          + 만들기
+        </FloatingButton>
+        <FloatingButton variant="secondary" className="flex! relative! bottom-auto! right-auto!">
+          + 추가
+        </FloatingButton>
+      </Showcase>
+
+      <Showcase
+        title="위치 (모바일에서 확인)"
+        description="이 페이지를 모바일로 열면 우측 하단에 실제 버튼이 노출됩니다."
+        code={`// 하단 메뉴 없음 → bottom 40px
+<FloatingButton>+ 책 추가하기</FloatingButton>
+
+// 하단 메뉴 있음 → bottom: nav 높이 + 16px
+<FloatingButton hasBottomMenu>+ 책 추가하기</FloatingButton>`}
+      >
+        <FloatingButton onClick={() => alert('클릭!')}>+ 책 추가하기</FloatingButton>
+        <FloatingButton hasBottomMenu onClick={() => alert('클릭!')}>+ 하단 메뉴 있음</FloatingButton>
+        <p className="typo-caption1 text-grey-500 w-full">
+          ↑ 모바일에서 우측 하단에 fixed로 표시됩니다
+        </p>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• 모바일(1024px 미만)에서만 표시됩니다</p>
+          <p>• position: fixed, z-index: 50, 오른쪽 벽 기준 16px</p>
+          <p>• 하단 메뉴 없음: 바닥에서 40px</p>
+          <p>• 하단 메뉴 있음: hasBottomMenu prop 추가 → CSS 변수(--spacing-mobile-bottom-nav-height) 기준 자동 계산</p>
+          <p>• Button의 모든 prop (variant, size, outline, disabled, asChild 등) 그대로 사용 가능</p>
+        </div>
       </Showcase>
     </Section>
   )
