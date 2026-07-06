@@ -40,7 +40,7 @@ export default function MobileMainHeader({
   return (
     <header
       className={cn(
-        preview ? 'relative z-10 bg-white' : 'sticky top-0 z-40 bg-white lg:hidden',
+        preview ? 'relative z-10 bg-white' : 'fixed inset-x-0 top-0 z-50 bg-white lg:hidden',
         'transition-shadow',
         isScrolled && 'shadow-drop',
         className

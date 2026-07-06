@@ -52,7 +52,7 @@ export default function MobileScreenHeader({
   return (
     <header
       className={cn(
-        preview ? 'relative z-10' : 'sticky top-0 z-40 lg:hidden',
+        preview ? 'relative z-10' : 'fixed inset-x-0 top-0 z-50 lg:hidden',
         'h-12.25 bg-white px-5 transition-shadow',
         isScrolled && 'shadow-drop',
         className
