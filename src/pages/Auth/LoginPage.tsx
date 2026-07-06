@@ -12,7 +12,7 @@ import logoText from '@/shared/assets/images/logo-text.png'
  */
 export default function LoginPage() {
   return (
-    <div className="flex h-135 w-100 flex-col items-center justify-center gap-20 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop">
+    <div className="flex h-135 w-100 flex-col items-center justify-center gap-20 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:rounded-none max-lg:px-5 max-lg:shadow-none">
       {/* 로고 영역 */}
       <div className="flex flex-col gap-large">
         <div className="flex items-center gap-4">

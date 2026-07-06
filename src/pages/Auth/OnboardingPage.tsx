@@ -32,7 +32,7 @@ export default function OnboardingPage() {
 
   return (
     <form
-      className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop"
+      className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:rounded-none max-lg:px-5 max-lg:pb-10 max-lg:shadow-none"
       onSubmit={handleSubmit}
     >
       <p className="w-full text-black typo-heading2">
