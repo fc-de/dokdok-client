@@ -226,7 +226,11 @@ function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
 }
 
 const modalFooterVariants = cva(
-  ['flex items-center shrink-0', 'px-xlarge pt-base pb-large border-t border-grey-300 justify-end', 'max-lg:px-medium max-lg:pt-small max-lg:pb-[calc(12px+env(safe-area-inset-bottom))]'],
+  [
+    'flex items-center shrink-0',
+    'px-xlarge pt-base pb-large border-t border-grey-300 justify-end',
+    'max-lg:px-medium max-lg:pt-small max-lg:pb-[calc(12px+env(safe-area-inset-bottom))]',
+  ],
   {
     variants: {
       variant: {

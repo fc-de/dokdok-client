@@ -465,7 +465,9 @@ function FloatingButtonSection() {
 <FloatingButton hasBottomMenu>+ 책 추가하기</FloatingButton>`}
       >
         <FloatingButton onClick={() => alert('클릭!')}>+ 책 추가하기</FloatingButton>
-        <FloatingButton hasBottomMenu onClick={() => alert('클릭!')}>+ 하단 메뉴 있음</FloatingButton>
+        <FloatingButton hasBottomMenu onClick={() => alert('클릭!')}>
+          + 하단 메뉴 있음
+        </FloatingButton>
         <p className="typo-caption1 text-grey-500 w-full">
           ↑ 모바일에서 우측 하단에 fixed로 표시됩니다
         </p>
@@ -476,8 +478,13 @@ function FloatingButtonSection() {
           <p>• 모바일(1024px 미만)에서만 표시됩니다</p>
           <p>• position: fixed, z-index: 50, 오른쪽 벽 기준 16px</p>
           <p>• 하단 메뉴 없음: 바닥에서 40px</p>
-          <p>• 하단 메뉴 있음: hasBottomMenu prop 추가 → CSS 변수(--spacing-mobile-bottom-nav-height) 기준 자동 계산</p>
-          <p>• Button의 모든 prop (variant, size, outline, disabled, asChild 등) 그대로 사용 가능</p>
+          <p>
+            • 하단 메뉴 있음: hasBottomMenu prop 추가 → CSS 변수(--spacing-mobile-bottom-nav-height)
+            기준 자동 계산
+          </p>
+          <p>
+            • Button의 모든 prop (variant, size, outline, disabled, asChild 등) 그대로 사용 가능
+          </p>
         </div>
       </Showcase>
     </Section>
