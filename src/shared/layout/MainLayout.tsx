@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
-import { Header } from './components'
+import GlobalHeader from './GlobalHeader'
 
 /**
  * MainLayout (GNB가 있는 페이지 레이아웃)
@@ -13,7 +13,7 @@ import { Header } from './components'
 export default function MainLayout() {
   return (
     <>
-      <Header />
+      <GlobalHeader />
       <main className="mx-auto max-w-layout-max px-layout-padding max-lg:px-0">
         <Outlet />
       </main>
