@@ -44,11 +44,13 @@ export default function Header() {
 
   const searchParams = new URLSearchParams(location.search)
   const isBookMainPage = location.pathname === ROUTES.BOOKS && searchParams.get('edit') !== 'true'
+  const isBookContentPage = location.pathname.startsWith(`${ROUTES.BOOKS}/`)
   const hideOnMobileMainPage =
     location.pathname === ROUTES.HOME ||
     location.pathname === ROUTES.HOME_ALIAS ||
     location.pathname === ROUTES.GATHERINGS ||
-    isBookMainPage
+    isBookMainPage ||
+    isBookContentPage
 
   return (
     <header
