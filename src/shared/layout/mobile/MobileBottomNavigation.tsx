@@ -1,16 +1,18 @@
-import { BookMarked, House, UsersRound } from 'lucide-react'
 import { createElement } from 'react'
 import { NavLink } from 'react-router-dom'
 
+import BookIcon from '@/shared/assets/icon/book.svg?react'
+import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
+import HomeIcon from '@/shared/assets/icon/home.svg?react'
 import { ROUTES } from '@/shared/constants/routes'
 import { cn } from '@/shared/lib/utils'
 
 import type { MobileBottomNavigationItem } from './types'
 
 const DEFAULT_ITEMS: MobileBottomNavigationItem[] = [
-  { label: '홈', path: ROUTES.HOME, icon: House, end: true },
-  { label: '내 책장', path: ROUTES.BOOKS, icon: BookMarked },
-  { label: '독서모임', path: ROUTES.GATHERINGS, icon: UsersRound },
+  { label: '홈', path: ROUTES.HOME, icon: HomeIcon, end: true },
+  { label: '내 책장', path: ROUTES.BOOKS, icon: BookIcon },
+  { label: '독서모임', path: ROUTES.GATHERINGS, icon: GatheringIcon },
 ]
 
 export type MobileBottomNavigationProps = {
@@ -46,15 +48,8 @@ export default function MobileBottomNavigation({
                 )
               }
             >
-              {({ isActive }) => (
-                <>
-                  {createElement(icon, {
-                    'aria-hidden': true,
-                    className: cn('size-6 stroke-2', isActive && 'fill-current'),
-                  })}
-                  <span className="typo-body5 font-medium">{label}</span>
-                </>
-              )}
+              {createElement(icon, { 'aria-hidden': true, className: 'size-6' })}
+              <span className="typo-body5 font-medium">{label}</span>
             </NavLink>
           </li>
         ))}

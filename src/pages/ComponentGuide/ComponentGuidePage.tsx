@@ -1,7 +1,10 @@
-import { BookMarked, ChevronDown, ChevronRight, House, Search, UsersRound } from 'lucide-react'
+import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
 import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import BookIcon from '@/shared/assets/icon/book.svg?react'
+import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
+import HomeIcon from '@/shared/assets/icon/home.svg?react'
 import {
   MobileBottomCTA,
   MobileBottomNavigation,
@@ -296,9 +299,9 @@ function PhonePreview({ children, height = 420 }: { children: React.ReactNode; h
 
 function MobileLayoutSection() {
   const guideNavigationItems = [
-    { label: '홈', path: '/component-guide', icon: House, end: true },
-    { label: '내 책장', path: '/books', icon: BookMarked },
-    { label: '독서모임', path: '/gatherings', icon: UsersRound },
+    { label: '홈', path: '/component-guide', icon: HomeIcon, end: true },
+    { label: '내 책장', path: '/books', icon: BookIcon },
+    { label: '독서모임', path: '/gatherings', icon: GatheringIcon },
   ]
 
   return (

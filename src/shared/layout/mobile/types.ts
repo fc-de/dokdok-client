@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react'
+import type { ComponentType, SVGProps } from 'react'
 
 export type MobileLayoutVariant = 'none' | 'main' | 'content' | 'independent'
 
@@ -20,6 +20,6 @@ export type MobileBottomCTAConfig = {
 export type MobileBottomNavigationItem = {
   label: string
   path: string
-  icon: LucideIcon
+  icon: ComponentType<SVGProps<SVGSVGElement>>
   end?: boolean
 }
