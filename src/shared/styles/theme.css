@@ -118,6 +118,8 @@
   --spacing-layout-padding: 120px;
   --spacing-gnb-height: 64px;
   --spacing-sub-page-header-height: 59px;
+  /* TODO: 모바일 하단 내비게이션 레이아웃 확정 후 실제 높이에 맞게 조절 필요 */
+  --spacing-mobile-bottom-nav-height: 89px;
 
   /* font-size tokens */
   --text-heading1: 36px;
