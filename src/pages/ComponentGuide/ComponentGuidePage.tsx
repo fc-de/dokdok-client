@@ -1790,7 +1790,9 @@ function BottomSheetSection() {
       <p>시트 내용이 들어갑니다.</p>
     </BottomSheetBody>
     <BottomSheetFooter>
-      <Button className="w-full">확인</Button>
+      <BottomSheetClose asChild>
+        <Button className="w-full">확인</Button>
+      </BottomSheetClose>
     </BottomSheetFooter>
   </BottomSheetContent>
 </BottomSheet>`}
@@ -1830,7 +1832,9 @@ function BottomSheetSection() {
   <BottomSheetClose asChild>
     <Button variant="secondary" className="flex-1">취소</Button>
   </BottomSheetClose>
-  <Button className="flex-1">확인</Button>
+  <BottomSheetClose asChild>
+    <Button className="flex-1">확인</Button>
+  </BottomSheetClose>
 </BottomSheetFooter>`}
       >
         <BottomSheet>
@@ -1900,11 +1904,12 @@ function BottomSheetSection() {
         title="Alert 패턴"
         description="헤더 없이 아이콘 + 타이틀 + 설명을 본문에 중앙 정렬. 확인/취소 액션에 사용"
         code={`<BottomSheetContent>
-  <BottomSheetBody className="text-center py-large">
-    <CircleAlertIcon />
+  <BottomSheetBody className="flex flex-col items-center text-center py-large">
+    <img src={CircleAlertIcon} />
     <BottomSheetTitle className="mb-xsmall">삭제를 진행할까요?</BottomSheetTitle>
     <BottomSheetDescription>
-      모임의 모든 정보와 기록이 사라지며,{'\n'}
+      모임의 모든 정보와 기록이 사라지며,
+      <br />
       다시 되돌릴 수 없어요. 정말 이 모임을 삭제할까요?
     </BottomSheetDescription>
   </BottomSheetBody>
@@ -1912,7 +1917,9 @@ function BottomSheetSection() {
     <BottomSheetClose asChild>
       <Button variant="secondary" className="flex-1">취소</Button>
     </BottomSheetClose>
-    <Button variant="danger" className="flex-1">삭제</Button>
+    <BottomSheetClose asChild>
+      <Button variant="danger" className="flex-1">삭제</Button>
+    </BottomSheetClose>
   </BottomSheetFooter>
 </BottomSheetContent>`}
       >
