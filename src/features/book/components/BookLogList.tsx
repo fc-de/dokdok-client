@@ -96,11 +96,11 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
       {/* 감상 기록 헤더 - sticky */}
       <div
         className={cn(
-          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow',
+          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow max-lg:top-12.25',
           isSticky && 'shadow-drop-bottom'
         )}
       >
-        <div className="mx-auto max-w-layout-max px-layout-padding py-base">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-base max-lg:px-5">
           <div className="flex justify-between mb-base">
             <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
             {isRecording && <Button onClick={handleCreateRecord}>기록 추가하기</Button>}
@@ -154,7 +154,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
 
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="bg-grey-100">
-        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge max-lg:px-5">
           {isRecordsLoading ? (
             <BookLogListSkeleton />
           ) : allRecords.length === 0 ? (

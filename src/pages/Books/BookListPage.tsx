@@ -2,7 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import type { SearchBookItem } from '@/features/book'
-import { BookList, BookSearchModal, useBooks, useCreateBook, useDeleteBook } from '@/features/book'
+import {
+  BookList,
+  BookSearchModal,
+  useBooks,
+  useCreateBook,
+  useDeleteBookAction,
+} from '@/features/book'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants/routes'
 import { MobileLayoutFrame } from '@/shared/layout'
@@ -14,7 +20,7 @@ import { useGlobalModalStore } from '@/store'
 export default function BookListPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { mutateAsync: deleteBook } = useDeleteBook()
+  const { deleteBooks, isDeleting } = useDeleteBookAction()
   const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
   const { openConfirm } = useGlobalModalStore()
 
@@ -77,27 +83,7 @@ export default function BookListPage() {
   const handleDelete = async () => {
     if (selectedBookIds.size === 0) return
 
-    const confirmed = await openConfirm(
-      '책 삭제하기',
-      '책장 속 책을 삭제하면 해당 책의 감상 기록도 모두 삭제되며,\n이 과정은 되돌릴 수 없어요. 삭제를 진행할까요?',
-      {
-        confirmText: '삭제',
-        variant: 'danger',
-      }
-    )
-
-    if (!confirmed) return
-
-    const bookIds = [...selectedBookIds]
-
-    try {
-      await deleteBook(bookIds)
-      navigate(ROUTES.BOOKS)
-    } catch {
-      await openConfirm('삭제 실패', '책 삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
-        confirmText: '확인',
-      })
-    }
+    await deleteBooks([...selectedBookIds])
   }
 
   // 편집 모드 진입
@@ -148,7 +134,7 @@ export default function BookListPage() {
               </TextButton>
               <TextButton
                 onClick={handleDelete}
-                disabled={selectedBookIds.size === 0}
+                disabled={selectedBookIds.size === 0 || isDeleting}
                 className="text-grey-700"
               >
                 삭제하기
