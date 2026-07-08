@@ -17,6 +17,26 @@ const ROUTE_LAYOUT_POLICIES: RouteLayoutPolicy[] = [
   { path: ROUTES.GATHERING_CREATE, end: true, hideGlobalHeaderOnMobile: true },
   { path: `${ROUTES.INVITE_BASE}/:invitationCode`, end: true, hideGlobalHeaderOnMobile: true },
   {
+    path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
+    end: true,
+    hideGlobalHeaderOnMobile: true,
+  },
+  {
+    path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/info`,
+    end: true,
+    hideGlobalHeaderOnMobile: true,
+  },
+  {
+    path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/create`,
+    end: true,
+    hideGlobalHeaderOnMobile: true,
+  },
+  {
+    path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/update`,
+    end: true,
+    hideGlobalHeaderOnMobile: true,
+  },
+  {
     path: ROUTES.BOOKS,
     end: true,
     hideGlobalHeaderOnMobile: true,

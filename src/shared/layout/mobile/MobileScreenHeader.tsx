@@ -69,7 +69,7 @@ export default function MobileScreenHeader({
           <LeftIcon aria-hidden className="size-6" />
         </button>
 
-        <h1 className="pointer-events-none absolute left-1/2 max-w-[calc(100%-8rem)] -translate-x-1/2 truncate text-center typo-m-heading3 text-black">
+        <h1 className="pointer-events-none absolute left-1/2 w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 truncate text-center typo-m-heading3 text-black">
           {title}
         </h1>
 
