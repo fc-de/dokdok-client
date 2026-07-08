@@ -59,22 +59,24 @@ export default function MobileScreenHeader({
       )}
       {...props}
     >
-      <div className="grid h-full grid-cols-[2.75rem_minmax(0,1fr)_minmax(0,4.5rem)] items-center">
+      <div className="relative flex h-full items-center justify-between">
         <button
           type="button"
-          className="-ml-2.5 flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="relative z-10 -ml-2.5 flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={handleBack}
           aria-label={leftAriaLabel ?? defaultLeftLabel}
         >
           <LeftIcon aria-hidden className="size-6" />
         </button>
 
-        <h1 className="truncate text-center typo-m-heading3 text-black">{title}</h1>
+        <h1 className="pointer-events-none absolute left-1/2 max-w-[calc(100%-8rem)] -translate-x-1/2 truncate text-center typo-m-heading3 text-black">
+          {title}
+        </h1>
 
         {headerAction ? (
           <button
             type="button"
-            className="max-w-18 justify-self-end truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"
+            className="relative z-10 max-w-18 truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"
             onClick={headerAction.onClick}
             disabled={headerAction.disabled}
             aria-label={headerAction.ariaLabel ?? headerAction.label}
@@ -82,7 +84,7 @@ export default function MobileScreenHeader({
             {headerAction.label}
           </button>
         ) : (
-          <span aria-hidden />
+          <span className="size-11" aria-hidden />
         )}
       </div>
     </header>

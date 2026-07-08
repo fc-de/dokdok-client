@@ -6,6 +6,7 @@ import type { CreateGatheringResponse } from '@/features/gatherings'
 import { useCreateGathering } from '@/features/gatherings'
 import PaperPlane from '@/shared/assets/icon/paper-plane.svg'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Button, Input, Textarea, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -77,106 +78,133 @@ export default function CreateGatheringPage() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-11 w-full">
-      {/* 뒤로가기 */}
-      <div className="w-full pt-7.25 pb-2.5 leading-0">
-        <TextButton icon={ChevronLeft} size="medium" onClick={handleBack}>
-          뒤로가기
-        </TextButton>
-      </div>
-
-      {step === 'form' ? (
-        /* Step 1: 폼 입력 화면 */
-        <div className="flex flex-col justify-between w-full max-w-100 h-125">
-          {/* 제목 */}
-          <h1 className="typo-heading2 text-black text-center">독서모임 만들기</h1>
-
-          {/* 입력 폼 */}
-          <div className="flex flex-col gap-base w-full">
-            {/* 모임 이름 */}
-            <div className="flex flex-col gap-base w-full">
-              <div className="flex items-start gap-xtiny pl-0.5">
-                <span className="typo-subtitle3 text-black">모임 이름</span>
-                <span className="text-primary-300 typo-caption1">*</span>
-              </div>
-              <Input
-                placeholder="모임 이름을 입력해주세요"
-                maxLength={MAX_NAME_LENGTH}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-
-            {/* 모임 설명 */}
-            <div className="flex flex-col gap-base w-full">
-              <div className="flex items-start pl-0.5">
-                <span className="typo-subtitle3 text-black">모임 설명</span>
-              </div>
-              <Textarea
-                placeholder="모임에 대한 소개글을 입력해주세요"
-                maxLength={MAX_DESCRIPTION_LENGTH}
-                height={86}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* 만들기 버튼 */}
-          <Button
-            variant="primary"
-            size="large"
-            className="w-full"
-            disabled={!isValid || isPending}
-            onClick={handleSubmit}
-          >
-            만들기
-          </Button>
+    <MobileLayoutFrame
+      variant="independent"
+      title="독서모임 만들기"
+      onBack={handleBack}
+      bottomCTA={
+        step === 'form'
+          ? {
+              label: '만들기',
+              loadingLabel: '만드는 중...',
+              onClick: handleSubmit,
+              disabled: !isValid,
+              loading: isPending,
+            }
+          : {
+              label: '완료',
+              onClick: handleComplete,
+            }
+      }
+      className="min-h-dvh lg:min-h-0"
+    >
+      <div className="flex flex-col items-center gap-11 w-full max-lg:block">
+        {/* 뒤로가기 */}
+        <div className="w-full pt-7.25 pb-2.5 leading-0 max-lg:hidden">
+          <TextButton icon={ChevronLeft} size="medium" onClick={handleBack}>
+            뒤로가기
+          </TextButton>
         </div>
-      ) : (
-        /* Step 2: 생성 완료 화면 */
-        <div className="flex flex-col justify-between w-full max-w-100 h-125">
-          {/* 성공 메시지 & 일러스트 */}
-          <div className="flex flex-col gap-base items-center w-full">
-            <div className="flex flex-col gap-xtiny items-center text-center w-full">
-              <p className="typo-subtitle1 text-primary-300">
-                '{createdData?.gatheringName ?? name}'
-              </p>
-              <h1 className="typo-heading2 text-black">모임이 만들어졌어요!</h1>
-            </div>
-            <div className="pl-xsmall">
-              <img src={PaperPlane} alt="종이비행기" className="w-52.25 h-45.5" />
-            </div>
-          </div>
 
-          {/* 초대 링크 & 완료 버튼 */}
-          <div className="flex flex-col gap-9 w-full">
-            <div className="flex flex-col gap-base items-center w-full">
-              <p className="typo-body3 text-grey-600 text-center">
-                초대 링크를 복사해서
-                <br />
-                함께하고 싶은 멤버들에게 전달해 보세요
-              </p>
-              {/* 링크 복사 박스 */}
-              <button
-                type="button"
-                onClick={handleCopyLink}
-                className="flex items-center gap-base w-full px-7 py-small bg-white border border-grey-400 rounded-[50px] cursor-pointer hover:border-grey-500 transition-colors"
-              >
-                <span className="flex-1 typo-body1 text-grey-800 text-left truncate">
-                  {getFullInviteUrl()}
-                </span>
-                <LinkIcon className="size-5 text-grey-600 shrink-0" />
-              </button>
+        {step === 'form' ? (
+          /* Step 1: 폼 입력 화면 */
+          <div className="flex flex-col justify-between w-full max-w-100 h-125 max-lg:h-auto max-lg:max-w-none max-lg:px-5 max-lg:pt-8">
+            {/* 제목 */}
+            <h1 className="typo-heading2 text-black text-center max-lg:hidden">독서모임 만들기</h1>
+
+            {/* 입력 폼 */}
+            <div className="flex flex-col gap-base w-full">
+              {/* 모임 이름 */}
+              <div className="flex flex-col gap-base w-full">
+                <div className="flex items-start gap-xtiny pl-0.5">
+                  <span className="typo-subtitle3 text-black">모임 이름</span>
+                  <span className="text-primary-300 typo-caption1">*</span>
+                </div>
+                <Input
+                  placeholder="모임 이름을 입력해주세요"
+                  maxLength={MAX_NAME_LENGTH}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              {/* 모임 설명 */}
+              <div className="flex flex-col gap-base w-full">
+                <div className="flex items-start pl-0.5">
+                  <span className="typo-subtitle3 text-black">모임 설명</span>
+                </div>
+                <Textarea
+                  placeholder="모임에 대한 소개글을 입력해주세요"
+                  maxLength={MAX_DESCRIPTION_LENGTH}
+                  height={86}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </div>
             </div>
 
-            {/* 완료 버튼 */}
-            <Button variant="primary" size="large" className="w-full" onClick={handleComplete}>
-              완료
+            {/* 만들기 버튼 */}
+            <Button
+              variant="primary"
+              size="large"
+              className="w-full max-lg:hidden"
+              disabled={!isValid || isPending}
+              onClick={handleSubmit}
+            >
+              만들기
             </Button>
           </div>
-        </div>
-      )}
-    </div>
+        ) : (
+          /* Step 2: 생성 완료 화면 */
+          <div className="flex flex-col justify-between w-full max-w-100 h-125 max-lg:h-auto max-lg:max-w-none max-lg:px-5 max-lg:pt-16">
+            {/* 성공 메시지 & 일러스트 */}
+            <div className="flex flex-col gap-base items-center w-full">
+              <div className="flex flex-col gap-xtiny items-center text-center w-full">
+                <p className="typo-subtitle1 text-primary-300">
+                  '{createdData?.gatheringName ?? name}'
+                </p>
+                <h1 className="typo-heading2 text-black">모임이 만들어졌어요!</h1>
+              </div>
+              <div className="pl-xsmall">
+                <img src={PaperPlane} alt="종이비행기" className="w-52.25 h-45.5" />
+              </div>
+            </div>
+
+            {/* 초대 링크 & 완료 버튼 */}
+            <div className="flex flex-col gap-9 w-full">
+              <div className="flex flex-col gap-base items-center w-full">
+                <p className="typo-body3 text-grey-600 text-center">
+                  초대 링크를 복사해서
+                  <br />
+                  함께하고 싶은 멤버들에게 전달해 보세요
+                </p>
+                {/* 링크 복사 박스 */}
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-base w-full px-7 py-small bg-white border border-grey-400 rounded-[50px] cursor-pointer hover:border-grey-500 transition-colors max-lg:rounded-full"
+                  aria-label="초대 링크 복사"
+                >
+                  <span className="flex-1 typo-body1 text-grey-800 text-left truncate">
+                    {getFullInviteUrl()}
+                  </span>
+                  <LinkIcon className="size-5 text-grey-600 shrink-0" />
+                </button>
+              </div>
+
+              {/* 완료 버튼 */}
+              <Button
+                variant="primary"
+                size="large"
+                className="w-full max-lg:hidden"
+                onClick={handleComplete}
+              >
+                완료
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    </MobileLayoutFrame>
   )
 }
