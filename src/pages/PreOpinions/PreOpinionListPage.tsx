@@ -7,6 +7,8 @@ import {
   usePreOpinionAnswers,
 } from '@/features/pre-opinion'
 import SubPageHeader from '@/shared/components/SubPageHeader'
+import { ROUTES } from '@/shared/constants/routes'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -35,15 +37,33 @@ export default function PreOpinionListPage() {
   }, [selectedMemberId, data])
 
   const selectedMember = data?.members.find((m) => m.memberInfo.userId === activeMemberId)
+  const backTo =
+    gatheringId && meetingId ? ROUTES.MEETING_DETAIL(gatheringId, meetingId) : undefined
 
-  if (isLoading) return <Spinner height="full" />
+  if (isLoading) {
+    return (
+      <MobileLayoutFrame
+        variant="content"
+        title="사전 의견"
+        backTo={backTo}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <Spinner height="full" />
+      </MobileLayoutFrame>
+    )
+  }
 
   return (
-    <>
-      <SubPageHeader />
-      <div className="mx-auto max-w-layout-max px-layout-padding">
-        <h3 className="typo-heading3 text-black mt-large mb-6.75">사전 의견</h3>
-        <div className="flex gap-xlarge">
+    <MobileLayoutFrame
+      variant="content"
+      title="사전 의견"
+      backTo={backTo}
+      className="min-h-dvh lg:min-h-0"
+    >
+      <SubPageHeader className="max-lg:hidden" />
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
+        <h3 className="typo-heading3 text-black mt-large mb-6.75 max-lg:hidden">사전 의견</h3>
+        <div className="flex gap-xlarge max-lg:flex-col max-lg:gap-base">
           {/* 왼쪽: 멤버 리스트 */}
           {data && (
             <PreOpinionMemberList
@@ -68,6 +88,6 @@ export default function PreOpinionListPage() {
           )}
         </div>
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }
