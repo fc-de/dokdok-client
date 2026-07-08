@@ -2,7 +2,7 @@
 
 ## 목적
 
-현재 프로젝트의 레이아웃은 데스크톱 GNB와 콘텐츠 폭 제어를 기준으로 `MainLayout`, `FullWidthLayout`, `AuthLayout`, `LandingLayout`에 나뉘어 있다. 모바일 반응형 작업에서는 이 구분만으로 `메인 UI`, `독립 화면 UI`, `콘텐츠 UI`를 안정적으로 판별하기 어렵다.
+현재 프로젝트의 레이아웃은 데스크톱 GNB와 콘텐츠 폭 제어를 기준으로 `MainLayout`, `FullWidthLayout`, `AuthLayout`, `LandingLayout`에 나뉘어 있다. 모바일 반응형 작업에서는 이 구분만으로 모바일 전용 헤더, 하단 GNB, 하단 CTA를 안정적으로 판별하기 어렵다.
 
 따라서 기존 데스크톱 레이아웃은 유지하고, 모바일 전용 레이아웃은 라우트 메타데이터와 공통 Host를 통해 별도 레이어로 적용한다.
 
@@ -33,7 +33,7 @@
   element: <GatheringListPage />,
   handle: {
     mobileLayout: {
-      variant: 'main',
+      variant: 'navigation',
       title: '독서모임',
     },
   },
@@ -52,14 +52,14 @@ const mobileLayout = [...matches].reverse().find((match) => match.handle?.mobile
 
 ### 라우터와 페이지 hook의 책임 분리
 
-독립형과 콘텐츠형 레이아웃은 헤더에 들어가는 액션의 성격이 다르다. 이 액션들은 대부분 페이지 내부 상태와 mutation에 의존하므로 router에 직접 넣지 않는다.
+상단 헤더의 좌측 액션, 우측 액션, 하단 CTA는 대부분 페이지 내부 상태와 mutation에 의존하므로 router에 직접 넣지 않는다.
 
 라우터가 담당할 정적 정보:
 
-- `variant`: `main`, `content`, `independent`, `none`
+- `variant`: `navigation`, `header`, `none`
 - 기본 `title`
-- 기본 `backTo`
-- GNB 또는 CTA 영역을 사용할 화면 유형
+- 기본 `leftAction`
+- GNB를 사용할 화면 유형
 
 라우터가 담당하지 않을 동적 정보:
 
@@ -75,6 +75,10 @@ const mobileLayout = [...matches].reverse().find((match) => match.handle?.mobile
 ```tsx
 useMobileLayout({
   title: isEditMode ? '약속 수정하기' : '약속 만들기',
+  leftAction: {
+    type: 'close',
+    onClick: handleClose,
+  },
   headerAction: {
     label: '저장하기',
     onClick: handleSave,
@@ -86,7 +90,6 @@ useMobileLayout({
     disabled: !isValid || isSubmitting,
     loading: isSubmitting,
   },
-  onBack: handleClose,
 })
 ```
 
@@ -106,7 +109,7 @@ const resolvedLayout = {
 <MobileLayoutFrame
   variant={resolvedLayout.variant}
   title={resolvedLayout.title}
-  onBack={resolvedLayout.onBack}
+  leftAction={resolvedLayout.leftAction}
   headerAction={resolvedLayout.headerAction}
   bottomCTA={resolvedLayout.bottomCTA}
 >
@@ -114,40 +117,41 @@ const resolvedLayout = {
 </MobileLayoutFrame>
 ```
 
-### 화면 유형별 액션 슬롯 정책
+### 기능별 액션 슬롯 정책
 
-`content` 화면:
+`navigation` 레이아웃:
 
-- 좌측: 이전 버튼 `←`
+- 상단: 메인 헤더
+- 하단: GNB
+- 대상: 1Depth 탐색 화면
+
+`header` 레이아웃:
+
+- 상단: 모바일 화면 헤더
+- 좌측: `leftAction.type`에 따라 `back`, `close`, `none` 중 선택
 - 중앙: title
-- 우측: 선택 액션. 예: `수정하기`, `삭제`, `완료`
-- 하단 CTA 없음이 기본
+- 우측: 선택 액션. 예: `수정하기`, `삭제`, `저장하기`
+- 하단: 필요할 때 `bottomCTA`로 주요 액션 제공
 
-`independent` 화면:
-
-- 좌측: 닫기 버튼 `X`
-- 중앙: title
-- 우측: 보조 액션. 예: `저장하기`, `임시저장`
-- 하단: 주요 CTA. 예: `만들기`, `수정하기`, `공유하기`, `완료`
+`bottomCTA`는 `header` 화면에서 선택적으로 사용하는 별도 기능이며, 좌측 액션이 `back`인지 `close`인지와 결합하지 않는다.
 
 헤더 컴포넌트는 액션의 의미를 판단하지 않고 슬롯만 제공한다. 액션의 의미와 활성화 조건은 페이지가 책임진다.
 
 ## 추천 분류
 
-| 유형          | 대상                                                                                       |
-| ------------- | ------------------------------------------------------------------------------------------ |
-| `main`        | `/`, `/home`, `/books`, `/gatherings`                                                      |
-| `independent` | `/gatherings/create`, 모임 설정, 약속 생성/수정, 사전 의견 작성, 주제 생성, 회고 작성/수정 |
-| `content`     | 도서 상세/리뷰, 모임 상세, 약속 상세, 사전 의견 목록, 회고 결과/상세/view, 약속 설정 관리  |
-| `none`        | landing, login, onboarding, invite, component-guide                                        |
+| 유형         | 대상                                  |
+| ------------ | ------------------------------------- |
+| `navigation` | `/`, `/home`, `/books`, `/gatherings` |
+| `header`     | 상세, 작성, 생성, 수정, 결과 화면    |
+| `none`       | landing, login, onboarding, component-guide |
 
-`/records`는 하단 GNB 3개 메뉴에 포함되어 있지 않으므로 별도 제품 판단이 필요하다. GNB에 포함하지 않는다면 `content`에 가깝고, 기록을 1Depth 메뉴로 본다면 GNB 정책 자체를 다시 정해야 한다.
+`/records`는 하단 GNB 3개 메뉴에 포함되어 있지 않으므로 별도 제품 판단이 필요하다. GNB에 포함하지 않는다면 `header`에 가깝고, 기록을 1Depth 메뉴로 본다면 GNB 정책 자체를 다시 정해야 한다.
 
 ## 적용 순서
 
 1. 현재 추가된 모바일 레이아웃 컴포넌트는 유지한다.
 2. `MobileLayoutHost`와 `handle.mobileLayout` 타입을 추가한다.
-3. 기존 페이지 UI를 바꾸지 않고 라우트별 `variant`만 먼저 선언한다.
+3. 기존 페이지 UI를 바꾸지 않고 라우트별 `variant`와 기본 `leftAction`만 먼저 선언한다.
 4. 데스크톱 `Header`, `SubPageHeader`, `FormPageHeader`가 모바일에서 중복 노출되지 않도록 단계적으로 분기한다.
 5. 페이지별 CTA, 저장, 삭제, dirty confirm 등 동적 액션은 `useMobileLayout()` hook으로 연결한다.
 

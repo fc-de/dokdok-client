@@ -29,9 +29,9 @@ export default function MeetingDetailInfoPage() {
 
   return (
     <MobileLayoutFrame
-      variant="content"
+      variant="header"
       title=" "
-      backTo={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
+      leftAction={{ type: 'back', to: ROUTES.MEETING_DETAIL(gatheringId, meetingId) }}
       headerAction={{
         label: '수정하기',
         onClick: () => navigate(ROUTES.MEETING_UPDATE(gatheringId, meetingId)),

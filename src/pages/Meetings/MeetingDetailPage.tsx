@@ -112,9 +112,9 @@ export default function MeetingDetailPage() {
 
   return (
     <MobileLayoutFrame
-      variant="content"
+      variant="header"
       title=" "
-      backTo={ROUTES.GATHERING_DETAIL(gatheringId)}
+      leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader

@@ -79,9 +79,9 @@ export default function CreateGatheringPage() {
 
   return (
     <MobileLayoutFrame
-      variant="independent"
+      variant="header"
       title="독서모임 만들기"
-      onBack={handleBack}
+      leftAction={{ type: 'close', onClick: handleBack }}
       bottomCTA={
         step === 'form'
           ? {

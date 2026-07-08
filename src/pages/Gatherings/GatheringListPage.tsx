@@ -82,7 +82,7 @@ export default function GatheringListPage() {
   }
 
   return (
-    <MobileLayoutFrame variant="main">
+    <MobileLayoutFrame variant="navigation">
       <div className="flex flex-col gap-large pt-xlarge pb-medium max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
         {/* 타이틀 */}
         <h1 className="typo-heading1 text-black">독서모임</h1>

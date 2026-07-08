@@ -96,9 +96,9 @@ export default function InvitePage() {
   if (isLoading) {
     return (
       <MobileLayoutFrame
-        variant="independent"
+        variant="header"
         title="독서모임 초대"
-        onBack={handleBack}
+        leftAction={{ type: 'close', onClick: handleBack }}
         className="min-h-dvh lg:min-h-0"
       >
         <div className="flex flex-col items-center justify-center min-h-100 pt-xlarge">
@@ -112,9 +112,9 @@ export default function InvitePage() {
   if (error || !gathering) {
     return (
       <MobileLayoutFrame
-        variant="independent"
+        variant="header"
         title="독서모임 초대"
-        onBack={handleBack}
+        leftAction={{ type: 'close', onClick: handleBack }}
         bottomCTA={{ label: '홈으로 이동', onClick: handleGoHome }}
         className="min-h-dvh lg:min-h-0"
       >
@@ -131,9 +131,9 @@ export default function InvitePage() {
 
   return (
     <MobileLayoutFrame
-      variant="independent"
+      variant="header"
       title="독서모임 초대"
-      onBack={handleBack}
+      leftAction={{ type: 'close', onClick: handleBack }}
       bottomCTA={{
         label: joinLabel,
         loadingLabel: '처리 중...',

@@ -245,9 +245,9 @@ export default function MeetingCreatePage() {
 
   return (
     <MobileLayoutFrame
-      variant="independent"
+      variant="header"
       title={pageTitle}
-      onBack={() => navigate(-1)}
+      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
       bottomCTA={{
         label: isEditMode ? '수정하기' : '만들기',
         loadingLabel: '처리 중...',

@@ -10,14 +10,14 @@ import type {
   MobileBottomCTAConfig,
   MobileBottomNavigationItem,
   MobileHeaderAction,
+  MobileHeaderLeftAction,
   MobileLayoutVariant,
 } from './types'
 
 export type MobileLayoutFrameProps = Omit<React.ComponentProps<'div'>, 'title'> & {
   variant?: MobileLayoutVariant
   title?: string
-  backTo?: string
-  onBack?: () => void
+  leftAction?: MobileHeaderLeftAction
   headerAction?: MobileHeaderAction
   bottomCTA?: MobileBottomCTAConfig
   navigationItems?: MobileBottomNavigationItem[]
@@ -29,8 +29,7 @@ export type MobileLayoutFrameProps = Omit<React.ComponentProps<'div'>, 'title'> 
 export default function MobileLayoutFrame({
   variant = 'none',
   title,
-  backTo,
-  onBack,
+  leftAction,
   headerAction,
   bottomCTA,
   navigationItems,
@@ -41,22 +40,20 @@ export default function MobileLayoutFrame({
   children,
   ...props
 }: MobileLayoutFrameProps) {
-  const hasMainNavigation = variant === 'main'
-  const hasScreenHeader = (variant === 'content' || variant === 'independent') && !!title
-  const hasBottomCTA = variant === 'independent' && !!bottomCTA
+  const hasMainNavigation = variant === 'navigation'
+  const hasScreenHeader = variant === 'header' && !!title
+  const hasBottomCTA = variant === 'header' && !!bottomCTA
 
   return (
     <div className={cn('bg-white', preview && 'relative overflow-hidden', className)} {...props}>
-      {variant === 'main' && (
+      {variant === 'navigation' && (
         <MobileMainHeader onNotificationClick={onNotificationClick} preview={preview} />
       )}
 
-      {(variant === 'content' || variant === 'independent') && title && (
+      {variant === 'header' && title && (
         <MobileScreenHeader
-          variant={variant}
           title={title}
-          backTo={backTo}
-          onBack={onBack}
+          leftAction={leftAction}
           headerAction={headerAction}
           preview={preview}
         />

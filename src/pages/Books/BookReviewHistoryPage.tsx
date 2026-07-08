@@ -17,7 +17,11 @@ export default function BookReviewHistoryPage() {
   const { data: historyData, isLoading } = useBookReviewHistory(bookId)
 
   return (
-    <MobileLayoutFrame variant="content" title="지난 평가" backTo={ROUTES.BOOK_DETAIL(bookId)}>
+    <MobileLayoutFrame
+      variant="header"
+      title="지난 평가"
+      leftAction={{ type: 'back', to: ROUTES.BOOK_DETAIL(bookId) }}
+    >
       <SubPageHeader
         label={bookDetail?.title ?? '뒤로가기'}
         to={ROUTES.BOOK_DETAIL(bookId)}

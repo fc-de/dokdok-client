@@ -210,9 +210,9 @@ export default function PreOpinionWritePage() {
   if (isLoading || !preOpinion) {
     return (
       <MobileLayoutFrame
-        variant="independent"
+        variant="header"
         title="사전 의견 작성하기"
-        onBack={() => navigate(-1)}
+        leftAction={{ type: 'close', onClick: () => navigate(-1) }}
         headerAction={mobileHeaderAction}
         className="min-h-dvh lg:min-h-0"
       >
@@ -226,9 +226,9 @@ export default function PreOpinionWritePage() {
 
   return (
     <MobileLayoutFrame
-      variant="independent"
+      variant="header"
       title="사전 의견 작성하기"
-      onBack={() => navigate(-1)}
+      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
       headerAction={mobileHeaderAction}
       className="min-h-dvh lg:min-h-0"
     >

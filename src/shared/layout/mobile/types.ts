@@ -1,6 +1,15 @@
 import type { ComponentType, SVGProps } from 'react'
 
-export type MobileLayoutVariant = 'none' | 'main' | 'content' | 'independent'
+export type MobileLayoutVariant = 'none' | 'navigation' | 'header'
+
+export type MobileHeaderLeftActionType = 'back' | 'close' | 'none'
+
+export type MobileHeaderLeftAction = {
+  type: MobileHeaderLeftActionType
+  onClick?: () => void
+  to?: string
+  ariaLabel?: string
+}
 
 export type MobileHeaderAction = {
   label: string

@@ -327,31 +327,31 @@ function MobileLayoutSection() {
 
       <Showcase
         title="MobileScreenHeader"
-        description="콘텐츠 화면과 독립 작업 화면의 상단 앱바"
-        code={`<MobileScreenHeader variant="content" title="타이틀" preview />
+        description="좌측 액션과 우측 액션을 조합하는 상단 앱바"
+        code={`<MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
 <MobileScreenHeader
-  variant="independent"
   title="타이틀"
+  leftAction={{ type: 'close' }}
   headerAction={{ label: '저장하기', onClick: handleSave }}
   preview
 />`}
       >
         <div className="flex flex-wrap gap-medium">
           <PhonePreview height={150}>
-            <MobileScreenHeader variant="content" title="타이틀" preview />
+            <MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
             <div className="px-5 py-large typo-m-body2 text-grey-600">
-              콘텐츠 UI: 이전 버튼과 중앙 타이틀을 사용합니다.
+              이전 화면 이동 UI: 이전 버튼과 중앙 타이틀을 사용합니다.
             </div>
           </PhonePreview>
           <PhonePreview height={150}>
             <MobileScreenHeader
-              variant="independent"
               title="타이틀"
+              leftAction={{ type: 'close' }}
               headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
               preview
             />
             <div className="px-5 py-large typo-m-body2 text-grey-600">
-              독립 화면 UI: 닫기 버튼과 우측 액션을 사용합니다.
+              닫기 UI: 닫기 버튼과 우측 액션을 사용합니다.
             </div>
           </PhonePreview>
         </div>
@@ -392,13 +392,14 @@ function MobileLayoutSection() {
       <Showcase
         title="MobileLayoutFrame"
         description="화면 유형별 모바일 크롬을 한 번에 조합하는 wrapper"
-        code={`<MobileLayoutFrame variant="main" preview>
+        code={`<MobileLayoutFrame variant="navigation" preview>
   <PageContent />
 </MobileLayoutFrame>
 
 <MobileLayoutFrame
-  variant="independent"
+  variant="header"
   title="약속 만들기"
+  leftAction={{ type: 'close' }}
   bottomCTA={{ label: '만들기', onClick: handleSubmit }}
   preview
 >
@@ -408,7 +409,7 @@ function MobileLayoutSection() {
         <div className="flex flex-wrap gap-medium">
           <PhonePreview height={520}>
             <MobileLayoutFrame
-              variant="main"
+              variant="navigation"
               navigationItems={guideNavigationItems}
               onNotificationClick={() => showToast('알림')}
               preview
@@ -423,8 +424,9 @@ function MobileLayoutSection() {
           </PhonePreview>
           <PhonePreview height={520}>
             <MobileLayoutFrame
-              variant="independent"
+              variant="header"
               title="약속 만들기"
+              leftAction={{ type: 'close' }}
               headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
               bottomCTA={{ label: '만들기', onClick: () => showToast('만들기') }}
               preview

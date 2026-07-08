@@ -154,7 +154,7 @@ export default function BookListPage() {
   }
 
   return (
-    <MobileLayoutFrame variant="main">
+    <MobileLayoutFrame variant="navigation">
       <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
         <h1 className="typo-heading1 text-black mt-xlarge mb-medium max-lg:mt-0">내 책장</h1>
         <Tabs value={activeTab} onValueChange={handleTabChange}>

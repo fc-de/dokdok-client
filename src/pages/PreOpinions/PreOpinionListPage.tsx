@@ -43,9 +43,9 @@ export default function PreOpinionListPage() {
   if (isLoading) {
     return (
       <MobileLayoutFrame
-        variant="content"
+        variant="header"
         title="사전 의견"
-        backTo={backTo}
+        leftAction={{ type: 'back', to: backTo }}
         className="min-h-dvh lg:min-h-0"
       >
         <Spinner height="full" />
@@ -55,9 +55,9 @@ export default function PreOpinionListPage() {
 
   return (
     <MobileLayoutFrame
-      variant="content"
+      variant="header"
       title="사전 의견"
-      backTo={backTo}
+      leftAction={{ type: 'back', to: backTo }}
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader className="max-lg:hidden" />

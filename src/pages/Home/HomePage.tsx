@@ -9,7 +9,7 @@ export default function HomePage() {
   const { data: user } = useUserProfile()
 
   return (
-    <MobileLayoutFrame variant="main">
+    <MobileLayoutFrame variant="navigation">
       <div className="pb-20 pt-xlarge max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
         {/* 인사말 */}
         <div className="flex flex-col gap-xtiny mb-8.5">

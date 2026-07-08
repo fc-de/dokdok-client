@@ -5,44 +5,36 @@ import { useNavigate } from 'react-router-dom'
 import { useScrollShadow } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 
-import type { MobileHeaderAction } from './types'
-
-export type MobileScreenHeaderVariant = 'content' | 'independent'
+import type { MobileHeaderAction, MobileHeaderLeftAction } from './types'
 
 export type MobileScreenHeaderProps = Omit<React.ComponentProps<'header'>, 'title'> & {
-  variant: MobileScreenHeaderVariant
   title: string
-  backTo?: string
-  onBack?: () => void
+  leftAction?: MobileHeaderLeftAction
   headerAction?: MobileHeaderAction
-  leftAriaLabel?: string
   preview?: boolean
 }
 
 export default function MobileScreenHeader({
-  variant,
   title,
-  backTo,
-  onBack,
+  leftAction = { type: 'back' },
   headerAction,
-  leftAriaLabel,
   preview = false,
   className,
   ...props
 }: MobileScreenHeaderProps) {
   const navigate = useNavigate()
   const isScrolled = useScrollShadow()
-  const LeftIcon = variant === 'independent' ? X : ArrowLeft
-  const defaultLeftLabel = variant === 'independent' ? '닫기' : '이전 화면으로 이동'
+  const LeftIcon = leftAction.type === 'close' ? X : ArrowLeft
+  const defaultLeftLabel = leftAction.type === 'close' ? '닫기' : '이전 화면으로 이동'
 
-  const handleBack = () => {
-    if (onBack) {
-      onBack()
+  const handleLeftAction = () => {
+    if (leftAction.onClick) {
+      leftAction.onClick()
       return
     }
 
-    if (backTo) {
-      navigate(backTo)
+    if (leftAction.to) {
+      navigate(leftAction.to)
       return
     }
 
@@ -60,14 +52,18 @@ export default function MobileScreenHeader({
       {...props}
     >
       <div className="relative flex h-full items-center justify-between">
-        <button
-          type="button"
-          className="relative z-10 -ml-2.5 flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          onClick={handleBack}
-          aria-label={leftAriaLabel ?? defaultLeftLabel}
-        >
-          <LeftIcon aria-hidden className="size-6" />
-        </button>
+        {leftAction.type === 'none' ? (
+          <span className="size-11" aria-hidden />
+        ) : (
+          <button
+            type="button"
+            className="relative z-10 -ml-2.5 flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            onClick={handleLeftAction}
+            aria-label={leftAction.ariaLabel ?? defaultLeftLabel}
+          >
+            <LeftIcon aria-hidden className="size-6" />
+          </button>
+        )}
 
         <h1 className="pointer-events-none absolute left-1/2 w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 truncate text-center typo-m-heading3 text-black">
           {title}

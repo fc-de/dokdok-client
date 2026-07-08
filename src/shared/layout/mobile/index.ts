@@ -6,11 +6,13 @@ export type { MobileLayoutFrameProps } from './MobileLayoutFrame'
 export { default as MobileLayoutFrame } from './MobileLayoutFrame'
 export type { MobileMainHeaderProps } from './MobileMainHeader'
 export { default as MobileMainHeader } from './MobileMainHeader'
-export type { MobileScreenHeaderProps, MobileScreenHeaderVariant } from './MobileScreenHeader'
+export type { MobileScreenHeaderProps } from './MobileScreenHeader'
 export { default as MobileScreenHeader } from './MobileScreenHeader'
 export type {
   MobileBottomCTAConfig,
   MobileBottomNavigationItem,
   MobileHeaderAction,
+  MobileHeaderLeftAction,
+  MobileHeaderLeftActionType,
   MobileLayoutVariant,
 } from './types'

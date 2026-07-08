@@ -34,9 +34,9 @@ export default function BookDetailPage() {
 
   return (
     <MobileLayoutFrame
-      variant="content"
+      variant="header"
       title={bookDetail?.title ?? '도서 상세'}
-      backTo={ROUTES.BOOKS}
+      leftAction={{ type: 'back', to: ROUTES.BOOKS }}
       headerAction={{
         label: '삭제',
         onClick: () => handleDelete(),
