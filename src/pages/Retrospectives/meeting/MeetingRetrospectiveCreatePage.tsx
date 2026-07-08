@@ -12,6 +12,7 @@ import FormPageHeader from '@/shared/components/FormPageHeader'
 // import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import {
   Accordion,
@@ -117,11 +118,24 @@ export default function MeetingRetrospectiveCreatePage() {
   if (gatheringId === 0 || meetingId === 0) return null
 
   return (
-    <>
+    <MobileLayoutFrame
+      variant="header"
+      title="약속 회고 생성하기"
+      leftAction={{ type: 'close', to: ROUTES.MEETING_DETAIL(gatheringId, meetingId) }}
+      bottomCTA={{
+        label: 'AI 요약 시작하기',
+        loadingLabel: '요약 생성 중...',
+        onClick: handleStartAiSummary,
+        disabled: totalCount === 0 || sttMutation.isPending,
+        loading: sttMutation.isPending,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <FormPageHeader
         title="약속 회고"
         subTitle="사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요"
         to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
+        className="max-lg:hidden"
       >
         <Button
           variant="ai"
@@ -251,6 +265,6 @@ export default function MeetingRetrospectiveCreatePage() {
       </div>
 
       <AiLoadingOverlay isOpen={sttMutation.isPending} onCancel={() => sttMutation.cancel()} />
-    </>
+    </MobileLayoutFrame>
   )
 }

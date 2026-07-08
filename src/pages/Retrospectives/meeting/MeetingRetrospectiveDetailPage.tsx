@@ -8,6 +8,7 @@ import {
 } from '@/features/retrospectives/meeting'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Card, Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
@@ -38,12 +39,22 @@ export default function MeetingRetrospectiveDetailPage() {
   if (gatheringId === 0 || meetingId === 0) return null
 
   return (
-    <>
-      <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} />
+    <MobileLayoutFrame
+      variant="header"
+      title="약속 회고"
+      leftAction={{ type: 'close', to: ROUTES.MEETING_DETAIL(gatheringId, meetingId) }}
+      className="min-h-screen bg-grey-100 max-lg:bg-white"
+      contentClassName="max-lg:bg-white"
+    >
+      <SubPageHeader
+        label="뒤로가기"
+        to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
+        className="max-lg:hidden"
+      />
       {/* 헤더: 타이틀 */}
 
       <div className="mx-auto max-w-layout-max px-layout-padding">
-        <div className="flex flex-col gap-xtiny mb-base">
+        <div className="flex flex-col gap-xtiny mb-base max-lg:hidden">
           <h3 className="text-black typo-heading3">약속 회고</h3>
           <p className="text-grey-600 typo-caption1">
             약속 회고는 모임의 내용을 함께 돌아보고 각자의 생각을 마무리하는 곳이에요
@@ -109,6 +120,6 @@ export default function MeetingRetrospectiveDetailPage() {
           <RetrospectiveComments meetingId={meetingId} meetingLeaderId={data.meetingLeaderId} />
         )}
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }
