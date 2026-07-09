@@ -123,11 +123,16 @@ export default function BookListPage() {
 
   if (isEditMode) {
     return (
-      <div>
-        <SubPageHeader label="내 책장" to={ROUTES.BOOKS} />
-        <div className="mx-auto max-w-layout-max px-layout-padding">
+      <MobileLayoutFrame
+        variant="header"
+        title="내 책장 편집하기"
+        leftAction={{ type: 'back', to: ROUTES.BOOKS }}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <SubPageHeader label="내 책장" to={ROUTES.BOOKS} className="max-lg:hidden" />
+        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
           <div className="flex justify-between items-center pb-tiny mb-9.25">
-            <h3 className="typo-heading3 text-black">내 책장 편집하기</h3>
+            <h3 className="typo-heading3 text-black max-lg:hidden">내 책장 편집하기</h3>
             <div className="flex gap-xsmall items-center">
               <TextButton onClick={handleSelectAll}>
                 {isAllSelected ? '전체해제' : '전체선택'}
@@ -149,7 +154,7 @@ export default function BookListPage() {
             onFilteredBooksChange={handleFilteredBooksChange}
           />
         </div>
-      </div>
+      </MobileLayoutFrame>
     )
   }
 
