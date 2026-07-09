@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
 
 import { ROUTES } from '@/shared/constants'
 import { useDevice } from '@/shared/hooks'
@@ -18,14 +17,8 @@ export default function MeetingDetailInfoPage() {
   const gatheringId = Number.isFinite(parsedGatheringId) ? parsedGatheringId : 0
   const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : 0
 
-  useEffect(() => {
-    if (isWeb && gatheringId !== 0 && meetingId !== 0) {
-      navigate(ROUTES.MEETING_DETAIL(gatheringId, meetingId), { replace: true })
-    }
-  }, [gatheringId, isWeb, meetingId, navigate])
-
   if (gatheringId === 0 || meetingId === 0) return null
-  if (isWeb) return null
+  if (isWeb) return <Navigate to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} replace />
 
   return (
     <MobileLayoutFrame
