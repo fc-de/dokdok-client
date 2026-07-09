@@ -400,6 +400,7 @@ function MobileLayoutSection() {
   variant="header"
   title="약속 만들기"
   leftAction={{ type: 'close' }}
+  headerAction={{ label: '저장하기', onClick: handleSave }}
   bottomCTA={{ label: '만들기', onClick: handleSubmit }}
   preview
 >
