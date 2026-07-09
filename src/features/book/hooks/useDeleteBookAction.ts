@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 
+import { logger } from '@/api/logger'
 import { ROUTES } from '@/shared/constants/routes'
 import { useGlobalModalStore } from '@/store'
 
@@ -28,7 +29,8 @@ export function useDeleteBookAction() {
       await deleteBook(bookIds)
       navigate(ROUTES.BOOKS)
       return true
-    } catch {
+    } catch (error) {
+      logger.error(error)
       await openConfirm('삭제 실패', '책 삭제에 실패했습니다.\n잠시 후 다시 시도해주세요.', {
         confirmText: '확인',
       })
