@@ -50,6 +50,27 @@ const mobileLayout = [...matches].reverse().find((match) => match.handle?.mobile
 
 정적 정보는 라우트 `handle`에 둔다. 페이지 상태가 필요한 저장, 삭제, CTA, dirty confirm 등은 페이지 내부에서 `useMobileLayout()` 같은 hook으로 동적 override한다.
 
+### 모바일 폭 정책
+
+모바일 레이아웃 적용 기준은 기존 반응형 기준과 동일하게 `1024px` 미만으로 유지한다. 다만 모바일 UI가 태블릿 폭에서 지나치게 퍼지지 않도록 모바일 레이아웃 자체의 최소/최대 폭은 별도로 제한한다.
+
+- 적용 기준: `1024px` 미만
+- 최소 너비: `375px`
+  - `375px` 미만 viewport에서는 모바일 레이아웃에 `min-width: 375px`를 적용해 가로 스크롤을 허용한다.
+- 최대 콘텐츠 너비: `768px`
+  - `1024px` 미만 viewport에서도 모바일 UI의 헤더, 콘텐츠, 하단 CTA, 하단 GNB는 `max-width: 768px`를 넘지 않도록 한다.
+  - `768px`보다 넓은 모바일/태블릿 구간에서는 모바일 UI를 가운데 정렬한다.
+- 배경: 모바일 레이아웃 바깥 영역과 프레임 배경은 흰색을 기본으로 유지한다.
+
+권장 토큰:
+
+```css
+--spacing-mobile-min-width: 375px;
+--spacing-mobile-content-max: 768px;
+```
+
+`fixed`로 배치되는 모바일 헤더, 하단 CTA, 하단 GNB는 바깥 fixed 영역을 viewport 전체에 유지하되, 실제 콘텐츠를 담는 내부 wrapper에 `min-width`, `max-width`, `margin: 0 auto`를 적용한다. 이렇게 하면 작은 화면에서는 의도한 최소 폭을 보장하고, 태블릿 구간에서는 모바일 UI가 과도하게 넓어지는 것을 막을 수 있다.
+
 ### 라우터와 페이지 hook의 책임 분리
 
 상단 헤더의 좌측 액션, 우측 액션, 하단 CTA는 대부분 페이지 내부 상태와 mutation에 의존하므로 router에 직접 넣지 않는다.
