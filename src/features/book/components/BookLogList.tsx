@@ -96,7 +96,7 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
       {/* 감상 기록 헤더 - sticky */}
       <div
         className={cn(
-          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow max-lg:top-12.25',
+          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow max-lg:top-[var(--spacing-mobile-header-height)]',
           isSticky && 'shadow-drop-bottom'
         )}
       >
