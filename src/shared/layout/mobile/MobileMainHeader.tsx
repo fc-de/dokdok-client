@@ -62,12 +62,16 @@ export default function MobileMainHeader({
             <Bell aria-hidden className="size-6 fill-current stroke-current" />
           </button>
 
-          <Popover open={isMyPageOpen} onOpenChange={setIsMyPageOpen}>
+          <Popover
+            open={isMyPageOpen}
+            onOpenChange={(open) => setIsMyPageOpen(isLoggedIn && open)}
+          >
             <PopoverTrigger asChild>
               <button
                 type="button"
-                className="flex size-11 -mr-2 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                aria-label="마이페이지 메뉴"
+                className="flex size-11 -mr-2 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed"
+                aria-label={isLoggedIn ? '마이페이지 메뉴' : '로그인 후 이용할 수 있습니다'}
+                disabled={!isLoggedIn}
               >
                 <Avatar className="size-7">
                   <AvatarImage src={user?.profileImageUrl ?? ''} alt="프로필 이미지" />
