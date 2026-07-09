@@ -50,11 +50,11 @@ export default function MobileLayoutFrame({
 
   return (
     <div className={cn('bg-white', preview && 'relative overflow-hidden', className)} {...props}>
-      {variant === 'navigation' && (
+      {hasMainNavigation && (
         <MobileMainHeader onNotificationClick={onNotificationClick} preview={preview} />
       )}
 
-      {variant === 'header' && title && (
+      {hasScreenHeader && (
         <MobileScreenHeader
           title={title}
           subtitle={subtitle}
