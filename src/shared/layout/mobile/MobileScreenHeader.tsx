@@ -9,15 +9,19 @@ import type { MobileHeaderAction, MobileHeaderLeftAction } from './types'
 
 export type MobileScreenHeaderProps = Omit<React.ComponentProps<'header'>, 'title'> & {
   title: string
+  subtitle?: string
   leftAction?: MobileHeaderLeftAction
   headerAction?: MobileHeaderAction
+  headerActionSlot?: React.ReactNode
   preview?: boolean
 }
 
 export default function MobileScreenHeader({
   title,
+  subtitle,
   leftAction = { type: 'back' },
   headerAction,
+  headerActionSlot,
   preview = false,
   className,
   ...props
@@ -65,11 +69,14 @@ export default function MobileScreenHeader({
           </button>
         )}
 
-        <h1 className="pointer-events-none absolute left-1/2 w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 truncate text-center typo-m-heading3 text-black">
-          {title}
-        </h1>
+        <div className="pointer-events-none absolute left-1/2 flex w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 flex-col items-center text-center">
+          <h1 className="w-full truncate typo-m-heading3 text-black">{title}</h1>
+          {subtitle && <p className="w-full truncate typo-caption1 text-grey-600">{subtitle}</p>}
+        </div>
 
-        {headerAction ? (
+        {headerActionSlot ? (
+          headerActionSlot
+        ) : headerAction ? (
           <button
             type="button"
             className="relative z-10 max-w-18 truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"

@@ -17,8 +17,10 @@ import type {
 export type MobileLayoutFrameProps = Omit<React.ComponentProps<'div'>, 'title'> & {
   variant?: MobileLayoutVariant
   title?: string
+  subtitle?: string
   leftAction?: MobileHeaderLeftAction
   headerAction?: MobileHeaderAction
+  headerActionSlot?: React.ReactNode
   bottomCTA?: MobileBottomCTAConfig
   navigationItems?: MobileBottomNavigationItem[]
   contentClassName?: string
@@ -29,8 +31,10 @@ export type MobileLayoutFrameProps = Omit<React.ComponentProps<'div'>, 'title'> 
 export default function MobileLayoutFrame({
   variant = 'none',
   title,
+  subtitle,
   leftAction,
   headerAction,
+  headerActionSlot,
   bottomCTA,
   navigationItems,
   contentClassName,
@@ -53,8 +57,10 @@ export default function MobileLayoutFrame({
       {variant === 'header' && title && (
         <MobileScreenHeader
           title={title}
+          subtitle={subtitle}
           leftAction={leftAction}
           headerAction={headerAction}
+          headerActionSlot={headerActionSlot}
           preview={preview}
         />
       )}
