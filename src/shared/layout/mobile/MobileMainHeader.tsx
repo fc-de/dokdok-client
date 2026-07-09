@@ -62,10 +62,7 @@ export default function MobileMainHeader({
             <Bell aria-hidden className="size-6 fill-current stroke-current" />
           </button>
 
-          <Popover
-            open={isMyPageOpen}
-            onOpenChange={(open) => setIsMyPageOpen(isLoggedIn && open)}
-          >
+          <Popover open={isMyPageOpen} onOpenChange={(open) => setIsMyPageOpen(isLoggedIn && open)}>
             <PopoverTrigger asChild>
               <button
                 type="button"
