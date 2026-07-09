@@ -43,7 +43,7 @@ export default function MeetingRetrospectiveDetailPage() {
       variant="header"
       title="약속 회고"
       leftAction={{ type: 'close', to: ROUTES.MEETING_DETAIL(gatheringId, meetingId) }}
-      className="min-h-screen bg-grey-100 max-lg:bg-white"
+      className="min-h-dvh bg-grey-100 max-lg:bg-white lg:min-h-0"
       contentClassName="max-lg:bg-white"
     >
       <SubPageHeader
