@@ -1,8 +1,8 @@
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
-import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
 import BookIcon from '@/shared/assets/icon/book.svg?react'
+import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
 import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
 import HomeIcon from '@/shared/assets/icon/home.svg?react'
 import {

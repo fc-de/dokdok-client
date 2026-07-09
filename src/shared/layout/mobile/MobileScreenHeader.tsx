@@ -69,7 +69,7 @@ export default function MobileScreenHeader({
           </button>
         )}
 
-        <div className="pointer-events-none absolute left-1/2 flex w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 flex-col items-center text-center">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 flex w-[calc(100%-8rem)] max-w-50 -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center">
           <h1 className="w-full truncate typo-m-heading3 text-black">{title}</h1>
           {subtitle && <p className="w-full truncate typo-caption1 text-grey-600">{subtitle}</p>}
         </div>
