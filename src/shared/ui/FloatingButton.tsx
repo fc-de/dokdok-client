@@ -37,7 +37,7 @@ const FloatingButton = React.forwardRef<HTMLButtonElement, FloatingButtonProps>(
           'hidden max-lg:inline-flex',
           'h-11.5 rounded-full px-4.5 gap-1 shadow-fab',
           hasBottomMenu
-            ? 'bottom-[calc(var(--spacing-mobile-bottom-nav-height)+16px)]'
+            ? 'bottom-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom)+16px)]'
             : 'bottom-10',
           className
         )}
