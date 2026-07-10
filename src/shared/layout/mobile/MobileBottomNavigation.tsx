@@ -31,6 +31,7 @@ export default function MobileBottomNavigation({
       aria-label="하단 내비게이션"
       className={cn(
         preview ? 'absolute inset-x-0 bottom-0 z-10' : 'fixed inset-x-0 bottom-0 z-50 lg:hidden',
+        !preview && 'mobile-frame',
         'border-t border-grey-300 bg-white pb-[env(safe-area-inset-bottom)]',
         className
       )}

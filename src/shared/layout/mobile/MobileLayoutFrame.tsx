@@ -67,6 +67,7 @@ export default function MobileLayoutFrame({
 
       <div
         className={cn(
+          !preview && 'max-lg:mobile-frame',
           hasMainNavigation && !preview && 'pt-13 lg:pt-0',
           hasScreenHeader && !preview && 'pt-12.25 lg:pt-0',
           hasMainNavigation && 'pb-[calc(4.25rem+env(safe-area-inset-bottom))] lg:pb-0',
