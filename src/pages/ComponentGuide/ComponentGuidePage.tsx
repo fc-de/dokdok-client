@@ -1469,35 +1469,35 @@ function TabsSection() {
       <Showcase
         title="큰 크기"
         description="size='large'"
-        code={`<Tabs defaultValue="overview">
+        code={`<Tabs defaultValue="content">
   <TabsList size="large">
-    <TabsTrigger value="overview" size="large" badge={<Badge color="blue">5</Badge>}>
-      개요
+    <TabsTrigger value="content" size="large" badge={3}>
+      내용
     </TabsTrigger>
-    <TabsTrigger value="details" size="large">상세</TabsTrigger>
+    <TabsTrigger value="other" size="large">다른 내용</TabsTrigger>
   </TabsList>
-  <TabsContent value="overview">
-    <Card>뱃지 카운트가 있는 개요</Card>
+  <TabsContent value="content">
+    <Card>뱃지 카운트가 있는 내용</Card>
   </TabsContent>
 </Tabs>`}
       >
-        <Tabs defaultValue="overview" className="w-96">
+        <Tabs defaultValue="content" className="w-96">
           <TabsList size="large">
-            <TabsTrigger value="overview" size="large" badge={<Badge color="blue">5</Badge>}>
-              개요
+            <TabsTrigger value="content" size="large" badge={3}>
+              내용
             </TabsTrigger>
-            <TabsTrigger value="details" size="large">
-              상세
+            <TabsTrigger value="other" size="large">
+              다른 내용
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="overview">
+          <TabsContent value="content">
             <Card>
-              <div className="typo-body3">뱃지 카운트가 있는 개요</div>
+              <div className="typo-body3">뱃지 카운트가 있는 내용</div>
             </Card>
           </TabsContent>
-          <TabsContent value="details">
+          <TabsContent value="other">
             <Card>
-              <div className="typo-body3">상세 정보</div>
+              <div className="typo-body3">다른 내용 컨텐츠</div>
             </Card>
           </TabsContent>
         </Tabs>
