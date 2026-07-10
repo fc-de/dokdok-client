@@ -853,7 +853,7 @@ function AvatarSection() {
 
       <Showcase
         title="크기"
-        description="size prop (badge size)"
+        description="size prop (Avatar & badge size)"
         code={`<Avatar variant="leader" size="sm">
   <AvatarImage src="..." alt="Small" />
 </Avatar>
