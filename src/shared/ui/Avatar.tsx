@@ -9,6 +9,13 @@ import { cn } from '../lib/utils'
 
 type AvatarVariant = 'leader' | 'host' | 'member'
 type AvatarSize = 'default' | 'sm'
+type AvatarBadgeVariant = Exclude<AvatarVariant, 'member'>
+
+type AvatarBadgeConfig = {
+  src: string
+  alt: string
+  iconSizeClasses: Record<AvatarSize, string>
+}
 
 const avatarSizeClasses: Record<AvatarSize, string> = {
   default: 'size-8',
@@ -23,6 +30,19 @@ const badgeSizeClasses: Record<AvatarSize, string> = {
 const badgePositionClasses: Record<AvatarSize, string> = {
   default: '-top-0.5 -right-0.5',
   sm: '-top-px -right-px',
+}
+
+const avatarBadgeConfigs: Record<AvatarBadgeVariant, AvatarBadgeConfig> = {
+  leader: {
+    src: CrownIcon,
+    alt: '모임장 표시',
+    iconSizeClasses: { default: 'size-2.5', sm: 'size-2' },
+  },
+  host: {
+    src: StarIcon,
+    alt: '약속장 표시',
+    iconSizeClasses: { default: 'size-2', sm: 'size-1.5' },
+  },
 }
 
 export interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {
@@ -70,41 +90,24 @@ function Avatar({
   const isGrouped = React.useContext(AvatarGroupContext)
 
   const getBadgeIcon = () => {
-    const isSmall = size === 'sm'
+    if (variant === 'member') return null
 
-    if (variant === 'leader') {
-      return (
-        <div
-          className={cn(
-            'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
-            badgePositionClasses[size],
-            badgeSizeClasses[size]
-          )}
-        >
-          <img src={CrownIcon} className={isSmall ? 'size-2' : 'size-2.5'} alt="모임장 표시" />
-          {disabled && (
-            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
-          )}
-        </div>
-      )
-    }
-    if (variant === 'host') {
-      return (
-        <div
-          className={cn(
-            'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
-            badgePositionClasses[size],
-            badgeSizeClasses[size]
-          )}
-        >
-          <img src={StarIcon} className={isSmall ? 'size-1.5' : 'size-2'} alt="약속장 표시" />
-          {disabled && (
-            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
-          )}
-        </div>
-      )
-    }
-    return null
+    const badge = avatarBadgeConfigs[variant]
+
+    return (
+      <div
+        className={cn(
+          'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
+          badgePositionClasses[size],
+          badgeSizeClasses[size]
+        )}
+      >
+        <img src={badge.src} className={badge.iconSizeClasses[size]} alt={badge.alt} />
+        {disabled && (
+          <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
+        )}
+      </div>
+    )
   }
 
   return (
