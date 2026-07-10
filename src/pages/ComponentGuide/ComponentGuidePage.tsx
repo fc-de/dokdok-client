@@ -3,6 +3,7 @@ import { useState } from 'react'
 
 import BookIcon from '@/shared/assets/icon/book.svg?react'
 import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import { useDevice } from '@/shared/hooks'
 import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
 import HomeIcon from '@/shared/assets/icon/home.svg?react'
 import {
@@ -873,6 +874,25 @@ function AvatarSection() {
       </Showcase>
 
       <Showcase
+        title="사용처 반응형 적용"
+        description="전역 스타일 대신 사용처에서 화면 크기에 맞는 size를 결정합니다."
+        code={`import { useDevice } from '@/shared/hooks'
+
+function MemberAvatar() {
+  const { isMobile } = useDevice()
+
+  return (
+    <Avatar size={isMobile ? 'sm' : 'default'}>
+      <AvatarImage src="..." alt="Member" />
+      <AvatarFallback>M</AvatarFallback>
+    </Avatar>
+  )
+}`}
+      >
+        <ResponsiveAvatarExample />
+      </Showcase>
+
+      <Showcase
         title="상태"
         code={`<Avatar disabled>
   <AvatarImage src="..." alt="Disabled" />
@@ -936,6 +956,20 @@ function AvatarSection() {
         </AvatarGroup>
       </Showcase>
     </Section>
+  )
+}
+
+function ResponsiveAvatarExample() {
+  const { isMobile } = useDevice()
+
+  return (
+    <Avatar size={isMobile ? 'sm' : 'default'}>
+      <AvatarImage
+        src="https://api.dicebear.com/7.x/avataaars/svg?seed=ResponsiveMember"
+        alt="Member"
+      />
+      <AvatarFallback>M</AvatarFallback>
+    </Avatar>
   )
 }
 
