@@ -94,7 +94,7 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function
           <div className="px-medium py-small w-full max-w-[375px]">
             <BottomSheetClose asChild>
               <Button size="large" className="w-full">
-                확인
+                완료
               </Button>
             </BottomSheetClose>
           </div>
