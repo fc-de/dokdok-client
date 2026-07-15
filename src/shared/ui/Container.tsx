@@ -32,7 +32,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
     <div
       ref={ref}
       className={cn(
-        'bg-white rounded-base p-large shadow-drop flex flex-col gap-medium',
+        'bg-white rounded-base p-large shadow-drop flex flex-col gap-medium max-lg:rounded-mall max-lg:p-base max-lg:gap-small',
         className
       )}
     >
@@ -45,7 +45,7 @@ function Title({ className, children, required, errorMessage, infoMessage, badge
   return (
     <div className="flex flex-col gap-medium">
       {infoMessage && (
-        <div className="flex gap-tiny text-purple-200">
+        <div className="flex gap-tiny text-purple-200 typo-m-caption1">
           <FilledInfoIcon size={18} />
           {infoMessage}
         </div>
