@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 
-import { Header } from './components'
+import GlobalHeader from './GlobalHeader'
 
 /**
  * FullWidthLayout (전체 너비 레이아웃)
@@ -12,7 +12,7 @@ import { Header } from './components'
 export default function FullWidthLayout() {
   return (
     <>
-      <Header />
+      <GlobalHeader />
       <main>
         <Outlet />
       </main>

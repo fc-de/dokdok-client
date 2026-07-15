@@ -11,6 +11,7 @@ import TopicItem from '@/features/pre-opinion/components/TopicItem'
 import { usePreOpinion, useSavePreOpinion, useSubmitPreOpinion } from '@/features/pre-opinion/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants/routes'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { Card, Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -199,32 +200,53 @@ export default function PreOpinionWritePage() {
     })
   }, [buildSaveBody, buildSubmitBody, saveAsync, submitAsync, openError])
 
+  const isMobileSaveDisabled = isLoading || isSaving || !isReviewValid
+  const mobileHeaderAction = {
+    label: isSaving ? '저장 중...' : '저장하기',
+    onClick: handleSave,
+    disabled: isMobileSaveDisabled,
+  }
+
   if (isLoading || !preOpinion) {
     return (
-      <>
-        <SubPageHeader disableShadow />
+      <MobileLayoutFrame
+        variant="header"
+        title="사전 의견 작성하기"
+        leftAction={{ type: 'close', onClick: () => navigate(-1) }}
+        headerAction={mobileHeaderAction}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <SubPageHeader disableShadow className="max-lg:hidden" />
         <div className="flex items-center justify-center py-xlarge">
           <Spinner />
         </div>
-      </>
+      </MobileLayoutFrame>
     )
   }
 
   return (
-    <>
-      <SubPageHeader disableShadow />
-      <PreOpinionWriteHeader
-        book={preOpinion.book}
-        updatedAt={preOpinion.preOpinion.updatedAt}
-        onSave={handleSave}
-        onSubmit={handleOpenPreview}
-        isSaving={isSaving}
-        isSubmitting={isSubmitting}
-        isReviewValid={isReviewValid}
-      />
+    <MobileLayoutFrame
+      variant="header"
+      title="사전 의견 작성하기"
+      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
+      headerAction={mobileHeaderAction}
+      className="min-h-dvh lg:min-h-0"
+    >
+      <SubPageHeader disableShadow className="max-lg:hidden" />
+      <div className="max-lg:hidden">
+        <PreOpinionWriteHeader
+          book={preOpinion.book}
+          updatedAt={preOpinion.preOpinion.updatedAt}
+          onSave={handleSave}
+          onSubmit={handleOpenPreview}
+          isSaving={isSaving}
+          isSubmitting={isSubmitting}
+          isReviewValid={isReviewValid}
+        />
+      </div>
 
-      <div className="bg-grey-100">
-        <section className="max-w-300 mx-auto py-large flex flex-col gap-base">
+      <div className="bg-grey-100 max-lg:min-h-dvh">
+        <section className="max-w-300 mx-auto py-large flex flex-col gap-base max-lg:px-5 max-lg:py-5">
           <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-2.5 rounded-small">
             <p className="typo-caption1">
               작성하신 사전 의견은 약속 당일이 되면 멤버들에게 자동으로 공개돼요.
@@ -250,6 +272,6 @@ export default function PreOpinionWritePage() {
           onGoToBook={() => navigate(ROUTES.BOOK_DETAIL(preOpinion.book.bookId))}
         />
       )}
-    </>
+    </MobileLayoutFrame>
   )
 }

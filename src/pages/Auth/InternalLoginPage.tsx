@@ -33,7 +33,7 @@ export default function InternalLoginPage() {
   }
 
   return (
-    <div className="flex h-135 w-100 flex-col items-center justify-center gap-12 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop">
+    <div className="flex h-135 w-100 flex-col items-center justify-center gap-12 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:rounded-none max-lg:px-5 max-lg:shadow-none">
       <div className="flex flex-col items-center gap-base">
         <h1 className="typo-heading2 text-grey-800">INTERNAL LOGIN</h1>
         <p className="typo-body2 text-grey-600">내부 전용 테스트 로그인</p>

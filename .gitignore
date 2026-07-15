@@ -36,5 +36,7 @@ dist-ssr
 CLAUDE.md
 .claude/
 
+.agents/
+
 # docs
 /docs

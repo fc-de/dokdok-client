@@ -118,8 +118,12 @@
   --spacing-layout-padding: 120px;
   --spacing-gnb-height: 64px;
   --spacing-sub-page-header-height: 59px;
-  /* TODO: 모바일 하단 내비게이션 레이아웃 확정 후 실제 높이에 맞게 조절 필요 */
-  --spacing-mobile-bottom-nav-height: 89px;
+  --spacing-mobile-header-height: 49px;
+  /* 하단 GNB 실제 높이 */
+  --spacing-mobile-bottom-nav-height: 69px;
+  /* 모바일 프레임 폭 정책 */
+  --spacing-mobile-min-width: 375px;
+  --spacing-mobile-content-max: 768px;
 
   /* font-size tokens */
   --text-heading1: 36px;
@@ -282,6 +286,13 @@
 @utility shadow-drop-bottom {
   /* 아래쪽에만 그림자 (sticky 헤더용) */
   box-shadow: 0 4px 8px -4px rgba(17, 17, 17, 0.08);
+}
+
+@utility mobile-frame {
+  /* 모바일 UI 콘텐츠/헤더/하단 CTA 공통 폭 정책: 최소 375, 최대 768, 가운데 정렬 */
+  min-width: var(--spacing-mobile-min-width);
+  max-width: var(--spacing-mobile-content-max);
+  margin-inline: auto;
 }
 
 @utility sticky-below-subheader {

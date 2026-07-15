@@ -12,6 +12,7 @@ import {
 } from '@/features/retrospectives'
 import FormPageHeader from '@/shared/components/FormPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Button } from '@/shared/ui'
 
@@ -137,13 +138,51 @@ export default function MeetingRetrospectiveResultPage() {
 
   // topic 표시는 항상 서버 원본(SummaryTopic[])을 사용, 편집 상태는 별도 prop으로 전달
   const displayTopics = summaryData?.topics ?? []
+  const mobileTitle = isEditing ? '약속 회고 수정' : '약속 회고'
+  const mobileBottomCTA = isEditing
+    ? {
+        label: '수정 완료',
+        loadingLabel: '수정 중...',
+        onClick: handleSaveEdit,
+        disabled: updateMutation.isPending,
+        loading: updateMutation.isPending,
+      }
+    : summaryData && !summaryData.isPublished
+      ? {
+          label: '약속 회고 생성하기',
+          loadingLabel: '생성 중...',
+          onClick: handlePublish,
+          disabled: publishMutation.isPending,
+          loading: publishMutation.isPending,
+        }
+      : undefined
+  const mobileHeaderAction =
+    !isEditing && summaryData && !summaryData.isPublished
+      ? {
+          label: '수정하기',
+          onClick: handleStartEdit,
+        }
+      : undefined
 
   return (
-    <div className="min-h-screen bg-grey-100">
+    <MobileLayoutFrame
+      variant="header"
+      title={mobileTitle}
+      leftAction={{
+        type: 'back',
+        to: ROUTES.MEETING_DETAIL(gatheringId, meetingId),
+        onClick: isEditing ? () => setIsEditing(false) : undefined,
+      }}
+      headerAction={mobileHeaderAction}
+      bottomCTA={mobileBottomCTA}
+      className="min-h-screen bg-grey-100 max-lg:bg-white"
+      contentClassName="max-lg:bg-white"
+    >
       <FormPageHeader
         title="약속 회고"
         to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
         onBack={isEditing ? () => setIsEditing(false) : undefined}
+        className="max-lg:hidden"
       >
         {isEditing ? (
           <Button
@@ -178,7 +217,7 @@ export default function MeetingRetrospectiveResultPage() {
       </FormPageHeader>
 
       {/* 회고 콘텐츠 영역 */}
-      <div className="mx-auto max-w-layout-max px-layout-padding mt-base flex flex-col gap-medium pb-xlarge">
+      <div className="mx-auto max-w-layout-max px-layout-padding mt-base flex flex-col gap-medium pb-xlarge max-lg:mt-0 max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
         {/* 안내 배너 (미발행 + 보기 모드일 때) */}
         {!isEditing && !aiSuccess && <SummaryInfoBanner variant="error" />}
         {!isEditing && aiSuccess && summaryData && !summaryData.isPublished && (
@@ -222,6 +261,6 @@ export default function MeetingRetrospectiveResultPage() {
           </div>
         )}
       </div>
-    </div>
+    </MobileLayoutFrame>
   )
 }

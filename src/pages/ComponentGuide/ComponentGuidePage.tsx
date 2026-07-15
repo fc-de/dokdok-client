@@ -1,7 +1,17 @@
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
+import BookIcon from '@/shared/assets/icon/book.svg?react'
 import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
+import HomeIcon from '@/shared/assets/icon/home.svg?react'
+import {
+  MobileBottomCTA,
+  MobileBottomNavigation,
+  MobileLayoutFrame,
+  MobileMainHeader,
+  MobileScreenHeader,
+} from '@/shared/layout'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
   Avatar,
@@ -74,6 +84,7 @@ function ComponentGuidePage() {
     { id: 'avatar', name: 'Avatar', category: '표시' },
     { id: 'card', name: 'Card', category: '레이아웃' },
     { id: 'container', name: 'Container', category: '레이아웃' },
+    { id: 'mobileLayout', name: 'Mobile Layout', category: '레이아웃' },
     { id: 'input', name: 'Input', category: '폼' },
     { id: 'textarea', name: 'Textarea', category: '폼' },
     { id: 'searchField', name: 'SearchField', category: '폼' },
@@ -184,6 +195,7 @@ function ComponentGuidePage() {
           {selectedSection === 'avatar' && <AvatarSection />}
           {selectedSection === 'card' && <CardSection />}
           {selectedSection === 'container' && <ContainerSection />}
+          {selectedSection === 'mobileLayout' && <MobileLayoutSection />}
           {selectedSection === 'input' && <InputSection />}
           {selectedSection === 'textarea' && <TextareaSection />}
           {selectedSection === 'searchField' && <SearchFieldSection />}
@@ -271,6 +283,166 @@ function Showcase({
         </div>
       )}
     </Card>
+  )
+}
+
+function PhonePreview({ children, height = 420 }: { children: React.ReactNode; height?: number }) {
+  return (
+    <div
+      className="relative w-93.75 max-w-full overflow-hidden rounded-medium border border-grey-300 bg-white shadow-drop"
+      style={{ height }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function MobileLayoutSection() {
+  const guideNavigationItems = [
+    { label: '홈', path: '/component-guide', icon: HomeIcon, end: true },
+    { label: '내 책장', path: '/books', icon: BookIcon },
+    { label: '독서모임', path: '/gatherings', icon: GatheringIcon },
+  ]
+
+  return (
+    <Section
+      title="Mobile Layout"
+      description="모바일 반응형 화면 유형별로 조합할 수 있는 opt-in 레이아웃 컴포넌트"
+    >
+      <Showcase
+        title="MobileMainHeader"
+        description="메인 UI 상단에 사용하는 로고, 알림, 프로필 헤더"
+        code={`<MobileMainHeader preview />`}
+      >
+        <PhonePreview height={180}>
+          <MobileMainHeader preview onNotificationClick={() => showToast('알림')} />
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">메인 콘텐츠 영역</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              로고는 좌측 20px, 알림/프로필은 우측에 배치됩니다.
+            </p>
+          </div>
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileScreenHeader"
+        description="좌측 액션과 우측 액션을 조합하는 상단 앱바"
+        code={`<MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
+<MobileScreenHeader
+  title="타이틀"
+  leftAction={{ type: 'close' }}
+  headerAction={{ label: '저장하기', onClick: handleSave }}
+  preview
+/>`}
+      >
+        <div className="flex flex-wrap gap-medium">
+          <PhonePreview height={150}>
+            <MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
+              이전 화면 이동 UI: 이전 버튼과 중앙 타이틀을 사용합니다.
+            </div>
+          </PhonePreview>
+          <PhonePreview height={150}>
+            <MobileScreenHeader
+              title="타이틀"
+              leftAction={{ type: 'close' }}
+              headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
+              preview
+            />
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
+              닫기 UI: 닫기 버튼과 우측 액션을 사용합니다.
+            </div>
+          </PhonePreview>
+        </div>
+      </Showcase>
+
+      <Showcase
+        title="MobileBottomNavigation"
+        description="1Depth 메인 화면에서 사용하는 하단 GNB"
+        code={`<MobileBottomNavigation preview />`}
+      >
+        <PhonePreview height={220}>
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">하단 GNB 프리뷰</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              높이 68px, 아이콘 24px, 라벨 typo-body5 기준입니다.
+            </p>
+          </div>
+          <MobileBottomNavigation items={guideNavigationItems} preview />
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileBottomCTA"
+        description="독립 작업 화면 하단에 고정되는 주요 CTA"
+        code={`<MobileBottomCTA label="완료하기" onClick={handleSubmit} preview />`}
+      >
+        <PhonePreview height={220}>
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">입력 폼 영역</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              CTA 영역은 20px 좌우 여백과 하단 shadow를 가집니다.
+            </p>
+          </div>
+          <MobileBottomCTA label="완료하기" onClick={() => showToast('완료하기')} preview />
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileLayoutFrame"
+        description="화면 유형별 모바일 크롬을 한 번에 조합하는 wrapper"
+        code={`<MobileLayoutFrame variant="navigation" preview>
+  <PageContent />
+</MobileLayoutFrame>
+
+<MobileLayoutFrame
+  variant="header"
+  title="약속 만들기"
+  leftAction={{ type: 'close' }}
+  headerAction={{ label: '저장하기', onClick: handleSave }}
+  bottomCTA={{ label: '만들기', onClick: handleSubmit }}
+  preview
+>
+  <PageContent />
+</MobileLayoutFrame>`}
+      >
+        <div className="flex flex-wrap gap-medium">
+          <PhonePreview height={520}>
+            <MobileLayoutFrame
+              variant="navigation"
+              navigationItems={guideNavigationItems}
+              onNotificationClick={() => showToast('알림')}
+              preview
+            >
+              <div className="px-5 py-large">
+                <p className="typo-m-heading3 text-black">메인 UI</p>
+                <p className="typo-m-body2 text-grey-600 mt-xtiny">
+                  상단 메인 헤더와 하단 GNB가 함께 렌더링됩니다.
+                </p>
+              </div>
+            </MobileLayoutFrame>
+          </PhonePreview>
+          <PhonePreview height={520}>
+            <MobileLayoutFrame
+              variant="header"
+              title="약속 만들기"
+              leftAction={{ type: 'close' }}
+              headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
+              bottomCTA={{ label: '만들기', onClick: () => showToast('만들기') }}
+              preview
+            >
+              <div className="px-5 py-large">
+                <p className="typo-m-heading3 text-black">독립 화면 UI</p>
+                <p className="typo-m-body2 text-grey-600 mt-xtiny">
+                  상단 앱바와 하단 CTA가 함께 렌더링됩니다.
+                </p>
+              </div>
+            </MobileLayoutFrame>
+          </PhonePreview>
+        </div>
+      </Showcase>
+    </Section>
   )
 }
 

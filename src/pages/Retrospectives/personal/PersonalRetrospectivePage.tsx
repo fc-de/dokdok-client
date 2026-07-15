@@ -9,6 +9,7 @@ import {
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useScrollShadow } from '@/shared/hooks'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showToast } from '@/shared/lib/toast'
 import { cn } from '@/shared/lib/utils'
 import { Button, Spinner } from '@/shared/ui'
@@ -72,17 +73,42 @@ export default function PersonalRetrospectivePage() {
 
   if (!gatheringIdParam || !meetingIdParam) return null
 
+  const headerSubtitle =
+    activeData?.meetingHeaderInfo.bookTitle && activeData?.meetingHeaderInfo.bookAuthor
+      ? `${activeData.meetingHeaderInfo.bookTitle} · ${activeData.meetingHeaderInfo.bookAuthor}`
+      : undefined
+  const isSubmitDisabled = form.isSubmitting || isAnyLoading || isAnyError || !isDataReady
+
+  const handleSubmit = () => {
+    if (isSubmitDisabled) return
+    form.submit()
+  }
+
   return (
-    <div className="flex flex-col min-h-[calc(100vh-var(--spacing-gnb-height))]">
+    <MobileLayoutFrame
+      variant="header"
+      title="개인 회고"
+      subtitle={headerSubtitle}
+      leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringIdParam) }}
+      bottomCTA={{
+        label: '작성 완료',
+        loadingLabel: '작성 중...',
+        onClick: handleSubmit,
+        disabled: isSubmitDisabled,
+        loading: form.isSubmitting,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <SubPageHeader
         label={activeData?.meetingHeaderInfo.gatheringName ?? ''}
         to={ROUTES.GATHERING_DETAIL(gatheringIdParam)}
         disableShadow
+        className="max-lg:hidden"
       />
 
       <div
         className={cn(
-          'sticky sticky-below-subheader z-30 bg-white transition-shadow',
+          'sticky sticky-below-subheader z-30 bg-white transition-shadow max-lg:hidden',
           isScrolled && 'shadow-drop-bottom'
         )}
       >
@@ -98,10 +124,9 @@ export default function PersonalRetrospectivePage() {
             <Button
               onClick={(e) => {
                 e.currentTarget.blur()
-                if (!isDataReady || isAnyLoading || isAnyError) return
-                form.submit()
+                handleSubmit()
               }}
-              disabled={form.isSubmitting || isAnyLoading || isAnyError || !isDataReady}
+              disabled={isSubmitDisabled}
             >
               작성 완료
             </Button>
@@ -130,6 +155,6 @@ export default function PersonalRetrospectivePage() {
           )}
         </div>
       </div>
-    </div>
+    </MobileLayoutFrame>
   )
 }

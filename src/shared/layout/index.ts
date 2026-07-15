@@ -1,5 +1,7 @@
 export { default as AuthLayout } from './AuthLayout'
 export { default as FullWidthLayout } from './FullWidthLayout'
+export { default as GlobalHeader } from './GlobalHeader'
 export { default as LandingLayout } from './LandingLayout'
 export { default as MainLayout } from './MainLayout'
+export * from './mobile'
 export { default as RootLayout } from './RootLayout'

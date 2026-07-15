@@ -7,6 +7,7 @@ import { useBookReviewHistory } from '@/features/book/hooks/useBookReviewHistory
 import { Division } from '@/shared/components/Division'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 
 export default function BookReviewHistoryPage() {
   const { id } = useParams<{ id: string }>()
@@ -16,11 +17,19 @@ export default function BookReviewHistoryPage() {
   const { data: historyData, isLoading } = useBookReviewHistory(bookId)
 
   return (
-    <>
-      <SubPageHeader label={bookDetail?.title ?? '뒤로가기'} to={ROUTES.BOOK_DETAIL(bookId)} />
-      <div className="mx-auto max-w-layout-max px-layout-padding">
-        <section className="py-base">
-          <h2 className="typo-heading2 text-grey-800 mb-large">지난 평가</h2>
+    <MobileLayoutFrame
+      variant="header"
+      title="지난 평가"
+      leftAction={{ type: 'back', to: ROUTES.BOOK_DETAIL(bookId) }}
+    >
+      <SubPageHeader
+        label={bookDetail?.title ?? '뒤로가기'}
+        to={ROUTES.BOOK_DETAIL(bookId)}
+        className="max-lg:hidden"
+      />
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
+        <section className="py-base max-lg:pt-large">
+          <h2 className="typo-heading2 text-grey-800 mb-large max-lg:hidden">지난 평가</h2>
           {isLoading && <div className="mt-medium">로딩중...</div>}
           {historyData?.items.map((item, idx) => (
             <Fragment key={item.bookReviewHistoryId}>
@@ -37,6 +46,6 @@ export default function BookReviewHistoryPage() {
           )}
         </section>
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }
