@@ -12,16 +12,20 @@ import logoText from '@/shared/assets/images/logo-text.png'
  */
 export default function LoginPage() {
   return (
-    <div className="flex h-135 w-100 flex-col items-center justify-center gap-20 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:rounded-none max-lg:px-5 max-lg:shadow-none">
+    <div className="flex h-135 w-100 flex-col items-center justify-center gap-20 rounded-medium bg-white px-12 pb-12 pt-22 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:gap-17 max-lg:rounded-none max-lg:px-5 max-lg:shadow-none max-lg:pt-0 max-lg:pb-0">
       {/* 로고 영역 */}
-      <div className="flex flex-col gap-large">
+      <div className="flex flex-col gap-large max-lg:gap-medium">
         <div className="flex items-center gap-4">
-          <img src={logoIcon} alt="독크독크 로고" className="h-10.5 w-13.75" />
-          <img src={logoText} alt="독크독크" className="h-10.5 w-37.5" />
+          <img
+            src={logoIcon}
+            alt="독크독크 로고"
+            className="h-10.5 w-13.75 max-lg:h-10 max-lg:w-13"
+          />
+          <img src={logoText} alt="독크독크" className="h-10.5 w-37.5 max-lg:h-10 max-lg:w-35.75" />
         </div>
 
         {/* 슬로건 */}
-        <p className="typo-heading3 text-center text-grey-700">
+        <p className="typo-heading3 text-center text-grey-700 max-lg:typo-m-heading2">
           대화로 넓히고
           <br />
           기록으로 깊어지는 독서생활
@@ -31,7 +35,7 @@ export default function LoginPage() {
       {/* 버튼 영역 */}
       <div className="flex w-full flex-col items-center gap-base">
         <KakaoLoginButton />
-        <p className="typo-body3 w-76 text-center text-grey-600">
+        <p className="typo-body3 w-76 text-center text-grey-600 max-lg:typo-m-caption1">
           로그인 시 개인정보 처리방침 및 이용약관에
           <br />
           동의한 것으로 간주합니다.
