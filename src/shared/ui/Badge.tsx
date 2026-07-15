@@ -4,7 +4,11 @@ import type { HTMLAttributes } from 'react'
 import { cn } from '@/shared/lib/utils'
 
 const badgeVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap transition-all rounded-tiny',
+  [
+    'inline-flex items-center justify-center whitespace-nowrap transition-all rounded-tiny',
+    // 모바일(1024px 미만): size와 무관하게 xsmall로 통일
+    'max-lg:px-tiny max-lg:py-0.5 max-lg:typo-caption2',
+  ],
   {
     variants: {
       size: {
