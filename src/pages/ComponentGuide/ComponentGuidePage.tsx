@@ -3,9 +3,9 @@ import { useState } from 'react'
 
 import BookIcon from '@/shared/assets/icon/book.svg?react'
 import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
-import { useDevice } from '@/shared/hooks'
 import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
 import HomeIcon from '@/shared/assets/icon/home.svg?react'
+import { useDevice } from '@/shared/hooks'
 import {
   MobileBottomCTA,
   MobileBottomNavigation,
