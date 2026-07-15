@@ -9,6 +9,41 @@ import { cn } from '../lib/utils'
 
 type AvatarVariant = 'leader' | 'host' | 'member'
 type AvatarSize = 'default' | 'sm'
+type AvatarBadgeVariant = Exclude<AvatarVariant, 'member'>
+
+type AvatarBadgeConfig = {
+  src: string
+  alt: string
+  iconSizeClasses: Record<AvatarSize, string>
+}
+
+const avatarSizeClasses: Record<AvatarSize, string> = {
+  default: 'size-8',
+  sm: 'size-6',
+}
+
+const badgeSizeClasses: Record<AvatarSize, string> = {
+  default: 'size-4',
+  sm: 'size-3',
+}
+
+const badgePositionClasses: Record<AvatarSize, string> = {
+  default: '-top-0.5 -right-0.5',
+  sm: '-top-px -right-px',
+}
+
+const avatarBadgeConfigs: Record<AvatarBadgeVariant, AvatarBadgeConfig> = {
+  leader: {
+    src: CrownIcon,
+    alt: '모임장 표시',
+    iconSizeClasses: { default: 'size-2.5', sm: 'size-2' },
+  },
+  host: {
+    src: StarIcon,
+    alt: '약속장 표시',
+    iconSizeClasses: { default: 'size-2', sm: 'size-1.5' },
+  },
+}
 
 export interface AvatarProps extends React.ComponentProps<typeof AvatarPrimitive.Root> {
   variant?: AvatarVariant
@@ -22,9 +57,9 @@ const AvatarGroupContext = React.createContext(false)
  * Avatar (사용자 프로필 이미지)
  *
  * - `AvatarImage`로 이미지를 표시하고, 로드 실패 시 `AvatarFallback`이 표시됩니다.
- * - 기본 크기는 32x32 (size-8)이며, className으로 커스터마이징 가능합니다.
+ * - `size`로 Avatar와 역할 뱃지 크기를 함께 조절합니다: "default" (32px/16px), "sm" (24px/12px)
+ * - 기본 크기는 모바일 규격인 32x32 (size-8)이며, className으로 커스터마이징 가능합니다.
  * - `variant`로 역할 배지를 표시합니다: "leader" (모임장), "host" (약속장), "member" (기본)
- * - `size`로 뱃지 크기를 조절합니다: "default" (16px), "sm" (12px)
  * - `disabled`로 비활성화 스타일을 적용할 수 있습니다.
  * @example
  * ```tsx
@@ -38,7 +73,7 @@ const AvatarGroupContext = React.createContext(false)
  *   <AvatarFallback>김</AvatarFallback>
  * </Avatar>
  *
- * <Avatar variant="host" size="sm" className="size-6">
+ * <Avatar variant="host" size="sm">
  *   <AvatarImage src="/host.jpg" alt="약속장" />
  *   <AvatarFallback>이</AvatarFallback>
  * </Avatar>
@@ -55,43 +90,24 @@ function Avatar({
   const isGrouped = React.useContext(AvatarGroupContext)
 
   const getBadgeIcon = () => {
-    const isSmall = size === 'sm'
-    const badgeSize = isSmall ? 'size-3' : 'size-4'
-    const badgePosition = isSmall ? '-top-px -right-px' : '-top-0.5 -right-0.5'
+    if (variant === 'member') return null
 
-    if (variant === 'leader') {
-      return (
-        <div
-          className={cn(
-            'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
-            badgePosition,
-            badgeSize
-          )}
-        >
-          <img src={CrownIcon} className={isSmall ? 'size-2' : 'size-2.5'} alt="모임장 표시" />
-          {disabled && (
-            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
-          )}
-        </div>
-      )
-    }
-    if (variant === 'host') {
-      return (
-        <div
-          className={cn(
-            'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
-            badgePosition,
-            badgeSize
-          )}
-        >
-          <img src={StarIcon} className={isSmall ? 'size-1.5' : 'size-2'} alt="약속장 표시" />
-          {disabled && (
-            <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
-          )}
-        </div>
-      )
-    }
-    return null
+    const badge = avatarBadgeConfigs[variant]
+
+    return (
+      <div
+        className={cn(
+          'absolute flex items-center justify-center rounded-full bg-white shadow-sm',
+          badgePositionClasses[size],
+          badgeSizeClasses[size]
+        )}
+      >
+        <img src={badge.src} className={badge.iconSizeClasses[size]} alt={badge.alt} />
+        {disabled && (
+          <div className="absolute inset-0 rounded-full pointer-events-none bg-white/70" />
+        )}
+      </div>
+    )
   }
 
   return (
@@ -99,7 +115,8 @@ function Avatar({
       <AvatarPrimitive.Root
         data-slot="avatar"
         className={cn(
-          'relative flex shrink-0 size-8 overflow-hidden rounded-full',
+          'relative flex shrink-0 overflow-hidden rounded-full',
+          avatarSizeClasses[size],
           isGrouped && 'ring-2 ring-white',
           className
         )}

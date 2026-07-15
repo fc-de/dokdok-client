@@ -15,6 +15,7 @@ import {
   LandingPage,
   LoginPage,
   MeetingCreatePage,
+  MeetingDetailInfoPage,
   MeetingDetailPage,
   MeetingRetrospectiveCreatePage,
   MeetingRetrospectiveDetailPage,
@@ -97,6 +98,10 @@ export const router = createBrowserRouter([
               { path: `${ROUTES.GATHERINGS}/:id`, element: <GatheringDetailPage /> },
               { path: `${ROUTES.GATHERINGS}/:id/settings`, element: <GatheringSettingPage /> },
               // 약속
+              {
+                path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/info`,
+                element: <MeetingDetailInfoPage />,
+              },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,
                 element: <MeetingDetailPage />,

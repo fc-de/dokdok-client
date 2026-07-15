@@ -1,3 +1,4 @@
+import { EllipsisVertical } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -8,8 +9,9 @@ import {
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useScrollShadow } from '@/shared/hooks'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { cn } from '@/shared/lib/utils'
-import { Button, Spinner, TextButton } from '@/shared/ui'
+import { Button, Popover, PopoverContent, PopoverTrigger, Spinner, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 export default function PersonalRetrospectiveViewPage() {
@@ -53,17 +55,61 @@ export default function PersonalRetrospectiveViewPage() {
     navigate(`${ROUTES.PERSONAL_RETROSPECTIVE(gatheringId, meetingId)}?mode=edit`)
   }
 
+  const headerSubtitle =
+    data?.meetingHeaderInfo.bookTitle && data?.meetingHeaderInfo.bookAuthor
+      ? `${data.meetingHeaderInfo.bookTitle} · ${data.meetingHeaderInfo.bookAuthor}`
+      : undefined
+
   return (
-    <div className="flex flex-col min-h-[calc(100vh-var(--spacing-gnb-height))]">
+    <MobileLayoutFrame
+      variant="header"
+      title="개인 회고"
+      subtitle={headerSubtitle}
+      leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
+      headerActionSlot={
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="relative z-10 -mr-2.5 flex size-11 items-center justify-center rounded-full text-grey-600 transition-colors hover:bg-grey-100 hover:text-grey-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              aria-label="개인 회고 더보기"
+            >
+              <EllipsisVertical aria-hidden className="size-6" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="end" sideOffset={4} className="w-35 border-0 p-0">
+            <div className="flex flex-col py-xsmall">
+              <button
+                type="button"
+                className="px-base py-small text-left typo-subtitle5 text-black hover:bg-grey-100"
+                onClick={handleEdit}
+              >
+                수정하기
+              </button>
+              <button
+                type="button"
+                className="px-base py-small text-left typo-subtitle5 text-accent-300 hover:bg-grey-100 disabled:text-grey-500"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                삭제하기
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
+      }
+      className="min-h-dvh lg:min-h-0"
+    >
       <SubPageHeader
         label={data?.meetingHeaderInfo.gatheringName ?? ''}
         to={ROUTES.GATHERING_DETAIL(gatheringId)}
         disableShadow
+        className="max-lg:hidden"
       />
 
       <div
         className={cn(
-          'sticky sticky-below-subheader z-30 bg-white transition-shadow',
+          'sticky sticky-below-subheader z-30 bg-white transition-shadow max-lg:hidden',
           isScrolled && 'shadow-drop-bottom'
         )}
       >
@@ -77,7 +123,7 @@ export default function PersonalRetrospectiveViewPage() {
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-medium">
+            <div className="flex items-center gap-medium max-lg:hidden">
               <TextButton onClick={handleDelete} disabled={isDeleting}>
                 삭제하기
               </TextButton>
@@ -106,6 +152,6 @@ export default function PersonalRetrospectiveViewPage() {
           {data && <PersonalRetrospectiveViewContent data={data} />}
         </div>
       </div>
-    </div>
+    </MobileLayoutFrame>
   )
 }

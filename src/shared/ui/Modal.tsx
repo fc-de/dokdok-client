@@ -51,6 +51,7 @@ const modalContentVariants = cva(
     'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
     'flex flex-col bg-white rounded-small',
     'h-[625px]',
+    'max-lg:inset-0 max-lg:w-full max-lg:h-full max-lg:translate-x-0 max-lg:translate-y-0 max-lg:rounded-none',
     'data-[state=open]:animate-in data-[state=closed]:animate-out',
     'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
@@ -225,7 +226,11 @@ function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
 }
 
 const modalFooterVariants = cva(
-  ['flex items-center shrink-0', 'px-xlarge pt-base pb-large border-t border-grey-300 justify-end'],
+  [
+    'flex items-center shrink-0',
+    'px-xlarge pt-base pb-large border-t border-grey-300 justify-end',
+    'max-lg:px-medium max-lg:pt-small max-lg:pb-[calc(12px+env(safe-area-inset-bottom))]',
+  ],
   {
     variants: {
       variant: {

@@ -8,7 +8,7 @@ import { Outlet } from 'react-router-dom'
  */
 export default function AuthLayout() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-grey-100">
+    <main className="flex min-h-screen items-center justify-center bg-grey-100 max-lg:items-stretch max-lg:bg-white">
       <Outlet />
     </main>
   )

@@ -11,6 +11,7 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
@@ -81,38 +82,70 @@ export default function GatheringListPage() {
   }
 
   return (
-    <div className="flex flex-col gap-large pt-xlarge pb-medium">
-      {/* 타이틀 */}
-      <h1 className="typo-heading1 text-black">독서모임</h1>
+    <MobileLayoutFrame variant="navigation">
+      <div className="flex flex-col gap-large pt-xlarge pb-medium max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
+        {/* 타이틀 */}
+        <h1 className="typo-heading1 text-black">독서모임</h1>
 
-      {/* 탭 + 버튼 영역 */}
-      <div className="flex items-center justify-between">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)}>
-          <TabsList size="large">
-            <TabsTrigger value="all" badge={totalCount}>
-              전체
-            </TabsTrigger>
-            <TabsTrigger value="favorites" badge={favoritesCount}>
-              즐겨찾기
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <Button onClick={handleCreateClick}>모임 만들기</Button>
-      </div>
+        {/* 탭 + 버튼 영역 */}
+        <div className="flex items-center justify-between">
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabValue)}>
+            <TabsList size="large">
+              <TabsTrigger value="all" badge={totalCount}>
+                전체
+              </TabsTrigger>
+              <TabsTrigger value="favorites" badge={favoritesCount}>
+                즐겨찾기
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+          <Button onClick={handleCreateClick}>모임 만들기</Button>
+        </div>
 
-      {/* 컨텐츠 영역 */}
-      {activeTab === 'all' && (
-        <>
-          {isLoading ? (
-            <div className="flex h-35 items-center justify-center">
-              <Spinner />
-            </div>
-          ) : gatherings.length === 0 ? (
-            <EmptyState type="all" />
-          ) : (
-            <>
+        {/* 컨텐츠 영역 */}
+        {activeTab === 'all' && (
+          <>
+            {isLoading ? (
+              <div className="flex h-35 items-center justify-center">
+                <Spinner />
+              </div>
+            ) : gatherings.length === 0 ? (
+              <EmptyState type="all" />
+            ) : (
+              <>
+                <div className="grid grid-cols-3 gap-small">
+                  {gatherings.map((gathering) => (
+                    <GatheringCard
+                      key={gathering.gatheringId}
+                      gathering={gathering}
+                      onFavoriteToggle={handleFavoriteToggle}
+                      onClick={() => handleCardClick(gathering.gatheringId)}
+                    />
+                  ))}
+                </div>
+                {/* 무한 스크롤 트리거 - 그리드 아래에 위치 */}
+                {hasNextPage && <div ref={observerRef} className="h-10" />}
+              </>
+            )}
+            {isFetchingNextPage && (
+              <div className="flex justify-center py-4">
+                <Spinner />
+              </div>
+            )}
+          </>
+        )}
+
+        {activeTab === 'favorites' && (
+          <>
+            {isFavoritesLoading ? (
+              <div className="flex h-35 items-center justify-center">
+                <Spinner />
+              </div>
+            ) : favorites.length === 0 ? (
+              <EmptyState type="favorites" />
+            ) : (
               <div className="grid grid-cols-3 gap-small">
-                {gatherings.map((gathering) => (
+                {favorites.map((gathering) => (
                   <GatheringCard
                     key={gathering.gatheringId}
                     gathering={gathering}
@@ -121,40 +154,10 @@ export default function GatheringListPage() {
                   />
                 ))}
               </div>
-              {/* 무한 스크롤 트리거 - 그리드 아래에 위치 */}
-              {hasNextPage && <div ref={observerRef} className="h-10" />}
-            </>
-          )}
-          {isFetchingNextPage && (
-            <div className="flex justify-center py-4">
-              <Spinner />
-            </div>
-          )}
-        </>
-      )}
-
-      {activeTab === 'favorites' && (
-        <>
-          {isFavoritesLoading ? (
-            <div className="flex h-35 items-center justify-center">
-              <Spinner />
-            </div>
-          ) : favorites.length === 0 ? (
-            <EmptyState type="favorites" />
-          ) : (
-            <div className="grid grid-cols-3 gap-small">
-              {favorites.map((gathering) => (
-                <GatheringCard
-                  key={gathering.gatheringId}
-                  gathering={gathering}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onClick={() => handleCardClick(gathering.gatheringId)}
-                />
-              ))}
-            </div>
-          )}
-        </>
-      )}
-    </div>
+            )}
+          </>
+        )}
+      </div>
+    </MobileLayoutFrame>
   )
 }

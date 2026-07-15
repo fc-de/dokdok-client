@@ -16,6 +16,7 @@ import {
 } from '@/features/meetings'
 import FormPageHeader from '@/shared/components/FormPageHeader'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { Button, Card, Container, DatePicker, Input, Select } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -239,18 +240,33 @@ export default function MeetingCreatePage() {
 
   const isSubmitting = isEditMode ? updateMutation.isPending : createMutation.isPending
   const isLoading = isGatheringLoading || isMeetingLoading
+  const pageTitle = isEditMode ? '약속 수정하기' : '약속 만들기'
+  const actionLabel = isSubmitting ? '...' : isEditMode ? '수정하기' : '만들기'
 
   return (
-    <>
+    <MobileLayoutFrame
+      variant="header"
+      title={pageTitle}
+      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
+      bottomCTA={{
+        label: isEditMode ? '수정하기' : '만들기',
+        loadingLabel: '처리 중...',
+        onClick: handleSubmit,
+        disabled: isSubmitting || isLoading,
+        loading: isSubmitting,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <FormPageHeader
-        title={isEditMode ? '약속 수정하기' : '약속 만들기'}
-        actionLabel={isSubmitting ? '...' : isEditMode ? '수정하기' : '만들기'}
+        title={pageTitle}
+        actionLabel={actionLabel}
         onAction={handleSubmit}
         isActionDisabled={isSubmitting || isLoading}
+        className="max-lg:hidden"
       />
-      <div className="bg-grey-100">
-        <div className="mx-auto max-w-layout-max px-layout-padding">
-          <div className="flex flex-col gap-base py-xlarge">
+      <div className="bg-grey-100 max-lg:min-h-dvh">
+        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
+          <div className="flex flex-col gap-base py-xlarge max-lg:py-5">
             {!isEditMode && (
               <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
                 <p className="typo-caption1">작성한 내용은 모임장의 승인 후 약속으로 등록돼요.</p>
@@ -462,6 +478,6 @@ export default function MeetingCreatePage() {
           </div>
         </div>
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }

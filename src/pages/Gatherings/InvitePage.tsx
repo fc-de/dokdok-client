@@ -10,6 +10,7 @@ import {
 import EnvelopeBottom from '@/shared/assets/icon/envelope-bottom.svg'
 import EnvelopeTop from '@/shared/assets/icon/envelope-top.svg'
 import { ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { Button } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
@@ -34,6 +35,14 @@ export default function InvitePage() {
 
   // 가입 신청
   const { mutate: joinGathering, isPending: isJoining } = useJoinGathering()
+
+  const handleBack = () => {
+    navigate(-1)
+  }
+
+  const handleGoHome = () => {
+    navigate(ROUTES.HOME)
+  }
 
   const handleJoin = () => {
     if (!invitationCode) return
@@ -81,84 +90,115 @@ export default function InvitePage() {
     })
   }
 
+  const joinLabel = isLoggedIn ? '가입 신청하기' : '로그인하고 가입 신청하기'
+
   // 로딩 상태
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-100 pt-xlarge">
-        <p className="typo-body1 text-grey-600">모임 정보를 불러오는 중...</p>
-      </div>
+      <MobileLayoutFrame
+        variant="header"
+        title="독서모임 초대"
+        leftAction={{ type: 'close', onClick: handleBack }}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <div className="flex flex-col items-center justify-center min-h-100 pt-xlarge">
+          <p className="typo-body1 text-grey-600">모임 정보를 불러오는 중...</p>
+        </div>
+      </MobileLayoutFrame>
     )
   }
 
   // 에러 상태 (유효하지 않은 초대 코드)
   if (error || !gathering) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-100 gap-base pt-xlarge">
-        <h1 className="typo-heading2 text-black">유효하지 않은 초대 링크</h1>
-        <p className="typo-body3 text-grey-600">초대 링크가 만료되었거나 잘못된 링크입니다.</p>
-        <Button variant="primary" size="medium" onClick={() => navigate(ROUTES.HOME)}>
-          홈으로 이동
-        </Button>
-      </div>
+      <MobileLayoutFrame
+        variant="header"
+        title="독서모임 초대"
+        leftAction={{ type: 'close', onClick: handleBack }}
+        bottomCTA={{ label: '홈으로 이동', onClick: handleGoHome }}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <div className="flex flex-col items-center justify-center min-h-100 gap-base pt-xlarge max-lg:px-5">
+          <h1 className="typo-heading2 text-black">유효하지 않은 초대 링크</h1>
+          <p className="typo-body3 text-grey-600">초대 링크가 만료되었거나 잘못된 링크입니다.</p>
+          <Button variant="primary" size="medium" className="max-lg:hidden" onClick={handleGoHome}>
+            홈으로 이동
+          </Button>
+        </div>
+      </MobileLayoutFrame>
     )
   }
 
   return (
-    <div className="flex flex-col items-center gap-9 w-full pt-xlarge">
-      {/* 제목 영역 */}
-      <div className="flex flex-col gap-xtiny items-center text-center w-full">
-        <h1 className="typo-heading2 text-black">새로운 독서모임에 초대되었어요!</h1>
-        <p className="typo-body3 text-grey-600">모임 정보를 확인하고 가입을 신청해 보세요</p>
-      </div>
-
-      {/* 모임 정보 카드 (봉투 디자인) */}
-      <div className="flex flex-col gap-9 items-center w-full max-w-100">
-        {/* 봉투 컨테이너 */}
-        <div className="relative w-full">
-          {/* 봉투 상단 (열린 뚜껑) */}
-          <img
-            src={EnvelopeTop}
-            alt=""
-            className="absolute top-14.5 left-1/2 -translate-x-1/2 w-full z-0"
-          />
-
-          {/* 카드 (편지지) */}
-          <div className="relative z-10 mx-8.25 flex flex-col gap-base bg-white rounded-xl shadow-drop px-9 pt-9 pb-25">
-            {/* 모임 이름 & 설명 */}
-            <div className="flex flex-col gap-xtiny w-full">
-              <p className="typo-subtitle1 text-primary-300">{gathering.gatheringName}</p>
-              {gathering.gatheringDescription && (
-                <p className="typo-body3 text-grey-700 h-15 line-clamp-3">
-                  {gathering.gatheringDescription}
-                </p>
-              )}
-            </div>
-
-            {/* 메타 정보 */}
-            <div className="flex items-center gap-tiny text-grey-600 typo-body6">
-              <span>시작한지 {gathering.daysFromCreation}일</span>
-              <span className="w-px h-2.5 bg-grey-600" />
-              <span>약속 {gathering.totalMeetings}회</span>
-              <span className="w-px h-2.5 bg-grey-600" />
-              <span>총 구성원 {gathering.totalMembers}명</span>
-            </div>
-          </div>
-
-          {/* 봉투 하단 */}
-          <img src={EnvelopeBottom} alt="" className="relative -mt-24.25 w-full z-20" />
+    <MobileLayoutFrame
+      variant="header"
+      title="독서모임 초대"
+      leftAction={{ type: 'close', onClick: handleBack }}
+      bottomCTA={{
+        label: joinLabel,
+        loadingLabel: '처리 중...',
+        onClick: handleJoin,
+        disabled: isJoining,
+        loading: isJoining,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
+      <div className="flex flex-col items-center gap-9 w-full pt-xlarge max-lg:px-5 max-lg:pt-8">
+        {/* 제목 영역 */}
+        <div className="flex flex-col gap-xtiny items-center text-center w-full">
+          <h1 className="typo-heading2 text-black">새로운 독서모임에 초대되었어요!</h1>
+          <p className="typo-body3 text-grey-600">모임 정보를 확인하고 가입을 신청해 보세요</p>
         </div>
 
-        {/* 가입 신청 버튼 */}
-        <Button
-          variant="primary"
-          size="large"
-          className="w-full"
-          disabled={isJoining}
-          onClick={handleJoin}
-        >
-          {isLoggedIn ? '가입 신청하기' : '로그인하고 가입 신청하기'}
-        </Button>
+        {/* 모임 정보 카드 (봉투 디자인) */}
+        <div className="flex flex-col gap-9 items-center w-full max-w-100">
+          {/* 봉투 컨테이너 */}
+          <div className="relative w-full">
+            {/* 봉투 상단 (열린 뚜껑) */}
+            <img
+              src={EnvelopeTop}
+              alt=""
+              className="absolute top-14.5 left-1/2 -translate-x-1/2 w-full z-0"
+            />
+
+            {/* 카드 (편지지) */}
+            <div className="relative z-10 mx-8.25 flex flex-col gap-base bg-white rounded-xl shadow-drop px-9 pt-9 pb-25">
+              {/* 모임 이름 & 설명 */}
+              <div className="flex flex-col gap-xtiny w-full">
+                <p className="typo-subtitle1 text-primary-300">{gathering.gatheringName}</p>
+                {gathering.gatheringDescription && (
+                  <p className="typo-body3 text-grey-700 h-15 line-clamp-3">
+                    {gathering.gatheringDescription}
+                  </p>
+                )}
+              </div>
+
+              {/* 메타 정보 */}
+              <div className="flex items-center gap-tiny text-grey-600 typo-body6">
+                <span>시작한지 {gathering.daysFromCreation}일</span>
+                <span className="w-px h-2.5 bg-grey-600" />
+                <span>약속 {gathering.totalMeetings}회</span>
+                <span className="w-px h-2.5 bg-grey-600" />
+                <span>총 구성원 {gathering.totalMembers}명</span>
+              </div>
+            </div>
+
+            {/* 봉투 하단 */}
+            <img src={EnvelopeBottom} alt="" className="relative -mt-24.25 w-full z-20" />
+          </div>
+
+          {/* 가입 신청 버튼 */}
+          <Button
+            variant="primary"
+            size="large"
+            className="w-full max-lg:hidden"
+            disabled={isJoining}
+            onClick={handleJoin}
+          >
+            {joinLabel}
+          </Button>
+        </div>
       </div>
-    </div>
+    </MobileLayoutFrame>
   )
 }

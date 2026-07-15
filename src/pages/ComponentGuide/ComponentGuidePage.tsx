@@ -1,6 +1,18 @@
 import { ChevronDown, ChevronRight, Search } from 'lucide-react'
 import { useState } from 'react'
 
+import BookIcon from '@/shared/assets/icon/book.svg?react'
+import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import GatheringIcon from '@/shared/assets/icon/gathering.svg?react'
+import HomeIcon from '@/shared/assets/icon/home.svg?react'
+import { useDevice } from '@/shared/hooks'
+import {
+  MobileBottomCTA,
+  MobileBottomNavigation,
+  MobileLayoutFrame,
+  MobileMainHeader,
+  MobileScreenHeader,
+} from '@/shared/layout'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import {
   Avatar,
@@ -9,6 +21,15 @@ import {
   AvatarGroupCount,
   AvatarImage,
   Badge,
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetClose,
+  BottomSheetContent,
+  BottomSheetDescription,
+  BottomSheetFooter,
+  BottomSheetHeader,
+  BottomSheetTitle,
+  BottomSheetTrigger,
   Button,
   Card,
   Checkbox,
@@ -16,6 +37,7 @@ import {
   Container,
   DatePicker,
   FilterDropdown,
+  FloatingButton,
   Input,
   LikeButton,
   Modal,
@@ -56,12 +78,14 @@ function ComponentGuidePage() {
     { id: 'button', name: 'Button', category: '인터랙션' },
     { id: 'textButton', name: 'TextButton', category: '인터랙션' },
     { id: 'likeButton', name: 'LikeButton', category: '인터랙션' },
+    { id: 'floatingButton', name: 'FloatingButton', category: '인터랙션' },
     { id: 'badge', name: 'Badge', category: '표시' },
     { id: 'chip', name: 'Chip', category: '표시' },
     { id: 'userChip', name: 'UserChip', category: '표시' },
     { id: 'avatar', name: 'Avatar', category: '표시' },
     { id: 'card', name: 'Card', category: '레이아웃' },
     { id: 'container', name: 'Container', category: '레이아웃' },
+    { id: 'mobileLayout', name: 'Mobile Layout', category: '레이아웃' },
     { id: 'input', name: 'Input', category: '폼' },
     { id: 'textarea', name: 'Textarea', category: '폼' },
     { id: 'searchField', name: 'SearchField', category: '폼' },
@@ -76,6 +100,7 @@ function ComponentGuidePage() {
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
     { id: 'pagination', name: 'Pagination', category: '내비게이션' },
     { id: 'modal', name: 'Modal', category: '오버레이' },
+    { id: 'bottomSheet', name: 'BottomSheet', category: '오버레이' },
     { id: 'tooltip', name: 'Tooltip', category: '오버레이' },
     { id: 'toast', name: 'Toast', category: '오버레이' },
   ]
@@ -164,12 +189,14 @@ function ComponentGuidePage() {
           {selectedSection === 'button' && <ButtonSection />}
           {selectedSection === 'textButton' && <TextButtonSection />}
           {selectedSection === 'likeButton' && <LikeButtonSection />}
+          {selectedSection === 'floatingButton' && <FloatingButtonSection />}
           {selectedSection === 'badge' && <BadgeSection />}
           {selectedSection === 'chip' && <ChipSection />}
           {selectedSection === 'userChip' && <UserChipSection />}
           {selectedSection === 'avatar' && <AvatarSection />}
           {selectedSection === 'card' && <CardSection />}
           {selectedSection === 'container' && <ContainerSection />}
+          {selectedSection === 'mobileLayout' && <MobileLayoutSection />}
           {selectedSection === 'input' && <InputSection />}
           {selectedSection === 'textarea' && <TextareaSection />}
           {selectedSection === 'searchField' && <SearchFieldSection />}
@@ -184,6 +211,7 @@ function ComponentGuidePage() {
           {selectedSection === 'tabs' && <TabsSection />}
           {selectedSection === 'pagination' && <PaginationSection />}
           {selectedSection === 'modal' && <ModalSection />}
+          {selectedSection === 'bottomSheet' && <BottomSheetSection />}
           {selectedSection === 'tooltip' && <TooltipSection />}
           {selectedSection === 'toast' && <ToastSection />}
         </div>
@@ -256,6 +284,166 @@ function Showcase({
         </div>
       )}
     </Card>
+  )
+}
+
+function PhonePreview({ children, height = 420 }: { children: React.ReactNode; height?: number }) {
+  return (
+    <div
+      className="relative w-93.75 max-w-full overflow-hidden rounded-medium border border-grey-300 bg-white shadow-drop"
+      style={{ height }}
+    >
+      {children}
+    </div>
+  )
+}
+
+function MobileLayoutSection() {
+  const guideNavigationItems = [
+    { label: '홈', path: '/component-guide', icon: HomeIcon, end: true },
+    { label: '내 책장', path: '/books', icon: BookIcon },
+    { label: '독서모임', path: '/gatherings', icon: GatheringIcon },
+  ]
+
+  return (
+    <Section
+      title="Mobile Layout"
+      description="모바일 반응형 화면 유형별로 조합할 수 있는 opt-in 레이아웃 컴포넌트"
+    >
+      <Showcase
+        title="MobileMainHeader"
+        description="메인 UI 상단에 사용하는 로고, 알림, 프로필 헤더"
+        code={`<MobileMainHeader preview />`}
+      >
+        <PhonePreview height={180}>
+          <MobileMainHeader preview onNotificationClick={() => showToast('알림')} />
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">메인 콘텐츠 영역</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              로고는 좌측 20px, 알림/프로필은 우측에 배치됩니다.
+            </p>
+          </div>
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileScreenHeader"
+        description="좌측 액션과 우측 액션을 조합하는 상단 앱바"
+        code={`<MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
+<MobileScreenHeader
+  title="타이틀"
+  leftAction={{ type: 'close' }}
+  headerAction={{ label: '저장하기', onClick: handleSave }}
+  preview
+/>`}
+      >
+        <div className="flex flex-wrap gap-medium">
+          <PhonePreview height={150}>
+            <MobileScreenHeader title="타이틀" leftAction={{ type: 'back' }} preview />
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
+              이전 화면 이동 UI: 이전 버튼과 중앙 타이틀을 사용합니다.
+            </div>
+          </PhonePreview>
+          <PhonePreview height={150}>
+            <MobileScreenHeader
+              title="타이틀"
+              leftAction={{ type: 'close' }}
+              headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
+              preview
+            />
+            <div className="px-5 py-large typo-m-body2 text-grey-600">
+              닫기 UI: 닫기 버튼과 우측 액션을 사용합니다.
+            </div>
+          </PhonePreview>
+        </div>
+      </Showcase>
+
+      <Showcase
+        title="MobileBottomNavigation"
+        description="1Depth 메인 화면에서 사용하는 하단 GNB"
+        code={`<MobileBottomNavigation preview />`}
+      >
+        <PhonePreview height={220}>
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">하단 GNB 프리뷰</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              높이 68px, 아이콘 24px, 라벨 typo-body5 기준입니다.
+            </p>
+          </div>
+          <MobileBottomNavigation items={guideNavigationItems} preview />
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileBottomCTA"
+        description="독립 작업 화면 하단에 고정되는 주요 CTA"
+        code={`<MobileBottomCTA label="완료하기" onClick={handleSubmit} preview />`}
+      >
+        <PhonePreview height={220}>
+          <div className="px-5 py-large">
+            <p className="typo-m-heading3 text-black">입력 폼 영역</p>
+            <p className="typo-m-body2 text-grey-600 mt-xtiny">
+              CTA 영역은 20px 좌우 여백과 하단 shadow를 가집니다.
+            </p>
+          </div>
+          <MobileBottomCTA label="완료하기" onClick={() => showToast('완료하기')} preview />
+        </PhonePreview>
+      </Showcase>
+
+      <Showcase
+        title="MobileLayoutFrame"
+        description="화면 유형별 모바일 크롬을 한 번에 조합하는 wrapper"
+        code={`<MobileLayoutFrame variant="navigation" preview>
+  <PageContent />
+</MobileLayoutFrame>
+
+<MobileLayoutFrame
+  variant="header"
+  title="약속 만들기"
+  leftAction={{ type: 'close' }}
+  headerAction={{ label: '저장하기', onClick: handleSave }}
+  bottomCTA={{ label: '만들기', onClick: handleSubmit }}
+  preview
+>
+  <PageContent />
+</MobileLayoutFrame>`}
+      >
+        <div className="flex flex-wrap gap-medium">
+          <PhonePreview height={520}>
+            <MobileLayoutFrame
+              variant="navigation"
+              navigationItems={guideNavigationItems}
+              onNotificationClick={() => showToast('알림')}
+              preview
+            >
+              <div className="px-5 py-large">
+                <p className="typo-m-heading3 text-black">메인 UI</p>
+                <p className="typo-m-body2 text-grey-600 mt-xtiny">
+                  상단 메인 헤더와 하단 GNB가 함께 렌더링됩니다.
+                </p>
+              </div>
+            </MobileLayoutFrame>
+          </PhonePreview>
+          <PhonePreview height={520}>
+            <MobileLayoutFrame
+              variant="header"
+              title="약속 만들기"
+              leftAction={{ type: 'close' }}
+              headerAction={{ label: '저장하기', onClick: () => showToast('저장하기') }}
+              bottomCTA={{ label: '만들기', onClick: () => showToast('만들기') }}
+              preview
+            >
+              <div className="px-5 py-large">
+                <p className="typo-m-heading3 text-black">독립 화면 UI</p>
+                <p className="typo-m-body2 text-grey-600 mt-xtiny">
+                  상단 앱바와 하단 CTA가 함께 렌더링됩니다.
+                </p>
+              </div>
+            </MobileLayoutFrame>
+          </PhonePreview>
+        </div>
+      </Showcase>
+    </Section>
   )
 }
 
@@ -411,6 +599,66 @@ const [count, setCount] = useState(42)
         />
         <LikeButton count={0} isLiked={false} />
         <LikeButton count={999} isLiked={true} disabled />
+      </Showcase>
+    </Section>
+  )
+}
+
+function FloatingButtonSection() {
+  return (
+    <Section
+      title="FloatingButton"
+      description="모바일 전용 고정 위치 플로팅 버튼 (1024px 미만에서만 표시)"
+    >
+      <Showcase
+        title="스타일"
+        description="pill 형태, shadow-fab 적용. 모바일에서 우측 하단에 fixed로 노출됩니다."
+        code={`<FloatingButton>+ 만들기</FloatingButton>
+<FloatingButton variant="cta">+ 만들기</FloatingButton>
+<FloatingButton variant="secondary">+ 추가</FloatingButton>`}
+      >
+        <FloatingButton variant="primary" className="flex! relative! bottom-auto! right-auto!">
+          + 만들기
+        </FloatingButton>
+        <FloatingButton variant="cta" className="flex! relative! bottom-auto! right-auto!">
+          + 만들기
+        </FloatingButton>
+        <FloatingButton variant="secondary" className="flex! relative! bottom-auto! right-auto!">
+          + 추가
+        </FloatingButton>
+      </Showcase>
+
+      <Showcase
+        title="위치 (모바일에서 확인)"
+        description="이 페이지를 모바일로 열면 우측 하단에 실제 버튼이 노출됩니다."
+        code={`// 하단 메뉴 없음 → bottom 40px
+<FloatingButton>+ 책 추가하기</FloatingButton>
+
+// 하단 메뉴 있음 → bottom: nav 높이 + 16px
+<FloatingButton hasBottomMenu>+ 책 추가하기</FloatingButton>`}
+      >
+        <FloatingButton onClick={() => alert('클릭!')}>+ 책 추가하기</FloatingButton>
+        <FloatingButton hasBottomMenu onClick={() => alert('클릭!')}>
+          + 하단 메뉴 있음
+        </FloatingButton>
+        <p className="typo-caption1 text-grey-500 w-full">
+          ↑ 모바일에서 우측 하단에 fixed로 표시됩니다
+        </p>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• 모바일(1024px 미만)에서만 표시됩니다</p>
+          <p>• position: fixed, z-index: 50, 오른쪽 벽 기준 16px</p>
+          <p>• 하단 메뉴 없음: 바닥에서 40px</p>
+          <p>
+            • 하단 메뉴 있음: hasBottomMenu prop 추가 → CSS 변수(--spacing-mobile-bottom-nav-height)
+            기준 자동 계산
+          </p>
+          <p>
+            • Button의 모든 prop (variant, size, outline, disabled, asChild 등) 그대로 사용 가능
+          </p>
+        </div>
       </Showcase>
     </Section>
   )
@@ -606,7 +854,7 @@ function AvatarSection() {
 
       <Showcase
         title="크기"
-        description="size prop (badge size)"
+        description="size prop (Avatar & badge size)"
         code={`<Avatar variant="leader" size="sm">
   <AvatarImage src="..." alt="Small" />
 </Avatar>
@@ -623,6 +871,25 @@ function AvatarSection() {
             alt="Default"
           />
         </Avatar>
+      </Showcase>
+
+      <Showcase
+        title="사용처 반응형 적용"
+        description="전역 스타일 대신 사용처에서 화면 크기에 맞는 size를 결정합니다."
+        code={`import { useDevice } from '@/shared/hooks'
+
+function MemberAvatar() {
+  const { isMobile } = useDevice()
+
+  return (
+    <Avatar size={isMobile ? 'sm' : 'default'}>
+      <AvatarImage src="..." alt="Member" />
+      <AvatarFallback>M</AvatarFallback>
+    </Avatar>
+  )
+}`}
+      >
+        <ResponsiveAvatarExample />
       </Showcase>
 
       <Showcase
@@ -689,6 +956,20 @@ function AvatarSection() {
         </AvatarGroup>
       </Showcase>
     </Section>
+  )
+}
+
+function ResponsiveAvatarExample() {
+  const { isMobile } = useDevice()
+
+  return (
+    <Avatar size={isMobile ? 'sm' : 'default'}>
+      <AvatarImage
+        src="https://api.dicebear.com/7.x/avataaars/svg?seed=ResponsiveMember"
+        alt="Member"
+      />
+      <AvatarFallback>M</AvatarFallback>
+    </Avatar>
   )
 }
 
@@ -1394,35 +1675,35 @@ function TabsSection() {
       <Showcase
         title="큰 크기"
         description="size='large'"
-        code={`<Tabs defaultValue="overview">
+        code={`<Tabs defaultValue="content">
   <TabsList size="large">
-    <TabsTrigger value="overview" size="large" badge={<Badge color="blue">5</Badge>}>
-      개요
+    <TabsTrigger value="content" size="large" badge={3}>
+      내용
     </TabsTrigger>
-    <TabsTrigger value="details" size="large">상세</TabsTrigger>
+    <TabsTrigger value="other" size="large">다른 내용</TabsTrigger>
   </TabsList>
-  <TabsContent value="overview">
-    <Card>뱃지 카운트가 있는 개요</Card>
+  <TabsContent value="content">
+    <Card>뱃지 카운트가 있는 내용</Card>
   </TabsContent>
 </Tabs>`}
       >
-        <Tabs defaultValue="overview" className="w-96">
+        <Tabs defaultValue="content" className="w-96">
           <TabsList size="large">
-            <TabsTrigger value="overview" size="large" badge={<Badge color="blue">5</Badge>}>
-              개요
+            <TabsTrigger value="content" size="large" badge={3}>
+              내용
             </TabsTrigger>
-            <TabsTrigger value="details" size="large">
-              상세
+            <TabsTrigger value="other" size="large">
+              다른 내용
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="overview">
+          <TabsContent value="content">
             <Card>
-              <div className="typo-body3">뱃지 카운트가 있는 개요</div>
+              <div className="typo-body3">뱃지 카운트가 있는 내용</div>
             </Card>
           </TabsContent>
-          <TabsContent value="details">
+          <TabsContent value="other">
             <Card>
-              <div className="typo-body3">상세 정보</div>
+              <div className="typo-body3">다른 내용 컨텐츠</div>
             </Card>
           </TabsContent>
         </Tabs>
@@ -1689,6 +1970,244 @@ function ModalSection() {
             </ModalFooter>
           </ModalContent>
         </Modal>
+      </Showcase>
+    </Section>
+  )
+}
+
+function BottomSheetSection() {
+  return (
+    <Section
+      title="BottomSheet"
+      description="화면 하단에서 슬라이드 업으로 열리는 모바일용 시트 컴포넌트"
+    >
+      <Showcase
+        title="기본 사용"
+        description="드래그 핸들 + 헤더 + 본문 + 푸터"
+        code={`<BottomSheet>
+  <BottomSheetTrigger asChild>
+    <Button>시트 열기</Button>
+  </BottomSheetTrigger>
+  <BottomSheetContent>
+    <BottomSheetHeader>
+      <BottomSheetTitle>시트 제목</BottomSheetTitle>
+    </BottomSheetHeader>
+    <BottomSheetBody>
+      <p>시트 내용이 들어갑니다.</p>
+    </BottomSheetBody>
+    <BottomSheetFooter>
+      <BottomSheetClose asChild>
+        <Button className="w-full">확인</Button>
+      </BottomSheetClose>
+    </BottomSheetFooter>
+  </BottomSheetContent>
+</BottomSheet>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button>기본 시트 열기</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>시트 제목</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <div className="space-y-medium">
+                <p className="typo-body2 text-grey-700">
+                  화면 하단에서 슬라이드 업으로 열리는 BottomSheet입니다. 콘텐츠 높이에 맞게
+                  자동으로 크기가 조정되며, 최대 85vh를 초과하지 않습니다.
+                </p>
+                <Input label="이름" placeholder="이름을 입력하세요" />
+              </div>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="w-full">
+                  확인
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="버튼 두 개 (취소 + 확인)"
+        description="Footer에 버튼 두 개를 나란히 배치"
+        code={`<BottomSheetFooter>
+  <BottomSheetClose asChild>
+    <Button variant="secondary" className="flex-1">취소</Button>
+  </BottomSheetClose>
+  <BottomSheetClose asChild>
+    <Button className="flex-1">확인</Button>
+  </BottomSheetClose>
+</BottomSheetFooter>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">버튼 두 개</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>정말 삭제하시겠어요?</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <p className="typo-body2 text-grey-700">삭제된 데이터는 복구할 수 없습니다.</p>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button variant="secondary" size="medium" className="flex-1">
+                  취소
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button variant="danger" size="medium" className="flex-1">
+                  삭제
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="타이틀만 (X 없음)"
+        description="hideCloseButton으로 X 버튼 숨기기. 필터, 선택 등 명시적 닫기가 필요 없는 경우"
+        code={`<BottomSheetHeader hideCloseButton>
+  <BottomSheetTitle>필터</BottomSheetTitle>
+</BottomSheetHeader>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">타이틀만</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader hideCloseButton>
+              <BottomSheetTitle>필터</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <p className="typo-body2 text-grey-700">
+                X 버튼 없이 타이틀만 있는 헤더입니다. Footer 버튼으로 닫을 수 있습니다.
+              </p>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="secondary" className="flex-1">
+                  초기화
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="flex-1">
+                  확인
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="Alert 패턴"
+        description="헤더 없이 아이콘 + 타이틀 + 설명을 본문에 중앙 정렬. 확인/취소 액션에 사용"
+        code={`<BottomSheetContent>
+  <BottomSheetBody className="flex flex-col items-center text-center py-large">
+    <img src={CircleAlertIcon} />
+    <BottomSheetTitle className="mb-xsmall">삭제를 진행할까요?</BottomSheetTitle>
+    <BottomSheetDescription>
+      모임의 모든 정보와 기록이 사라지며,
+      <br />
+      다시 되돌릴 수 없어요. 정말 이 모임을 삭제할까요?
+    </BottomSheetDescription>
+  </BottomSheetBody>
+  <BottomSheetFooter>
+    <BottomSheetClose asChild>
+      <Button variant="secondary" className="flex-1">취소</Button>
+    </BottomSheetClose>
+    <BottomSheetClose asChild>
+      <Button variant="danger" className="flex-1">삭제</Button>
+    </BottomSheetClose>
+  </BottomSheetFooter>
+</BottomSheetContent>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="danger" outline>
+              Alert 시트
+            </Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetBody className="flex flex-col items-center text-center py-large">
+              <img src={CircleAlertIcon} />
+              <BottomSheetTitle className="mb-xsmall">삭제를 진행할까요?</BottomSheetTitle>
+              <BottomSheetDescription>
+                모임의 모든 정보와 기록이 사라지며,
+                <br />
+                다시 되돌릴 수 없어요. 정말 이 모임을 삭제할까요?
+              </BottomSheetDescription>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="secondary" className="flex-1">
+                  취소
+                </Button>
+              </BottomSheetClose>
+              <BottomSheetClose asChild>
+                <Button size="medium" variant="danger" className="flex-1">
+                  삭제
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase
+        title="스크롤 테스트"
+        description="콘텐츠가 많을 경우 최대 85vh에서 Body 영역만 스크롤"
+        code={`<BottomSheetBody>
+  {/* 긴 내용 - max-h 85vh까지 늘어나고, Body만 스크롤 */}
+</BottomSheetBody>`}
+      >
+        <BottomSheet>
+          <BottomSheetTrigger asChild>
+            <Button variant="secondary">스크롤 테스트</Button>
+          </BottomSheetTrigger>
+          <BottomSheetContent>
+            <BottomSheetHeader>
+              <BottomSheetTitle>긴 콘텐츠</BottomSheetTitle>
+            </BottomSheetHeader>
+            <BottomSheetBody>
+              <div className="space-y-medium">
+                {[...Array(12).keys()].map((i) => (
+                  <Card key={i}>
+                    <p className="typo-body2">
+                      스크롤 테스트용 콘텐츠 #{i + 1}. 85vh를 초과하면 Body 영역에서만 스크롤이
+                      발생합니다.
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </BottomSheetBody>
+            <BottomSheetFooter>
+              <BottomSheetClose asChild>
+                <Button size="medium" className="w-full">
+                  닫기
+                </Button>
+              </BottomSheetClose>
+            </BottomSheetFooter>
+          </BottomSheetContent>
+        </BottomSheet>
+      </Showcase>
+
+      <Showcase title="사용 가이드">
+        <div className="typo-caption1 text-grey-600 space-y-tiny">
+          <p>• Default 패턴: BottomSheetHeader (타이틀 + X 버튼) + Body + Footer</p>
+          <p>• hideCloseButton 패턴: X 없이 타이틀만. Footer 버튼으로 닫기</p>
+          <p>• Alert 패턴: Header 생략, Body에 아이콘 + 타이틀 + 설명 중앙 정렬</p>
+          <p>• 오버레이 클릭 또는 ESC 키로 닫힘</p>
+          <p>• 콘텐츠 높이에 맞게 자동 조정, 최대 85vh</p>
+          <p>• Footer에 safe-area-inset-bottom 자동 적용 (iOS 홈바 대응)</p>
+        </div>
       </Showcase>
     </Section>
   )

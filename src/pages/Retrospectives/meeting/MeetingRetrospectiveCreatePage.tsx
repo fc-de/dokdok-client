@@ -9,9 +9,9 @@ import {
   useCreateSttJob,
 } from '@/features/retrospectives/meeting'
 import FormPageHeader from '@/shared/components/FormPageHeader'
-// import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import {
   Accordion,
@@ -117,11 +117,24 @@ export default function MeetingRetrospectiveCreatePage() {
   if (gatheringId === 0 || meetingId === 0) return null
 
   return (
-    <>
+    <MobileLayoutFrame
+      variant="header"
+      title="약속 회고 생성하기"
+      leftAction={{ type: 'close', to: ROUTES.MEETING_DETAIL(gatheringId, meetingId) }}
+      bottomCTA={{
+        label: 'AI 요약 시작하기',
+        loadingLabel: '요약 생성 중...',
+        onClick: handleStartAiSummary,
+        disabled: totalCount === 0 || sttMutation.isPending,
+        loading: sttMutation.isPending,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <FormPageHeader
         title="약속 회고"
         subTitle="사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요"
         to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)}
+        className="max-lg:hidden"
       >
         <Button
           variant="ai"
@@ -133,27 +146,6 @@ export default function MeetingRetrospectiveCreatePage() {
           AI 요약 시작하기
         </Button>
       </FormPageHeader>
-      {/* <SubPageHeader label="뒤로가기" to={ROUTES.MEETING_DETAIL(gatheringId, meetingId)} /> */}
-
-      {/* 헤더: 타이틀 + 설명 + AI 요약 시작하기 버튼 */}
-
-      {/* <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between pb-small">
-        <div className="flex flex-col gap-xtiny">
-          <h3 className="text-black typo-heading3">약속 회고</h3>
-          <p className="text-grey-600 typo-caption1">
-            사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요
-          </p>
-        </div>
-        <Button
-          variant="ai"
-          size="small"
-          onClick={handleStartAiSummary}
-          className="px-medium"
-          disabled={totalCount === 0 || sttMutation.isPending}
-        >
-          AI 요약 시작하기
-        </Button>
-      </div> */}
 
       {/* 두 패널 영역 */}
       <div className="mx-auto max-w-layout-max px-layout-padding flex gap-medium mt-base">
@@ -251,6 +243,6 @@ export default function MeetingRetrospectiveCreatePage() {
       </div>
 
       <AiLoadingOverlay isOpen={sttMutation.isPending} onCancel={() => sttMutation.cancel()} />
-    </>
+    </MobileLayoutFrame>
   )
 }

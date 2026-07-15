@@ -27,6 +27,7 @@ import {
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { useDeferredLoading } from '@/shared/hooks'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
 
@@ -110,16 +111,22 @@ export default function MeetingDetailPage() {
   if (gatheringId === 0 || meetingId === 0) return null
 
   return (
-    <>
+    <MobileLayoutFrame
+      variant="header"
+      title=" "
+      leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <SubPageHeader
         label={meeting?.gathering.gatheringName ?? '뒤로가기'}
         to={ROUTES.GATHERING_DETAIL(gatheringId)}
+        className="max-lg:hidden"
       />
 
-      <div className="mx-auto max-w-layout-max px-layout-padding">
-        <div className="flex justify-between gap-[36px]">
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5">
+        <div className="flex justify-between gap-[36px] max-lg:block max-lg:pt-large">
           {/* 약속 로딩 적용 */}
-          <div className="w-[300px] flex-none flex flex-col gap-base">
+          <div className="w-[300px] flex-none flex flex-col gap-base max-lg:w-full">
             {meetingLoading ? (
               <div className="flex items-center justify-center h-[400px]">
                 <Spinner />
@@ -262,6 +269,6 @@ export default function MeetingDetailPage() {
           />
         )}
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }
