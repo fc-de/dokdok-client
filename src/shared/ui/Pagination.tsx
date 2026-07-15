@@ -162,7 +162,7 @@ export function Pagination({
     >
       <ul
         data-slot="pagination-content"
-        className="flex flex-row items-center justify-between max-w-[220px] w-fit"
+        className="flex flex-row items-center justify-between w-fit max-w-[220px] max-lg:w-full max-lg:max-w-none max-lg:justify-center max-lg:gap-xtiny"
       >
         {/* 이전 그룹 버튼 */}
         {shouldShowGroupButtons && (
@@ -180,7 +180,7 @@ export function Pagination({
                 'disabled:text-grey-400 disabled:cursor-not-allowed'
               )}
             >
-              <ChevronLeftIcon size={20} />
+              <ChevronLeftIcon className="size-5 max-lg:size-6" />
             </button>
           </li>
         )}
@@ -196,8 +196,9 @@ export function Pagination({
               onClick={() => handleChange(page)}
               className={cn(
                 'typo-subtitle3 flex items-center justify-center rounded-small transition-colors cursor-pointer',
+                'max-lg:typo-m-body2 max-lg:leading-[14px]',
                 currentPage === page ? 'text-grey-800' : 'text-grey-600',
-                'size-8',
+                'size-8 max-lg:size-9',
                 'hover:text-grey-800',
                 'disabled:text-grey-400 disabled:cursor-not-allowed'
               )}
@@ -223,7 +224,7 @@ export function Pagination({
                 'disabled:text-grey-400 disabled:cursor-not-allowed'
               )}
             >
-              <ChevronRightIcon size={20} />
+              <ChevronRightIcon className="size-5 max-lg:size-6" />
             </button>
           </li>
         )}
