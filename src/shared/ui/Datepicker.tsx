@@ -45,15 +45,32 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function
   ref
 ) {
   const [date, setDate] = React.useState<Date | null>(value)
+  const [tempDate, setTempDate] = React.useState<Date | null>(value)
   const { isMobile } = useDevice()
 
   React.useEffect(() => {
     setDate(value)
+    setTempDate(value)
   }, [value])
 
   const handleSelect = (selectedDate: Date) => {
     setDate(selectedDate)
     onChange?.(selectedDate)
+  }
+
+  const handleMobileSelect = (selectedDate: Date) => {
+    setTempDate(selectedDate)
+  }
+
+  const handleConfirm = () => {
+    if (tempDate) {
+      setDate(tempDate)
+      onChange?.(tempDate)
+    }
+  }
+
+  const handleBottomSheetOpenChange = (open: boolean) => {
+    if (open) setTempDate(date)
   }
 
   const triggerButton = (
@@ -78,7 +95,7 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function
 
   if (isMobile) {
     return (
-      <BottomSheet>
+      <BottomSheet onOpenChange={handleBottomSheetOpenChange}>
         <BottomSheetTrigger asChild>{triggerButton}</BottomSheetTrigger>
         <BottomSheetContent className="items-center">
           <BottomSheetHeader hideCloseButton className="w-full max-w-[375px]">
@@ -86,14 +103,14 @@ const DatePicker = React.forwardRef<HTMLButtonElement, DatePickerProps>(function
           </BottomSheetHeader>
           <Calendar
             mode="single"
-            selected={date ?? undefined}
-            onSelect={handleSelect}
+            selected={tempDate ?? undefined}
+            onSelect={handleMobileSelect}
             required
             disabled={disabled}
           />
           <div className="px-medium py-small w-full max-w-[375px]">
             <BottomSheetClose asChild>
-              <Button size="large" className="w-full">
+              <Button size="large" className="w-full" onClick={handleConfirm}>
                 완료
               </Button>
             </BottomSheetClose>

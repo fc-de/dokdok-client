@@ -32,7 +32,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
     <div
       ref={ref}
       className={cn(
-        'bg-white rounded-base p-large shadow-drop flex flex-col gap-medium max-lg:rounded-mall max-lg:p-base max-lg:gap-small',
+        'bg-white rounded-base p-large shadow-drop flex flex-col gap-medium max-lg:rounded-small max-lg:p-base max-lg:gap-small',
         className
       )}
     >

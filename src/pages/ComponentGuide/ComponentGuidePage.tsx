@@ -1591,6 +1591,7 @@ const SAMPLE_TIME_OPTIONS: TimeOption[] = Array.from({ length: 12 }, (_, i) => {
 function TimePickerSection() {
   const [time1, setTime1] = useState('')
   const [time2, setTime2] = useState('10:00')
+  const [placeholderTime, setPlaceholderTime] = useState('')
 
   return (
     <Section
@@ -1646,8 +1647,8 @@ function TimePickerSection() {
       >
         <TimePicker
           options={SAMPLE_TIME_OPTIONS}
-          value={time1}
-          onValueChange={setTime1}
+          value={placeholderTime}
+          onValueChange={setPlaceholderTime}
           placeholder="시작 시간을 선택하세요"
         />
       </Showcase>
