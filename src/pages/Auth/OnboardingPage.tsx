@@ -32,17 +32,17 @@ export default function OnboardingPage() {
 
   return (
     <form
-      className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:rounded-none max-lg:px-5 max-lg:pb-10 max-lg:shadow-none"
+      className="flex h-135 w-100 flex-col items-end justify-between rounded-medium bg-white px-xlarge pb-xlarge pt-12 shadow-drop max-lg:min-h-dvh max-lg:w-full max-lg:justify-start max-lg:rounded-none max-lg:px-5 max-lg:pb-[calc(40px+env(safe-area-inset-bottom))] max-lg:pt-14 max-lg:shadow-none"
       onSubmit={handleSubmit}
     >
-      <p className="w-full text-black typo-heading2">
+      <p className="w-full text-black typo-heading2 max-lg:typo-m-heading1">
         독크독크에서 사용할
         <br />
         프로필을 만들어주세요
       </p>
 
       {/* 프로필 이미지 & 닉네임 입력 */}
-      <div className="flex w-full flex-col items-center gap-9">
+      <div className="flex w-full flex-col items-center gap-9 max-lg:mt-12.5">
         {/* 프로필 이미지 (선택사항) */}
         <ProfileImagePicker
           imageUrl={displayImageUrl}
@@ -65,7 +65,7 @@ export default function OnboardingPage() {
         type="submit"
         variant="primary"
         size="large"
-        className="w-full"
+        className="w-full max-lg:mt-auto"
         disabled={!canSubmit || isPending}
       >
         시작하기
