@@ -16,7 +16,7 @@ export default function HomePage() {
           <h1 className="text-black typo-heading2 max-lg:typo-m-heading2">
             {user ? `안녕하세요, ${user.nickname}님!` : '\u00A0'}
           </h1>
-          <p className="text-grey-600 typo-heading2 max-lg:typo-m-heading3">
+          <p className="text-grey-600 typo-heading2 max-lg:typo-m-heading2">
             읽고 있는 책과 생각을 기록해보세요
           </p>
         </div>

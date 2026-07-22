@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { type MyMeetingFilter, useMyMeetings, useMyMeetingTabCounts } from '@/features/meetings'
 import { PAGE_SIZES } from '@/shared/constants'
@@ -29,10 +29,13 @@ export default function MyMeetingsSection() {
     setIsExpanded(false)
   }
 
-  const handleExpand = () => {
-    if (hasNextPage) {
+  useEffect(() => {
+    if (isExpanded && hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
+  }, [fetchNextPage, hasNextPage, isExpanded, isFetchingNextPage])
+
+  const handleExpand = () => {
     setIsExpanded(true)
   }
 
@@ -82,7 +85,10 @@ export default function MyMeetingsSection() {
       ) : (
         <div className="flex flex-col">
           {/* 약속 리스트 — 최대 높이 392px, 스크롤 */}
-          <div id="my-meetings-list" className="flex flex-col">
+          <div
+            id="my-meetings-list"
+            className="flex max-h-98 flex-col overflow-y-auto max-lg:max-h-none max-lg:overflow-visible"
+          >
             {displayItems.map((meeting) => (
               <HomeMeetingCard key={meeting.meetingId} meeting={meeting} />
             ))}
