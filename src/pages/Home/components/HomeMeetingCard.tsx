@@ -80,10 +80,11 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-medium px-medium py-small cursor-pointer',
+        'flex items-center gap-medium cursor-pointer',
+        'max-lg:flex-col max-lg:items-stretch max-lg:gap-0 max-lg:px-3 max-lg:py-4',
         isOngoing
-          ? 'rounded-small bg-accent-100 border border-accent-200'
-          : 'border-b border-grey-300 last:border-b-0'
+          ? 'px-base py-small rounded-small bg-accent-100 border border-accent-200'
+          : 'px-base py-large border-b border-grey-300 last:border-b-0'
       )}
       onClick={handleCardClick}
       role="button"
@@ -96,29 +97,34 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
       }}
     >
       {/* 상태 태그 */}
-      <div className="flex w-[60px] shrink-0 justify-center">
+      <div className="flex w-[53px] shrink-0 justify-center max-lg:mb-xtiny max-lg:w-auto max-lg:justify-start max-lg:gap-xtiny">
         {status.label && (
-          <Badge color={status.color} size="small">
+          <Badge color={status.color} size="medium" className="lg:w-full">
             {status.label}
+          </Badge>
+        )}
+        {isLeader && (
+          <Badge color="purple" size="xsmall" className="lg:hidden">
+            약속장
           </Badge>
         )}
       </div>
 
       {/* 약속 정보 */}
-      <div className="flex min-w-0 flex-1 flex-col gap-xtiny">
+      <div className="flex min-w-0 flex-1 flex-col gap-[6px] max-lg:gap-[1px]">
         <div className="flex items-center gap-tiny">
-          <p className="min-w-0 truncate typo-subtitle2 text-black">
+          <p className="min-w-0 truncate typo-subtitle2 text-black max-lg:typo-m-body2">
             {gatheringName} | {meetingName}
           </p>
           {isLeader && (
-            <Badge color="purple" size="xsmall">
+            <Badge color="purple" size="xsmall" className="max-lg:hidden">
               약속장
             </Badge>
           )}
         </div>
         <div className="flex items-center gap-tiny">
-          {dDay && <span className="typo-body4 text-primary-400">{dDay}</span>}
-          <span className="typo-body4 text-grey-600">
+          {dDay && <span className="typo-body4 text-primary-400 max-lg:typo-m-body4">{dDay}</span>}
+          <span className="typo-body4 text-grey-600 max-lg:typo-m-body4">
             {formatMeetingDate(startDateTime)} ~ {formatMeetingDate(endDateTime)}
           </span>
         </div>
@@ -129,7 +135,7 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
         <Button
           variant="primary"
           size="small"
-          className="shrink-0"
+          className="shrink-0 max-lg:mt-[10px] max-lg:w-full"
           disabled={!preOpinionTemplateConfirmed}
           onClick={handleActionClick}
         >
@@ -137,7 +143,12 @@ export default function HomeMeetingCard({ meeting }: HomeMeetingCardProps) {
         </Button>
       )}
       {isDone && (
-        <Button variant="primary" size="small" className="shrink-0" onClick={handleActionClick}>
+        <Button
+          variant="primary"
+          size="small"
+          className="shrink-0 max-lg:mt-[10px] max-lg:w-full"
+          onClick={handleActionClick}
+        >
           {hasPersonalRetrospective ? '개인 회고 보기' : '개인 회고 작성하기'}
         </Button>
       )}

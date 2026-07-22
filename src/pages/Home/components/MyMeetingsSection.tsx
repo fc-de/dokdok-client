@@ -9,9 +9,11 @@ import { Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 import HomeMeetingCard from './HomeMeetingCard'
 import HomeSectionHeader from './HomeSectionHeader'
 
+const COLLAPSED_MEETING_COUNT = 3
+
 export default function MyMeetingsSection() {
   const [activeTab, setActiveTab] = useState<MyMeetingFilter>('ALL')
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const { data: tabCounts } = useMyMeetingTabCounts()
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -19,27 +21,27 @@ export default function MyMeetingsSection() {
   const showSkeleton = useDeferredLoading(isLoading)
 
   const allItems = data?.pages.flatMap((page) => page.items) ?? []
-  const hasMultiplePages = (data?.pages.length ?? 0) > 1
-  const displayItems = isCollapsed ? allItems.slice(0, PAGE_SIZES.MY_MEETINGS) : allItems
+  const displayItems = isExpanded ? allItems : allItems.slice(0, COLLAPSED_MEETING_COUNT)
+  const hasHiddenMeetings = hasNextPage || allItems.length > COLLAPSED_MEETING_COUNT
 
   const handleTabChange = (value: string) => {
     setActiveTab(value as MyMeetingFilter)
-    setIsCollapsed(false)
+    setIsExpanded(false)
   }
 
   const handleExpand = () => {
     if (hasNextPage) {
       fetchNextPage()
     }
-    setIsCollapsed(false)
+    setIsExpanded(true)
   }
 
   const handleCollapse = () => {
-    setIsCollapsed(true)
+    setIsExpanded(false)
   }
 
   return (
-    <section className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium max-lg:gap-base">
       <HomeSectionHeader title="내 약속">
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <TabsList size="large">
@@ -80,7 +82,7 @@ export default function MyMeetingsSection() {
       ) : (
         <div className="flex flex-col">
           {/* 약속 리스트 — 최대 높이 392px, 스크롤 */}
-          <div className="max-h-98 overflow-y-auto overflow-x-hidden">
+          <div id="my-meetings-list" className="flex flex-col">
             {displayItems.map((meeting) => (
               <HomeMeetingCard key={meeting.meetingId} meeting={meeting} />
             ))}
@@ -92,19 +94,21 @@ export default function MyMeetingsSection() {
           </div>
 
           {/* 펼치기 / 접기 버튼 */}
-          {(hasNextPage || hasMultiplePages) && (
+          {hasHiddenMeetings && (
             <button
               type="button"
-              className="flex h-12 w-full cursor-pointer items-center justify-center gap-tiny rounded-small border border-grey-300 text-grey-700 typo-body3 hover:bg-grey-100"
-              onClick={isCollapsed || hasNextPage ? handleExpand : handleCollapse}
+              className="flex h-12 w-full cursor-pointer items-center justify-center gap-tiny rounded-small border border-grey-300 text-grey-700 typo-body3 hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 max-lg:h-10 max-lg:border-0"
+              onClick={isExpanded ? handleCollapse : handleExpand}
+              aria-expanded={isExpanded}
+              aria-controls="my-meetings-list"
             >
-              {isCollapsed || hasNextPage ? (
+              {isExpanded ? (
                 <>
-                  펼치기 <ChevronDown className="size-4" />
+                  접기 <ChevronUp className="size-4" />
                 </>
               ) : (
                 <>
-                  접기 <ChevronUp className="size-4" />
+                  펼치기 <ChevronDown className="size-4" />
                 </>
               )}
             </button>
