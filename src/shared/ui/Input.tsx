@@ -5,8 +5,8 @@ import { cn } from '@/shared/lib/utils'
 
 const inputVariants = cva(
   [
-    'flex w-full rounded-small border bg-white px-medium py-base outline-none transition-colors',
-    'typo-body1 text-black',
+    'flex w-full rounded-small border bg-white px-medium py-base max-lg:px-base max-lg:py-small outline-none transition-colors',
+    'typo-body1 max-lg:typo-m-body1 text-black',
     'placeholder:text-grey-600',
   ],
   {

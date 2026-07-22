@@ -17,7 +17,7 @@ import {
 import FormPageHeader from '@/shared/components/FormPageHeader'
 import { ROUTES } from '@/shared/constants'
 import { MobileLayoutFrame } from '@/shared/layout'
-import { Button, Card, Container, DatePicker, Input, Select } from '@/shared/ui'
+import { Button, Card, Container, DatePicker, Input, TimePicker } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
 
 export default function MeetingCreatePage() {
@@ -379,18 +379,12 @@ export default function MeetingCreatePage() {
                         className="md:max-w-none"
                         disabled={getStartDateDisabled()}
                       />
-                      <Select
-                        placeholder="시간 선택"
+                      <TimePicker
                         className="md:max-w-none"
+                        options={timeOptions}
                         value={startTime ?? ''}
                         onValueChange={setStartTime}
-                      >
-                        {timeOptions.map((option) => (
-                          <Select.SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </Select.SelectItem>
-                        ))}
-                      </Select>
+                      />
                     </div>
                     <span className="hidden md:block md:px-xsmall md:shrink-0">~</span>
                     <span className="md:hidden text-grey-600 typo-body4">종료 일정</span>
@@ -404,19 +398,13 @@ export default function MeetingCreatePage() {
                         disabled={getEndDateDisabled()}
                         isDisabled={!startDate || !startTime}
                       />
-                      <Select
-                        placeholder="시간 선택"
+                      <TimePicker
                         className="md:max-w-none"
+                        options={getEndTimeOptions()}
                         value={endTime ?? ''}
                         onValueChange={setEndTime}
                         disabled={!endDate || !startDate || !startTime}
-                      >
-                        {getEndTimeOptions().map((option) => (
-                          <Select.SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </Select.SelectItem>
-                        ))}
-                      </Select>
+                      />
                     </div>
                   </div>
                 </div>

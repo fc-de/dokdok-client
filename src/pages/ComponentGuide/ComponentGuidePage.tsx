@@ -62,6 +62,8 @@ import {
   TabsTrigger,
   Textarea,
   TextButton,
+  type TimeOption,
+  TimePicker,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -95,6 +97,7 @@ function ComponentGuidePage() {
     { id: 'select', name: 'Select', category: '폼' },
     { id: 'topicTypeSelect', name: 'TopicTypeSelect', category: '폼' },
     { id: 'datePicker', name: 'DatePicker', category: '폼' },
+    { id: 'timePicker', name: 'TimePicker', category: '폼' },
     { id: 'filterDropdown', name: 'FilterDropdown', category: '폼' },
     { id: 'starRatingFilter', name: 'StarRatingFilter', category: '폼' },
     { id: 'tabs', name: 'Tabs', category: '내비게이션' },
@@ -206,6 +209,7 @@ function ComponentGuidePage() {
           {selectedSection === 'select' && <SelectSection />}
           {selectedSection === 'topicTypeSelect' && <TopicTypeSelectSection />}
           {selectedSection === 'datePicker' && <DatePickerSection />}
+          {selectedSection === 'timePicker' && <TimePickerSection />}
           {selectedSection === 'filterDropdown' && <FilterDropdownSection />}
           {selectedSection === 'starRatingFilter' && <StarRatingFilterSection />}
           {selectedSection === 'tabs' && <TabsSection />}
@@ -1159,7 +1163,7 @@ function TextareaSection() {
   return (
     <Section title="Textarea" description="커스텀 높이를 지원하는 여러 줄 텍스트 입력">
       <Showcase title="기본" code={`<Textarea placeholder="메시지를 입력하세요..." />`}>
-        <Textarea placeholder="메시지를 입력하세요..." className="w-96" />
+        <Textarea placeholder="메시지를 입력하세요..." className="max-lg:w-full w-96" />
       </Showcase>
 
       <Showcase
@@ -1175,7 +1179,7 @@ function TextareaSection() {
           value={value}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)}
           maxLength={200}
-          className="w-96"
+          className="max-lg:w-full w-96"
         />
       </Showcase>
 
@@ -1191,7 +1195,7 @@ function TextareaSection() {
           placeholder="필수 입력 항목"
           error
           errorMessage="이 항목은 필수입니다"
-          className="w-96"
+          className="max-lg:w-full w-96"
         />
       </Showcase>
 
@@ -1200,7 +1204,7 @@ function TextareaSection() {
         description="height prop (default: 180px)"
         code={`<Textarea placeholder="커스텀 높이" height={120} />`}
       >
-        <Textarea placeholder="커스텀 높이" height={120} className="w-96" />
+        <Textarea placeholder="커스텀 높이" height={120} className="max-lg:w-full w-96" />
       </Showcase>
     </Section>
   )
@@ -1573,6 +1577,80 @@ function DatePickerSection() {
         code={`<DatePicker value={date} onChange={setDate} placeholder="생일을 선택하세요" />`}
       >
         <DatePicker value={date1} onChange={setDate1} placeholder="생일을 선택하세요" />
+      </Showcase>
+    </Section>
+  )
+}
+
+const SAMPLE_TIME_OPTIONS: TimeOption[] = Array.from({ length: 12 }, (_, i) => {
+  const hour = String(9 + Math.floor(i / 2)).padStart(2, '0')
+  const minute = i % 2 === 0 ? '00' : '30'
+  return { value: `${hour}:${minute}`, label: `${hour}:${minute}` }
+})
+
+function TimePickerSection() {
+  const [time1, setTime1] = useState('')
+  const [time2, setTime2] = useState('10:00')
+  const [placeholderTime, setPlaceholderTime] = useState('')
+
+  return (
+    <Section
+      title="TimePicker"
+      description="PC에서는 Select 드롭다운, 모바일에서는 BottomSheet로 동작하는 시간 선택 컴포넌트"
+    >
+      <Showcase
+        title="기본 사용"
+        code={`const [time, setTime] = useState('')
+
+<TimePicker
+  options={timeOptions}
+  value={time}
+  onValueChange={setTime}
+/>`}
+      >
+        <TimePicker options={SAMPLE_TIME_OPTIONS} value={time1} onValueChange={setTime1} />
+      </Showcase>
+
+      <Showcase
+        title="기본 값 포함"
+        code={`const [time, setTime] = useState('10:00')
+
+<TimePicker
+  options={timeOptions}
+  value={time}
+  onValueChange={setTime}
+/>`}
+      >
+        <TimePicker options={SAMPLE_TIME_OPTIONS} value={time2} onValueChange={setTime2} />
+      </Showcase>
+
+      <Showcase
+        title="비활성화"
+        code={`<TimePicker
+  options={timeOptions}
+  value=""
+  onValueChange={() => {}}
+  disabled
+/>`}
+      >
+        <TimePicker options={SAMPLE_TIME_OPTIONS} value="" onValueChange={() => {}} disabled />
+      </Showcase>
+
+      <Showcase
+        title="커스텀 플레이스홀더"
+        code={`<TimePicker
+  options={timeOptions}
+  value={time}
+  onValueChange={setTime}
+  placeholder="시작 시간을 선택하세요"
+/>`}
+      >
+        <TimePicker
+          options={SAMPLE_TIME_OPTIONS}
+          value={placeholderTime}
+          onValueChange={setPlaceholderTime}
+          placeholder="시작 시간을 선택하세요"
+        />
       </Showcase>
     </Section>
   )

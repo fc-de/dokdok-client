@@ -23,7 +23,12 @@ type CardProps = {
 
 function Card({ className, children }: CardProps) {
   return (
-    <div className={cn('bg-white rounded-base p-medium border-grey-300 border', className)}>
+    <div
+      className={cn(
+        'bg-white rounded-base p-medium border-grey-300 border max-lg:rounded-small max-lg:p-base',
+        className
+      )}
+    >
       {children}
     </div>
   )
