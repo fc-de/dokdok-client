@@ -1,7 +1,10 @@
+import { cn } from '@/shared/lib/utils'
+
 type EmptyStateType = 'all' | 'favorites' | 'meetings' | 'bookshelf'
 
 interface EmptyStateProps {
   type?: EmptyStateType
+  className?: string
 }
 
 const EMPTY_STATE_MESSAGES: Record<EmptyStateType, React.ReactNode> = {
@@ -33,10 +36,17 @@ const EMPTY_STATE_MESSAGES: Record<EmptyStateType, React.ReactNode> = {
   ),
 }
 
-export default function EmptyState({ type = 'all' }: EmptyStateProps) {
+export default function EmptyState({ type = 'all', className }: EmptyStateProps) {
   return (
-    <div className="flex h-35 items-center justify-center rounded-base border border-grey-300">
-      <p className="text-center text-grey-600 typo-subtitle2">{EMPTY_STATE_MESSAGES[type]}</p>
+    <div
+      className={cn(
+        'flex h-35 items-center justify-center rounded-base border border-grey-300',
+        className
+      )}
+    >
+      <p className="typo-subtitle2 text-center text-grey-600 max-lg:typo-m-heading3">
+        {EMPTY_STATE_MESSAGES[type]}
+      </p>
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,7 +14,7 @@ import { ROUTES } from '@/shared/constants'
 import { useInfiniteScroll } from '@/shared/hooks'
 import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
-import { Button, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
+import { Button, FloatingButton, Spinner, Tabs, TabsList, TabsTrigger } from '@/shared/ui'
 
 type TabValue = 'all' | 'favorites'
 
@@ -83,9 +84,9 @@ export default function GatheringListPage() {
 
   return (
     <MobileLayoutFrame variant="navigation">
-      <div className="flex flex-col gap-large pt-xlarge pb-medium max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
+      <div className="flex flex-col gap-large pt-xlarge pb-medium max-lg:min-h-[calc(100dvh-var(--spacing-mobile-header-height)-var(--spacing-mobile-bottom-nav-height))] max-lg:gap-base max-lg:px-5 max-lg:pt-5 max-lg:pb-24">
         {/* 타이틀 */}
-        <h1 className="typo-heading1 text-black">독서모임</h1>
+        <h1 className="typo-heading1 text-black max-lg:hidden">독서모임</h1>
 
         {/* 탭 + 버튼 영역 */}
         <div className="flex items-center justify-between">
@@ -99,7 +100,9 @@ export default function GatheringListPage() {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button onClick={handleCreateClick}>모임 만들기</Button>
+          <Button onClick={handleCreateClick} className="max-lg:hidden">
+            모임 만들기
+          </Button>
         </div>
 
         {/* 컨텐츠 영역 */}
@@ -110,16 +113,20 @@ export default function GatheringListPage() {
                 <Spinner />
               </div>
             ) : gatherings.length === 0 ? (
-              <EmptyState type="all" />
+              <EmptyState
+                type="all"
+                className="max-lg:h-auto max-lg:flex-1 max-lg:rounded-none max-lg:border-0"
+              />
             ) : (
               <>
-                <div className="grid grid-cols-3 gap-small">
+                <div className="grid grid-cols-3 gap-small max-lg:grid-cols-1 max-lg:gap-xsmall">
                   {gatherings.map((gathering) => (
                     <GatheringCard
                       key={gathering.gatheringId}
                       gathering={gathering}
                       onFavoriteToggle={handleFavoriteToggle}
                       onClick={() => handleCardClick(gathering.gatheringId)}
+                      className="max-lg:h-30 max-lg:p-base"
                     />
                   ))}
                 </div>
@@ -142,21 +149,34 @@ export default function GatheringListPage() {
                 <Spinner />
               </div>
             ) : favorites.length === 0 ? (
-              <EmptyState type="favorites" />
+              <EmptyState
+                type="favorites"
+                className="max-lg:h-auto max-lg:flex-1 max-lg:rounded-none max-lg:border-0"
+              />
             ) : (
-              <div className="grid grid-cols-3 gap-small">
+              <div className="grid grid-cols-3 gap-small max-lg:grid-cols-1 max-lg:gap-xsmall">
                 {favorites.map((gathering) => (
                   <GatheringCard
                     key={gathering.gatheringId}
                     gathering={gathering}
                     onFavoriteToggle={handleFavoriteToggle}
                     onClick={() => handleCardClick(gathering.gatheringId)}
+                    className="max-lg:h-30 max-lg:p-base"
                   />
                 ))}
               </div>
             )}
           </>
         )}
+
+        <FloatingButton
+          hasBottomMenu
+          onClick={handleCreateClick}
+          className="typo-m-subtitle1 gap-1"
+        >
+          <Plus aria-hidden="true" size={16} />
+          모임 만들기
+        </FloatingButton>
       </div>
     </MobileLayoutFrame>
   )

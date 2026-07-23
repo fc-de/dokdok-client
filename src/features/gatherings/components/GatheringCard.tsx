@@ -9,12 +9,14 @@ interface GatheringCardProps {
   gathering: GatheringListItem
   onFavoriteToggle: (gatheringId: number) => void
   onClick: () => void
+  className?: string
 }
 
 export default function GatheringCard({
   gathering,
   onFavoriteToggle,
   onClick,
+  className,
 }: GatheringCardProps) {
   const {
     gatheringId,
@@ -35,7 +37,10 @@ export default function GatheringCard({
 
   return (
     <div
-      className="relative flex h-35 cursor-pointer flex-col justify-between rounded-base border border-grey-300 bg-white p-medium transition-colors hover:border-grey-400"
+      className={cn(
+        'relative flex h-35 cursor-pointer flex-col justify-between rounded-base border border-grey-300 bg-white p-medium transition-colors hover:border-grey-400',
+        className
+      )}
       onClick={onClick}
       role="button"
       tabIndex={0}
