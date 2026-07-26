@@ -20,19 +20,32 @@ export default function HomeSectionHeader({
   className,
 }: HomeSectionHeaderProps) {
   return (
-    <div className={cn('flex items-center justify-between', className)}>
-      <div className="flex items-center gap-medium">
-        <h2 className="typo-heading3 text-black">{title}</h2>
-        {children}
+    <div
+      className={cn(
+        'grid grid-cols-[1fr_auto] items-center gap-y-xsmall lg:flex lg:items-center lg:justify-between',
+        className
+      )}
+    >
+      <div className="contents lg:flex lg:items-center lg:gap-medium">
+        <h2 className="typo-heading3 text-black max-lg:col-start-1 max-lg:row-start-1 max-lg:typo-m-heading3">
+          {title}
+        </h2>
+
+        {children && (
+          <div className="col-span-2 max-lg:col-start-1 max-lg:row-start-2 lg:col-auto">
+            {children}
+          </div>
+        )}
       </div>
 
       {linkTo && linkLabel && (
         <Link
           to={linkTo}
-          className="inline-flex items-center gap-xtiny text-grey-600 typo-caption1 hover:text-grey-800"
+          aria-label={linkLabel}
+          className="relative inline-flex items-center gap-xtiny text-grey-600 typo-caption1 hover:text-grey-800 max-lg:col-start-2 max-lg:row-start-1 max-lg:size-5 max-lg:justify-center max-lg:before:absolute max-lg:before:-inset-3 max-lg:before:content-['']"
         >
-          <span>{linkLabel}</span>
-          <ChevronRight className="size-4" />
+          <span className="max-lg:hidden">{linkLabel}</span>
+          <ChevronRight className="size-4 max-lg:size-5" />
         </Link>
       )}
     </div>

@@ -47,7 +47,10 @@ export default function BookCarousel({ children, className }: BookCarouselProps)
 
   return (
     <div className={cn('group/carousel relative', className)}>
-      <div ref={scrollRef} className="flex gap-large overflow-x-auto scrollbar-hide">
+      <div
+        ref={scrollRef}
+        className="flex gap-large overflow-x-auto overscroll-x-contain scrollbar-hide max-lg:gap-small"
+      >
         {children}
       </div>
 
@@ -56,7 +59,7 @@ export default function BookCarousel({ children, className }: BookCarouselProps)
         <button
           type="button"
           onClick={() => scroll('left')}
-          className="absolute left-0 z-10 hidden size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity group-hover/carousel:flex md:flex"
+          className="absolute left-0 z-10 hidden size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity lg:flex lg:group-hover/carousel:flex"
           style={{ top: THUMBNAIL_HEIGHT / 2, transform: 'translate(-50%, -50%)' }}
           aria-label="이전"
         >
@@ -69,7 +72,7 @@ export default function BookCarousel({ children, className }: BookCarouselProps)
         <button
           type="button"
           onClick={() => scroll('right')}
-          className="absolute right-0 z-10 hidden size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity group-hover/carousel:flex md:flex"
+          className="absolute right-0 z-10 hidden size-10 cursor-pointer items-center justify-center rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.15)] transition-opacity lg:flex lg:group-hover/carousel:flex"
           style={{ top: THUMBNAIL_HEIGHT / 2, transform: 'translate(50%, -50%)' }}
           aria-label="다음"
         >

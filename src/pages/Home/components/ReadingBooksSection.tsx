@@ -44,7 +44,7 @@ export default function ReadingBooksSection() {
   const isFilteredEmpty = activeTab !== 'all'
 
   return (
-    <section className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium max-lg:gap-base">
       <HomeSectionHeader
         title="지금 읽고 있는 책"
         linkTo={ROUTES.BOOKS}
@@ -78,29 +78,31 @@ export default function ReadingBooksSection() {
           ))}
         </div>
       ) : books.length === 0 ? (
-        <div className="flex h-85 flex-col items-center justify-center gap-medium rounded-base border border-grey-300">
-          <div className="flex flex-col items-center gap-xtiny">
-            <p className="text-grey-600 typo-subtitle2">
-              {isFilteredEmpty
-                ? `${activeTab === 'pre' ? '약속 전' : '약속 후'} 상태인 책이 없어요.`
-                : '내 책장이 비어있어요.'}
-            </p>
-            <p className="text-grey-600 typo-body3">
-              {isFilteredEmpty
-                ? '다른 상태의 책을 확인해 보세요.'
-                : '첫 번째 책을 등록하고 독서 기록을 시작해 보세요!'}
-            </p>
-          </div>
+        <div className="flex flex-col gap-small">
           {!isFilteredEmpty && (
             <Button
-              variant="secondary"
-              outline
+              variant="primary"
               size="small"
+              className="w-full"
               onClick={() => setIsSearchModalOpen(true)}
             >
               책 추가하기
             </Button>
           )}
+          <div className="flex h-85 flex-col items-center justify-center gap-medium rounded-base border border-grey-300 max-lg:h-40">
+            <div className="flex flex-col items-center gap-xtiny text-center">
+              <p className="text-grey-600 typo-subtitle2">
+                {isFilteredEmpty
+                  ? `${activeTab === 'pre' ? '약속 전' : '약속 후'} 상태인 책이 없어요.`
+                  : '내 책장이 비어있어요.'}
+              </p>
+              <p className="text-grey-600 typo-body3">
+                {isFilteredEmpty
+                  ? '다른 상태의 책을 확인해 보세요.'
+                  : '첫 번째 책을 등록하고 독서 기록을 시작해 보세요!'}
+              </p>
+            </div>
+          </div>
         </div>
       ) : (
         <BookCarousel>
