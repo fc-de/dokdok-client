@@ -15,7 +15,7 @@ export default function FavoriteGatheringsSection() {
   const gatherings = data?.gatherings ?? []
 
   return (
-    <section className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium max-lg:gap-base">
       <HomeSectionHeader
         title="즐겨찾는 모임"
         linkTo={ROUTES.GATHERINGS}
@@ -23,11 +23,11 @@ export default function FavoriteGatheringsSection() {
       />
 
       {showSkeleton ? (
-        <div className="grid grid-cols-3 gap-small">
+        <div className="grid grid-cols-3 gap-small max-lg:grid-cols-1">
           {[...Array(3).keys()].map((i) => (
             <div
               key={i}
-              className="flex h-35 animate-pulse flex-col justify-between rounded-base border border-grey-300 p-medium"
+              className="flex h-35 animate-pulse flex-col justify-between rounded-base border border-grey-300 p-medium max-lg:h-30 max-lg:p-4"
             >
               <div className="flex flex-col gap-xsmall">
                 <div className="h-5 w-12 rounded-tiny bg-grey-300" />
@@ -45,7 +45,7 @@ export default function FavoriteGatheringsSection() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-small">
+        <div className="grid grid-cols-3 gap-small max-lg:grid-cols-1">
           {gatherings.map((gathering) => (
             <GatheringCard
               key={gathering.gatheringId}

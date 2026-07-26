@@ -1,5 +1,5 @@
 import { Star } from 'lucide-react'
-import type { MouseEvent } from 'react'
+import type { KeyboardEvent, MouseEvent } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -35,10 +35,16 @@ export default function GatheringCard({
     onFavoriteToggle(gatheringId)
   }
 
+  const handleFavoriteKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.stopPropagation()
+    }
+  }
+
   return (
     <div
       className={cn(
-        'relative flex h-35 cursor-pointer flex-col justify-between rounded-base border border-grey-300 bg-white p-medium transition-colors hover:border-grey-400',
+        'relative flex h-35 cursor-pointer flex-col justify-between rounded-base border border-grey-300 bg-white p-medium transition-colors hover:border-grey-400 max-lg:h-30 max-lg:p-4',
         className
       )}
       onClick={onClick}
@@ -73,8 +79,9 @@ export default function GatheringCard({
       {/* 즐겨찾기 버튼 */}
       <button
         type="button"
-        className="absolute right-medium top-medium p-1 cursor-pointer"
+        className="absolute right-medium top-medium flex size-11 cursor-pointer items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 max-lg:right-2 max-lg:top-2"
         onClick={handleFavoriteClick}
+        onKeyDown={handleFavoriteKeyDown}
         aria-label={isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
       >
         <Star

@@ -40,7 +40,7 @@ function TabsList({ className, size = 'small', ...props }: TabsListProps) {
       <TabsPrimitive.List
         data-slot="tabs-list"
         data-size={size}
-        className={cn('inline-flex items-center gap-medium', className)}
+        className={cn('inline-flex items-center gap-medium max-lg:gap-[14px]', className)}
         {...props}
       />
     </TabsSizeContext.Provider>
