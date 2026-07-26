@@ -113,9 +113,9 @@ export default function CreateGatheringPage() {
             <h1 className="typo-heading2 text-black text-center max-lg:hidden">독서모임 만들기</h1>
 
             {/* 입력 폼 */}
-            <div className="flex flex-col gap-base w-full">
+            <div className="flex flex-col gap-base w-full max-lg:gap-xsmall">
               {/* 모임 이름 */}
-              <div className="flex flex-col gap-base w-full">
+              <div className="flex flex-col gap-base w-full max-lg:gap-xsmall">
                 <div className="flex items-start gap-xtiny pl-0.5">
                   <span className="typo-subtitle3 text-black">모임 이름</span>
                   <span className="text-primary-300 typo-caption1">*</span>
@@ -129,14 +129,15 @@ export default function CreateGatheringPage() {
               </div>
 
               {/* 모임 설명 */}
-              <div className="flex flex-col gap-base w-full">
+              <div className="flex flex-col gap-base w-full max-lg:gap-xsmall">
                 <div className="flex items-start pl-0.5">
                   <span className="typo-subtitle3 text-black">모임 설명</span>
                 </div>
                 <Textarea
                   placeholder="모임에 대한 소개글을 입력해주세요"
                   maxLength={MAX_DESCRIPTION_LENGTH}
-                  height={86}
+                  height={104}
+                  className="max-lg:h-[168px]!"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
@@ -156,14 +157,16 @@ export default function CreateGatheringPage() {
           </div>
         ) : (
           /* Step 2: 생성 완료 화면 */
-          <div className="flex flex-col justify-between w-full max-w-100 h-125 max-lg:h-auto max-lg:max-w-none max-lg:px-5 max-lg:pt-16">
+          <div className="flex flex-col justify-between w-full max-w-100 h-125 max-lg:h-auto max-lg:max-w-none max-lg:px-5 max-lg:pt-16 max-lg:gap-12.5">
             {/* 성공 메시지 & 일러스트 */}
             <div className="flex flex-col gap-base items-center w-full">
               <div className="flex flex-col gap-xtiny items-center text-center w-full">
                 <p className="typo-subtitle1 text-primary-300">
                   '{createdData?.gatheringName ?? name}'
                 </p>
-                <h1 className="typo-heading2 text-black">모임이 만들어졌어요!</h1>
+                <h1 className="typo-heading2 max-lg:typo-m-heading1 text-black">
+                  모임이 만들어졌어요!
+                </h1>
               </div>
               <div className="pl-xsmall">
                 <img src={PaperPlane} alt="종이비행기" className="w-52.25 h-45.5" />
@@ -172,7 +175,7 @@ export default function CreateGatheringPage() {
 
             {/* 초대 링크 & 완료 버튼 */}
             <div className="flex flex-col gap-9 w-full">
-              <div className="flex flex-col gap-base items-center w-full">
+              <div className="flex flex-col gap-base items-center w-full max-lg:gap-large">
                 <p className="typo-body3 text-grey-600 text-center">
                   초대 링크를 복사해서
                   <br />
