@@ -143,10 +143,12 @@ export default function InvitePage() {
       }}
       className="min-h-dvh lg:min-h-0"
     >
-      <div className="flex flex-col items-center gap-9 w-full pt-xlarge max-lg:px-5 max-lg:pt-8">
+      <div className="flex flex-col items-center gap-9 max-lg:gap-7 w-full pt-xlarge max-lg:px-5 max-lg:pt-[79px]">
         {/* 제목 영역 */}
-        <div className="flex flex-col gap-xtiny items-center text-center w-full">
-          <h1 className="typo-heading2 text-black">새로운 독서모임에 초대되었어요!</h1>
+        <div className="flex flex-col gap-xtiny max-lg:max-w-75 max-lg:gap-xsmall items-center text-center w-full">
+          <h1 className="typo-heading2 max-lg:typo-m-heading1 text-black break-keep">
+            새로운 독서모임에 초대되었어요!
+          </h1>
           <p className="typo-body3 text-grey-600">모임 정보를 확인하고 가입을 신청해 보세요</p>
         </div>
 
@@ -162,12 +164,12 @@ export default function InvitePage() {
             />
 
             {/* 카드 (편지지) */}
-            <div className="relative z-10 mx-8.25 flex flex-col gap-base bg-white rounded-xl shadow-drop px-9 pt-9 pb-25">
+            <div className="relative z-10 mx-8.25 flex flex-col gap-base bg-white rounded-xl shadow-drop px-9 max-lg:px-6 pt-9 max-lg:pt-6 pb-25">
               {/* 모임 이름 & 설명 */}
               <div className="flex flex-col gap-xtiny w-full">
                 <p className="typo-subtitle1 text-primary-300">{gathering.gatheringName}</p>
                 {gathering.gatheringDescription && (
-                  <p className="typo-body3 text-grey-700 h-15 line-clamp-3">
+                  <p className="typo-body3 text-grey-700 h-15 max-lg:h-10 line-clamp-3 max-lg:line-clamp-2">
                     {gathering.gatheringDescription}
                   </p>
                 )}
