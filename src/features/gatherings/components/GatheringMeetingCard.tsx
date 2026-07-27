@@ -91,7 +91,7 @@ export default function GatheringMeetingCard({
   if (isOngoing) {
     return (
       <div
-        className="flex items-center px-base py-small bg-accent-100 border border-accent-200 rounded-small cursor-pointer"
+        className="flex items-center px-base py-small bg-accent-100 border border-accent-200 rounded-small cursor-pointer max-lg:items-stretch"
         onClick={handleClick}
       >
         <div className="flex items-center gap-medium max-lg:flex-col max-lg:items-start max-lg:gap-xtiny">
@@ -109,11 +109,12 @@ export default function GatheringMeetingCard({
           </div>
 
           {/* 약속 정보 */}
-          <div className="flex flex-col gap-xtiny p-xtiny max-lg:p-0">
-            <div className="flex items-center gap-xsmall">
-              <div className="flex items-center gap-tiny text-black typo-subtitle2 max-lg:typo-m-body1">
+          <div className="flex flex-col gap-xtiny p-xtiny max-lg:w-full max-lg:p-0">
+            <div className="flex items-center gap-xsmall max-lg:w-full max-lg:min-w-0">
+              {/* 모바일은 한 줄 고정 + 말줄임 */}
+              <div className="flex items-center gap-tiny text-black typo-subtitle2 max-lg:block max-lg:w-full max-lg:truncate max-lg:typo-m-body1">
                 <span className="font-semibold">{meetingName}</span>
-                <span>|</span>
+                <span className="max-lg:mx-tiny">|</span>
                 <span className="font-medium">{bookName}</span>
               </div>
               {isHost && (
@@ -154,11 +155,12 @@ export default function GatheringMeetingCard({
         </div>
 
         {/* 약속 정보 */}
-        <div className="flex flex-col gap-xtiny p-xtiny flex-1 max-lg:p-0">
-          <div className="flex items-center gap-xsmall">
-            <div className="flex items-center gap-tiny text-black typo-subtitle2 max-lg:typo-m-body2">
+        <div className="flex flex-col gap-xtiny p-xtiny flex-1 max-lg:w-full max-lg:p-0">
+          <div className="flex items-center gap-xsmall max-lg:w-full max-lg:min-w-0">
+            {/* 모바일은 한 줄 고정 + 말줄임 */}
+            <div className="flex items-center gap-tiny text-black typo-subtitle2 max-lg:block max-lg:w-full max-lg:truncate max-lg:typo-m-body2">
               <span className="font-semibold">{meetingName}</span>
-              <span className="font-medium">|</span>
+              <span className="font-medium max-lg:mx-tiny">|</span>
               <span className="font-medium">{bookName}</span>
             </div>
             {isHost && (
