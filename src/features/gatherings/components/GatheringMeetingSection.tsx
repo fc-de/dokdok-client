@@ -29,6 +29,9 @@ interface GatheringMeetingSectionProps {
 /** 탭 필터 목록 */
 const TAB_FILTERS: MeetingFilter[] = ['ALL', 'UPCOMING', 'DONE', 'JOINED']
 
+/** 모바일에서 약속 설정/만들기 버튼을 전체 폭으로 균등 분할 */
+const MOBILE_MEETING_BUTTON = 'max-lg:h-12 max-lg:flex-1 max-lg:typo-m-subtitle1'
+
 const FILTER_LABELS: Record<MeetingFilter, string> = {
   ALL: '전체 약속',
   UPCOMING: '예정된 약속',
@@ -112,17 +115,19 @@ export default function GatheringMeetingSection({
   }
 
   return (
-    <section className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium max-lg:gap-base">
       {/* 섹션 헤더: 약속 + 탭들 + 버튼들 (한 줄) */}
-      <div className="flex items-center justify-between h-9">
-        <div className="flex items-center gap-large">
+      {/* 모바일은 버튼 → 제목 → 탭 순으로 세로 배치 */}
+      <div className="flex items-center justify-between h-9 max-lg:h-auto max-lg:flex-col max-lg:items-stretch max-lg:gap-8">
+        <div className="flex items-center gap-large max-lg:flex-col max-lg:items-start max-lg:gap-xsmall">
           {/* 섹션 제목 */}
-          <h2 className="typo-heading3 text-black">약속</h2>
+          <h2 className="typo-heading3 text-black max-lg:typo-m-heading3">약속</h2>
 
-          {/* 탭들 */}
+          {/* 탭들 (모바일은 화면 끝까지 가로 스크롤) */}
           <Tabs
             value={activeTab}
             onValueChange={(value) => handleTabChange(value as MeetingFilter)}
+            className="max-lg:w-full max-lg:-mr-5 max-lg:overflow-x-auto max-lg:pr-5 max-lg:scrollbar-hide"
           >
             <TabsList size="large">
               {TAB_FILTERS.map((filter) => (
@@ -139,11 +144,17 @@ export default function GatheringMeetingSection({
           </Tabs>
         </div>
 
-        {/* 버튼들 */}
-        <div className="flex items-center gap-xsmall">
+        {/* 버튼들 (모바일은 섹션 최상단에서 전체 폭 2분할) */}
+        <div className="flex items-center gap-xsmall max-lg:order-first max-lg:gap-small">
           {/* 약속 설정: 모임장만 */}
           {isLeader && (
-            <Button variant="secondary" outline size="small" onClick={handleMeetingSettings}>
+            <Button
+              variant="secondary"
+              outline
+              size="small"
+              onClick={handleMeetingSettings}
+              className={MOBILE_MEETING_BUTTON}
+            >
               약속 설정
             </Button>
           )}
@@ -151,14 +162,18 @@ export default function GatheringMeetingSection({
           {showCreateTooltip ? (
             <Tooltip dismissable onOpenChange={(open) => !open && setShowCreateTooltip(false)}>
               <TooltipTrigger asChild>
-                <Button size="small" onClick={handleCreateMeeting}>
+                <Button
+                  size="small"
+                  onClick={handleCreateMeeting}
+                  className={MOBILE_MEETING_BUTTON}
+                >
                   약속 만들기
                 </Button>
               </TooltipTrigger>
               <TooltipContent>약속을 만들어 함께 책을 읽어보세요!</TooltipContent>
             </Tooltip>
           ) : (
-            <Button size="small" onClick={handleCreateMeeting}>
+            <Button size="small" onClick={handleCreateMeeting} className={MOBILE_MEETING_BUTTON}>
               약속 만들기
             </Button>
           )}

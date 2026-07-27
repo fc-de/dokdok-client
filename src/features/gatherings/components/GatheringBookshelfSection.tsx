@@ -45,7 +45,7 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
   if (isLoading) {
     return (
       <section className="flex flex-col gap-medium">
-        <h2 className="typo-heading3 text-black">모임 책장</h2>
+        <h2 className="typo-heading3 text-black max-lg:typo-m-heading2">모임 책장</h2>
         <div className="flex items-center justify-center">
           <Spinner />
         </div>
@@ -54,12 +54,13 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
   }
 
   return (
-    <section className="flex flex-col gap-medium">
+    <section className="flex flex-col gap-medium max-lg:gap-base">
       {/* 헤더: 제목 + 좌우 화살표 (데이터 있을 때만) */}
       <div className="flex items-center justify-between h-7">
-        <h2 className="typo-heading3 text-black">모임 책장</h2>
+        <h2 className="typo-heading3 text-black max-lg:typo-m-heading3">모임 책장</h2>
+        {/* 좌우 화살표는 데스크톱만 (모바일은 스와이프) */}
         {hasBooks && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 max-lg:hidden">
             <button
               type="button"
               onClick={handleScrollLeft}
@@ -84,7 +85,7 @@ export default function GatheringBookshelfSection({ gatheringId }: GatheringBook
       {hasBooks ? (
         <div
           ref={scrollContainerRef}
-          className="flex gap-medium overflow-x-auto scrollbar-hide"
+          className="flex gap-medium overflow-x-auto scrollbar-hide max-lg:-mx-5 max-lg:gap-small max-lg:px-5"
           style={{ scrollSnapType: 'x mandatory' }}
         >
           {books.map((book) => (

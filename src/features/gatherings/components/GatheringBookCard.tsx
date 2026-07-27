@@ -19,9 +19,12 @@ export default function GatheringBookCard({ book }: GatheringBookCardProps) {
   }
 
   return (
-    <div className="flex flex-col gap-base cursor-pointer group w-40" onClick={handleClick}>
+    <div
+      className="flex flex-col gap-base cursor-pointer group w-40 max-lg:w-26 max-lg:gap-xsmall"
+      onClick={handleClick}
+    >
       {/* 책 커버 */}
-      <div className="w-40 h-55 bg-grey-300 rounded-small overflow-hidden">
+      <div className="w-40 h-55 bg-grey-300 rounded-small overflow-hidden max-lg:w-26 max-lg:h-37.5">
         {thumbnail ? (
           <img src={thumbnail} alt={bookName} className="w-full h-full object-cover" />
         ) : (
@@ -32,7 +35,7 @@ export default function GatheringBookCard({ book }: GatheringBookCardProps) {
       </div>
 
       {/* 책 정보 */}
-      <div className="flex flex-col gap-xtiny w-40">
+      <div className="flex flex-col gap-xtiny w-40 max-lg:w-26">
         {/* 제목 + 저자 */}
         <div className="flex flex-col gap-0.5">
           <p className="typo-body2 font-semibold text-black whitespace-pre-wrap">{bookName}</p>
