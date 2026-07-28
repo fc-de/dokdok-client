@@ -8,7 +8,8 @@ import {
   useMeetingApprovals,
 } from '@/features/meetings'
 import SubPageHeader from '@/shared/components/SubPageHeader'
-import { PAGE_SIZES } from '@/shared/constants'
+import { PAGE_SIZES, ROUTES } from '@/shared/constants'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { Container } from '@/shared/ui/Container'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 import { useGlobalModalStore } from '@/store'
@@ -69,11 +70,31 @@ export default function MeetingSettingPage() {
   const confirmedCount = confirmedData?.totalCount
 
   return (
-    <>
-      <SubPageHeader label="약속 설정" />
-      <div className="bg-grey-100">
-        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge">
-          <Container>
+    <MobileLayoutFrame
+      variant="header"
+      title="승인 대기 중인 약속"
+      leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
+      className="min-h-dvh lg:min-h-0"
+    >
+      <SubPageHeader label="약속 설정" className="max-lg:hidden" />
+      <div className="bg-grey-100 max-lg:bg-white">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge max-lg:px-5 max-lg:py-5">
+          <div className="lg:hidden">
+            {isPendingLoading || isPendingError ? (
+              <MeetingApprovalListSkeleton />
+            ) : (
+              pendingData && (
+                <MeetingApprovalList
+                  data={pendingData}
+                  gatheringId={gatheringId}
+                  currentPage={pendingPage}
+                  onPageChange={setPendingPage}
+                />
+              )
+            )}
+          </div>
+
+          <Container className="max-lg:hidden">
             <Container.Title>약속 관리</Container.Title>
             <Container.Content>
               <Tabs
@@ -132,6 +153,6 @@ export default function MeetingSettingPage() {
           </Container>
         </div>
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }
