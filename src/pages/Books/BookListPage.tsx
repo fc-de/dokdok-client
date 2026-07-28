@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -11,7 +12,8 @@ import {
 } from '@/features/book'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants/routes'
-import { MobileLayoutFrame } from '@/shared/layout'
+import { useDevice } from '@/shared/hooks'
+import { MobileLayoutFrame, MobileMainHeader } from '@/shared/layout'
 import { showToast } from '@/shared/lib/toast'
 import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
@@ -23,6 +25,7 @@ export default function BookListPage() {
   const { deleteBooks, isDeleting } = useDeleteBookAction()
   const { mutateAsync: createBook, isPending: isCreating } = useCreateBook()
   const { openConfirm } = useGlobalModalStore()
+  const { isMobile } = useDevice()
 
   // 현재 활성 탭 상태
   const [activeTab, setActiveTab] = useState<'all' | 'reading' | 'completed'>('all')
@@ -123,36 +126,36 @@ export default function BookListPage() {
 
   if (isEditMode) {
     return (
-      <MobileLayoutFrame
-        variant="header"
-        title="내 책장 편집하기"
-        leftAction={{ type: 'back', to: ROUTES.BOOKS }}
-        className="min-h-dvh lg:min-h-0"
-      >
-        <SubPageHeader label="내 책장" to={ROUTES.BOOKS} className="max-lg:hidden" />
-        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
-          <div className="flex justify-between items-center pb-tiny mb-9.25">
-            <h3 className="typo-heading3 text-black max-lg:hidden">내 책장 편집하기</h3>
-            <div className="flex gap-xsmall items-center">
-              <TextButton onClick={handleSelectAll}>
-                {isAllSelected ? '전체해제' : '전체선택'}
-              </TextButton>
-              <TextButton
-                onClick={handleDelete}
-                disabled={selectedBookIds.size === 0 || isDeleting}
-                className="text-grey-700"
-              >
-                삭제하기
-              </TextButton>
+      <MobileLayoutFrame variant="none" className="min-h-dvh lg:min-h-0">
+        <MobileMainHeader className="lg:hidden shadow-none" />
+        <div className="max-lg:pt-13 max-lg:mobile-frame">
+          <SubPageHeader label="내 책장" to={ROUTES.BOOKS} className="max-lg:top-13" />
+          <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pb-10">
+            <div className="flex justify-between items-center pb-tiny mb-9.25 max-lg:mb-2">
+              <h3 className="typo-heading3 max-lg:typo-m-heading3 text-black">내 책장 편집하기</h3>
+              <div className="flex gap-xsmall items-center">
+                <TextButton onClick={handleSelectAll} className="max-lg:min-h-11">
+                  {isAllSelected ? '전체해제' : '전체선택'}
+                </TextButton>
+                <TextButton
+                  onClick={handleDelete}
+                  disabled={selectedBookIds.size === 0 || isDeleting}
+                  className="text-grey-700"
+                >
+                  삭제하기
+                </TextButton>
+              </div>
             </div>
+            <p className="typo-subtitle1 text-grey-700 max-lg:mb-4">
+              {selectedBookIds.size}개 선택
+            </p>
+            <BookList
+              isEditMode
+              selectedBookIds={selectedBookIds}
+              onSelectToggle={handleSelectToggle}
+              onFilteredBooksChange={handleFilteredBooksChange}
+            />
           </div>
-          <p className="typo-subtitle1 text-grey-700">{selectedBookIds.size}개 선택</p>
-          <BookList
-            isEditMode
-            selectedBookIds={selectedBookIds}
-            onSelectToggle={handleSelectToggle}
-            onFilteredBooksChange={handleFilteredBooksChange}
-          />
         </div>
       </MobileLayoutFrame>
     )
@@ -160,8 +163,8 @@ export default function BookListPage() {
 
   return (
     <MobileLayoutFrame variant="navigation">
-      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
-        <h1 className="typo-heading1 text-black mt-xlarge mb-medium max-lg:mt-0">내 책장</h1>
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pb-10">
+        <h1 className="typo-heading1 text-black mt-xlarge mb-medium max-lg:hidden">내 책장</h1>
         <Tabs value={activeTab} onValueChange={handleTabChange}>
           <div className="flex justify-between items-center">
             <TabsList size="large">
@@ -176,26 +179,39 @@ export default function BookListPage() {
               </TabsTrigger>
             </TabsList>
             <div className="flex gap-xsmall items-center">
+              {/* 데스크탑 편집하기 버튼 */}
               <Button
                 variant="secondary"
                 outline
                 disabled={totalCount === 0}
                 onClick={handleEnterEditMode}
+                className="max-lg:hidden"
               >
                 편집하기
               </Button>
-              {totalCount === 0 ? (
-                <Tooltip dismissable>
-                  <TooltipTrigger asChild>
-                    <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>책을 추가해 감상 기록을 남겨보세요!</p>
-                  </TooltipContent>
-                </Tooltip>
-              ) : (
-                <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
-              )}
+              {/* 모바일 편집 텍스트 버튼 */}
+              <TextButton
+                disabled={totalCount === 0}
+                onClick={handleEnterEditMode}
+                className="lg:hidden min-h-11"
+              >
+                편집
+              </TextButton>
+              {/* 데스크탑 책 추가하기 버튼 */}
+              <div className="max-lg:hidden">
+                {totalCount === 0 && !isMobile ? (
+                  <Tooltip dismissable>
+                    <TooltipTrigger asChild>
+                      <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>책을 추가해 감상 기록을 남겨보세요!</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <Button onClick={() => setIsSearchModalOpen(true)}>책 추가하기</Button>
+                )}
+              </div>
             </div>
           </div>
           <TabsContent value="all">
@@ -219,6 +235,38 @@ export default function BookListPage() {
             />
           </TabsContent>
         </Tabs>
+
+        {/* 모바일 책 추가하기 FAB */}
+        <div className="lg:hidden fixed bottom-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom)+16px)] right-5 z-40">
+          {totalCount === 0 && isMobile ? (
+            <Tooltip dismissable>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsSearchModalOpen(true)}
+                  size="medium"
+                  className="flex gap-1 shadow-lg"
+                >
+                  <Plus className="size-4" />책 추가하기
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top" align="center" sideOffset={8} collisionPadding={20}>
+                <p className="typo-body5">
+                  책을 추가해
+                  <br />
+                  감상 기록을 남겨보세요!
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              onClick={() => setIsSearchModalOpen(true)}
+              size="medium"
+              className="flex gap-1 shadow-lg"
+            >
+              <Plus className="size-4" />책 추가하기
+            </Button>
+          )}
+        </div>
 
         <BookSearchModal
           open={isSearchModalOpen}

@@ -1,3 +1,4 @@
+import { ArrowUpDown } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 
 import { useInfiniteScroll } from '@/shared/hooks'
@@ -7,6 +8,7 @@ import { FilterDropdown, StarRatingFilter, Tabs, TabsList, TabsTrigger } from '@
 import type { BookReadingStatus, BookSortOrder } from '../book.types'
 import { useBooks, useMyGatherings } from '../hooks'
 import BookCard from './BookCard'
+import BookFilterBottomSheet from './BookFilterBottomSheet'
 
 type BookListProps = {
   status?: BookReadingStatus
@@ -127,8 +129,9 @@ function BookList({
   return (
     <div>
       {!isEditMode && (
-        <div className="flex justify-between mt-medium">
-          <div className="flex flex-wrap gap-xsmall">
+        <div className="flex justify-between items-center mt-medium max-lg:mt-small">
+          {/* 데스크탑 필터 (Popover) */}
+          <div className="flex flex-wrap gap-xsmall max-lg:hidden">
             <FilterDropdown
               placeholder="독서모임"
               value={selectedGathering}
@@ -162,8 +165,25 @@ function BookList({
               disabled={isLoading}
             />
           </div>
-          <div className="flex items-center gap-xsmall">
-            <Tabs value={sortOrder} onValueChange={(v) => setSortOrder(v as BookSortOrder)}>
+          {/* 모바일 통합 필터 (BottomSheet) */}
+          <BookFilterBottomSheet
+            className="lg:hidden"
+            gatherings={gatherings}
+            selectedGathering={selectedGathering}
+            onGatheringChange={setSelectedGathering}
+            selectedRating={selectedRating}
+            onRatingChange={setSelectedRating}
+            hasNextGatherings={hasNextGatherings}
+            fetchNextGatherings={fetchNextGatherings}
+            disabled={isLoading}
+          />
+          <div className="flex items-center gap-xsmall shrink-0">
+            {/* 데스크탑 정렬 탭 */}
+            <Tabs
+              value={sortOrder}
+              onValueChange={(v) => setSortOrder(v as BookSortOrder)}
+              className="max-lg:hidden"
+            >
               <TabsList size="small" className="gap-0">
                 <TabsTrigger value="DESC" size="small" disabled={isLoading}>
                   최신순
@@ -174,6 +194,16 @@ function BookList({
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+            {/* 모바일 정렬 버튼 */}
+            <button
+              type="button"
+              onClick={() => setSortOrder((prev) => (prev === 'DESC' ? 'ASC' : 'DESC'))}
+              disabled={isLoading}
+              className="lg:hidden min-h-11 flex items-center gap-1 typo-m-body3 text-grey-700 disabled:text-grey-400"
+            >
+              <ArrowUpDown className="size-4" />
+              {sortOrder === 'DESC' ? '최신순' : '오래된순'}
+            </button>
           </div>
         </div>
       )}
@@ -183,7 +213,7 @@ function BookList({
         <BookListEmpty status={status} hasFilters={!!selectedGathering || !!selectedRating} />
       ) : (
         <>
-          <div className="grid grid-cols-6 gap-large mt-large">
+          <div className="grid grid-cols-6 gap-large mt-large max-lg:grid-cols-3 max-lg:gap-small">
             {books.map((book) => (
               <BookCard
                 key={book.bookId}
@@ -206,7 +236,7 @@ function BookList({
 
 function BookListSkeleton() {
   return (
-    <div className="grid grid-cols-6 gap-large mt-large">
+    <div className="grid grid-cols-6 gap-large mt-large max-lg:grid-cols-3 max-lg:gap-small">
       {[...Array(6).keys()].map((index) => (
         <div key={index} className="flex flex-col gap-small animate-pulse">
           <div className="aspect-3/4 rounded-small bg-grey-200" />
@@ -249,8 +279,8 @@ function BookListEmpty({
   }
 
   return (
-    <div className="flex items-center justify-center h-[140px] text-center border rounded-base border-grey-300 mt-large">
-      <p className="typo-subtitle2 text-grey-600">{getMessage()}</p>
+    <div className="flex items-center justify-center h-35 text-center border rounded-base border-grey-300 mt-large max-lg:h-auto max-lg:min-h-[calc(100dvh-264px-env(safe-area-inset-bottom))] max-lg:border-0 max-lg:mt-0">
+      <p className="typo-subtitle2 max-lg:typo-m-heading3 text-grey-600">{getMessage()}</p>
     </div>
   )
 }

@@ -8,6 +8,16 @@
  * 반드시 App.tsx 최상단에 한 번만 마운트하세요.
  */
 
+import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import { useDevice } from '@/shared/hooks/useDevice'
+import {
+  BottomSheet,
+  BottomSheetBody,
+  BottomSheetContent,
+  BottomSheetDescription,
+  BottomSheetFooter,
+  BottomSheetTitle,
+} from '@/shared/ui/BottomSheet'
 import { Button } from '@/shared/ui/Button'
 import {
   Modal,
@@ -49,6 +59,7 @@ import { useGlobalModalStore } from '@/store'
  */
 export function GlobalModalHost() {
   const { isOpen, title, description, buttons } = useGlobalModalStore()
+  const { isMobile } = useDevice()
 
   if (!isOpen) {
     return null
@@ -56,6 +67,37 @@ export function GlobalModalHost() {
 
   const footerVariant = buttons.length >= 2 ? 'double' : 'full'
   //에러, 얼럿일 경우 디자인 맞춰서 수정해야 함
+
+  if (isMobile) {
+    return (
+      <BottomSheet open={isOpen}>
+        <BottomSheetContent>
+          <BottomSheetBody className="flex flex-col items-center text-center py-large">
+            <img src={CircleAlertIcon} alt="" />
+            <BottomSheetTitle className="mb-xsmall typo-m-subtitle1 text-black">
+              {title}
+            </BottomSheetTitle>
+            <BottomSheetDescription className="whitespace-pre-line typo-m-body3 text-grey-700">
+              {description}
+            </BottomSheetDescription>
+          </BottomSheetBody>
+          <BottomSheetFooter>
+            {buttons.map((button, index) => (
+              <Button
+                key={index}
+                size="medium"
+                variant={button.variant || 'primary'}
+                onClick={button.onClick}
+                className="flex-1"
+              >
+                {button.text}
+              </Button>
+            ))}
+          </BottomSheetFooter>
+        </BottomSheetContent>
+      </BottomSheet>
+    )
+  }
 
   return (
     <Modal open={isOpen}>

@@ -3,9 +3,18 @@
  * @description 도서 검색 모달 컴포넌트
  */
 
+import { ArrowLeft } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
+import {
+  Modal,
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  SearchField,
+} from '@/shared/ui'
 
 import type { SearchBookItem } from '../book.types'
 import { useSearchBooks } from '../hooks/useSearchBooks'
@@ -99,11 +108,20 @@ export default function BookSearchModal({
   return (
     <Modal open={open} onOpenChange={handleOpenChange}>
       <ModalContent variant="wide">
-        <ModalHeader>
+        {/* 모바일 헤더: 뒤로가기 + 중앙 타이틀 */}
+        <div className="lg:hidden flex items-center justify-center relative h-12 shrink-0 px-4">
+          <ModalClose className="absolute left-4 cursor-pointer text-black">
+            <ArrowLeft className="size-6" />
+            <span className="sr-only">닫기</span>
+          </ModalClose>
+          <span className="typo-m-heading3 text-black">도서 검색</span>
+        </div>
+        {/* 데스크탑 헤더 */}
+        <ModalHeader className="max-lg:hidden">
           <ModalTitle>도서 검색</ModalTitle>
         </ModalHeader>
 
-        <ModalBody className="flex flex-col gap-base">
+        <ModalBody className="flex flex-col gap-base max-lg:px-medium">
           <SearchField
             placeholder="도서명 또는 저자명으로 검색"
             value={searchQuery}
@@ -150,7 +168,7 @@ function BookSearchItem({ book, onClick, disabled }: BookSearchItemProps) {
       className="flex gap-small px-base py-large text-left border-b border-grey-300 last:border-b-0 cursor-pointer"
     >
       {/* 썸네일 */}
-      <div className="w-[70px] h-[99px] shrink-0 bg-grey-100 rounded-[4px] overflow-hidden">
+      <div className="w-17.5 h-24.75 shrink-0 bg-grey-100 rounded-lg overflow-hidden">
         {book.thumbnail ? (
           <img src={book.thumbnail} alt={book.title} className="w-full h-full object-cover" />
         ) : (
@@ -163,10 +181,14 @@ function BookSearchItem({ book, onClick, disabled }: BookSearchItemProps) {
       {/* 정보 */}
       <div className="flex flex-col justify-between flex-1">
         <div className="flex flex-col gap-xtiny">
-          <span className="typo-subtitle3 text-black line-clamp-1">{book.title}</span>
-          <span className="typo-body4 text-grey-800">{book.authors.join(', ')}</span>
+          <span className="typo-subtitle3 max-lg:typo-m-subtitle2 text-black line-clamp-1">
+            {book.title}
+          </span>
+          <span className="typo-body4 max-lg:typo-m-body4 text-grey-800">
+            {book.authors.join(', ')}
+          </span>
         </div>
-        <span className="typo-body4 text-grey-700">{book.publisher}</span>
+        <span className="typo-body4 max-lg:typo-m-body4 text-grey-700">{book.publisher}</span>
       </div>
     </button>
   )

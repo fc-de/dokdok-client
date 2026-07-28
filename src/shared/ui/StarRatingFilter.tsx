@@ -5,17 +5,15 @@ import { useState } from 'react'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/Popover'
+import { getNextStarRange, isStarInRange, type StarRatingRange } from '@/shared/ui/starRating'
+
+export type { StarRatingRange }
 
 type StarRatingFilterProps = {
   placeholder: string
   value?: StarRatingRange | null
   onChange?: (value: StarRatingRange | null) => void
   disabled?: boolean
-}
-
-export type StarRatingRange = {
-  min: number
-  max: number
 }
 
 /**
@@ -57,27 +55,7 @@ function StarRatingFilter({
   }
 
   const handleStarClick = (rating: number) => {
-    if (!tempRange) {
-      setTempRange({ min: rating, max: rating })
-    } else if (rating < tempRange.min) {
-      // 범위 밖 (아래) → min 확장
-      setTempRange({ min: rating, max: tempRange.max })
-    } else if (rating > tempRange.max) {
-      // 범위 밖 (위) → max 확장
-      setTempRange({ min: tempRange.min, max: rating })
-    } else if (rating === tempRange.min && rating === tempRange.max) {
-      // 단일 선택된 별 클릭 → 전체 해제
-      setTempRange(null)
-    } else if (rating === tempRange.min) {
-      // 최솟값 클릭 → min 취소, max만 남김
-      setTempRange({ min: tempRange.max, max: tempRange.max })
-    } else if (rating === tempRange.max) {
-      // 최댓값 클릭 → max 취소, min만 남김
-      setTempRange({ min: tempRange.min, max: tempRange.min })
-    } else {
-      // 범위 내 중간 값 클릭 → 해당 별 단일 선택
-      setTempRange({ min: rating, max: rating })
-    }
+    setTempRange(getNextStarRange(tempRange, rating))
   }
 
   const handleReset = () => {
@@ -89,10 +67,7 @@ function StarRatingFilter({
     setOpen(false)
   }
 
-  const isStarSelected = (rating: number): boolean => {
-    if (!tempRange) return false
-    return rating >= tempRange.min && rating <= tempRange.max
-  }
+  const isStarSelected = (rating: number): boolean => isStarInRange(tempRange, rating)
 
   const hasValue = !!value
 

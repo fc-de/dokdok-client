@@ -59,7 +59,7 @@ export default function SubPageHeader({
         className
       )}
     >
-      <div className="mx-auto max-w-layout-max px-layout-padding py-small h-[59px] flex items-end">
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 py-small max-lg:py-xsmall h-[59px] max-lg:h-auto flex items-end">
         <TextButton size="medium" icon={ChevronLeft} onClick={handleClick}>
           {label}
         </TextButton>
