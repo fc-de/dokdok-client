@@ -1,5 +1,6 @@
 export { default as BookCard } from './BookCard'
 export { default as BookCarousel } from './BookCarousel'
+export { default as BookFilterBottomSheet } from './BookFilterBottomSheet'
 export { default as BookInfo } from './BookInfo'
 export { default as BookList } from './BookList'
 export { default as BookLogActionMenu } from './BookLogActionMenu'

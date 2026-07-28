@@ -55,7 +55,7 @@ function BookCard({
   const CardContent = (
     <article className="flex flex-col gap-small">
       {/* 책 표지 */}
-      <div className="relative h-[260px] rounded-small overflow-hidden bg-grey-200">
+      <div className="relative h-[260px] max-lg:h-auto max-lg:aspect-3/4 rounded-small overflow-hidden bg-grey-200">
         <img src={thumbnail} alt={`${title} 표지`} className="w-full h-full object-cover" />
         {isEditMode && (
           <div className="absolute top-[10px] right-[10px]">
@@ -70,13 +70,13 @@ function BookCard({
 
       {/* 책 정보 */}
       <div className="flex flex-col gap-xxtiny">
-        <h3 className="typo-subtitle2 text-black line-clamp-2">{title}</h3>
-        <p className="typo-caption1 text-grey-600">{authors}</p>
+        <h3 className="typo-subtitle2 max-lg:typo-m-subtitle2 text-black line-clamp-2">{title}</h3>
+        <p className="typo-caption1 max-lg:typo-m-caption1 text-grey-600">{authors}</p>
 
         {/* 별점 */}
         <div className="flex items-center gap-xtiny">
-          <Star className="size-4 fill-grey-600 text-grey-600" />
-          <span className="typo-body4 text-grey-600">
+          <Star className="size-4 fill-grey-600 text-grey-600 max-lg:size-3" />
+          <span className="typo-body4 max-lg:typo-m-body4 text-grey-600">
             {rating !== null ? rating.toFixed(1) : '-'}
           </span>
         </div>

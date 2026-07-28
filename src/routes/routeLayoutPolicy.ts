@@ -77,12 +77,7 @@ const ROUTE_LAYOUT_POLICIES: RouteLayoutPolicy[] = [
     end: true,
     hideGlobalHeaderOnMobile: true,
   },
-  {
-    path: ROUTES.BOOKS,
-    end: true,
-    hideGlobalHeaderOnMobile: true,
-    shouldApply: (searchParams) => searchParams.get('edit') !== 'true',
-  },
+  { path: ROUTES.BOOKS, end: true, hideGlobalHeaderOnMobile: true },
   { path: `${ROUTES.BOOKS}/:id`, end: true, hideGlobalHeaderOnMobile: true },
   { path: `${ROUTES.BOOKS}/:id/*`, hideGlobalHeaderOnMobile: true },
 ]
