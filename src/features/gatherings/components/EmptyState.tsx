@@ -40,11 +40,11 @@ export default function EmptyState({ type = 'all', className }: EmptyStateProps)
   return (
     <div
       className={cn(
-        'flex h-35 items-center justify-center rounded-base border border-grey-300',
+        'flex h-35 max-lg:h-40 items-center justify-center rounded-base border border-grey-300',
         className
       )}
     >
-      <p className="typo-subtitle2 text-center text-grey-600 max-lg:typo-m-heading3">
+      <p className="typo-subtitle2 text-center text-grey-600 max-lg:typo-m-body2">
         {EMPTY_STATE_MESSAGES[type]}
       </p>
     </div>

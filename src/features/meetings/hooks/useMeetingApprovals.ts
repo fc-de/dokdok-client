@@ -15,6 +15,10 @@ import {
 
 import { meetingQueryKeys } from './meetingQueryKeys'
 
+type UseMeetingApprovalsOptions = {
+  enabled?: boolean
+}
+
 /**
  * 약속 승인 리스트 조회 훅
  *
@@ -39,12 +43,15 @@ import { meetingQueryKeys } from './meetingQueryKeys'
  *   size: 10,
  * })
  */
-export const useMeetingApprovals = (params: GetMeetingApprovalsParams) => {
+export const useMeetingApprovals = (
+  params: GetMeetingApprovalsParams,
+  options: UseMeetingApprovalsOptions = {}
+) => {
   return useQuery<PaginatedResponse<MeetingApprovalItemType>, ApiError>({
     queryKey: meetingQueryKeys.approvalList(params),
     queryFn: () => getMeetingApprovals(params),
     // gatheringId가 유효할 때만 쿼리 실행
-    enabled: params.gatheringId > 0,
+    enabled: params.gatheringId > 0 && (options.enabled ?? true),
     // 캐시 데이터 10분간 유지 (전역 설정 staleTime: 5분 사용)
     gcTime: 10 * 60 * 1000,
   })

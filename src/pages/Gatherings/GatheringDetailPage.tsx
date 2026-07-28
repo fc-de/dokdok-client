@@ -1,3 +1,4 @@
+import { Menu, Settings } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -12,9 +13,14 @@ import {
 } from '@/features/gatherings'
 import { ROUTES } from '@/shared/constants'
 import { useScrollCollapse } from '@/shared/hooks'
+import { MobileBottomNavigation, MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast, showToast } from '@/shared/lib/toast'
 import { Spinner } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store/globalModalStore'
+
+/** 모바일 상단바 아이콘 버튼 스타일 */
+const MOBILE_HEADER_ICON_BUTTON =
+  'flex size-11 items-center justify-center rounded-full text-black transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
 
 export default function GatheringDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -94,39 +100,70 @@ export default function GatheringDetailPage() {
     return <Spinner height="full" />
   }
 
+  const isLeader = gathering.currentUserRole === 'LEADER'
+
   return (
-    <div className="pb-medium">
-      {/* 헤더 (sticky, 전체 너비) */}
-      <GatheringDetailHeader
-        gatheringName={gathering.gatheringName}
-        isFavorite={gathering.isFavorite}
-        currentUserRole={gathering.currentUserRole}
-        isSticky={isHeaderCollapsed}
-        onFavoriteToggle={handleFavoriteToggle}
-        onSettingsClick={handleSettingsClick}
-        onInviteClick={handleInviteClick}
-      />
-
-      {/* 컨텐츠 영역 (패딩 적용) */}
-      <div className="w-full mx-auto max-w-layout-max px-layout-padding flex flex-col gap-xlarge">
-        {/* 모임 정보 (헤더 접힘 시 숨김) */}
-        <GatheringDetailInfo
-          daysFromCreation={gathering.daysFromCreation}
-          totalMeetings={gathering.totalMeetings}
-          totalMembers={gathering.totalMembers}
-          members={gathering.members}
-          description={gathering.description}
-        />
-
-        {/* 약속 섹션 */}
-        <GatheringMeetingSection
-          gatheringId={gatheringId}
+    <MobileLayoutFrame
+      variant="header"
+      // 모바일 상단바: 스크롤로 헤더가 접히면 모임명 노출 (공백은 상단바 유지용)
+      title={isHeaderCollapsed ? gathering.gatheringName : ' '}
+      leftAction={{ type: 'back', to: ROUTES.GATHERINGS }}
+      headerActionSlot={
+        <div className="relative z-10 -mr-2.5 flex items-center">
+          {isLeader && (
+            <button
+              type="button"
+              className={MOBILE_HEADER_ICON_BUTTON}
+              onClick={handleSettingsClick}
+              aria-label="모임 설정"
+            >
+              <Settings aria-hidden className="size-6" />
+            </button>
+          )}
+          {/* 모바일 전용 메뉴 페이지 연결은 후속 이슈. 지금은 버튼만 배치 */}
+          <button type="button" className={MOBILE_HEADER_ICON_BUTTON} aria-label="모임 메뉴">
+            <Menu aria-hidden className="size-6" />
+          </button>
+        </div>
+      }
+      contentClassName="max-lg:pb-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom))]"
+    >
+      <div className="pb-medium">
+        {/* 헤더 (sticky, 전체 너비) */}
+        <GatheringDetailHeader
+          gatheringName={gathering.gatheringName}
+          isFavorite={gathering.isFavorite}
           currentUserRole={gathering.currentUserRole}
+          isSticky={isHeaderCollapsed}
+          onFavoriteToggle={handleFavoriteToggle}
+          onSettingsClick={handleSettingsClick}
+          onInviteClick={handleInviteClick}
         />
 
-        {/* 모임 책장 섹션 */}
-        <GatheringBookshelfSection gatheringId={gatheringId} />
+        {/* 컨텐츠 영역 (패딩 적용) */}
+        <div className="w-full mx-auto max-w-layout-max px-layout-padding flex flex-col gap-xlarge max-lg:gap-8 max-lg:px-5">
+          {/* 모임 정보 (헤더 접힘 시 숨김) */}
+          <GatheringDetailInfo
+            daysFromCreation={gathering.daysFromCreation}
+            totalMeetings={gathering.totalMeetings}
+            totalMembers={gathering.totalMembers}
+            members={gathering.members}
+            description={gathering.description}
+          />
+
+          {/* 약속 섹션 */}
+          <GatheringMeetingSection
+            gatheringId={gatheringId}
+            currentUserRole={gathering.currentUserRole}
+          />
+
+          {/* 모임 책장 섹션 */}
+          <GatheringBookshelfSection gatheringId={gatheringId} />
+        </div>
       </div>
-    </div>
+
+      {/* 모바일 하단 GNB (fixed, lg 이상에서는 숨김) */}
+      <MobileBottomNavigation />
+    </MobileLayoutFrame>
   )
 }

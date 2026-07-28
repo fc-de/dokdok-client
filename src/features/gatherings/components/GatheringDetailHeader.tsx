@@ -31,13 +31,17 @@ export default function GatheringDetailHeader({
     <header
       className={cn(
         'sticky top-gnb-height z-10 bg-white pt-xlarge pb-medium transition-shadow',
-        isSticky && 'shadow-drop-bottom'
+        // 모바일은 별도 상단바(MobileScreenHeader)가 고정되므로 헤더는 함께 스크롤
+        'max-lg:static max-lg:pt-base max-lg:pb-xsmall',
+        isSticky && 'shadow-drop-bottom max-lg:shadow-none'
       )}
     >
-      <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between">
+      <div className="mx-auto max-w-layout-max px-layout-padding flex items-center justify-between max-lg:px-5">
         {/* 좌측: 모임명 + 즐겨찾기 */}
-        <div className="flex items-center gap-2">
-          <h1 className="font-bold text-black typo-heading2 line-clamp-1">{gatheringName}</h1>
+        <div className="flex items-center gap-2 max-lg:gap-xtiny">
+          <h1 className="font-bold text-black typo-heading2 line-clamp-1 max-lg:typo-m-heading2">
+            {gatheringName}
+          </h1>
           <button
             type="button"
             onClick={onFavoriteToggle}
@@ -46,15 +50,15 @@ export default function GatheringDetailHeader({
           >
             <Star
               className={cn(
-                'size-6',
+                'size-6 max-lg:size-5',
                 isFavorite ? 'fill-yellow-200 text-yellow-200' : 'fill-none text-grey-400'
               )}
             />
           </button>
         </div>
 
-        {/* 우측: 설정/초대링크 버튼 */}
-        <div className="flex items-center gap-4">
+        {/* 우측: 설정/초대링크 버튼 (모바일은 상단바 아이콘으로 대체) */}
+        <div className="flex items-center gap-4 max-lg:hidden">
           {/* 모임장 전용 - 설정 버튼 */}
           {isLeader && (
             <TextButton size="medium" icon={Settings} onClick={onSettingsClick}>
