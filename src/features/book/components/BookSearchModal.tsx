@@ -114,7 +114,7 @@ export default function BookSearchModal({
             <ArrowLeft className="size-6" />
             <span className="sr-only">닫기</span>
           </ModalClose>
-          <span className="typo-m-heading3 text-black">도서 검색</span>
+          <ModalTitle className="typo-m-heading3 text-black">도서 검색</ModalTitle>
         </div>
         {/* 데스크탑 헤더 */}
         <ModalHeader className="max-lg:hidden">
