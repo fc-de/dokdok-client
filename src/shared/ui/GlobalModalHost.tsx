@@ -58,7 +58,7 @@ import { useGlobalModalStore } from '@/store'
  * ```
  */
 export function GlobalModalHost() {
-  const { isOpen, title, description, buttons, close } = useGlobalModalStore()
+  const { isOpen, title, description, buttons, close, mobileLayout } = useGlobalModalStore()
   const { isMobile } = useDevice()
 
   if (!isOpen) {
@@ -72,7 +72,7 @@ export function GlobalModalHost() {
     if (!nextOpen) close()
   }
 
-  if (isMobile) {
+  if (isMobile && mobileLayout === 'fullscreen') {
     return (
       <BottomSheet open={isOpen} onOpenChange={handleOpenChange}>
         <BottomSheetContent>
@@ -106,7 +106,7 @@ export function GlobalModalHost() {
 
   return (
     <Modal open={isOpen} onOpenChange={handleOpenChange}>
-      <ModalContent variant="normal" className="h-auto w-fit min-w-md">
+      <ModalContent variant="normal" mobileLayout={mobileLayout} className="h-auto w-fit min-w-md">
         <ModalHeader hideCloseButton>
           <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
           <ModalDescription className="sr-only">{description}</ModalDescription>
@@ -120,6 +120,7 @@ export function GlobalModalHost() {
               key={index}
               variant={button.variant || 'primary'}
               outline={button.variant === 'secondary'}
+              className={footerVariant === 'full' ? 'max-lg:w-full' : undefined}
               onClick={button.onClick}
             >
               {button.text}

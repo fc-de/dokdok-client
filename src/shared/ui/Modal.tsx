@@ -51,7 +51,6 @@ const modalContentVariants = cva(
     'fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2',
     'flex flex-col bg-white rounded-small',
     'h-[625px]',
-    'max-lg:inset-0 max-lg:w-full max-lg:h-full max-lg:translate-x-0 max-lg:translate-y-0 max-lg:rounded-none',
     'data-[state=open]:animate-in data-[state=closed]:animate-out',
     'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
     'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
@@ -73,7 +72,9 @@ const modalContentVariants = cva(
 export interface ModalContentProps
   extends
     React.ComponentProps<typeof DialogPrimitive.Content>,
-    VariantProps<typeof modalContentVariants> {}
+    VariantProps<typeof modalContentVariants> {
+  mobileLayout?: 'fullscreen' | 'dialog'
+}
 
 /**
  * Modal의 콘텐츠 컨테이너
@@ -93,7 +94,13 @@ export interface ModalContentProps
  * </ModalContent>
  * ```
  */
-function ModalContent({ className, variant, children, ...props }: ModalContentProps) {
+function ModalContent({
+  className,
+  variant,
+  mobileLayout = 'fullscreen',
+  children,
+  ...props
+}: ModalContentProps) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay
@@ -106,7 +113,12 @@ function ModalContent({ className, variant, children, ...props }: ModalContentPr
       />
       <DialogPrimitive.Content
         data-slot="modal-content"
-        className={cn(modalContentVariants({ variant, className }))}
+        className={cn(
+          modalContentVariants({ variant, className }),
+          mobileLayout === 'fullscreen'
+            ? 'max-lg:inset-0 max-lg:h-full max-lg:w-full max-lg:translate-x-0 max-lg:translate-y-0 max-lg:rounded-none'
+            : 'max-lg:h-auto max-lg:w-[calc(100%-40px)] max-lg:max-w-md max-lg:min-w-0'
+        )}
         {...props}
       >
         {children}
