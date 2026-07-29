@@ -143,7 +143,7 @@ function ModalHeader({ className, hideCloseButton = false, children, ...props }:
       data-slot="modal-header"
       className={cn(
         'flex items-center justify-between shrink-0',
-        'px-xlarge pt-[36px] pb-base',
+        'px-xlarge pt-[36px] pb-base max-lg:px-medium',
         className
       )}
       {...props}
@@ -219,7 +219,10 @@ function ModalBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>
   return (
     <div
       data-slot="modal-body"
-      className={cn('flex-1 overflow-y-auto px-xlarge py-xsmall custom-scroll', className)}
+      className={cn(
+        'flex-1 overflow-y-auto px-xlarge py-xsmall custom-scroll max-lg:px-medium',
+        className
+      )}
       {...props}
     />
   )

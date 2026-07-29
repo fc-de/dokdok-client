@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { ArrowLeft } from 'lucide-react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import type {
   CreateBookRecordBody,
@@ -13,6 +14,7 @@ import { Input } from '@/shared/ui/Input'
 import {
   Modal,
   ModalBody,
+  ModalClose,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -37,6 +39,16 @@ const RECORD_TYPE_CONFIG = {
 const MEMO_MAX_LENGTH = 5000
 const QUOTE_MAX_LENGTH = 3000
 const THOUGHT_MAX_LENGTH = 2000
+
+// 모바일 전용: 이 모달 안에서만 Textarea/Input의 박스 테두리를 없애고 밑줄만 남김 (공통 컴포넌트는 그대로 둠)
+const mobileBorderlessField =
+  'max-lg:border-none max-lg:bg-transparent max-lg:px-0 max-lg:focus:border-none'
+// 모바일 전용: 글자수 카운터 영역 위에만 구분선 추가 (Textarea 루트 div의 마지막 자식인 카운터 footer만 타겟)
+const mobileDividerFooter =
+  'max-lg:[&>div>div:last-child]:border-t max-lg:[&>div>div:last-child]:border-grey-300 max-lg:[&>div>div:last-child]:pt-xsmall max-lg:[&>div>div:last-child]:mt-0'
+// 모바일 "기억하고 싶은 문장" 입력창 자동 높이 (1줄 ~ 7줄)
+const QUOTE_FIELD_MIN_HEIGHT = 48
+const QUOTE_FIELD_MAX_HEIGHT = 180
 
 /**
  * 감상 기록 모달
@@ -96,6 +108,10 @@ function PersonalRecordModal({
   const [pageNumber, setPageNumber] = useState(initialState.pageNumber)
   const [thought, setThought] = useState(initialState.thought)
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false)
+  // 모바일 "기억하고 싶은 문장" 입력창: 기본 1줄, 입력(타이핑/수정 모드 초기값 모두)에 따라 최대 7줄까지 자동으로 늘어남
+  const [quoteFieldHeight, setQuoteFieldHeight] = useState(QUOTE_FIELD_MIN_HEIGHT)
+  // 실제 렌더링된 textarea DOM을 찾기 위한 래퍼 ref (Textarea 컴포넌트는 ref를 forward하지 않음)
+  const quoteFieldWrapperRef = useRef<HTMLDivElement>(null)
 
   // 모달이 열릴 때마다 props 기반으로 state 재설정
   useEffect(() => {
@@ -109,6 +125,19 @@ function PersonalRecordModal({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, mode, record])
+
+  // quoteContent가 바뀔 때마다 (타이핑 또는 수정 모드 초기값 로드) 실제 textarea를 찾아 필요한 높이를 측정
+  useLayoutEffect(() => {
+    const textarea = quoteFieldWrapperRef.current?.querySelector('textarea')
+    if (!textarea) return
+    textarea.style.height = `${QUOTE_FIELD_MIN_HEIGHT}px`
+    const nextHeight = Math.min(
+      Math.max(textarea.scrollHeight, QUOTE_FIELD_MIN_HEIGHT),
+      QUOTE_FIELD_MAX_HEIGHT
+    )
+    textarea.style.height = `${nextHeight}px`
+    setQuoteFieldHeight(nextHeight)
+  }, [quoteContent])
 
   const { mutate: createRecord, isPending: isCreating } = useCreateBookRecord(personalBookId)
   const { mutate: updateRecord, isPending: isUpdating } = useUpdateBookRecord(
@@ -182,11 +211,20 @@ function PersonalRecordModal({
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent key={`${mode}-${record?.recordId || 'new'}`} variant="wide">
-        <ModalHeader>
+        {/* 모바일 헤더: 뒤로가기 + 중앙 타이틀 */}
+        <div className="lg:hidden flex items-center justify-center relative h-12 shrink-0 px-4">
+          <ModalClose className="absolute left-4 cursor-pointer text-black">
+            <ArrowLeft className="size-6" />
+            <span className="sr-only">닫기</span>
+          </ModalClose>
+          <ModalTitle className="typo-m-heading3 text-black">감상 기록</ModalTitle>
+        </div>
+        {/* 데스크탑 헤더 */}
+        <ModalHeader className="max-lg:hidden">
           <ModalTitle>감상 기록</ModalTitle>
         </ModalHeader>
-        <ModalBody>
-          <div className="flex items-center justify-between mb-base">
+        <ModalBody className="max-lg:flex max-lg:flex-col">
+          <div className="flex items-center justify-between mb-base shrink-0">
             {/* 기록 유형 드롭다운 */}
             <div className="relative">
               <button
@@ -241,20 +279,28 @@ function PersonalRecordModal({
 
           {/* 메모 폼 */}
           {recordType === 'MEMO' && (
-            <Textarea
-              placeholder="이 책에 대한 생각을 자유롭게 기록해주세요"
-              maxLength={MEMO_MAX_LENGTH}
-              value={memoContent}
-              onChange={(e) => setMemoContent(e.target.value)}
-              height={370}
-              className={focusClass}
-            />
+            <div
+              className={cn(
+                'max-lg:flex max-lg:flex-col max-lg:flex-1 max-lg:min-h-0',
+                'max-lg:[&>div]:flex-1 max-lg:[&>div]:min-h-0',
+                'max-lg:[&_textarea]:flex-1 max-lg:[&_textarea]:min-h-0',
+                mobileDividerFooter
+              )}
+            >
+              <Textarea
+                placeholder="이 책에 대한 생각을 자유롭게 기록해주세요"
+                maxLength={MEMO_MAX_LENGTH}
+                value={memoContent}
+                onChange={(e) => setMemoContent(e.target.value)}
+                height={370}
+                className={cn(focusClass, mobileBorderlessField)}
+              />
+            </div>
           )}
 
-          {/* 발췌 폼 */}
+          {/* 발췌 폼 - 데스크탑 (2열: 왼쪽 문장 / 오른쪽 페이지+생각) */}
           {recordType === 'QUOTE' && (
-            <div className="flex gap-base flex-1">
-              {/* 왼쪽: 기억하고 싶은 문장 */}
+            <div className="max-lg:hidden flex gap-base flex-1">
               <div className="flex flex-col flex-1">
                 <label className="typo-body3 text-black mb-xsmall">기억하고 싶은 문장</label>
                 <Textarea
@@ -266,8 +312,6 @@ function PersonalRecordModal({
                   className={focusClass}
                 />
               </div>
-
-              {/* 오른쪽: 페이지 번호 + 나의 생각 */}
               <div className="flex flex-col flex-1 gap-small">
                 <div className="flex flex-col">
                   <label className="typo-body3 text-black mb-xsmall">페이지 번호</label>
@@ -292,9 +336,63 @@ function PersonalRecordModal({
               </div>
             </div>
           )}
+
+          {/* 발췌 폼 - 모바일 (인용 블록: 문장+페이지 / 나의 생각 분리) */}
+          {recordType === 'QUOTE' && (
+            <div className="lg:hidden flex flex-col flex-1 min-h-0 gap-large">
+              {/* 인용 블록: 기억하고 싶은 문장 + 페이지 번호 (왼쪽 세로줄) */}
+              <div className="flex flex-col gap-tiny border-l-4 border-dark-100 pl-small shrink-0">
+                <div ref={quoteFieldWrapperRef} className={cn(mobileDividerFooter, 'max-lg:[&>div]:gap-0')}>
+                  <label className="typo-body3 text-black mb-xsmall">기억하고 싶은 문장</label>
+                  <Textarea
+                    placeholder="책 속 인상 깊은 부분을 기록해주세요"
+                    maxLength={QUOTE_MAX_LENGTH}
+                    value={quoteContent}
+                    onChange={(e) => setQuoteContent(e.target.value)}
+                    height={quoteFieldHeight}
+                    scrollable
+                    className={cn(focusClass, mobileBorderlessField)}
+                  />
+                </div>
+                <div>
+                  <label className="typo-body3 text-black mb-xsmall">페이지 번호</label>
+                  <Input
+                    placeholder="발췌한 부분의 페이지 번호 (예: 16~20p)"
+                    value={pageNumber}
+                    onChange={(e) => setPageNumber(e.target.value)}
+                    className={cn(focusClass, mobileBorderlessField)}
+                  />
+                </div>
+              </div>
+
+              {/* 나의 생각 */}
+              <div
+                className={cn(
+                  'flex flex-col flex-1 min-h-0',
+                  '[&>div]:flex-1 [&>div]:min-h-0',
+                  '[&_textarea]:flex-1 [&_textarea]:min-h-0',
+                  mobileDividerFooter
+                )}
+              >
+                <label className="typo-body3 text-black mb-xtiny">나의 생각</label>
+                <Textarea
+                  placeholder="이 부분에 대한 생각을 자유롭게 기록해주세요"
+                  maxLength={THOUGHT_MAX_LENGTH}
+                  value={thought}
+                  onChange={(e) => setThought(e.target.value)}
+                  height={246}
+                  className={cn(focusClass, mobileBorderlessField, 'max-lg:py-0')}
+                />
+              </div>
+            </div>
+          )}
         </ModalBody>
         <ModalFooter>
-          <Button onClick={handleSave} disabled={isPending || (mode === 'edit' && !record)}>
+          <Button
+            onClick={handleSave}
+            disabled={isPending || (mode === 'edit' && !record)}
+            className="max-lg:w-full"
+          >
             {mode === 'create' ? '저장하기' : '수정완료'}
           </Button>
         </ModalFooter>

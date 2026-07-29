@@ -121,7 +121,7 @@ export default function BookSearchModal({
           <ModalTitle>도서 검색</ModalTitle>
         </ModalHeader>
 
-        <ModalBody className="flex flex-col gap-base max-lg:px-medium">
+        <ModalBody className="flex flex-col gap-base">
           <SearchField
             placeholder="도서명 또는 저자명으로 검색"
             value={searchQuery}
