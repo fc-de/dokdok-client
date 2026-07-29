@@ -10,7 +10,7 @@ export default function RetrospectiveSummarySkeleton({
   return (
     <div className="flex flex-col gap-medium">
       {[...Array(count).keys()].map((i) => (
-        <Card key={i} className="p-large">
+        <Card key={i} className="p-large max-lg:border-0 max-lg:p-0">
           <div className="flex flex-col gap-base">
             {/* 토픽 헤더 */}
             <div className="flex items-center gap-xsmall">
