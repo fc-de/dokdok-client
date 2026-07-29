@@ -15,7 +15,15 @@ import { ROUTES } from '@/shared/constants/routes'
 import { useDevice } from '@/shared/hooks'
 import { MobileLayoutFrame, MobileMainHeader } from '@/shared/layout'
 import { showToast } from '@/shared/lib/toast'
-import { Button, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
+import {
+  Button,
+  FloatingButton,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  TextButton,
+} from '@/shared/ui'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/Tooltip'
 import { useGlobalModalStore } from '@/store'
 
@@ -237,36 +245,34 @@ export default function BookListPage() {
         </Tabs>
 
         {/* 모바일 책 추가하기 FAB */}
-        <div className="lg:hidden fixed bottom-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom)+16px)] right-5 z-40">
-          {totalCount === 0 && isMobile ? (
-            <Tooltip dismissable>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setIsSearchModalOpen(true)}
-                  size="medium"
-                  className="flex gap-1 shadow-lg"
-                >
-                  <Plus className="size-4" />책 추가하기
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top" align="center" sideOffset={8} collisionPadding={20}>
-                <p className="typo-body5">
-                  책을 추가해
-                  <br />
-                  감상 기록을 남겨보세요!
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <Button
-              onClick={() => setIsSearchModalOpen(true)}
-              size="medium"
-              className="flex gap-1 shadow-lg"
-            >
-              <Plus className="size-4" />책 추가하기
-            </Button>
-          )}
-        </div>
+        {totalCount === 0 && isMobile ? (
+          <Tooltip dismissable>
+            <TooltipTrigger asChild>
+              <FloatingButton
+                hasBottomMenu
+                onClick={() => setIsSearchModalOpen(true)}
+                className="typo-m-subtitle1"
+              >
+                <Plus className="size-4" />책 추가하기
+              </FloatingButton>
+            </TooltipTrigger>
+            <TooltipContent side="top" align="center" sideOffset={8} collisionPadding={20}>
+              <p className="typo-body5">
+                책을 추가해
+                <br />
+                감상 기록을 남겨보세요!
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          <FloatingButton
+            hasBottomMenu
+            onClick={() => setIsSearchModalOpen(true)}
+            className="typo-m-subtitle1"
+          >
+            <Plus className="size-4" />책 추가하기
+          </FloatingButton>
+        )}
 
         <BookSearchModal
           open={isSearchModalOpen}

@@ -24,9 +24,9 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
   if (isError || !data) return <div>책 정보를 불러올 수 없습니다.</div>
 
   return (
-    <div className="py-xlarge flex gap-[54px] max-lg:flex-col max-lg:gap-large max-lg:py-0">
+    <div className="py-xlarge flex gap-[54px] max-lg:flex-col max-lg:gap-medium max-lg:py-0">
       {/* 좌측 책 표시 */}
-      <section className="relative size-[486px] shrink-0 rounded-base bg-grey-200 overflow-hidden max-lg:h-80 max-lg:w-full max-lg:rounded-none">
+      <section className="relative size-[486px] shrink-0 rounded-base bg-grey-200 overflow-hidden max-lg:h-83.75 max-lg:w-full max-lg:rounded-none">
         {/* 배경 블러 전용 래퍼 (영역 제한) */}
         <div
           className="
@@ -55,23 +55,29 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
       </section>
 
       {/* 우측 책 설명 */}
-      <section className="w-full flex flex-col gap-small max-lg:px-5 max-lg:pb-large">
-        <div className="flex flex-col gap-large py-large">
-          <div className="flex justify-between">
-            <h2 className="typo-heading2">{data?.title}</h2>
-            <div className="flex gap-xsmall items-center">
-              <p className="typo-body3 text-grey-600">{isRecording ? '기록 중' : '기록 완료'}</p>
+      <section className="w-full flex flex-col gap-small max-lg:gap-base max-lg:px-5 max-lg:pb-large">
+        <div className="flex flex-col gap-large py-large max-lg:gap-xsmall max-lg:pt-0 max-lg:pb-0">
+          <div className="flex justify-between gap-small">
+            <h2 className="typo-heading2 max-lg:typo-m-heading1 min-w-0">{data?.title}</h2>
+            <div className="flex gap-xsmall items-center shrink-0">
+              <p className="typo-body3 text-grey-600 whitespace-nowrap">
+                {isRecording ? '기록 중' : '기록 완료'}
+              </p>
               <Switch checked={isRecording} onCheckedChange={onToggleRecording} />
             </div>
           </div>
           <div>
             <div className="flex gap-small">
-              <span className="typo-subtitle3 text-grey-600">저자</span>
-              <p className="typo-subtitle3 text-grey-800">{data?.authors}</p>
+              <span className="typo-subtitle3 max-lg:typo-m-body3 text-grey-600">저자</span>
+              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">
+                {data?.authors}
+              </p>
             </div>
             <div className="flex gap-small">
-              <span className="typo-subtitle3 text-grey-600">출판</span>
-              <p className="typo-subtitle3 text-grey-800">{data?.publisher}</p>
+              <span className="typo-subtitle3 max-lg:typo-m-body3 text-grey-600">출판</span>
+              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">
+                {data?.publisher}
+              </p>
             </div>
           </div>
         </div>

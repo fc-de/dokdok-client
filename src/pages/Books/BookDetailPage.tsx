@@ -4,7 +4,7 @@ import BookInfo from '@/features/book/components/BookInfo'
 import BookLogList from '@/features/book/components/BookLogList'
 import {
   useBookDetail,
-  useDeleteBookAction,
+  // useDeleteBookAction,
   useToggleBookReadingStatus,
 } from '@/features/book/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
@@ -17,7 +17,7 @@ export default function BookDetailPage() {
   const bookId = Number(id)
 
   const { data: bookDetail } = useBookDetail(bookId)
-  const { deleteBooks, isDeleting } = useDeleteBookAction()
+  // const { deleteBooks, isDeleting } = useDeleteBookAction()
   const { mutate: toggleReadingStatus } = useToggleBookReadingStatus(
     bookId,
     bookDetail?.personalBookId ?? 0
@@ -26,22 +26,22 @@ export default function BookDetailPage() {
   const isRecording = bookDetail?.bookReadingStatus === 'READING'
   const isBookLogSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
 
-  const handleDelete = async () => {
-    if (!bookDetail || isDeleting) return
+  // const handleDelete = async () => {
+  //   if (!bookDetail || isDeleting) return
 
-    await deleteBooks([bookDetail.bookId])
-  }
+  //   await deleteBooks([bookDetail.bookId])
+  // }
 
   return (
     <MobileLayoutFrame
       variant="header"
       title={bookDetail?.title ?? '도서 상세'}
       leftAction={{ type: 'back', to: ROUTES.BOOKS }}
-      headerAction={{
-        label: '삭제',
-        onClick: () => handleDelete(),
-        disabled: !bookDetail || isDeleting,
-      }}
+      // headerAction={{
+      //   label: '삭제',
+      //   onClick: () => handleDelete(),
+      //   disabled: !bookDetail || isDeleting,
+      // }}
     >
       <SubPageHeader
         label="내 책장"
