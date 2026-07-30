@@ -21,7 +21,7 @@ type ReviewHistoryCardProps = {
 const ReviewHistoryCard = ({ item }: ReviewHistoryCardProps) => {
   return (
     <div className="py-large px-medium max-lg:px-0">
-      <p className="text-grey-700 typo-subtitle3 mb-medium max-lg:typo-m-caption1">
+      <p className="text-grey-700 typo-subtitle3 mb-medium max-lg:typo-m-caption1 max-lg:mb-xsmall">
         {formatToShortDate(item.createdAt)} 작성
       </p>
       <div className="flex flex-col gap-small">
