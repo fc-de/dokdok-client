@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { cva, type VariantProps } from 'class-variance-authority'
-import { X } from 'lucide-react'
+import { ArrowLeft, X } from 'lucide-react'
 import * as React from 'react'
 
 import { cn } from '@/shared/lib/utils'
@@ -118,6 +118,12 @@ function ModalContent({ className, variant, children, ...props }: ModalContentPr
 export interface ModalHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 닫기 버튼 숨김 여부 */
   hideCloseButton?: boolean
+  /**
+   * 모바일(1024px 미만)에서 좌측 액션 스타일
+   * - `close`: 데스크탑과 동일하게 타이틀 좌측 정렬 + 우측 X 버튼 (기본값)
+   * - `back`: 뒤로가기 화살표 + 중앙 정렬 타이틀 (서브페이지처럼 보여야 하는 모바일 모달에 사용)
+   */
+  mobileLeftAction?: 'close' | 'back'
 }
 
 /**
@@ -135,9 +141,59 @@ export interface ModalHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
  * <ModalHeader hideCloseButton>
  *   <ModalTitle>모달 제목</ModalTitle>
  * </ModalHeader>
+ *
+ * // 모바일에서 뒤로가기 화살표 + 중앙 정렬 타이틀
+ * <ModalHeader mobileLeftAction="back">
+ *   <ModalTitle>모달 제목</ModalTitle>
+ * </ModalHeader>
  * ```
  */
-function ModalHeader({ className, hideCloseButton = false, children, ...props }: ModalHeaderProps) {
+function ModalHeader({
+  className,
+  hideCloseButton = false,
+  mobileLeftAction = 'close',
+  children,
+  ...props
+}: ModalHeaderProps) {
+  if (mobileLeftAction === 'back') {
+    return (
+      <>
+        {/* 모바일: 뒤로가기 + 중앙 정렬 타이틀 */}
+        <div className="lg:hidden flex items-center justify-center relative py-3 px-4 shrink-0">
+          <DialogPrimitive.Close
+            data-slot="modal-close-button"
+            className="absolute left-4 cursor-pointer text-black"
+          >
+            <ArrowLeft className="size-6" />
+            <span className="sr-only">닫기</span>
+          </DialogPrimitive.Close>
+          {children}
+        </div>
+        {/* 데스크탑: 기본 헤더 레이아웃 */}
+        <div
+          data-slot="modal-header"
+          className={cn(
+            'max-lg:hidden flex items-center justify-between shrink-0',
+            'px-xlarge pt-[36px] pb-base',
+            className
+          )}
+          {...props}
+        >
+          <div className="flex-1">{children}</div>
+          {!hideCloseButton && (
+            <DialogPrimitive.Close
+              data-slot="modal-close-button"
+              className={cn('text-grey-600 cursor-pointer', 'transition-colors focus:outline-none')}
+            >
+              <X className="size-6" />
+              <span className="sr-only">닫기</span>
+            </DialogPrimitive.Close>
+          )}
+        </div>
+      </>
+    )
+  }
+
   return (
     <div
       data-slot="modal-header"
@@ -174,7 +230,7 @@ function ModalTitle({ className, ...props }: React.ComponentProps<typeof DialogP
   return (
     <DialogPrimitive.Title
       data-slot="modal-title"
-      className={cn('typo-heading3 text-black', className)}
+      className={cn('typo-heading3 max-lg:typo-m-heading3 text-black', className)}
       {...props}
     />
   )

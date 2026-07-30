@@ -3,13 +3,11 @@
  * @description 도서 검색 모달 컴포넌트
  */
 
-import { ArrowLeft } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import {
   Modal,
   ModalBody,
-  ModalClose,
   ModalContent,
   ModalHeader,
   ModalTitle,
@@ -108,16 +106,7 @@ export default function BookSearchModal({
   return (
     <Modal open={open} onOpenChange={handleOpenChange}>
       <ModalContent variant="wide">
-        {/* 모바일 헤더: 뒤로가기 + 중앙 타이틀 */}
-        <div className="lg:hidden flex items-center justify-center relative h-12 shrink-0 px-4">
-          <ModalClose className="absolute left-4 cursor-pointer text-black">
-            <ArrowLeft className="size-6" />
-            <span className="sr-only">닫기</span>
-          </ModalClose>
-          <ModalTitle className="typo-m-heading3 text-black">도서 검색</ModalTitle>
-        </div>
-        {/* 데스크탑 헤더 */}
-        <ModalHeader className="max-lg:hidden">
+        <ModalHeader mobileLeftAction="back">
           <ModalTitle>도서 검색</ModalTitle>
         </ModalHeader>
 

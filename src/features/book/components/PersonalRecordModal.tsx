@@ -1,4 +1,3 @@
-import { ArrowLeft } from 'lucide-react'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import type {
@@ -14,7 +13,6 @@ import { Input } from '@/shared/ui/Input'
 import {
   Modal,
   ModalBody,
-  ModalClose,
   ModalContent,
   ModalFooter,
   ModalHeader,
@@ -211,16 +209,7 @@ function PersonalRecordModal({
   return (
     <Modal open={open} onOpenChange={onOpenChange}>
       <ModalContent key={`${mode}-${record?.recordId || 'new'}`} variant="wide">
-        {/* 모바일 헤더: 뒤로가기 + 중앙 타이틀 */}
-        <div className="lg:hidden flex items-center justify-center relative h-12 shrink-0 px-4">
-          <ModalClose className="absolute left-4 cursor-pointer text-black">
-            <ArrowLeft className="size-6" />
-            <span className="sr-only">닫기</span>
-          </ModalClose>
-          <ModalTitle className="typo-m-heading3 text-black">감상 기록</ModalTitle>
-        </div>
-        {/* 데스크탑 헤더 */}
-        <ModalHeader className="max-lg:hidden">
+        <ModalHeader mobileLeftAction="back">
           <ModalTitle>감상 기록</ModalTitle>
         </ModalHeader>
         <ModalBody className="max-lg:flex max-lg:flex-col">
