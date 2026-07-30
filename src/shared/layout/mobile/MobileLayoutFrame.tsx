@@ -26,6 +26,8 @@ export type MobileLayoutFrameProps = Omit<React.ComponentProps<'div'>, 'title'> 
   contentClassName?: string
   onNotificationClick?: () => void
   preview?: boolean
+  /** variant="header"의 타이틀 헤더 스크롤 shadow 비활성화 (하위 sticky 헤더가 그림자를 대신 표시할 때 사용) */
+  headerDisableShadow?: boolean
 }
 
 export default function MobileLayoutFrame({
@@ -40,6 +42,7 @@ export default function MobileLayoutFrame({
   contentClassName,
   onNotificationClick,
   preview = false,
+  headerDisableShadow = false,
   className,
   children,
   ...props
@@ -62,6 +65,7 @@ export default function MobileLayoutFrame({
           headerAction={headerAction}
           headerActionSlot={headerActionSlot}
           preview={preview}
+          disableShadow={headerDisableShadow}
         />
       )}
 

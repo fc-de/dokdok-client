@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import BookInfo from '@/features/book/components/BookInfo'
@@ -9,7 +10,6 @@ import {
 } from '@/features/book/hooks'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants/routes'
-import { useScrollCollapse } from '@/shared/hooks'
 import { MobileLayoutFrame } from '@/shared/layout'
 
 export default function BookDetailPage() {
@@ -24,7 +24,7 @@ export default function BookDetailPage() {
   )
 
   const isRecording = bookDetail?.bookReadingStatus === 'READING'
-  const isBookLogSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
+  const [isBookLogSticky, setIsBookLogSticky] = useState(false)
 
   // const handleDelete = async () => {
   //   if (!bookDetail || isDeleting) return
@@ -37,6 +37,7 @@ export default function BookDetailPage() {
       variant="header"
       title={bookDetail?.title ?? '도서 상세'}
       leftAction={{ type: 'back', to: ROUTES.BOOKS }}
+      headerDisableShadow={isBookLogSticky}
       // headerAction={{
       //   label: '삭제',
       //   onClick: () => handleDelete(),
@@ -56,7 +57,11 @@ export default function BookDetailPage() {
           onToggleRecording={() => toggleReadingStatus()}
         />
       </div>
-      <BookLogList personalBookId={bookDetail?.personalBookId ?? 0} isRecording={isRecording} />
+      <BookLogList
+        personalBookId={bookDetail?.personalBookId ?? 0}
+        isRecording={isRecording}
+        onStickyChange={setIsBookLogSticky}
+      />
     </MobileLayoutFrame>
   )
 }

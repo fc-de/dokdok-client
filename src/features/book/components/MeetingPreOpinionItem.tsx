@@ -25,15 +25,28 @@ const MeetingPreOpinionItem = ({ record, onEdit, onDelete }: MeetingPreOpinionIt
 
   return (
     <FoldedCard className="flex flex-col gap-large">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-xsmall">
+      <div className="flex flex-wrap items-center gap-x-xsmall gap-y-0">
+        <div className="flex items-center gap-xsmall max-lg:w-full max-lg:justify-between">
           <Badge color={'yellow'}>{record.gatheringName}</Badge>
-          <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">
+          {(onEdit || onDelete) && (
+            <span className="hidden max-lg:-my-xsmall max-lg:block">
+              <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-xsmall max-lg:w-full max-lg:mt-xsmall">
+          <p className="text-grey-600 px-xsmall py-xtiny typo-body4 max-lg:typo-m-body4 max-lg:px-0 max-lg:py-0">
             사전 의견
           </p>
-          <p className="text-grey-600 typo-body4">{formatToDateTimeWithDay(record.sharedAt)}</p>
+          <p className="text-grey-600 typo-body4 max-lg:typo-m-body4">
+            {formatToDateTimeWithDay(record.sharedAt)}
+          </p>
         </div>
-        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
+        {(onEdit || onDelete) && (
+          <span className="ml-auto max-lg:hidden">
+            <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />
+          </span>
+        )}
       </div>
 
       {sortedTopics.map((topic, idx) => (

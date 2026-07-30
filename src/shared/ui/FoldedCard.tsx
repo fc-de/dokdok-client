@@ -33,7 +33,7 @@ function FoldedCard({ foldSize = 40, className, children, ...props }: FoldedCard
     >
       {/* 메인 카드 - 오른쪽 하단 모서리 잘림 */}
       <div
-        className="flex flex-col gap-large p-xlarge bg-white rounded-medium"
+        className="flex flex-col gap-large p-xlarge max-lg:p-base bg-white rounded-medium"
         style={{
           clipPath: `polygon(0 0, 100% 0, 100% calc(100% - ${foldSize}px), calc(100% - ${foldSize}px) 100%, 0 100%)`,
         }}
