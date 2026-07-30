@@ -69,15 +69,11 @@ const BookInfo = ({ bookId, isRecording, onToggleRecording }: BookInfoProps) => 
           <div>
             <div className="flex gap-small">
               <span className="typo-subtitle3 max-lg:typo-m-body3 text-grey-600">저자</span>
-              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">
-                {data?.authors}
-              </p>
+              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">{data?.authors}</p>
             </div>
             <div className="flex gap-small">
               <span className="typo-subtitle3 max-lg:typo-m-body3 text-grey-600">출판</span>
-              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">
-                {data?.publisher}
-              </p>
+              <p className="typo-subtitle3 max-lg:typo-m-body3 text-grey-800">{data?.publisher}</p>
             </div>
           </div>
         </div>

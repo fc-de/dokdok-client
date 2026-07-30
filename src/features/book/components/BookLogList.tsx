@@ -36,7 +36,8 @@ type OpenDropdown = 'gathering' | 'recordType' | null
 const getStickyOffset = () => {
   const rootStyle = getComputedStyle(document.documentElement)
   const gnbHeight = parseFloat(rootStyle.getPropertyValue('--spacing-gnb-height')) || 64
-  const mobileHeaderHeight = parseFloat(rootStyle.getPropertyValue('--spacing-mobile-header-height')) || 49
+  const mobileHeaderHeight =
+    parseFloat(rootStyle.getPropertyValue('--spacing-mobile-header-height')) || 49
   const isMobile = window.matchMedia('(max-width: 1023px)').matches
 
   return isMobile ? mobileHeaderHeight : gnbHeight + 44

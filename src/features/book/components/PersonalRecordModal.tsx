@@ -331,7 +331,10 @@ function PersonalRecordModal({
             <div className="lg:hidden flex flex-col flex-1 min-h-0 gap-large">
               {/* 인용 블록: 기억하고 싶은 문장 + 페이지 번호 (왼쪽 세로줄) */}
               <div className="flex flex-col gap-tiny border-l-4 border-dark-100 pl-small shrink-0">
-                <div ref={quoteFieldWrapperRef} className={cn(mobileDividerFooter, 'max-lg:[&>div]:gap-0')}>
+                <div
+                  ref={quoteFieldWrapperRef}
+                  className={cn(mobileDividerFooter, 'max-lg:[&>div]:gap-0')}
+                >
                   <label className="typo-body3 text-black mb-xsmall">기억하고 싶은 문장</label>
                   <Textarea
                     placeholder="책 속 인상 깊은 부분을 기록해주세요"

@@ -5,14 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import {
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalHeader,
-  ModalTitle,
-  SearchField,
-} from '@/shared/ui'
+import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
 
 import type { SearchBookItem } from '../book.types'
 import { useSearchBooks } from '../hooks/useSearchBooks'
