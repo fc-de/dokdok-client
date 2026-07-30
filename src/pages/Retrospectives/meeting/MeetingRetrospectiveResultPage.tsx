@@ -229,7 +229,9 @@ export default function MeetingRetrospectiveResultPage() {
           <RetrospectiveSummarySkeleton />
         ) : isError ? (
           <div className="flex flex-col items-center gap-base py-xlarge">
-            <p className="typo-body4 text-grey-600">요약 정보를 불러오지 못했습니다.</p>
+            <p className="typo-body4 max-lg:typo-m-body4 text-grey-600">
+              요약 정보를 불러오지 못했습니다.
+            </p>
             <Button size="small" onClick={() => refetch()}>
               다시 시도
             </Button>
@@ -249,7 +251,9 @@ export default function MeetingRetrospectiveResultPage() {
         ) : (
           /* 빈 상태: 아직 요약 없음 */
           <div className="flex flex-col items-center justify-center py-xlarge">
-            <p className="text-grey-600 typo-body4">아직 약속 회고가 생성되지 않았습니다.</p>
+            <p className="text-grey-600 typo-body4 max-lg:typo-m-body4">
+              아직 약속 회고가 생성되지 않았습니다.
+            </p>
             <Button
               variant="primary"
               size="medium"
