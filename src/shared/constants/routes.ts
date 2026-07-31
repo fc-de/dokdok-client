@@ -19,6 +19,14 @@ export const ROUTES = {
   GATHERING_DETAIL: (id: number | string) => `/gatherings/${id}`,
   GATHERING_CREATE: '/gatherings/create',
   GATHERING_SETTING: (id: number | string) => `/gatherings/${id}/settings`,
+  GATHERING_SETTING_INFORMATION: (id: number | string) => `/gatherings/${id}/settings/information`,
+  GATHERING_SETTING_INVITE: (id: number | string) => `/gatherings/${id}/settings/invite`,
+  GATHERING_SETTING_PENDING_MEETINGS: (id: number | string) =>
+    `/gatherings/${id}/settings/meetings/pending`,
+  GATHERING_SETTING_MEETINGS: (id: number | string) => `/gatherings/${id}/settings/meetings`,
+  GATHERING_SETTING_PENDING_MEMBERS: (id: number | string) =>
+    `/gatherings/${id}/settings/members/pending`,
+  GATHERING_SETTING_MEMBERS: (id: number | string) => `/gatherings/${id}/settings/members`,
 
   // Invite
   INVITE_BASE: '/invite',

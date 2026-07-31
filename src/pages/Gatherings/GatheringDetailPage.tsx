@@ -1,4 +1,4 @@
-import { Menu, Settings } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -120,10 +120,6 @@ export default function GatheringDetailPage() {
               <Settings aria-hidden className="size-6" />
             </button>
           )}
-          {/* 모바일 전용 메뉴 페이지 연결은 후속 이슈. 지금은 버튼만 배치 */}
-          <button type="button" className={MOBILE_HEADER_ICON_BUTTON} aria-label="모임 메뉴">
-            <Menu aria-hidden className="size-6" />
-          </button>
         </div>
       }
       contentClassName="max-lg:pb-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom))]"

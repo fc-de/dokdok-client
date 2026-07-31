@@ -14,6 +14,7 @@ import type { ButtonProps } from '@/shared/ui/Button'
 
 /** 모달 타입 */
 export type ModalType = 'alert' | 'error' | 'confirm'
+export type MobileModalLayout = 'fullscreen' | 'dialog'
 
 /** 모달 버튼 variant (Button 컴포넌트의 variant와 호환) */
 export type ModalButtonVariant = Extract<ButtonProps['variant'], 'primary' | 'secondary' | 'danger'>
@@ -40,10 +41,14 @@ export type ModalState = {
   description: string
   /** 모달 버튼 목록 */
   buttons: ModalButton[]
+  /** 모바일에서의 모달 레이아웃 */
+  mobileLayout: MobileModalLayout
 }
 
 /** Alert 모달 옵션 */
 export type AlertModalOptions = {
+  /** 모바일 모달 레이아웃 (기본값: fullscreen) */
+  mobileLayout?: MobileModalLayout
   /** 보조 액션 버튼 (예: '내 책장 보기') */
   secondaryAction?: {
     /** 버튼 텍스트 */
@@ -90,6 +95,7 @@ const initialState: ModalState = {
   title: '',
   description: '',
   buttons: [],
+  mobileLayout: 'fullscreen',
 }
 
 export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
@@ -129,6 +135,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
       title,
       description,
       buttons,
+      mobileLayout: options?.mobileLayout ?? 'fullscreen',
     })
   },
 
@@ -138,6 +145,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
       type: 'error',
       title,
       description,
+      mobileLayout: 'fullscreen',
       buttons: [
         {
           text: '확인',
@@ -168,6 +176,7 @@ export const useGlobalModalStore = create<GlobalModalStore>((set, get) => ({
         type: 'confirm',
         title,
         description,
+        mobileLayout: 'fullscreen',
         buttons: [
           {
             text: options?.cancelText || '취소',

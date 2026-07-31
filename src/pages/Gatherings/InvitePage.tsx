@@ -60,7 +60,9 @@ export default function InvitePage() {
         const status: GatheringMemberStatus = response.data.memberStatus
 
         if (status === 'PENDING') {
-          openAlert('가입 신청 완료', '모임장의 승인을 기다려주세요.')
+          openAlert('가입 신청 완료', '모임장의 승인을 기다려주세요.', undefined, {
+            mobileLayout: 'dialog',
+          })
           navigate(ROUTES.GATHERINGS)
         } else if (status === 'ACTIVE') {
           // 바로 가입된 경우 모임 상세로 이동
@@ -79,7 +81,9 @@ export default function InvitePage() {
           if (error.is(ErrorCode.JOIN_REQUEST_ALREADY_PENDING)) {
             openAlert(
               '가입 신청 완료',
-              '이미 가입 요청이 진행 중이에요. 모임장의 승인을 기다려주세요.'
+              '이미 가입 요청이 진행 중이에요. 모임장의 승인을 기다려주세요.',
+              undefined,
+              { mobileLayout: 'dialog' }
             )
             navigate(ROUTES.GATHERINGS)
             return

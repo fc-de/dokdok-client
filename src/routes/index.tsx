@@ -21,6 +21,12 @@ import {
   MeetingRetrospectiveDetailPage,
   MeetingRetrospectiveResultPage,
   MeetingSettingPage,
+  MobileGatheringInformationPage,
+  MobileGatheringInvitePage,
+  MobileGatheringMeetingsPage,
+  MobileGatheringMembersPage,
+  MobileGatheringPendingMeetingsPage,
+  MobileGatheringPendingMembersPage,
   OnboardingPage,
   PersonalRetrospectivePage,
   PersonalRetrospectiveViewPage,
@@ -96,6 +102,30 @@ export const router = createBrowserRouter([
               { path: `${ROUTES.BOOKS}/:id/reviews`, element: <BookReviewHistoryPage /> },
               // 모임
               { path: `${ROUTES.GATHERINGS}/:id`, element: <GatheringDetailPage /> },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/information`,
+                element: <MobileGatheringInformationPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/invite`,
+                element: <MobileGatheringInvitePage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/members/pending`,
+                element: <MobileGatheringPendingMembersPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/members`,
+                element: <MobileGatheringMembersPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/meetings/pending`,
+                element: <MobileGatheringPendingMeetingsPage />,
+              },
+              {
+                path: `${ROUTES.GATHERINGS}/:id/settings/meetings`,
+                element: <MobileGatheringMeetingsPage />,
+              },
               { path: `${ROUTES.GATHERINGS}/:id/settings`, element: <GatheringSettingPage /> },
               // 약속
               {
