@@ -29,7 +29,7 @@ const ReviewHistoryCard = ({ item }: ReviewHistoryCardProps) => {
           <p className="typo-subtitle3 text-grey-600 mb-tiny max-lg:typo-m-caption1">별점</p>
           <div className="flex gap-xsmall items-center">
             <StarRate rating={item.rating} />
-            <p className="subtitle3 text-grey-600 max-lg:typo-m-subtitle2">
+            <p className="typo-subtitle3 text-grey-600 max-lg:typo-m-subtitle2">
               {item.rating.toFixed(1)}
             </p>
           </div>
