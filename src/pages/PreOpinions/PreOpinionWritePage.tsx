@@ -206,6 +206,13 @@ export default function PreOpinionWritePage() {
     onClick: handleSave,
     disabled: isMobileSaveDisabled,
   }
+  const mobileBottomCTA = {
+    label: '공유하기',
+    loadingLabel: '공유 중...',
+    onClick: handleOpenPreview,
+    disabled: isLoading || isSaving || isSubmitting || !isReviewValid,
+    loading: isSubmitting,
+  }
 
   if (isLoading || !preOpinion) {
     return (
@@ -214,6 +221,7 @@ export default function PreOpinionWritePage() {
         title="사전 의견 작성하기"
         leftAction={{ type: 'close', onClick: () => navigate(-1) }}
         headerAction={mobileHeaderAction}
+        bottomCTA={mobileBottomCTA}
         className="min-h-dvh lg:min-h-0"
       >
         <SubPageHeader disableShadow className="max-lg:hidden" />
@@ -230,6 +238,7 @@ export default function PreOpinionWritePage() {
       title="사전 의견 작성하기"
       leftAction={{ type: 'close', onClick: () => navigate(-1) }}
       headerAction={mobileHeaderAction}
+      bottomCTA={mobileBottomCTA}
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader disableShadow className="max-lg:hidden" />
