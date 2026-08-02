@@ -28,7 +28,7 @@ export default function BookReviewHistoryPage() {
         className="max-lg:hidden"
       />
       <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
-        <section className="py-base max-lg:pt-large">
+        <section className="py-base max-lg:py-0">
           <h2 className="typo-heading2 text-grey-800 mb-large max-lg:hidden">지난 평가</h2>
           {isLoading && <div className="mt-medium">로딩중...</div>}
           {historyData?.items.map((item, idx) => (

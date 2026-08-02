@@ -5,7 +5,7 @@ import * as React from 'react'
 import { cn } from '@/shared/lib/utils'
 
 const chipVariants = cva(
-  'inline-flex items-center justify-center rounded-medium border px-[13px] py-[7px] typo-caption1 whitespace-nowrap transition-colors',
+  'inline-flex items-center justify-center rounded-medium border px-[13px] py-[7px] typo-caption1 whitespace-nowrap transition-colors max-lg:typo-m-caption1',
   {
     variants: {
       variant: {

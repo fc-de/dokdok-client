@@ -69,10 +69,11 @@ export function BookReviewModal({ bookId, open, onOpenChange }: BookReviewModalP
   return (
     <Modal open={open} onOpenChange={handleOpenChange}>
       <ModalContent variant="wide">
-        <ModalHeader>
+        <ModalHeader mobileLeftAction="back">
           <ModalTitle>책 평가하기</ModalTitle>
         </ModalHeader>
         <ModalBody>
+          <p className="typo-subtitle3 mb-small mt-medium">이 책은 어떠셨나요?</p>
           <BookReviewForm key={open ? 'open' : 'closed'} onChange={setFormValues} />
         </ModalBody>
         <ModalFooter variant="full">

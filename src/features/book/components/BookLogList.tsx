@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { ArrowUpDown, Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import type {
@@ -13,23 +14,68 @@ import MeetingPreOpinionItem from '@/features/book/components/MeetingPreOpinionI
 import MeetingRetrospectiveItem from '@/features/book/components/MeetingRetrospectiveItem'
 import PersonalRecordItem from '@/features/book/components/PersonalRecordItem'
 import PersonalRecordModal from '@/features/book/components/PersonalRecordModal'
+import RecordFilterBottomSheet from '@/features/book/components/RecordFilterBottomSheet'
 import { useBookGatherings, useBookLogDeleteActions, useBookRecords } from '@/features/book/hooks'
 import { ROUTES } from '@/shared/constants/routes'
-import { useInfiniteScroll, useScrollCollapse } from '@/shared/hooks'
+import { useInfiniteScroll } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui/Button'
 import { FilterDropdown } from '@/shared/ui/FilterDropdown'
+import { FloatingButton } from '@/shared/ui/FloatingButton'
 import { Tabs, TabsList, TabsTrigger } from '@/shared/ui/Tabs'
 
 type BookLogListProps = {
   personalBookId: number
   isRecording: boolean
+  /** 감상 기록 헤더가 sticky로 고정됐는지 알려주는 콜백 (상위 페이지의 타이틀 그림자 제어용) */
+  onStickyChange?: (isSticky: boolean) => void
 }
 
 type OpenDropdown = 'gathering' | 'recordType' | null
 
-const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
-  const isSticky = useScrollCollapse({ collapseThreshold: 500, expandThreshold: 100 })
+const getStickyOffset = () => {
+  const rootStyle = getComputedStyle(document.documentElement)
+  const gnbHeight = parseFloat(rootStyle.getPropertyValue('--spacing-gnb-height')) || 64
+  const mobileHeaderHeight =
+    parseFloat(rootStyle.getPropertyValue('--spacing-mobile-header-height')) || 49
+  const isMobile = window.matchMedia('(max-width: 1023px)').matches
+
+  return isMobile ? mobileHeaderHeight : gnbHeight + 44
+}
+
+const BookLogList = ({ personalBookId, isRecording, onStickyChange }: BookLogListProps) => {
+  const [isSticky, setIsSticky] = useState(false)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const mediaQuery = window.matchMedia('(max-width: 1023px)')
+    let observer: IntersectionObserver
+
+    const observe = () => {
+      observer?.disconnect()
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const sticky = !entry.isIntersecting
+          setIsSticky(sticky)
+          onStickyChange?.(sticky)
+        },
+        { rootMargin: `-${getStickyOffset()}px 0px 0px 0px`, threshold: 0 }
+      )
+      observer.observe(sentinel)
+    }
+
+    observe()
+    mediaQuery.addEventListener('change', observe)
+
+    return () => {
+      observer?.disconnect()
+      mediaQuery.removeEventListener('change', observe)
+    }
+  }, [onStickyChange])
+
   const [selectedGathering, setSelectedGathering] = useState('')
   const [recordType, setRecordType] = useState<RecordType | ''>('')
   const [openDropdown, setOpenDropdown] = useState<OpenDropdown>(null)
@@ -93,20 +139,28 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
 
   return (
     <section>
+      {/* sticky 진입 시점을 감지하기 위한 sentinel */}
+      <div ref={sentinelRef} />
+
       {/* 감상 기록 헤더 - sticky */}
       <div
         className={cn(
-          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-white transition-shadow max-lg:top-[var(--spacing-mobile-header-height)]',
+          'sticky top-[calc(var(--spacing-gnb-height)+44px)] z-30 bg-grey-100 transition-shadow max-lg:top-[var(--spacing-mobile-header-height)]',
           isSticky && 'shadow-drop-bottom'
         )}
       >
-        <div className="mx-auto max-w-layout-max px-layout-padding py-base max-lg:px-5">
+        <div className="mx-auto max-w-layout-max px-layout-padding pt-medium pb-base max-lg:px-5">
           <div className="flex justify-between mb-base">
-            <h2 className="typo-heading2 text-grey-800">감상 기록</h2>
-            {isRecording && <Button onClick={handleCreateRecord}>기록 추가하기</Button>}
+            <h2 className="typo-heading2 max-lg:typo-m-heading2 text-grey-800">감상 기록</h2>
+            {isRecording && (
+              <Button onClick={handleCreateRecord} className="max-lg:hidden">
+                기록 추가하기
+              </Button>
+            )}
           </div>
           <div className="flex justify-between">
-            <div className="flex flex-wrap gap-xsmall">
+            {/* 데스크탑 필터 (Popover) */}
+            <div className="flex flex-wrap gap-xsmall max-lg:hidden">
               <FilterDropdown
                 placeholder="독서모임"
                 value={selectedGathering}
@@ -137,29 +191,55 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
                 <FilterDropdown.Option value="QUOTE">발췌</FilterDropdown.Option>
               </FilterDropdown>
             </div>
-            <Tabs value={sortType} onValueChange={(v) => setSortType(v as RecordSortType)}>
-              <TabsList size="small" className="gap-0">
-                <TabsTrigger value="DESC" size="small">
-                  최신순
-                </TabsTrigger>
-                <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
-                <TabsTrigger value="ASC" size="small">
-                  오래된순
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            {/* 모바일 통합 필터 (BottomSheet) */}
+            <RecordFilterBottomSheet
+              className="lg:hidden"
+              gatherings={gatherings}
+              selectedGathering={selectedGathering}
+              onGatheringChange={handleGatheringChange}
+              selectedRecordType={recordType}
+              onRecordTypeChange={handleRecordTypeChange}
+              disabled={isGatheringsLoading}
+            />
+            <div className="flex items-center gap-xsmall shrink-0">
+              {/* 데스크탑 정렬 탭 */}
+              <Tabs
+                value={sortType}
+                onValueChange={(v) => setSortType(v as RecordSortType)}
+                className="max-lg:hidden"
+              >
+                <TabsList size="small" className="gap-0">
+                  <TabsTrigger value="DESC" size="small">
+                    최신순
+                  </TabsTrigger>
+                  <span className="typo-caption1 text-grey-600 px-xsmall">·</span>
+                  <TabsTrigger value="ASC" size="small">
+                    오래된순
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+              {/* 모바일 정렬 버튼 */}
+              <button
+                type="button"
+                onClick={() => setSortType((prev) => (prev === 'DESC' ? 'ASC' : 'DESC'))}
+                className="lg:hidden min-h-11 flex items-center gap-1 typo-m-body3 text-grey-700"
+              >
+                <ArrowUpDown className="size-4" />
+                {sortType === 'DESC' ? '최신순' : '오래된순'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* 기록 목록 - full-bleed 배경 */}
       <div className="bg-grey-100">
-        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge max-lg:px-5">
+        <div className="mx-auto max-w-layout-max px-layout-padding py-xlarge max-lg:py-base max-lg:px-5">
           {isRecordsLoading ? (
             <BookLogListSkeleton />
           ) : allRecords.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-base text-center">
-              <p className="typo-subtitle2 text-grey-600">
+              <p className="typo-subtitle2 max-lg:typo-m-body2 text-grey-600">
                 아직 감상 기록이 없어요.
                 <br />
                 독서하는 순간에 떠오르는 생각을 기록해보세요!
@@ -234,6 +314,15 @@ const BookLogList = ({ personalBookId, isRecording }: BookLogListProps) => {
           )}
         </div>
       </div>
+
+      {/* 모바일 기록 추가하기 FAB */}
+      {isRecording && (
+        <FloatingButton onClick={handleCreateRecord} className="typo-m-subtitle1">
+          <Plus className="size-4" />
+          기록 추가하기
+        </FloatingButton>
+      )}
+
       <PersonalRecordModal
         open={isModalOpen}
         onOpenChange={setIsModalOpen}

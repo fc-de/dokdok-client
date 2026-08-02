@@ -27,14 +27,25 @@ const PersonalRecordItem = ({ record, onEdit, onDelete }: PersonalRecordItemProp
 
   return (
     <FoldedCard>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-small">
+      <div className="flex flex-wrap items-center gap-x-small gap-y-0">
+        <div className="flex items-center gap-small max-lg:w-full max-lg:justify-between">
           <Badge color={isMemo ? 'green' : 'purple'}>{isMemo ? '메모' : '발췌'}</Badge>
-          <span className="typo-body4 text-grey-600">
+          {(onEdit || onDelete) && (
+            <span className="hidden max-lg:-my-xsmall max-lg:block">
+              <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />
+            </span>
+          )}
+        </div>
+        <div className="max-lg:w-full max-lg:mt-xsmall">
+          <span className="typo-body4 max-lg:typo-m-body4 text-grey-600">
             {formatToDateTimeWithDay(record.createdAt)}
           </span>
         </div>
-        {(onEdit || onDelete) && <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />}
+        {(onEdit || onDelete) && (
+          <span className="ml-auto max-lg:hidden">
+            <BookLogActionMenu onEdit={onEdit} onDelete={onDelete} />
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-medium">

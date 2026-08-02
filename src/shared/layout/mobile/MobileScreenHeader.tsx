@@ -14,6 +14,8 @@ export type MobileScreenHeaderProps = Omit<React.ComponentProps<'header'>, 'titl
   headerAction?: MobileHeaderAction
   headerActionSlot?: React.ReactNode
   preview?: boolean
+  /** 스크롤 시 하단 shadow 비활성화 (하위 sticky 헤더가 그림자를 대신 표시할 때 사용) */
+  disableShadow?: boolean
 }
 
 export default function MobileScreenHeader({
@@ -23,6 +25,7 @@ export default function MobileScreenHeader({
   headerAction,
   headerActionSlot,
   preview = false,
+  disableShadow = false,
   className,
   ...props
 }: MobileScreenHeaderProps) {
@@ -51,7 +54,7 @@ export default function MobileScreenHeader({
         preview ? 'relative z-10' : 'fixed inset-x-0 top-0 z-50 lg:hidden',
         !preview && 'mobile-frame',
         'h-12.25 bg-white px-5 transition-shadow',
-        isScrolled && 'shadow-drop',
+        isScrolled && !disableShadow && 'shadow-drop',
         className
       )}
       {...props}

@@ -24,9 +24,9 @@ const BookReview = ({ bookId }: BookReviewProps) => {
   if (isLoading) return <div>로딩중...</div>
 
   return (
-    <section className="py-large">
-      <div className="flex justify-between">
-        <h3 className="typo-subtitle1">이 책에 대한 내 평가</h3>
+    <section className="py-large max-lg:py-0">
+      <div className="flex justify-between items-center">
+        <h3 className="typo-subtitle1 max-lg:typo-m-subtitle1">이 책에 대한 내 평가</h3>
         <div className="flex gap-small items-center">
           {data && (
             <TextButton onClick={() => navigate(ROUTES.BOOK_REVIEW_HISTORY(bookId))}>
@@ -40,19 +40,23 @@ const BookReview = ({ bookId }: BookReviewProps) => {
       </div>
       {data ? (
         <div className="mt-xxtiny">
-          <p className="text-grey-500 typo-caption1 mb-medium">
+          <p className="text-grey-500 typo-caption1 max-lg:hidden mb-medium">
             {formatToShortDate(data.createdAt)} 작성
           </p>
-          <div className="flex flex-col gap-small">
+          <div className="flex flex-col gap-small max-lg:mt-base">
             <div>
-              <p className="typo-subtitle3 text-grey-600 mb-tiny">별점</p>
+              <p className="typo-subtitle3 max-lg:typo-m-caption1 text-grey-600 mb-tiny">별점</p>
               <div className="flex gap-xsmall items-center">
-                <StarRate rating={data.rating} />
-                <p className="subtitle3 text-grey-600">{data.rating.toFixed(1)}</p>
+                <StarRate rating={data.rating} size={24} />
+                <p className="typo-subtitle3 max-lg:typo-m-subtitle2 text-grey-600">
+                  {data.rating.toFixed(1)}
+                </p>
               </div>
             </div>
             <div>
-              <p className="typo-subtitle3 text-grey-600 mb-tiny">책 키워드</p>
+              <p className="typo-subtitle3 max-lg:typo-m-caption1 text-grey-600 mb-tiny">
+                책 키워드
+              </p>
               <div className="flex gap-xsmall flex-wrap">
                 {data.keywords
                   .filter((k) => k.type === 'BOOK')
@@ -64,7 +68,9 @@ const BookReview = ({ bookId }: BookReviewProps) => {
               </div>
             </div>
             <div>
-              <p className="typo-subtitle3 text-grey-600 mb-tiny">감상 키워드</p>
+              <p className="typo-subtitle3 max-lg:typo-m-caption1 text-grey-600 mb-tiny">
+                감상 키워드
+              </p>
               <div className="flex gap-xsmall flex-wrap">
                 {data.keywords
                   .filter((k) => k.type === 'IMPRESSION')
@@ -79,7 +85,7 @@ const BookReview = ({ bookId }: BookReviewProps) => {
         </div>
       ) : (
         <div className="py-base">
-          <p className="typo-subtitle2 text-grey-600 text-center">
+          <p className="typo-subtitle2 max-lg:typo-m-body2 text-grey-600 text-center">
             아직 이 책을 평가하지 않았어요. <br />다 읽고 나서 이 책이 어땠는지 알려주세요!
           </p>
         </div>

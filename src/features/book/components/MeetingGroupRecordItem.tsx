@@ -25,10 +25,18 @@ const MeetingGroupRecordItem = ({ record }: MeetingGroupRecordItemProps) => {
 
   return (
     <FoldedCard>
-      <div className="flex items-center gap-xsmall">
-        <Badge color={'yellow'}>{gatheringName}</Badge>
-        <p className="text-grey-600 px-xsmall py-xtiny typo-body4 ml-xsmall mr-small">약속 회고</p>
-        <span className="typo-body4 text-grey-600">{formatToDateTimeWithDay(createdAt)}</span>
+      <div className="flex flex-wrap items-center gap-x-xsmall gap-y-0">
+        <div className="max-lg:w-full">
+          <Badge color={'yellow'}>{gatheringName}</Badge>
+        </div>
+        <div className="flex items-center gap-xsmall max-lg:w-full max-lg:mt-xsmall">
+          <p className="text-grey-600 px-xsmall py-xtiny typo-body4 max-lg:px-0 max-lg:py-0 max-lg:typo-m-body4 lg:ml-xsmall lg:mr-small">
+            약속 회고
+          </p>
+          <span className="typo-body4 max-lg:typo-m-body4 text-grey-600">
+            {formatToDateTimeWithDay(createdAt)}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-col">

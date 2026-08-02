@@ -21,19 +21,21 @@ type ReviewHistoryCardProps = {
 const ReviewHistoryCard = ({ item }: ReviewHistoryCardProps) => {
   return (
     <div className="py-large px-medium max-lg:px-0">
-      <p className="text-grey-700 typo-subtitle3 mb-medium">
+      <p className="text-grey-700 typo-subtitle3 mb-medium max-lg:typo-m-caption1 max-lg:mb-xsmall">
         {formatToShortDate(item.createdAt)} 작성
       </p>
       <div className="flex flex-col gap-small">
         <div>
-          <p className="typo-subtitle3 text-grey-600 mb-tiny">별점</p>
+          <p className="typo-subtitle3 text-grey-600 mb-tiny max-lg:typo-m-caption1">별점</p>
           <div className="flex gap-xsmall items-center">
             <StarRate rating={item.rating} />
-            <p className="subtitle3 text-grey-600">{item.rating.toFixed(1)}</p>
+            <p className="typo-subtitle3 text-grey-600 max-lg:typo-m-subtitle2">
+              {item.rating.toFixed(1)}
+            </p>
           </div>
         </div>
         <div>
-          <p className="typo-subtitle3 text-grey-600 mb-tiny">책 키워드</p>
+          <p className="typo-subtitle3 text-grey-600 mb-tiny max-lg:typo-m-caption1">책 키워드</p>
           <div className="flex gap-xsmall flex-wrap">
             {item.bookKeywords.map((keyword) => (
               <Chip key={keyword.id} variant={'success'}>
@@ -43,7 +45,7 @@ const ReviewHistoryCard = ({ item }: ReviewHistoryCardProps) => {
           </div>
         </div>
         <div>
-          <p className="typo-subtitle3 text-grey-600 mb-tiny">감상 키워드</p>
+          <p className="typo-subtitle3 text-grey-600 mb-tiny max-lg:typo-m-caption1">감상 키워드</p>
           <div className="flex gap-xsmall flex-wrap">
             {item.impressionKeywords.map((keyword) => (
               <Chip key={keyword.id} className="bg-blue-100 text-blue-200">

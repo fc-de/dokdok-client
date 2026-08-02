@@ -108,7 +108,9 @@ export function GlobalModalHost() {
     <Modal open={isOpen} onOpenChange={handleOpenChange}>
       <ModalContent variant="normal" mobileLayout={mobileLayout} className="h-auto w-fit min-w-md">
         <ModalHeader hideCloseButton>
-          <ModalTitle className="text-black typo-subtitle2">{title}</ModalTitle>
+          <ModalTitle className="text-black typo-subtitle2 max-lg:typo-m-subtitle2">
+            {title}
+          </ModalTitle>
           <ModalDescription className="sr-only">{description}</ModalDescription>
         </ModalHeader>
         <ModalBody>
