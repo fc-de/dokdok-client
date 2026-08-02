@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -127,6 +128,7 @@ export default function MeetingRetrospectiveCreatePage() {
         onClick: handleStartAiSummary,
         disabled: totalCount === 0 || sttMutation.isPending,
         loading: sttMutation.isPending,
+        variant: 'ai',
       }}
       className="min-h-dvh lg:min-h-0"
     >
@@ -148,14 +150,22 @@ export default function MeetingRetrospectiveCreatePage() {
       </FormPageHeader>
 
       {/* 두 패널 영역 */}
-      <div className="mx-auto max-w-layout-max px-layout-padding flex gap-medium mt-base">
+      <div className="mx-auto mt-base flex max-w-layout-max gap-medium px-layout-padding max-lg:mt-0 max-lg:flex-col-reverse max-lg:gap-8 max-lg:px-5">
         {/* 왼쪽: 수집된 사전 의견 */}
-        <div className="flex flex-1 flex-col gap-medium rounded-base border border-grey-300 bg-white p-large shadow-drop">
-          <div className="flex flex-col gap-xtiny">
+        <div className="flex flex-1 flex-col gap-medium rounded-base border border-grey-300 bg-white p-large shadow-drop max-lg:gap-3 max-lg:rounded-none max-lg:border-0 max-lg:p-0 max-lg:shadow-none">
+          <div className="flex flex-col gap-xtiny max-lg:hidden">
             <h4 className="text-black typo-heading3">수집된 사전 의견</h4>
             <p className="text-grey-600 typo-body4">{totalCount}개</p>
           </div>
-          <Card className="border-none bg-grey-100 p-large h-[440px] overflow-auto custom-scroll-grey">
+          <div className="hidden flex-col gap-2 max-lg:flex">
+            <h4 className="text-black typo-subtitle2">{totalCount}개의 사전 의견</h4>
+            <p className="whitespace-pre-line text-grey-600 typo-m-body4">
+              {
+                '약속 회고에 적용될 멤버의 사전 의견들을 확인해보세요\n부적절한 사전 의견은 반영되지 않을 수 있어요'
+              }
+            </p>
+          </div>
+          <Card className="h-[440px] overflow-auto border-none bg-grey-100 p-large custom-scroll-grey max-lg:h-auto max-lg:overflow-visible max-lg:rounded-none max-lg:bg-white max-lg:p-0">
             {isLoading || !collectedAnswersData ? (
               <div className="flex items-center justify-center h-full">
                 <Spinner />
@@ -166,26 +176,39 @@ export default function MeetingRetrospectiveCreatePage() {
               </div>
             ) : (
               <>
-                <Accordion type="multiple">
+                <Accordion type="multiple" className="max-lg:gap-small">
                   {collectedAnswersData.pages
                     .flatMap((page: GetCollectedAnswersResponse) => page.items)
                     .map((answer) => (
                       <Accordion.Item key={answer.userId} value={`item-${answer.userId}`}>
-                        <Accordion.Trigger showIcon={false}>
-                          <div className="flex gap-small items-center">
+                        <Accordion.Trigger
+                          showIcon={false}
+                          className="group max-lg:group max-lg:min-h-13 max-lg:items-center max-lg:rounded-small max-lg:px-5 max-lg:py-2.5"
+                        >
+                          <div className="flex min-w-0 items-center gap-xsmall">
                             <Avatar>
                               <AvatarImage src={answer.profileImageUrl} alt={answer.nickname} />
                               <AvatarFallback>{answer.nickname.slice(0, 1)}</AvatarFallback>
                             </Avatar>
-                            <span>{answer.nickname}</span>
+                            <span className="truncate typo-subtitle5">{answer.nickname}</span>
                           </div>
+                          <span
+                            aria-hidden
+                            className="hidden size-8 shrink-0 items-center justify-center max-lg:flex"
+                          >
+                            <ChevronDown className="size-6 text-grey-600 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                          </span>
                         </Accordion.Trigger>
-                        <Accordion.Content>
-                          <dl className="flex flex-col gap-small">
+                        <Accordion.Content className="max-lg:mt-3 max-lg:rounded-small max-lg:bg-grey-100 max-lg:[&>div]:px-4 max-lg:[&>div]:py-5">
+                          <dl className="flex flex-col gap-small max-lg:gap-small">
                             {answer.topics.map((topic) => (
                               <div key={topic.answerId} className="flex flex-col gap-xtiny">
-                                <dt className="text-grey-800 typo-subtitle2">{topic.title}</dt>
-                                <dd className="text-grey-700 typo-body3">{topic.content}</dd>
+                                <dt className="text-grey-800 typo-subtitle2 max-lg:text-black max-lg:typo-subtitle5">
+                                  {topic.title}
+                                </dt>
+                                <dd className="text-grey-700 typo-body3 max-lg:typo-m-body4">
+                                  {topic.content}
+                                </dd>
                               </div>
                             ))}
                           </dl>
@@ -209,18 +232,21 @@ export default function MeetingRetrospectiveCreatePage() {
         </div>
 
         {/* 오른쪽: 녹음 파일 업로드 */}
-        <div className="flex flex-1 flex-col gap-medium rounded-base border border-grey-300 bg-white p-large shadow-drop">
-          <div className="flex flex-col gap-medium mb-small">
+        <div className="flex flex-1 flex-col gap-medium rounded-base border border-grey-300 bg-white p-large shadow-drop max-lg:gap-3 max-lg:rounded-none max-lg:border-0 max-lg:px-0 max-lg:pb-0 max-lg:pt-medium max-lg:shadow-none">
+          <div className="mb-small flex flex-col gap-medium max-lg:mb-0 max-lg:gap-2">
             <div className="flex flex-col gap-xtiny">
-              <h4 className="text-black typo-heading3">녹음 파일 업로드</h4>
-              <p className="text-grey-600 typo-body4">
+              <h4 className="text-black typo-heading3 max-lg:typo-subtitle2">녹음 파일 업로드</h4>
+              <p className="text-grey-600 typo-body4 max-lg:hidden">
                 AI가 음성을 텍스트로 변환하여 분석해요
                 <br />
                 녹음 없이 사전 의견만으로도 회고를 만들 수 있어요
               </p>
+              <p className="hidden text-grey-600 typo-m-body4 max-lg:block">
+                사전 의견과 녹음 파일을 분석하여 약속 회고를 자동 생성해요
+              </p>
             </div>
-            <div className="flex justify-between">
-              <p className="typo-body3 text-purple-200 flex gap-tiny">
+            <div className="flex justify-between max-lg:hidden">
+              <p className="flex gap-tiny text-purple-200 typo-body3">
                 <AlertIcon />
                 파일은 하나만 업로드 할 수 있어요
               </p>
@@ -239,6 +265,10 @@ export default function MeetingRetrospectiveCreatePage() {
               onTypeRejected={handleTypeRejected}
             />
           </div>
+          <p className="hidden items-center gap-2 text-purple-200 typo-m-caption1 max-lg:flex">
+            <AlertIcon size={15} />
+            최대 50MB인 한 가지 파일만 업로드 할 수 있어요.
+          </p>
         </div>
       </div>
 

@@ -24,6 +24,7 @@ export type MobileBottomCTAConfig = {
   disabled?: boolean
   loading?: boolean
   loadingLabel?: string
+  variant?: 'default' | 'ai'
 }
 
 export type MobileBottomNavigationItem = {

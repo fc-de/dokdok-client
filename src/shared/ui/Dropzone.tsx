@@ -1,4 +1,4 @@
-import { File, Upload } from 'lucide-react'
+import { File, RotateCcw, Upload, X } from 'lucide-react'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 
 import { cn } from '@/shared/lib/utils'
@@ -125,6 +125,10 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
       }
     }
 
+    const handleFileSelectTrigger = () => {
+      fileInputRef.current?.click()
+    }
+
     const formatFileSize = (bytes: number) => {
       if (bytes < 1024) return `${bytes}B`
       if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(2)}KB`
@@ -149,6 +153,7 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           className={cn(
+            'max-lg:hidden',
             'w-full h-full rounded-base border transition-colors',
             'flex flex-col items-center justify-center gap-small p-large',
             hasFile ? 'border-grey-500' : 'border-grey-300',
@@ -173,6 +178,49 @@ const Dropzone = forwardRef<DropzoneHandle, DropzoneProps>(
                 삭제
               </TextButton>
             </>
+          )}
+        </div>
+
+        <div className="hidden max-lg:block">
+          {!hasFile ? (
+            <button
+              type="button"
+              onClick={handleFileSelectTrigger}
+              className="flex h-14 w-full items-center justify-center gap-tiny rounded-base border border-grey-400 text-grey-600 typo-m-caption2 transition-colors hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <Upload aria-hidden className="size-6" />
+              파일 업로드
+            </button>
+          ) : (
+            <div className="overflow-hidden rounded-small border border-grey-300">
+              <div className="grid grid-cols-[minmax(0,1fr)_4rem_2.5rem] border-b border-grey-300 px-large py-3 typo-m-caption1 text-black">
+                <span>파일명</span>
+                <span>용량</span>
+                <span className="sr-only">파일 관리</span>
+              </div>
+              <div className="grid min-h-[42px] grid-cols-[minmax(0,1fr)_4rem_2.5rem] items-center px-large py-3 typo-m-caption1 text-black">
+                <span className="truncate">{selectedFile.name}</span>
+                <span>{formatFileSize(selectedFile.size)}</span>
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    onClick={handleFileSelectTrigger}
+                    className="flex size-8 items-center justify-center rounded-small text-grey-600 hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label="음성 파일 교체"
+                  >
+                    <RotateCcw aria-hidden className="size-[18px]" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveFile}
+                    className="flex size-8 items-center justify-center rounded-small text-grey-600 hover:bg-grey-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label="업로드한 파일 삭제"
+                  >
+                    <X aria-hidden className="size-[18px]" />
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

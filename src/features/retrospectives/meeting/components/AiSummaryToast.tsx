@@ -55,7 +55,7 @@ export default function AiSummaryToast({
         opacity ? 'opacity-100' : 'opacity-0',
       ].join(' ')}
     >
-      <div className="flex w-lg flex-col items-center justify-center gap-small rounded-small bg-grey-100 p-medium shadow-drop">
+      <div className="flex w-lg flex-col items-center justify-center gap-small rounded-small bg-grey-100 p-medium shadow-drop max-lg:w-[calc(100%-40px)] max-lg:max-w-75 max-lg:rounded-small max-lg:bg-white max-lg:p-5">
         <div className="flex flex-col items-center justify-center gap-tiny">
           <Check className="size-6 text-primary-300" />
           <p className="text-blue-200 typo-subtitle2">{message}</p>
