@@ -183,7 +183,7 @@ export default function MeetingRetrospectiveCreatePage() {
                       <Accordion.Item key={answer.userId} value={`item-${answer.userId}`}>
                         <Accordion.Trigger
                           showIcon={false}
-                          className="max-lg:group max-lg:min-h-13 max-lg:items-center max-lg:rounded-small max-lg:px-5 max-lg:py-2.5"
+                          className="group max-lg:group max-lg:min-h-13 max-lg:items-center max-lg:rounded-small max-lg:px-5 max-lg:py-2.5"
                         >
                           <div className="flex min-w-0 items-center gap-xsmall">
                             <Avatar>
