@@ -66,7 +66,7 @@ function Title({ className, children, required, errorMessage, infoMessage, badge
           {badge}
         </div>
         {errorMessage && (
-          <span className="flex items-center typo-body3 text-accent-300 gap-tiny">
+          <span className="flex items-center typo-body3 max-lg:typo-caption1 text-accent-300 gap-tiny">
             <AlertIcon className="text-accent-300" /> {errorMessage}
           </span>
         )}
