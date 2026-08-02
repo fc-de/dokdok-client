@@ -4,7 +4,8 @@
  */
 
 import { MessageCircleMore } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import type { PointerEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useInfiniteScroll } from '@/shared/hooks/useInfiniteScroll'
@@ -28,6 +29,10 @@ type RetrospectiveCommentsProps = {
   meetingLeaderId: number
 }
 
+const MOBILE_COMMENT_MIN_HEIGHT = 56
+const MOBILE_COMMENT_AUTO_MAX_HEIGHT = 124
+const MOBILE_COMMENT_DRAG_MAX_HEIGHT = 352
+
 /**
  * 약속회고 댓글 컴포넌트
  *
@@ -41,6 +46,12 @@ export default function RetrospectiveComments({
   meetingLeaderId,
 }: RetrospectiveCommentsProps) {
   const [comment, setComment] = useState('')
+  const [isMobileComposerOpen, setIsMobileComposerOpen] = useState(false)
+  const [draggedTextareaHeight, setDraggedTextareaHeight] = useState<number | null>(null)
+  const commentsHeadingRef = useRef<HTMLParagraphElement>(null)
+  const firstCommentRef = useRef<HTMLLIElement>(null)
+  const mobileTextareaRef = useRef<HTMLTextAreaElement>(null)
+  const resizeStartRef = useRef<{ pointerId: number; clientY: number; height: number } | null>(null)
 
   // 현재 로그인 사용자 정보
   const { data: currentUser } = useAuth()
@@ -79,6 +90,19 @@ export default function RetrospectiveComments({
       showErrorToast(error.userMessage)
     }
   }, [isError, error])
+
+  useEffect(() => {
+    if (!isMobileComposerOpen) return
+
+    const scrollTarget = firstCommentRef.current ?? commentsHeadingRef.current
+    scrollTarget?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+
+    const focusTimer = window.setTimeout(() => {
+      mobileTextareaRef.current?.focus()
+    }, 300)
+
+    return () => window.clearTimeout(focusTimer)
+  }, [isMobileComposerOpen])
 
   // 댓글 작성 핸들러
   const handleSubmit = () => {
@@ -130,37 +154,85 @@ export default function RetrospectiveComments({
     return currentUserId === meetingLeaderId || currentUserId === commentUserId
   }
 
+  const handleOpenMobileComposer = () => {
+    setDraggedTextareaHeight(null)
+    setIsMobileComposerOpen(true)
+  }
+
+  const handleCloseMobileComposer = () => {
+    mobileTextareaRef.current?.blur()
+    setIsMobileComposerOpen(false)
+    setDraggedTextareaHeight(null)
+  }
+
+  const handleResizeStart = (event: PointerEvent<HTMLButtonElement>) => {
+    const height =
+      mobileTextareaRef.current?.getBoundingClientRect().height ?? MOBILE_COMMENT_MIN_HEIGHT
+
+    resizeStartRef.current = {
+      pointerId: event.pointerId,
+      clientY: event.clientY,
+      height,
+    }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const handleResizeMove = (event: PointerEvent<HTMLButtonElement>) => {
+    const resizeStart = resizeStartRef.current
+    if (!resizeStart || resizeStart.pointerId !== event.pointerId) return
+
+    const nextHeight = Math.min(
+      MOBILE_COMMENT_DRAG_MAX_HEIGHT,
+      Math.max(MOBILE_COMMENT_MIN_HEIGHT, resizeStart.height + resizeStart.clientY - event.clientY)
+    )
+    setDraggedTextareaHeight(nextHeight)
+  }
+
+  const handleResizeEnd = (event: PointerEvent<HTMLButtonElement>) => {
+    if (resizeStartRef.current?.pointerId === event.pointerId) {
+      resizeStartRef.current = null
+    }
+  }
+
   return (
-    <div className="mt-[36px]">
-      <p className="flex gap-tiny text-grey-600 typo-body2 items-center mb-large">
+    <div className="mt-[36px] max-lg:mt-xlarge max-lg:px-5 max-lg:pb-24">
+      <p
+        ref={commentsHeadingRef}
+        className="mb-large flex items-center gap-tiny text-grey-600 typo-body2 max-lg:mb-0 max-lg:typo-caption1"
+      >
         <MessageCircleMore size={20} />
         {totalCount}개의 의견
       </p>
 
-      {/* 댓글 작성 폼 */}
-      <div className="flex gap-small mb-base">
-        <Avatar>
-          <AvatarImage src={currentUser?.profileImageUrl ?? ''} alt={currentUser?.nickname ?? ''} />
-          <AvatarFallback>{currentUser?.nickname?.slice(0, 1) ?? ''}</AvatarFallback>
-        </Avatar>
-        <Textarea
-          format="comment"
-          height={56}
-          maxLength={500}
-          counter={false}
-          placeholder="코멘트는 공백 포함 500자까지 작성할 수 있어요"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-      </div>
-      <div className="flex justify-end mb-base">
-        <Button
-          className="w-[90px]"
-          onClick={handleSubmit}
-          disabled={createMutation.isPending || !comment.trim()}
-        >
-          {createMutation.isPending ? '등록 중...' : '등록'}
-        </Button>
+      {/* 데스크톱 댓글 작성 폼 */}
+      <div className="max-lg:hidden">
+        <div className="flex gap-small mb-base">
+          <Avatar>
+            <AvatarImage
+              src={currentUser?.profileImageUrl ?? ''}
+              alt={currentUser?.nickname ?? ''}
+            />
+            <AvatarFallback>{currentUser?.nickname?.slice(0, 1) ?? ''}</AvatarFallback>
+          </Avatar>
+          <Textarea
+            format="comment"
+            height={56}
+            maxLength={500}
+            counter={false}
+            placeholder="코멘트는 공백 포함 500자까지 작성할 수 있어요"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+        </div>
+        <div className="flex justify-end mb-base">
+          <Button
+            className="w-[90px]"
+            onClick={handleSubmit}
+            disabled={createMutation.isPending || !comment.trim()}
+          >
+            {createMutation.isPending ? '등록 중...' : '등록'}
+          </Button>
+        </div>
       </div>
 
       {/* 댓글 목록 */}
@@ -181,19 +253,22 @@ export default function RetrospectiveComments({
           <ul>
             {commentsData.pages
               .flatMap((page: GetCommentsResponse) => page.items)
-              .map((commentItem) => (
+              .map((commentItem, index) => (
                 <li
                   key={commentItem.commentId}
-                  className="border-b border-grey-300 py-large flex gap-small last:border-none"
+                  ref={index === 0 ? firstCommentRef : undefined}
+                  className="flex gap-small border-b border-grey-300 py-large last:border-none max-lg:scroll-mt-16 max-lg:py-base"
                 >
                   <Avatar className="mt-xtiny">
                     <AvatarImage src={commentItem.profileImageUrl} alt={commentItem.nickname} />
                     <AvatarFallback>{commentItem.nickname.slice(0, 1)}</AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col gap-base flex-1">
+                  <div className="flex flex-1 flex-col gap-base max-lg:gap-tiny">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="typo-subtitle5 text-black">{commentItem.nickname}</p>
+                        <p className="typo-subtitle5 text-black max-lg:typo-body5">
+                          {commentItem.nickname}
+                        </p>
                         <p className="typo-body6 text-grey-600">
                           {formatToDateWithDay(commentItem.createdAt)}
                         </p>
@@ -208,7 +283,7 @@ export default function RetrospectiveComments({
                         </TextButton>
                       )}
                     </div>
-                    <div className="typo-body1 text-grey-700 whitespace-pre-wrap">
+                    <div className="typo-body1 text-grey-700 whitespace-pre-wrap max-lg:typo-body4">
                       {commentItem.comment}
                     </div>
                   </div>
@@ -221,6 +296,72 @@ export default function RetrospectiveComments({
 
           {/* 무한 스크롤 트리거 */}
           {hasNextPage && !isFetchingNextPage && <div ref={observerRef} className="h-4" />}
+        </>
+      )}
+
+      {/* 모바일 하단 고정 입력창 */}
+      {!isMobileComposerOpen && (
+        <div className="mobile-frame fixed inset-x-0 bottom-0 z-40 border-t border-grey-200 bg-white px-5 py-small pb-[calc(var(--spacing-small)+env(safe-area-inset-bottom))] shadow-drop lg:hidden">
+          <button
+            type="button"
+            className="flex h-12 w-full items-center rounded-small border border-grey-300 px-base text-left typo-m-body1 text-grey-600"
+            onClick={handleOpenMobileComposer}
+          >
+            코멘트를 남겨보세요
+          </button>
+        </div>
+      )}
+
+      {isMobileComposerOpen && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-40 cursor-default lg:hidden"
+            aria-label="의견 입력 닫기"
+            onClick={handleCloseMobileComposer}
+          />
+          <div className="mobile-frame fixed inset-x-0 bottom-0 z-50 border-t border-grey-200 bg-white px-5 pt-xtiny pb-[calc(var(--spacing-small)+env(safe-area-inset-bottom))] shadow-drop lg:hidden">
+            <button
+              type="button"
+              className="mx-auto mb-xsmall block h-4 w-full touch-none cursor-row-resize py-xsmall"
+              aria-label="의견 입력창 높이 조절"
+              onPointerDown={handleResizeStart}
+              onPointerMove={handleResizeMove}
+              onPointerUp={handleResizeEnd}
+              onPointerCancel={handleResizeEnd}
+            >
+              <span className="mx-auto block h-1 w-13 rounded-full bg-grey-400" />
+            </button>
+            <Textarea
+              ref={mobileTextareaRef}
+              format="comment"
+              height={draggedTextareaHeight ?? MOBILE_COMMENT_MIN_HEIGHT}
+              maxHeight={
+                draggedTextareaHeight
+                  ? MOBILE_COMMENT_DRAG_MAX_HEIGHT
+                  : MOBILE_COMMENT_AUTO_MAX_HEIGHT
+              }
+              maxLength={500}
+              counter={false}
+              placeholder="코멘트는 공백 포함 500자까지 작성할 수 있어요"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <div className="mt-xsmall flex items-center justify-between">
+              <span
+                className={`typo-m-body3 max-lg:typo-body6 ${comment.length >= 500 ? 'text-accent-300' : 'text-grey-600'}`}
+              >
+                {comment.length}/500
+              </span>
+              <Button
+                className="h-9 w-16"
+                onClick={handleSubmit}
+                disabled={createMutation.isPending || !comment.trim()}
+              >
+                {createMutation.isPending ? '등록 중...' : '등록'}
+              </Button>
+            </div>
+          </div>
         </>
       )}
     </div>
