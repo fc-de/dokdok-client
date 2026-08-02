@@ -1,5 +1,6 @@
 import { cva } from 'class-variance-authority'
 import type { ChangeEvent, ComponentProps, CSSProperties, FormEvent } from 'react'
+import { forwardRef } from 'react'
 
 import { cn } from '@/shared/lib/utils'
 
@@ -29,6 +30,7 @@ type TextareaProps = ComponentProps<'textarea'> & {
   helperText?: string
   maxLength?: number
   height?: number
+  maxHeight?: number
   counter?: boolean
   format?: 'default' | 'comment'
   scrollable?: boolean
@@ -52,30 +54,34 @@ type TextareaProps = ComponentProps<'textarea'> & {
  * <Textarea maxLength={100} counter={false} />
  * ```
  */
-function Textarea({
-  className,
-  error,
-  errorMessage,
-  helperText,
-  maxLength,
-  disabled,
-  value,
-  height,
-  style,
-  counter = true,
-  format = 'default',
-  scrollable = format === 'comment',
-  onChange,
-  onInput,
-  ...props
-}: TextareaProps) {
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
+  {
+    className,
+    error,
+    errorMessage,
+    helperText,
+    maxLength,
+    disabled,
+    value,
+    height,
+    maxHeight: maxHeightProp,
+    style,
+    counter = true,
+    format = 'default',
+    scrollable = format === 'comment',
+    onChange,
+    onInput,
+    ...props
+  },
+  ref
+) {
   const currentLength = typeof value === 'string' ? value.length : 0
   const showCount = maxLength !== undefined && counter
   const showFooter = error || helperText || showCount
 
   // format에 따라 기본 높이 설정
   const baseHeight = height ?? (format === 'comment' ? 48 : 180)
-  const maxHeight = format === 'comment' ? 128 : baseHeight
+  const maxHeight = maxHeightProp ?? (format === 'comment' ? 128 : baseHeight)
 
   const handleInput = (e: FormEvent<HTMLTextAreaElement>) => {
     if (format === 'comment') {
@@ -106,6 +112,7 @@ function Textarea({
   return (
     <div className="flex flex-col w-full gap-xsmall">
       <textarea
+        ref={ref}
         data-slot="textarea"
         disabled={disabled}
         maxLength={maxLength}
@@ -136,6 +143,8 @@ function Textarea({
       )}
     </div>
   )
-}
+})
+
+Textarea.displayName = 'Textarea'
 
 export { Textarea }
