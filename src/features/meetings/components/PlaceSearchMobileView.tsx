@@ -44,7 +44,13 @@ export default function PlaceSearchMobileView({
     handlePlaceClick,
     handlePlaceFocus,
     handleClose,
-  } = usePlaceSearch({ open, onOpenChange, onSelectPlace, bottomOffset: drawerHeight })
+  } = usePlaceSearch({
+    open,
+    onOpenChange,
+    onSelectPlace,
+    bottomOffset: drawerHeight,
+    mapContainerHeight: maxSnapPx ?? undefined,
+  })
 
   // 지도 영역 크기를 추적해 Drawer가 올라갈 수 있는 최대 높이를 계산
   useLayoutEffect(() => {
@@ -76,6 +82,16 @@ export default function PlaceSearchMobileView({
       document.body.style.overflow = prev
     }
   }, [open])
+
+  // 수동 dialog라 Radix의 Escape 처리가 없으므로 직접 처리
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open, handleClose])
 
   const isExpanded = maxSnapPx !== null && drawerHeight >= maxSnapPx
   // drawerHeight를 단일 스냅 포인트로 사용 — 드래그 후 state가 갱신되면 vaul이 동일 위치로 snap해 시각적 점프가 없음

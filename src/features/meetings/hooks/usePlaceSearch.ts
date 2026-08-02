@@ -32,6 +32,8 @@ export type UsePlaceSearchOptions = {
   onOpenChange: (open: boolean) => void
   onSelectPlace: (place: SelectedPlace) => void
   bottomOffset?: number
+  /** 지도 컨테이너 높이 (px) — setBounds 하단 패딩 상한 계산에 사용 */
+  mapContainerHeight?: number
 }
 
 export function usePlaceSearch({
@@ -39,6 +41,7 @@ export function usePlaceSearch({
   onOpenChange,
   onSelectPlace,
   bottomOffset = 0,
+  mapContainerHeight,
 }: UsePlaceSearchOptions) {
   const [sdkLoading, sdkError] = useKakaoLoader()
 
@@ -48,8 +51,10 @@ export function usePlaceSearch({
 
   // ref로 유지해 setBounds effect의 dep에서 제외 — 높이 변경 시 지도를 재초기화하지 않음
   const bottomOffsetRef = useRef(bottomOffset)
+  const mapContainerHeightRef = useRef(mapContainerHeight ?? 0)
   useLayoutEffect(() => {
     bottomOffsetRef.current = bottomOffset
+    mapContainerHeightRef.current = mapContainerHeight ?? 0
   })
 
   // 카카오 Map SDK는 마운트 시점의 컨테이너 크기로 지도를 초기화합니다.
@@ -82,7 +87,13 @@ export function usePlaceSearch({
     const { kakao } = window
     const bounds = new kakao.maps.LatLngBounds()
     places.forEach((p) => bounds.extend(new kakao.maps.LatLng(Number(p.y), Number(p.x))))
-    mapInstance.setBounds(bounds, 0, 0, bottomOffsetRef.current, 0)
+    // 하단 패딩이 지도 높이를 덮으면 가용 영역이 0이 되므로 상한을 둡니다.
+    const mapHeight = mapContainerHeightRef.current
+    const safeBottom =
+      mapHeight > 0
+        ? Math.min(bottomOffsetRef.current, mapHeight * 0.6)
+        : bottomOffsetRef.current
+    mapInstance.setBounds(bounds, 0, 0, safeBottom, 0)
   }, [mapInstance, places])
 
   const resetState = useCallback(() => {
@@ -138,6 +149,7 @@ export function usePlaceSearch({
       mapInstance.setLevel(4)
       mapInstance.setCenter(new window.kakao.maps.LatLng(Number(place.y), Number(place.x)))
       if (bottomOffsetRef.current > 0) {
+        // 드로어로 가려진 영역을 고려해 가시 영역의 중심을 보정
         mapInstance.panBy(0, bottomOffsetRef.current / 2)
       }
     },

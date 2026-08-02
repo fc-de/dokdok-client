@@ -187,7 +187,8 @@ function DrawerHandle({
     const delta = dragState.current.startY - e.clientY
     let finalHeight = clamp(dragState.current.startHeight + delta)
 
-    if (maxHeightPx !== undefined && finalHeight >= maxHeightPx * expandThreshold) {
+    // 위로 드래그한 경우에만 자동 확장 스냅을 적용
+    if (delta > 0 && maxHeightPx !== undefined && finalHeight >= maxHeightPx * expandThreshold) {
       finalHeight = maxHeightPx
     }
 
@@ -212,7 +213,7 @@ function DrawerHandle({
         isDraggable && 'cursor-grab active:cursor-grabbing touch-none',
         className
       )}
-      style={{ height: '26px' }}
+      style={{ height: HANDLE_HEIGHT }}
       {...(isDraggable && {
         onPointerDown: handlePointerDown,
         onPointerMove: handlePointerMove,

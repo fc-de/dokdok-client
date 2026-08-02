@@ -377,12 +377,12 @@ export default function MeetingCreatePage() {
                           value={startDate}
                           onChange={setStartDate}
                           placeholder="날짜 선택"
-                          className="md:max-w-none"
+                          className="lg:max-w-none"
                           disabled={getStartDateDisabled()}
                         />
                         <TimePicker
                           placeholder="시간 선택"
-                          className="md:max-w-none"
+                          className="lg:max-w-none"
                           value={startTime ?? ''}
                           onValueChange={setStartTime}
                         >
@@ -403,13 +403,13 @@ export default function MeetingCreatePage() {
                           value={endDate}
                           onChange={setEndDate}
                           placeholder="날짜 선택"
-                          className="md:max-w-none"
+                          className="lg:max-w-none"
                           disabled={getEndDateDisabled()}
                           isDisabled={!startDate || !startTime}
                         />
                         <TimePicker
                           placeholder="시간 선택"
-                          className="md:max-w-none"
+                          className="lg:max-w-none"
                           value={endTime ?? ''}
                           onValueChange={setEndTime}
                           disabled={!endDate || !startDate || !startTime}
