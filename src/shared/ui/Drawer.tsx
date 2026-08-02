@@ -182,6 +182,8 @@ function DrawerHandle({
     contentRef.current.style.setProperty('--drawer-snap-height', `${newHeight}px`)
   }
 
+  const pendingDragHeight = React.useRef<number | null>(null)
+
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!dragState.current || !contentRef?.current) return
     const delta = dragState.current.startY - e.clientY
@@ -192,17 +194,38 @@ function DrawerHandle({
       finalHeight = maxHeightPx
     }
 
-    // vaul의 transition 복구 (이후 snap 애니메이션에 사용)
-    contentRef.current.style.transition = ''
     dragState.current = null
+
+    // 위치 변화 없으면 state 업데이트가 일어나지 않아 useLayoutEffect가 실행되지 않으므로 즉시 복구
+    if (finalHeight === currentHeightPx) {
+      contentRef.current.style.transition = ''
+      onDragEnd?.(finalHeight)
+      return
+    }
+
+    // transition은 아래 useLayoutEffect에서 복구 —
+    // onDragEnd로 커밋된 새 activeSnapPoint를 vaul이 처리한 뒤 복구해야
+    // 이전 snap point 기준 트랜지션으로 인한 점프를 방지할 수 있음
+    pendingDragHeight.current = finalHeight
     onDragEnd?.(finalHeight)
   }
+
+  // currentHeightPx(= activeSnapPoint)가 드래그 완료 높이로 갱신된 시점에 transition 복구.
+  // useLayoutEffect는 paint 전 동기 실행 → vaul이 트랜지션을 계산하기 전에 안전하게 복구됨
+  React.useLayoutEffect(() => {
+    if (pendingDragHeight.current === null || !contentRef?.current) return
+    if (currentHeightPx === pendingDragHeight.current) {
+      contentRef.current.style.transition = ''
+      pendingDragHeight.current = null
+    }
+  }, [currentHeightPx, contentRef])
 
   const handlePointerCancel = () => {
     if (!contentRef?.current) return
     // cancel 이벤트에서는 clientY가 유효하지 않으므로 높이를 재계산하지 않고 transition만 복구
     contentRef.current.style.transition = ''
     dragState.current = null
+    pendingDragHeight.current = null
   }
 
   return (
