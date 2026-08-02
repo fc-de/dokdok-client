@@ -1,3 +1,4 @@
+import AiGradientIcon from '@/shared/assets/icon/ai-gradient.svg'
 import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui'
 
@@ -14,6 +15,7 @@ export default function MobileBottomCTA({
   onClick,
   disabled = false,
   loading = false,
+  variant = 'default',
   preview = false,
   className,
 }: MobileBottomCTAProps) {
@@ -29,12 +31,20 @@ export default function MobileBottomCTA({
       <Button
         type="button"
         size="large"
+        variant={variant === 'ai' ? 'ai' : 'primary'}
         className="w-full"
         onClick={onClick}
         disabled={disabled || loading}
         aria-busy={loading}
       >
-        {loading ? loadingLabel : label}
+        {loading ? (
+          loadingLabel
+        ) : (
+          <span className="flex items-center gap-2">
+            {variant === 'ai' && <img src={AiGradientIcon} alt="" aria-hidden className="size-7" />}
+            {label}
+          </span>
+        )}
       </Button>
     </div>
   )
