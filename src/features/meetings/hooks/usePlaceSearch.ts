@@ -90,9 +90,7 @@ export function usePlaceSearch({
     // 하단 패딩이 지도 높이를 덮으면 가용 영역이 0이 되므로 상한을 둡니다.
     const mapHeight = mapContainerHeightRef.current
     const safeBottom =
-      mapHeight > 0
-        ? Math.min(bottomOffsetRef.current, mapHeight * 0.6)
-        : bottomOffsetRef.current
+      mapHeight > 0 ? Math.min(bottomOffsetRef.current, mapHeight * 0.6) : bottomOffsetRef.current
     mapInstance.setBounds(bounds, 0, 0, safeBottom, 0)
   }, [mapInstance, places])
 
