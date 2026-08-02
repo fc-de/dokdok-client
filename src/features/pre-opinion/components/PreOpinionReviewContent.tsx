@@ -47,7 +47,7 @@ function PreOpinionReviewContent({
   topics,
 }: PreOpinionReviewContentProps) {
   return (
-    <div className="flex flex-col gap-xlarge">
+    <div className="flex flex-col gap-xlarge max-lg:gap-0">
       {/* 책 평가 섹션 (별점 + 키워드) */}
       <section className="flex flex-col gap-small">
         {/* 별점 */}
@@ -88,22 +88,34 @@ function PreOpinionReviewContent({
         )}
       </section>
 
+      {/* 모바일: 책 평가 - 주제별 의견 구분 바 */}
+      {topics.length > 0 && (
+        <div className="hidden h-2.5 bg-grey-100 max-lg:my-large max-lg:-mx-5 max-lg:block" />
+      )}
+
       {/* 주제별 의견 섹션 */}
       {topics.length > 0 && (
-        <section className="flex flex-col gap-[32px]">
+        <section className="flex flex-col gap-[32px] max-lg:gap-0 max-lg:divide-y max-lg:divide-grey-300">
           {topics.map((topic) => (
-            <div key={topic.topicId} className="flex flex-col">
+            <div
+              key={topic.topicId}
+              className="flex flex-col max-lg:pt-large max-lg:pb-large max-lg:first:pt-0 max-lg:last:pb-0"
+            >
               <div className="flex flex-col gap-small">
                 <div className="flex gap-xsmall items-center">
-                  <h4 className="typo-subtitle3 text-black">
+                  <h4 className="typo-subtitle3 text-black break-all min-w-0">
                     주제 {topic.confirmOrder}. {topic.title}
                   </h4>
-                  <Badge>{topic.topicTypeLabel}</Badge>
+                  <Badge className="shrink-0">{topic.topicTypeLabel}</Badge>
                 </div>
-                <p className="typo-body4 text-grey-600 whitespace-pre-line">{topic.description}</p>
+                <p className="typo-body4 text-grey-600 whitespace-pre-line break-all">
+                  {topic.description}
+                </p>
               </div>
               {topic.content && (
-                <p className="typo-body1 text-black mt-base whitespace-pre-line">{topic.content}</p>
+                <p className="typo-body1 text-black mt-base whitespace-pre-line break-all">
+                  {topic.content}
+                </p>
               )}
             </div>
           ))}

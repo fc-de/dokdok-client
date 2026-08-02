@@ -61,12 +61,27 @@ export default function PreOpinionListPage() {
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader className="max-lg:hidden" />
-      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5 max-lg:pb-10">
+
+      {/* 모바일: 스크롤 시 헤더 아래로 고정되는 멤버 아바타 리스트 (배경 투명) */}
+      {data && (
+        <div className="sticky top-mobile-header-height z-40 bg-transparent lg:hidden">
+          <PreOpinionMemberList
+            variant="mobile"
+            members={data.members}
+            selectedMemberId={activeMemberId}
+            onSelectMember={setSelectedMemberId}
+          />
+        </div>
+      )}
+
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-0 max-lg:pb-10 max-lg:overflow-x-hidden">
         <h3 className="typo-heading3 text-black mt-large mb-6.75 max-lg:hidden">사전 의견</h3>
         <div className="flex gap-xlarge max-lg:flex-col max-lg:gap-base">
-          {/* 왼쪽: 멤버 리스트 */}
+          {/* 왼쪽: 멤버 리스트 (데스크탑) */}
           {data && (
             <PreOpinionMemberList
+              variant="desktop"
+              className="max-lg:hidden"
               members={data.members}
               selectedMemberId={activeMemberId}
               onSelectMember={setSelectedMemberId}

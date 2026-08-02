@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth'
 import { ROUTES } from '@/shared/constants/routes'
+import { useDevice } from '@/shared/hooks/useDevice'
 import { showToast } from '@/shared/lib/toast'
 import { Avatar, AvatarFallback, AvatarImage, TextButton } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -32,6 +33,7 @@ type PreOpinionDetailProps = {
 function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinionDetailProps) {
   const navigate = useNavigate()
   const { data: currentUser } = useAuth()
+  const { isMobile } = useDevice()
   const { openConfirm, openError } = useGlobalModalStore()
   const { bookReview, topicOpinions, memberInfo } = member
   const isMyOpinion = currentUser?.userId === memberInfo?.userId
@@ -39,8 +41,10 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
 
   const handleDelete = async () => {
     const confirmed = await openConfirm(
-      '내 의견 삭제하기',
-      '내 의견을 삭제하면 다른 멤버들의 의견을 보는 권한도 함께 사라져요.\n삭제를 진행할까요?',
+      isMobile ? '삭제를 진행할까요?' : '내 의견 삭제하기',
+      isMobile
+        ? '내 의견을 삭제하면 다른 멤버들의 의견을\n보는 권한도 함께 사라져요.'
+        : '내 의견을 삭제하면 다른 멤버들의 의견을 보는 권한도 함께 사라져요.\n삭제를 진행할까요?',
       { confirmText: '삭제', variant: 'danger' }
     )
     if (!confirmed) return
@@ -62,11 +66,11 @@ function PreOpinionDetail({ member, topics, gatheringId, meetingId }: PreOpinion
   })
 
   return (
-    <div className="flex flex-col gap-xlarge flex-1 mb-[100px]">
+    <div className="flex flex-col gap-xlarge max-lg:gap-small flex-1 mb-25 max-lg:mb-5">
       {/* 회원 정보 섹션 */}
       {memberInfo && (
-        <div className="flex justify-between items-center">
-          <div className="flex gap-base items-center">
+        <div className="flex justify-between items-center max-lg:justify-end">
+          <div className="flex gap-base items-center max-lg:hidden">
             <Avatar variant={ROLE_TO_AVATAR_VARIANT[memberInfo.role]}>
               <AvatarImage src={memberInfo.profileImage} alt={memberInfo.nickname} />
               <AvatarFallback>{memberInfo.nickname[0]}</AvatarFallback>
