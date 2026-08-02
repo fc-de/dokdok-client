@@ -1,24 +1,19 @@
-/**
- * @file PlaceSearchModal.tsx
- * @description 장소 검색 모달 컴포넌트
- *
- * UI는 searchState 기준으로만 화면을 분기합니다.
- * 모든 상태 관리와 비동기 로직은 usePlaceSearch 훅에서 처리합니다.
- */
+// PC: Radix Dialog / Mobile: 전체화면 + vaul Drawer
+// Mobile에서 Radix Dialog를 쓰지 않는 이유: vaul과의 aria-hidden/inert 충돌 방지
 
 import { Map, MapMarker, ZoomControl } from '@/features/kakaomap'
 import PlaceList from '@/features/meetings/components/PlaceList'
 import PlaceListSkeleton from '@/features/meetings/components/PlaceListSkeleton'
 import { usePlaceSearch } from '@/features/meetings/hooks'
+import { useDevice } from '@/shared/hooks'
 import { cn } from '@/shared/lib/utils'
 import { Modal, ModalBody, ModalContent, ModalHeader, ModalTitle, SearchField } from '@/shared/ui'
 
+import PlaceSearchMobileView from './PlaceSearchMobileView'
+
 export type PlaceSearchModalProps = {
-  /** 모달 열림 상태 */
   open: boolean
-  /** 모달 열림 상태 변경 핸들러 */
   onOpenChange: (open: boolean) => void
-  /** 장소 선택 핸들러 */
   onSelectPlace: (place: {
     name: string
     address: string
@@ -27,11 +22,13 @@ export type PlaceSearchModalProps = {
   }) => void
 }
 
-export default function PlaceSearchModal({
-  open,
-  onOpenChange,
-  onSelectPlace,
-}: PlaceSearchModalProps) {
+export default function PlaceSearchModal(props: PlaceSearchModalProps) {
+  const { isMobile } = useDevice()
+  if (isMobile) return <PlaceSearchMobileView {...props} />
+  return <PlaceSearchPCModal {...props} />
+}
+
+function PlaceSearchPCModal({ open, onOpenChange, onSelectPlace }: PlaceSearchModalProps) {
   const {
     searchState,
     errorMessage,
@@ -62,9 +59,7 @@ export default function PlaceSearchModal({
             onKeyDown={handleKeyDown}
           />
 
-          {/* 지도 + 리스트 영역
-              isMapMounted: 첫 검색 전 / 에러는 마운트하지 않음
-              isMapVisible: noResults일 때 Map 인스턴스를 유지한 채 CSS로만 숨김 */}
+          {/* noResults 시 Map 인스턴스를 hidden으로만 숨겨 재검색 시 재초기화를 방지 */}
           {isMapMounted && (
             <div className={cn('flex gap-base h-95 flex-1 pb-large', !isMapVisible && 'hidden')}>
               <Map
@@ -89,8 +84,7 @@ export default function PlaceSearchModal({
                   </MapMarker>
                 ))}
               </Map>
-
-              <div className="flex flex-col shrink-0 w-[390px]">
+              <div className="flex flex-col shrink-0 w-97.5">
                 {searchState === 'searching' ? (
                   <PlaceListSkeleton />
                 ) : (
@@ -104,14 +98,11 @@ export default function PlaceSearchModal({
             </div>
           )}
 
-          {/* 검색 결과 없음 */}
           {searchState === 'noResults' && (
             <div className="h-95 flex items-center justify-center">
               <p className="text-grey-600 typo-body3">검색 결과가 없습니다</p>
             </div>
           )}
-
-          {/* SDK 오류 또는 검색 오류 */}
           {searchState === 'error' && (
             <div className="h-95 flex items-center justify-center">
               <p className="text-red-500 typo-body3">{errorMessage}</p>

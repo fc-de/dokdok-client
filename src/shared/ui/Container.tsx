@@ -43,7 +43,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(function Cont
 
 function Title({ className, children, required, errorMessage, infoMessage, badge }: TitleProps) {
   return (
-    <div className="flex flex-col gap-medium">
+    <div className="flex flex-col gap-medium max-lg:gap-small">
       {infoMessage && (
         <div className="flex gap-tiny text-purple-200 typo-m-caption1">
           <FilledInfoIcon size={18} />
@@ -52,7 +52,7 @@ function Title({ className, children, required, errorMessage, infoMessage, badge
       )}
       <div className="flex justify-between">
         <div className="flex items-center gap-xsmall">
-          <h3 className={cn('typo-heading3', className)}>
+          <h3 className={cn('typo-heading3 max-lg:typo-subtitle3', className)}>
             {children}
             {required && (
               <span

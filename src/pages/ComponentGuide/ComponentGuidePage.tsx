@@ -62,7 +62,6 @@ import {
   TabsTrigger,
   Textarea,
   TextButton,
-  type TimeOption,
   TimePicker,
   Tooltip,
   TooltipContent,
@@ -1582,7 +1581,7 @@ function DatePickerSection() {
   )
 }
 
-const SAMPLE_TIME_OPTIONS: TimeOption[] = Array.from({ length: 12 }, (_, i) => {
+const SAMPLE_TIME_OPTIONS = Array.from({ length: 12 }, (_, i) => {
   const hour = String(9 + Math.floor(i / 2)).padStart(2, '0')
   const minute = i % 2 === 0 ? '00' : '30'
   return { value: `${hour}:${minute}`, label: `${hour}:${minute}` }
@@ -1602,55 +1601,76 @@ function TimePickerSection() {
         title="기본 사용"
         code={`const [time, setTime] = useState('')
 
-<TimePicker
-  options={timeOptions}
-  value={time}
-  onValueChange={setTime}
-/>`}
+<TimePicker value={time} onValueChange={setTime}>
+  {timeOptions.map((o) => (
+    <TimePicker.Time key={o.value} value={o.value}>{o.label}</TimePicker.Time>
+  ))}
+</TimePicker>`}
       >
-        <TimePicker options={SAMPLE_TIME_OPTIONS} value={time1} onValueChange={setTime1} />
+        <TimePicker value={time1} onValueChange={setTime1}>
+          {SAMPLE_TIME_OPTIONS.map((o) => (
+            <TimePicker.Time key={o.value} value={o.value}>
+              {o.label}
+            </TimePicker.Time>
+          ))}
+        </TimePicker>
       </Showcase>
 
       <Showcase
         title="기본 값 포함"
         code={`const [time, setTime] = useState('10:00')
 
-<TimePicker
-  options={timeOptions}
-  value={time}
-  onValueChange={setTime}
-/>`}
+<TimePicker value={time} onValueChange={setTime}>
+  {timeOptions.map((o) => (
+    <TimePicker.Time key={o.value} value={o.value}>{o.label}</TimePicker.Time>
+  ))}
+</TimePicker>`}
       >
-        <TimePicker options={SAMPLE_TIME_OPTIONS} value={time2} onValueChange={setTime2} />
+        <TimePicker value={time2} onValueChange={setTime2}>
+          {SAMPLE_TIME_OPTIONS.map((o) => (
+            <TimePicker.Time key={o.value} value={o.value}>
+              {o.label}
+            </TimePicker.Time>
+          ))}
+        </TimePicker>
       </Showcase>
 
       <Showcase
         title="비활성화"
-        code={`<TimePicker
-  options={timeOptions}
-  value=""
-  onValueChange={() => {}}
-  disabled
-/>`}
+        code={`<TimePicker value="" onValueChange={() => {}} disabled>
+  {timeOptions.map((o) => (
+    <TimePicker.Time key={o.value} value={o.value}>{o.label}</TimePicker.Time>
+  ))}
+</TimePicker>`}
       >
-        <TimePicker options={SAMPLE_TIME_OPTIONS} value="" onValueChange={() => {}} disabled />
+        <TimePicker value="" onValueChange={() => {}} disabled>
+          {SAMPLE_TIME_OPTIONS.map((o) => (
+            <TimePicker.Time key={o.value} value={o.value}>
+              {o.label}
+            </TimePicker.Time>
+          ))}
+        </TimePicker>
       </Showcase>
 
       <Showcase
         title="커스텀 플레이스홀더"
-        code={`<TimePicker
-  options={timeOptions}
-  value={time}
-  onValueChange={setTime}
-  placeholder="시작 시간을 선택하세요"
-/>`}
+        code={`<TimePicker value={time} onValueChange={setTime} placeholder="시작 시간을 선택하세요">
+  {timeOptions.map((o) => (
+    <TimePicker.Time key={o.value} value={o.value}>{o.label}</TimePicker.Time>
+  ))}
+</TimePicker>`}
       >
         <TimePicker
-          options={SAMPLE_TIME_OPTIONS}
           value={placeholderTime}
           onValueChange={setPlaceholderTime}
           placeholder="시작 시간을 선택하세요"
-        />
+        >
+          {SAMPLE_TIME_OPTIONS.map((o) => (
+            <TimePicker.Time key={o.value} value={o.value}>
+              {o.label}
+            </TimePicker.Time>
+          ))}
+        </TimePicker>
       </Showcase>
     </Section>
   )

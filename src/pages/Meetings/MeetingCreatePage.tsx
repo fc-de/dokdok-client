@@ -227,7 +227,7 @@ export default function MeetingCreatePage() {
       ? '약속을 수정하시겠습니까?'
       : isLeader
         ? '약속을 생성하시겠습니까?'
-        : '이대로 약속을 신청할까요?'
+        : '모임장이 승인하면 약속이 만들어질 거예요.'
     const confirmed = await openConfirm(confirmTitle, confirmMessage)
     if (!confirmed) return
 
@@ -244,228 +244,244 @@ export default function MeetingCreatePage() {
   const actionLabel = isSubmitting ? '...' : isEditMode ? '수정하기' : '만들기'
 
   return (
-    <MobileLayoutFrame
-      variant="header"
-      title={pageTitle}
-      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
-      bottomCTA={{
-        label: isEditMode ? '수정하기' : '만들기',
-        loadingLabel: '처리 중...',
-        onClick: handleSubmit,
-        disabled: isSubmitting || isLoading,
-        loading: isSubmitting,
-      }}
-      className="min-h-dvh lg:min-h-0"
-    >
-      <FormPageHeader
+    <>
+      <MobileLayoutFrame
+        variant="header"
         title={pageTitle}
-        actionLabel={actionLabel}
-        onAction={handleSubmit}
-        isActionDisabled={isSubmitting || isLoading}
-        className="max-lg:hidden"
-      />
-      <div className="bg-grey-100 max-lg:min-h-dvh">
-        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
-          <div className="flex flex-col gap-base py-xlarge max-lg:py-5">
-            {!isEditMode && (
-              <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
-                <p className="typo-caption1">작성한 내용은 모임장의 승인 후 약속으로 등록돼요.</p>
-              </Card>
-            )}
+        leftAction={{ type: 'close', onClick: () => navigate(-1) }}
+        bottomCTA={{
+          label: isEditMode ? '수정하기' : '만들기',
+          loadingLabel: '처리 중...',
+          onClick: handleSubmit,
+          disabled: isSubmitting || isLoading,
+          loading: isSubmitting,
+        }}
+        className="min-h-dvh lg:min-h-0"
+      >
+        <FormPageHeader
+          title={pageTitle}
+          actionLabel={actionLabel}
+          onAction={handleSubmit}
+          isActionDisabled={isSubmitting || isLoading}
+          className="max-lg:hidden"
+        />
+        <div className="bg-grey-100 max-lg:min-h-dvh">
+          <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
+            <div className="flex flex-col gap-base py-xlarge max-lg:py-5">
+              {!isEditMode && (
+                <Card className="border-primary-200 bg-primary-100 text-primary-400 px-small py-[10px] rounded-small">
+                  <p className="typo-caption1">작성한 내용은 모임장의 승인 후 약속으로 등록돼요.</p>
+                </Card>
+              )}
 
-            <Container>
-              <Container.Title className="typo-subtitle3">약속명</Container.Title>
-              <Container.Content>
-                <Input
-                  maxLength={24}
-                  placeholder="약속명을 입력해 주세요. 미입력 시 책 제목으로 자동 등록돼요."
-                  value={meetingName ?? ''}
-                  onChange={(e) => setMeetingName(e.target.value)}
-                />
-              </Container.Content>
-            </Container>
+              <Container>
+                <Container.Title className="typo-subtitle3">약속명</Container.Title>
+                <Container.Content>
+                  <Input
+                    maxLength={24}
+                    placeholder="약속명을 입력해 주세요. 미입력 시 책 제목으로 자동 등록돼요."
+                    value={meetingName ?? ''}
+                    onChange={(e) => setMeetingName(e.target.value)}
+                  />
+                </Container.Content>
+              </Container>
 
-            <Container>
-              <Container.Title
-                required
-                className="typo-subtitle3"
-                errorMessage={isEditMode ? '도서는 수정이 불가합니다.' : undefined}
-              >
-                도서
-              </Container.Title>
-              <Container.Content>
-                <div className="flex flex-col gap-medium">
-                  {bookThumbnail && bookName && bookAuthors && (
-                    <Card className="rounded-small py-base px-medium bg-gray-100 border-none flex gap-small items-center">
-                      <div className="w-[70px] h-[100px] overflow-hidden rounded">
-                        <img
-                          src={bookThumbnail}
-                          alt={bookName}
-                          className="object-cover w-full h-full"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-xtiny">
-                        <p className="typo-subtitle5 text-black">{bookName}</p>
-                        <p className="typo-body4 text-grey-800">{bookAuthors}</p>
-                      </div>
+              <Container>
+                <Container.Title
+                  required
+                  className="typo-subtitle3"
+                  errorMessage={isEditMode ? '도서는 수정이 불가합니다.' : undefined}
+                >
+                  도서
+                </Container.Title>
+                <Container.Content>
+                  <div className="flex flex-col gap-medium">
+                    {bookThumbnail && bookName && bookAuthors && (
+                      <Card className="rounded-small py-base px-medium max-lg:px-base max-lg:py-[14px] bg-gray-100 border-none flex gap-small items-center">
+                        <div className="w-[70px] h-[100px] overflow-hidden rounded">
+                          <img
+                            src={bookThumbnail}
+                            alt={bookName}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-xtiny">
+                          <p className="typo-subtitle5 text-black">{bookName}</p>
+                          <p className="typo-body4 text-grey-800">{bookAuthors}</p>
+                        </div>
+                      </Card>
+                    )}
+                    {!isEditMode && (
+                      <Button
+                        ref={bookButtonRef}
+                        outline
+                        variant="secondary"
+                        className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
+                        onClick={() => setIsBookSearchOpen(true)}
+                      >
+                        <Search size={18} className="text-grey-600 mr-tiny" />
+                        <span className="typo-subtitle5">도서 검색</span>
+                      </Button>
+                    )}
+                  </div>
+                  {errors?.bookId && (
+                    <p className="mt-tiny text-accent-300 text-body3">{errors.bookId}</p>
+                  )}
+                </Container.Content>
+              </Container>
+
+              <Container>
+                <Container.Title className="typo-subtitle3">장소</Container.Title>
+                <Container.Content>
+                  {locationAddress && locationName && (
+                    <Card className="border-none p-base bg-grey-100 rounded-small text-grey-700 typo-body1 mb-xsmall max-lg:px-base max-lg:py-[14px]">
+                      <p className="text-black typo-subtitle3 mb-xtiny">{locationName}</p>
+                      <p className="typo-body3 text-grey-600">{locationAddress}</p>
                     </Card>
                   )}
-                  {!isEditMode && (
-                    <Button
-                      ref={bookButtonRef}
-                      outline
-                      variant="secondary"
-                      className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
-                      onClick={() => setIsBookSearchOpen(true)}
-                    >
-                      <Search size={18} className="text-grey-600 mr-tiny" />
-                      <span className="typo-subtitle5">도서 검색</span>
-                    </Button>
+                  <Button
+                    outline
+                    variant="secondary"
+                    className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
+                    onClick={() => setIsPlaceSearchOpen(true)}
+                  >
+                    <Search size={18} className="text-grey-600 mr-tiny" />
+                    <span className="typo-subtitle5">장소 검색</span>
+                  </Button>
+
+                  {errors?.location && (
+                    <p className="text-accent-300 text-body3 mt-xtiny">{errors.location}</p>
                   )}
-                </div>
-                {errors?.bookId && (
-                  <p className="mt-tiny text-accent-300 text-body3">{errors.bookId}</p>
-                )}
-              </Container.Content>
-            </Container>
+                </Container.Content>
+              </Container>
 
-            <Container>
-              <Container.Title className="typo-subtitle3">장소</Container.Title>
-              <Container.Content>
-                {locationAddress && locationName && (
-                  <Card className="border-none p-base bg-grey-100 rounded-small text-grey-700 typo-body1 mb-xsmall">
-                    <p className="text-black typo-subtitle5 mb-xtiny">{locationName}</p>
-                    <p className="typo-body3 text-grey-600">{locationAddress}</p>
-                  </Card>
-                )}
-                <Button
-                  outline
-                  variant="secondary"
-                  className="w-full text-black bg-white px-[14px] h-[44px] border-grey-300"
-                  onClick={() => setIsPlaceSearchOpen(true)}
-                >
-                  <Search size={18} className="text-grey-600 mr-tiny" />
-                  <span className="typo-subtitle5">장소 검색</span>
-                </Button>
-
-                {errors?.location && (
-                  <p className="text-accent-300 text-body3 mt-xtiny">{errors.location}</p>
-                )}
-              </Container.Content>
-            </Container>
-
-            <Container>
-              <Container.Title required className="typo-subtitle3">
-                날짜 및 시간
-              </Container.Title>
-              <Container.Content>
-                <div className="flex flex-col gap-xtiny">
-                  <div className="flex flex-col md:flex-row md:items-center">
-                    <div className="flex-1">
-                      <span className="text-grey-600 typo-body4">시작 일정</span>
+              <Container>
+                <Container.Title required className="typo-subtitle3">
+                  날짜 및 시간
+                </Container.Title>
+                <Container.Content>
+                  <div className="flex flex-col gap-xtiny max-lg:gap-tiny">
+                    <div className="flex items-center max-lg:flex-col max-lg:items-start">
+                      <div className="flex-1">
+                        <span className="text-grey-600 typo-body4">시작 일정</span>
+                      </div>
+                      <div className="w-[calc(1rem+2*var(--spacing-xsmall))] shrink-0 max-lg:hidden" />
+                      <div className="flex-1 max-lg:hidden">
+                        <span className="text-grey-600 typo-body4">종료 일정</span>
+                      </div>
                     </div>
-                    <div className="hidden md:block md:w-[calc(1rem+2*var(--spacing-xsmall))] md:shrink-0" />
-                    <div className="flex-1 hidden md:block">
-                      <span className="text-grey-600 typo-body4">종료 일정</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col md:flex-row md:items-center gap-xsmall">
-                    <div className="flex gap-xsmall md:flex-1">
-                      <DatePicker
-                        ref={startDateRef}
-                        value={startDate}
-                        onChange={setStartDate}
-                        placeholder="날짜 선택"
-                        className="md:max-w-none"
-                        disabled={getStartDateDisabled()}
-                      />
-                      <TimePicker
-                        className="md:max-w-none"
-                        options={timeOptions}
-                        value={startTime ?? ''}
-                        onValueChange={setStartTime}
-                      />
-                    </div>
-                    <span className="hidden md:block md:px-xsmall md:shrink-0">~</span>
-                    <span className="md:hidden text-grey-600 typo-body4">종료 일정</span>
-                    <div className="flex gap-xsmall md:flex-1">
-                      <DatePicker
-                        ref={endDateRef}
-                        value={endDate}
-                        onChange={setEndDate}
-                        placeholder="날짜 선택"
-                        className="md:max-w-none"
-                        disabled={getEndDateDisabled()}
-                        isDisabled={!startDate || !startTime}
-                      />
-                      <TimePicker
-                        className="md:max-w-none"
-                        options={getEndTimeOptions()}
-                        value={endTime ?? ''}
-                        onValueChange={setEndTime}
-                        disabled={!endDate || !startDate || !startTime}
-                      />
+                    <div className="flex items-center gap-xsmall max-lg:flex-col max-lg:items-stretch">
+                      <div className="flex flex-1 gap-xsmall max-lg:flex-col max-lg:gap-tiny">
+                        <DatePicker
+                          ref={startDateRef}
+                          value={startDate}
+                          onChange={setStartDate}
+                          placeholder="날짜 선택"
+                          className="md:max-w-none"
+                          disabled={getStartDateDisabled()}
+                        />
+                        <TimePicker
+                          placeholder="시간 선택"
+                          className="md:max-w-none"
+                          value={startTime ?? ''}
+                          onValueChange={setStartTime}
+                        >
+                          {timeOptions.map((option) => (
+                            <TimePicker.Time key={option.value} value={option.value}>
+                              {option.label}
+                            </TimePicker.Time>
+                          ))}
+                        </TimePicker>
+                      </div>
+                      <span className="px-xsmall shrink-0 max-lg:hidden">~</span>
+                      <span className="hidden max-lg:block text-grey-600 typo-body4">
+                        종료 일정
+                      </span>
+                      <div className="flex flex-1 gap-xsmall max-lg:flex-col max-lg:gap-tiny">
+                        <DatePicker
+                          ref={endDateRef}
+                          value={endDate}
+                          onChange={setEndDate}
+                          placeholder="날짜 선택"
+                          className="md:max-w-none"
+                          disabled={getEndDateDisabled()}
+                          isDisabled={!startDate || !startTime}
+                        />
+                        <TimePicker
+                          placeholder="시간 선택"
+                          className="md:max-w-none"
+                          value={endTime ?? ''}
+                          onValueChange={setEndTime}
+                          disabled={!endDate || !startDate || !startTime}
+                        >
+                          {getEndTimeOptions().map((option) => (
+                            <TimePicker.Time key={option.value} value={option.value}>
+                              {option.label}
+                            </TimePicker.Time>
+                          ))}
+                        </TimePicker>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* 시작일정, 종료일정 선택 완료되면 노출*/}
-                {formattedSchedule && (
-                  <Card className="flex border-none p-base bg-grey-100 rounded-small mt-medium gap-small">
-                    <p className="text-grey-600 typo-body4">선택된 일정</p>
-                    <p className="text-black typo-body4">{formattedSchedule}</p>
-                  </Card>
-                )}
-                {errors?.schedule && (
-                  <p className="text-accent-300 text-body3 mt-xtiny">{errors.schedule}</p>
-                )}
-              </Container.Content>
-            </Container>
+                  {/* 시작일정, 종료일정 선택 완료되면 노출*/}
+                  {formattedSchedule && (
+                    <Card className="flex border-none p-base bg-grey-100 rounded-small mt-medium gap-small max-lg:hidden">
+                      <p className="text-grey-600 typo-body4">선택된 일정</p>
+                      <p className="text-black typo-body4">{formattedSchedule}</p>
+                    </Card>
+                  )}
+                  {errors?.schedule && (
+                    <p className="text-accent-300 text-body3 mt-xtiny">{errors.schedule}</p>
+                  )}
+                </Container.Content>
+              </Container>
 
-            <Container>
-              <Container.Title className="typo-subtitle3">참가 인원</Container.Title>
-              <Container.Content>
-                <Input
-                  ref={maxParticipantsRef}
-                  type="number"
-                  placeholder="참가 인원을 작성해주세요"
-                  helperText={
-                    errors?.maxParticipants
-                      ? undefined
-                      : `현재 모임의 전체 멤버 수는 ${gatheringMaxCount}명이에요. 최대 ${gatheringMaxCount}명까지 참가 가능해요.`
-                  }
-                  error={!!errors?.maxParticipants}
-                  errorMessage={errors?.maxParticipants ?? undefined}
-                  value={maxParticipants ?? ''}
-                  onChange={(e) => setMaxParticipants(e.target.value)}
-                  onWheel={(e) => e.currentTarget.blur()}
-                  min={1}
-                  max={gatheringMaxCount}
+              <Container>
+                <Container.Title className="typo-subtitle3">참가 인원</Container.Title>
+                <Container.Content>
+                  <Input
+                    ref={maxParticipantsRef}
+                    type="number"
+                    placeholder="참가 인원을 작성해주세요"
+                    helperText={
+                      errors?.maxParticipants
+                        ? undefined
+                        : `현재 모임의 전체 멤버 수는 ${gatheringMaxCount}명이에요. 최대 ${gatheringMaxCount}명까지 참가 가능해요.`
+                    }
+                    error={!!errors?.maxParticipants}
+                    errorMessage={errors?.maxParticipants ?? undefined}
+                    value={maxParticipants ?? ''}
+                    onChange={(e) => setMaxParticipants(e.target.value)}
+                    onWheel={(e) => e.currentTarget.blur()}
+                    min={1}
+                    max={gatheringMaxCount}
+                  />
+                </Container.Content>
+              </Container>
+
+              {!isEditMode && isBookSearchOpen && (
+                <BookSearchModal
+                  open={isBookSearchOpen}
+                  onOpenChange={setIsBookSearchOpen}
+                  onSelectBook={(book) => setBook(book)}
                 />
-              </Container.Content>
-            </Container>
-
-            {isPlaceSearchOpen && (
-              <PlaceSearchModal
-                open={isPlaceSearchOpen}
-                onOpenChange={setIsPlaceSearchOpen}
-                onSelectPlace={(place) => {
-                  setLocationName(place.name)
-                  setLocationAddress(place.address)
-                  setLatitude(place.latitude)
-                  setLongitude(place.longitude)
-                }}
-              />
-            )}
-            {!isEditMode && isBookSearchOpen && (
-              <BookSearchModal
-                open={isBookSearchOpen}
-                onOpenChange={setIsBookSearchOpen}
-                onSelectBook={(book) => setBook(book)}
-              />
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </MobileLayoutFrame>
+      </MobileLayoutFrame>
+      {isPlaceSearchOpen && (
+        <PlaceSearchModal
+          open={isPlaceSearchOpen}
+          onOpenChange={setIsPlaceSearchOpen}
+          onSelectPlace={(place) => {
+            setLocationName(place.name)
+            setLocationAddress(place.address)
+            setLatitude(place.latitude)
+            setLongitude(place.longitude)
+          }}
+        />
+      )}
+    </>
   )
 }
