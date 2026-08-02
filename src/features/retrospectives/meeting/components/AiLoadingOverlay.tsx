@@ -18,8 +18,8 @@ export default function AiLoadingOverlay({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="flex w-lg flex-col items-center justify-center gap-small rounded-small bg-grey-100 p-medium shadow-drop">
-        <div className="flex animate-pulse flex-col items-center justify-center gap-tiny">
+      <div className="flex w-lg flex-col items-center justify-center gap-small rounded-small bg-grey-100 p-medium shadow-drop max-lg:w-[calc(100%-40px)] max-lg:max-w-75 max-lg:gap-3 max-lg:rounded-small max-lg:bg-white max-lg:p-5">
+        <div className="flex animate-pulse flex-col items-center justify-center gap-tiny max-lg:gap-1.5">
           <img src={aiGradientIcon} alt="요약중 아이콘" className="size-6" />
           <p className="text-blue-200 typo-subtitle2">{message}</p>
         </div>
