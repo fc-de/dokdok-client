@@ -122,7 +122,10 @@ function DrawerBody({ className, ...props }: DrawerBodyProps) {
   return (
     <DrawerPrimitive.Content
       data-slot="drawer-body"
-      className={cn('min-h-0 flex-1 touch-auto overflow-y-auto custom-scroll overscroll-contain', className)}
+      className={cn(
+        'min-h-0 flex-1 touch-auto overflow-y-auto custom-scroll overscroll-contain',
+        className
+      )}
       {...props}
     />
   )

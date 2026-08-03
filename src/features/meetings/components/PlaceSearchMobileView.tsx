@@ -105,7 +105,8 @@ export default function PlaceSearchMobileView({
 
   const isExpanded = maxSnapPx !== null && snapPoint >= maxSnapPx
   const isDrawerOpen = searchState === 'hasResults' || searchState === 'searching'
-  const snapPoints = maxSnapPx !== null ? [DEFAULT_SNAP_PX, getMidSnapPx(maxSnapPx), maxSnapPx] : [DEFAULT_SNAP_PX]
+  const snapPoints =
+    maxSnapPx !== null ? [DEFAULT_SNAP_PX, getMidSnapPx(maxSnapPx), maxSnapPx] : [DEFAULT_SNAP_PX]
 
   const handleDrawerBodyWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (!isExpanded) return
