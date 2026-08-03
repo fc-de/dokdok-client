@@ -94,10 +94,13 @@ export interface ModalContentProps
  * </ModalContent>
  * ```
  */
-const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(function ModalContent(
-  { className, variant, mobileLayout = 'fullscreen', children, ...props },
-  ref
-) {
+function ModalContent({
+  className,
+  variant,
+  mobileLayout = 'fullscreen',
+  children,
+  ...props
+}: ModalContentProps) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay
@@ -109,7 +112,6 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(functio
         )}
       />
       <DialogPrimitive.Content
-        ref={ref}
         data-slot="modal-content"
         className={cn(
           modalContentVariants({ variant, className }),
@@ -123,7 +125,7 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(functio
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>
   )
-})
+}
 
 export interface ModalHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** 닫기 버튼 숨김 여부 */
