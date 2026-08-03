@@ -11,22 +11,25 @@ import { Drawer, SearchField } from '@/shared/ui'
 import type { PlaceSearchModalProps } from './PlaceSearchModal'
 
 const DEFAULT_SNAP_PX = 300
-const EXPAND_THRESHOLD = 0.85
+
+function getMidSnapPx(maxSnapPx: number) {
+  return Math.round((DEFAULT_SNAP_PX + maxSnapPx) / 2)
+}
 
 export default function PlaceSearchMobileView({
   open,
   onOpenChange,
   onSelectPlace,
 }: PlaceSearchModalProps) {
-  const [drawerHeight, setDrawerHeight] = useState(DEFAULT_SNAP_PX)
+  const [snapPoint, setSnapPoint] = useState<number>(DEFAULT_SNAP_PX)
   const [maxSnapPx, setMaxSnapPx] = useState<number | null>(null)
   const mapAreaRef = useRef<HTMLDivElement>(null)
 
   // ResizeObserver 콜백(async)에서 최신 state를 읽기 위한 ref
-  const drawerHeightRef = useRef(DEFAULT_SNAP_PX)
+  const snapPointRef = useRef(DEFAULT_SNAP_PX)
   const maxSnapPxRef = useRef<number | null>(null)
   useLayoutEffect(() => {
-    drawerHeightRef.current = drawerHeight
+    snapPointRef.current = snapPoint
     maxSnapPxRef.current = maxSnapPx
   })
 
@@ -48,11 +51,10 @@ export default function PlaceSearchMobileView({
     open,
     onOpenChange,
     onSelectPlace,
-    bottomOffset: drawerHeight,
+    bottomOffset: snapPoint,
     mapContainerHeight: maxSnapPx ?? undefined,
   })
 
-  // 지도 영역 크기를 추적해 Drawer가 올라갈 수 있는 최대 높이를 계산
   useLayoutEffect(() => {
     if (!open || !mapAreaRef.current) return
 
@@ -60,9 +62,17 @@ export default function PlaceSearchMobileView({
     const update = () => {
       const newMaxSnapPx = el.clientHeight
       if (newMaxSnapPx === maxSnapPxRef.current) return
-      const wasExpanded = drawerHeightRef.current === maxSnapPxRef.current
-      const overflows = drawerHeightRef.current > newMaxSnapPx
-      if (wasExpanded || overflows) setDrawerHeight(newMaxSnapPx)
+
+      // 리사이즈 전에 mid/max에 있었다면 새 mid/max로 따라가고, 화면을 벗어나면 새 max로 clamp
+      const oldMax = maxSnapPxRef.current
+      const oldMid = oldMax !== null ? getMidSnapPx(oldMax) : null
+      setSnapPoint((prev) => {
+        if (prev === oldMax) return newMaxSnapPx
+        if (prev === oldMid) return getMidSnapPx(newMaxSnapPx)
+        if (prev > newMaxSnapPx) return newMaxSnapPx
+        return prev
+      })
+
       maxSnapPxRef.current = newMaxSnapPx
       setMaxSnapPx(newMaxSnapPx)
     }
@@ -93,22 +103,20 @@ export default function PlaceSearchMobileView({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [open, handleClose])
 
-  const isExpanded = maxSnapPx !== null && drawerHeight >= maxSnapPx
-  // drawerHeight를 단일 스냅 포인트로 사용 — 드래그 후 state가 갱신되면 vaul이 동일 위치로 snap해 시각적 점프가 없음
-  const activeSnapPoint = `${drawerHeight}px`
-  const snapPoints: (string | number)[] = [activeSnapPoint]
+  const isExpanded = maxSnapPx !== null && snapPoint >= maxSnapPx
   const isDrawerOpen = searchState === 'hasResults' || searchState === 'searching'
+  const snapPoints = maxSnapPx !== null ? [DEFAULT_SNAP_PX, getMidSnapPx(maxSnapPx), maxSnapPx] : [DEFAULT_SNAP_PX]
 
   const handleDrawerBodyWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (!isExpanded) return
-    if (e.currentTarget.scrollTop === 0 && e.deltaY < 0) setDrawerHeight(DEFAULT_SNAP_PX)
+    if (e.currentTarget.scrollTop === 0 && e.deltaY < 0) setSnapPoint(DEFAULT_SNAP_PX)
   }
 
   if (!open) return null
 
   return (
     <>
-      {/* Radix Dialog 대신 일반 div를 사용해 vaul Drawer와의 aria-hidden/inert 충돌을 방지 */}
+      {/* Radix Dialog 대신 일반 div를 사용해 base-ui Drawer와의 aria-hidden/inert 충돌을 방지 */}
       <div
         role="dialog"
         aria-modal="true"
@@ -175,20 +183,12 @@ export default function PlaceSearchMobileView({
         open={isDrawerOpen}
         title="장소 검색 결과"
         snapPoints={snapPoints}
-        activeSnapPoint={activeSnapPoint}
-        setActiveSnapPoint={(sp) => {
-          if (sp == null) return
-          const h = typeof sp === 'number' ? sp : parseInt(sp as string, 10)
-          if (!isNaN(h)) setDrawerHeight(h)
-        }}
-        snapToSequentialPoint
+        snapPoint={snapPoint}
+        onSnapPointChange={(sp) => setSnapPoint(typeof sp === 'number' ? sp : parseInt(sp, 10))}
+        maxHeightPx={maxSnapPx ?? DEFAULT_SNAP_PX}
         isExpanded={isExpanded}
-        onHandleDragEnd={setDrawerHeight}
-        minHeightPx={DEFAULT_SNAP_PX}
-        maxHeightPx={maxSnapPx ?? undefined}
-        expandThreshold={EXPAND_THRESHOLD}
       >
-        <Drawer.Body dragEnabled={isExpanded} onWheel={handleDrawerBodyWheel}>
+        <Drawer.Body onWheel={handleDrawerBodyWheel}>
           {searchState === 'searching' ? (
             <PlaceListSkeleton className="overflow-y-visible" />
           ) : (
