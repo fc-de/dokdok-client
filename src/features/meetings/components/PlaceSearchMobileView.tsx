@@ -114,6 +114,8 @@ export default function PlaceSearchMobileView({
     if (!open) return
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // 한글 등 IME 조합 취소를 위한 Escape는 다이얼로그를 닫지 않는다
+        if (e.isComposing) return
         handleClose()
         return
       }
@@ -152,8 +154,14 @@ export default function PlaceSearchMobileView({
 
   const isExpanded = maxSnapPx !== null && snapPoint >= maxSnapPx
   const isDrawerOpen = searchState === 'hasResults' || searchState === 'searching'
+  // Drawer는 오름차순 snapPoints를 요구하므로, maxSnapPx가 기본 스냅 높이보다 작은
+  // 경우(작은 뷰포트, 키보드 오픈 등)에는 단일 스냅 포인트만 전달한다.
   const snapPoints =
-    maxSnapPx !== null ? [DEFAULT_SNAP_PX, getMidSnapPx(maxSnapPx), maxSnapPx] : [DEFAULT_SNAP_PX]
+    maxSnapPx === null
+      ? [DEFAULT_SNAP_PX]
+      : maxSnapPx <= DEFAULT_SNAP_PX
+        ? [maxSnapPx]
+        : [DEFAULT_SNAP_PX, getMidSnapPx(maxSnapPx), maxSnapPx]
 
   const handleDrawerBodyWheel = (e: React.WheelEvent<HTMLDivElement>) => {
     if (!isExpanded) return

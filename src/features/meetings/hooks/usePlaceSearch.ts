@@ -147,8 +147,8 @@ export function usePlaceSearch({
       mapInstance.setLevel(4)
       mapInstance.setCenter(new window.kakao.maps.LatLng(Number(place.y), Number(place.x)))
       if (bottomOffsetRef.current > 0) {
-        // 드로어로 가려진 영역을 고려해 가시 영역의 중심을 보정
-        mapInstance.panBy(0, bottomOffsetRef.current / 2)
+        // 드로어로 가려진 영역을 고려해 가시 영역의 중심을 보정 (위로 이동)
+        mapInstance.panBy(0, -bottomOffsetRef.current / 2)
       }
     },
     [mapInstance]
