@@ -12,8 +12,22 @@ import type { PlaceSearchModalProps } from './PlaceSearchModal'
 
 const DEFAULT_SNAP_PX = 300
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
 function getMidSnapPx(maxSnapPx: number) {
   return Math.round((DEFAULT_SNAP_PX + maxSnapPx) / 2)
+}
+
+// Drawer(Drawer.tsx)는 base-ui Portal로 document.body에 렌더링되어 dialog div와 DOM상
+// 형제 관계가 아니므로, 두 컨테이너의 포커스 가능 요소를 모아 수동으로 트랩 대상 목록을 만든다.
+function getFocusableElements(containers: (HTMLElement | null)[]) {
+  const elements: HTMLElement[] = []
+  containers.forEach((container) => {
+    if (!container) return
+    elements.push(...Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)))
+  })
+  return elements.filter((el) => el.offsetParent !== null)
 }
 
 export default function PlaceSearchMobileView({
@@ -24,6 +38,8 @@ export default function PlaceSearchMobileView({
   const [snapPoint, setSnapPoint] = useState<number>(DEFAULT_SNAP_PX)
   const [maxSnapPx, setMaxSnapPx] = useState<number | null>(null)
   const mapAreaRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null)
 
   // ResizeObserver 콜백(async)에서 최신 state를 읽기 위한 ref
   const snapPointRef = useRef(DEFAULT_SNAP_PX)
@@ -97,11 +113,42 @@ export default function PlaceSearchMobileView({
   useEffect(() => {
     if (!open) return
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose()
+      if (e.key === 'Escape') {
+        handleClose()
+        return
+      }
+      if (e.key !== 'Tab') return
+
+      // Drawer는 base-ui Portal로 body에 렌더링되어 dialogRef 바깥에 있으므로 함께 모아 트랩한다.
+      const drawerEl = document.querySelector<HTMLElement>('[data-slot="drawer"]')
+      const focusable = getFocusableElements([dialogRef.current, drawerEl])
+      if (focusable.length === 0) return
+
+      e.preventDefault()
+      const lastIndex = focusable.length - 1
+      const currentIndex = focusable.indexOf(document.activeElement as HTMLElement)
+      const nextIndex = e.shiftKey
+        ? currentIndex <= 0
+          ? lastIndex
+          : currentIndex - 1
+        : currentIndex === -1 || currentIndex === lastIndex
+          ? 0
+          : currentIndex + 1
+      focusable[nextIndex]?.focus()
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [open, handleClose])
+
+  // 다이얼로그가 열릴 때 트리거 요소를 기억해두고 내부로 포커스를 이동, 닫힐 때 복원한다.
+  useEffect(() => {
+    if (!open) return
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null
+    keywordRef.current?.focus()
+    return () => {
+      previouslyFocusedRef.current?.focus()
+    }
+  }, [open, keywordRef])
 
   const isExpanded = maxSnapPx !== null && snapPoint >= maxSnapPx
   const isDrawerOpen = searchState === 'hasResults' || searchState === 'searching'
@@ -119,6 +166,7 @@ export default function PlaceSearchMobileView({
     <>
       {/* Radix Dialog 대신 일반 div를 사용해 base-ui Drawer와의 aria-hidden/inert 충돌을 방지 */}
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="장소 검색"
