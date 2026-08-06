@@ -140,7 +140,7 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                 disabled={entries.length >= FREE_RECORD_LIMITS.LIST_MAX}
                 className="w-full"
               >
-                + 항목 추가하기
+                + 기록 추가하기
               </Button>
             </span>
           </TooltipTrigger>
