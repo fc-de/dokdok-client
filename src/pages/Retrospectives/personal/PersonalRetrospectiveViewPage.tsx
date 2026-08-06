@@ -154,7 +154,9 @@ export default function PersonalRetrospectiveViewPage() {
             </p>
           )}
 
-          {data && <PersonalRetrospectiveViewContent data={data} />}
+          {data && (
+            <PersonalRetrospectiveViewContent data={data} hasSubtitle={!!headerSubtitle} />
+          )}
         </div>
       </div>
     </MobileLayoutFrame>

@@ -65,7 +65,7 @@ export default function ChangedThoughtsSection({
             {formValues.map((item) => {
               const coreSummaryRequiredError = showErrors && isItemPartial(item.topicId)
               const coreSummaryExceeded =
-                item.coreSummary.length >= CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX
+                item.coreSummary.length > CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX
               const coreSummaryError = coreSummaryRequiredError || coreSummaryExceeded
               const coreSummaryErrorMessage = coreSummaryExceeded
                 ? `${CHANGED_THOUGHTS_LIMITS.CORE_ISSUE_MAX}자 이내로 작성이 가능해요`

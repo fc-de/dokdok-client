@@ -72,8 +72,11 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                 <span className="text-black typo-body2">기록{index + 1}</span>
                 <TextButton
                   onClick={() => {
-                    removeEntry(entry.id)
-                    if (entries.length === 1) onClose()
+                    if (entries.length === 1) {
+                      onClose()
+                    } else {
+                      removeEntry(entry.id)
+                    }
                   }}
                   className="text-grey-500 typo-m-caption2 hover:text-black"
                   aria-label={`기록${index + 1} 삭제`}
@@ -119,8 +122,11 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                   type="button"
                   className="text-grey-400 hover:text-accent-300 transition-colors"
                   onClick={() => {
-                    removeEntry(entry.id)
-                    if (entries.length === 1) onClose()
+                    if (entries.length === 1) {
+                      onClose()
+                    } else {
+                      removeEntry(entry.id)
+                    }
                   }}
                   aria-label="항목 삭제"
                 >

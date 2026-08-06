@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ExcerptBlock } from '@/features/book'
 import { Division } from '@/shared/components/Division'
@@ -6,6 +6,7 @@ import { cn } from '@/shared/lib/utils'
 
 import {
   PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE,
+  PERSONAL_RETRO_MOBILE_TAB_TOP_CLASS,
   PERSONAL_RETRO_SCROLL_OFFSET_MOBILE,
   PERSONAL_RETRO_SECTION_IDS,
   PERSONAL_RETRO_STICKY_OFFSET,
@@ -14,6 +15,8 @@ import type { GetPersonalRetrospectiveViewResponse } from '../personalRetrospect
 
 export interface PersonalRetrospectiveViewContentProps {
   data: GetPersonalRetrospectiveViewResponse
+  /** 모바일 헤더에 부제목(책 제목 · 저자)이 표시되는지 여부: 헤더 높이에 따른 오프셋 계산에 사용 */
+  hasSubtitle: boolean
 }
 
 /**
@@ -25,14 +28,16 @@ export interface PersonalRetrospectiveViewContentProps {
  *
  * @example
  * ```tsx
- * <PersonalRetrospectiveViewContent data={viewData} />
+ * <PersonalRetrospectiveViewContent data={viewData} hasSubtitle={!!headerSubtitle} />
  * ```
  */
 export default function PersonalRetrospectiveViewContent({
   data,
+  hasSubtitle,
 }: PersonalRetrospectiveViewContentProps) {
   const { changedThoughts, othersPerspectives, freeTexts } = data.retrospective
   const [activeSection, setActiveSection] = useState<string | null>(null)
+  const suppressSpyRef = useRef(false)
 
   const anchors = useMemo(
     () =>
@@ -56,7 +61,9 @@ export default function PersonalRetrospectiveViewContent({
     const getActiveOffset = () =>
       window.matchMedia('(min-width: 1024px)').matches
         ? PERSONAL_RETRO_STICKY_OFFSET
-        : PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE
+        : hasSubtitle
+          ? PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE.withSubtitle
+          : PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE.withoutSubtitle
 
     const computeSection = () => {
       const stickyOffset = getActiveOffset()
@@ -73,6 +80,7 @@ export default function PersonalRetrospectiveViewContent({
     }
 
     const handleScroll = () => {
+      if (suppressSpyRef.current) return
       if (timerId !== null) return
       timerId = setTimeout(() => {
         timerId = null
@@ -86,23 +94,39 @@ export default function PersonalRetrospectiveViewContent({
       window.removeEventListener('scroll', handleScroll)
       if (timerId !== null) clearTimeout(timerId)
     }
-  }, [anchors])
+  }, [anchors, hasSubtitle])
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
     if (!el) return
     const scrollOffset = window.matchMedia('(min-width: 1024px)').matches
       ? PERSONAL_RETRO_STICKY_OFFSET
-      : PERSONAL_RETRO_SCROLL_OFFSET_MOBILE
+      : hasSubtitle
+        ? PERSONAL_RETRO_SCROLL_OFFSET_MOBILE.withSubtitle
+        : PERSONAL_RETRO_SCROLL_OFFSET_MOBILE.withoutSubtitle
     const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset + 1
+
+    // 클릭으로 이동하는 동안에는 스크롤 스파이가 다른 탭을 active로 덮어쓰지 않도록 일시 중단
+    suppressSpyRef.current = true
+    setActiveSection(id)
     window.scrollTo({ top, behavior: 'smooth' })
+    window.setTimeout(() => {
+      suppressSpyRef.current = false
+    }, 600)
   }
 
   return (
     <div className="flex flex-col lg:flex-row gap-large lg:gap-[187.5px] lg:pt-[22.5px] pb-25">
       {/* 모바일 섹션 탭 */}
       {anchors.length > 0 && (
-        <div className="sticky top-17 z-20 -mx-5 bg-white shadow-drop lg:hidden">
+        <div
+          className={cn(
+            'sticky z-20 -mx-5 bg-white shadow-drop lg:hidden',
+            hasSubtitle
+              ? PERSONAL_RETRO_MOBILE_TAB_TOP_CLASS.withSubtitle
+              : PERSONAL_RETRO_MOBILE_TAB_TOP_CLASS.withoutSubtitle
+          )}
+        >
           <div className="flex gap-large overflow-x-auto scrollbar-hide px-5">
             {anchors.map(({ id, label }) => {
               const isActive = activeSection === id

@@ -88,8 +88,11 @@ export default function OthersPerspectiveSection({
                 <span className="text-black typo-body2">관점{index + 1}</span>
                 <TextButton
                   onClick={() => {
-                    removeItem(item.id)
-                    if (items.length === 1) onClose()
+                    if (items.length === 1) {
+                      onClose()
+                    } else {
+                      removeItem(item.id)
+                    }
                   }}
                   className="text-grey-500 typo-m-caption2 hover:text-black"
                   aria-label={`관점${index + 1} 삭제`}
@@ -192,8 +195,11 @@ export default function OthersPerspectiveSection({
                   type="button"
                   className="text-grey-400 hover:text-accent-300 transition-colors"
                   onClick={() => {
-                    removeItem(item.id)
-                    if (items.length === 1) onClose()
+                    if (items.length === 1) {
+                      onClose()
+                    } else {
+                      removeItem(item.id)
+                    }
                   }}
                   aria-label="관점 삭제"
                 >
