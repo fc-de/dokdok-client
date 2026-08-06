@@ -1,8 +1,5 @@
-import { useNavigate } from 'react-router-dom'
-
-import { useCancelJoinMeeting, useJoinMeeting } from '@/features/meetings/hooks'
+import { useJoinMeeting } from '@/features/meetings/hooks'
 import type { MeetingDetailActionStateType } from '@/features/meetings/meetings.types'
-import { ROUTES } from '@/shared/constants'
 import { showToast } from '@/shared/lib/toast'
 import { Button } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -11,7 +8,6 @@ interface MeetingDetailButtonProps {
   buttonLabel: string
   isEnabled: boolean
   type: MeetingDetailActionStateType
-  gatheringId: number
   meetingId: number
 }
 
@@ -19,24 +15,18 @@ export default function MeetingDetailButton({
   buttonLabel,
   isEnabled,
   type,
-  gatheringId,
   meetingId,
 }: MeetingDetailButtonProps) {
-  const navigate = useNavigate()
   const joinMutation = useJoinMeeting()
-  const cancelJoinMutation = useCancelJoinMeeting()
   const { openError, openConfirm } = useGlobalModalStore()
 
-  const isPending = joinMutation.isPending || cancelJoinMutation.isPending
+  // 약속 수정(CAN_EDIT), 참가 취소(CAN_CANCEL)는 MeetingInfoPanel에서 렌더링
+  if (type === 'CAN_EDIT' || type === 'CAN_CANCEL') return null
+
+  const isPending = joinMutation.isPending
 
   const handleClick = async () => {
     if (!isEnabled || isPending) return
-
-    // 약속 수정
-    if (type === 'CAN_EDIT') {
-      navigate(ROUTES.MEETING_UPDATE(gatheringId, meetingId))
-      return
-    }
 
     // 약속 참가신청
     if (type === 'CAN_JOIN') {
@@ -51,23 +41,6 @@ export default function MeetingDetailButton({
           openError('에러', error.userMessage)
         },
       })
-      return
-    }
-
-    // 약속 참가취소
-    if (type === 'CAN_CANCEL') {
-      const confirmed = await openConfirm('참가 신청 취소', '약속 참가 신청을 취소하시겠습니까?')
-      if (!confirmed) return
-
-      cancelJoinMutation.mutate(meetingId, {
-        onSuccess: () => {
-          showToast('참가 취소가 완료되었습니다.')
-        },
-        onError: (error) => {
-          openError('에러', error.userMessage)
-        },
-      })
-      return
     }
   }
 

@@ -1,11 +1,15 @@
+import { format } from 'date-fns'
+import { ko } from 'date-fns/locale'
+import { ChevronRight } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth'
 import {
+  MeetingBookInfo,
   MeetingDetailButton,
   MeetingDetailHeader,
-  MeetingDetailInfo,
+  MeetingInfoPanel,
   useMeetingDetail,
 } from '@/features/meetings'
 import { RetrospectiveCardButtons } from '@/features/retrospectives/meeting'
@@ -29,7 +33,7 @@ import { ROUTES } from '@/shared/constants'
 import { useDeferredLoading } from '@/shared/hooks'
 import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
-import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
+import { Card, Spinner, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
   const navigate = useNavigate()
@@ -46,6 +50,7 @@ export default function MeetingDetailPage() {
 
   const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
+  const [showMeetingInfo, setShowMeetingInfo] = useState(false)
 
   const {
     data: meeting,
@@ -133,131 +138,164 @@ export default function MeetingDetailPage() {
               </div>
             ) : meeting ? (
               <>
-                <MeetingDetailHeader progressStatus={meeting.progressStatus}>
+                <MeetingDetailHeader
+                  progressStatus={meeting.progressStatus}
+                  onClick={() => setShowMeetingInfo(false)}
+                >
                   {meeting.meetingName}
                 </MeetingDetailHeader>
 
-                <MeetingDetailInfo meeting={meeting} />
+                <MeetingBookInfo book={meeting.book} />
 
                 <MeetingDetailButton
                   buttonLabel={meeting.actionState.buttonLabel}
                   isEnabled={meeting.actionState.enabled}
                   type={meeting.actionState.type}
-                  gatheringId={gatheringId}
                   meetingId={meeting.meetingId}
                 />
+
+                <Card>
+                  <ul className="text-body3 gap-tiny">
+                    <li>
+                      {format(new Date(meeting.schedule.startDateTime), 'yyyy.MM.dd(eee) HH:mm', {
+                        locale: ko,
+                      })}
+                    </li>
+                    <li>
+                      멤버 {meeting.participants.currentCount}
+                      {meeting.location && <> &bull; {meeting.location.name}</>}
+                    </li>
+                    <li className="mt-xsmall">
+                      <TextButton
+                        size="small"
+                        icon={ChevronRight}
+                        iconPosition="right"
+                        className="text-grey-700"
+                        onClick={() => setShowMeetingInfo(true)}
+                      >
+                        더보기
+                      </TextButton>
+                    </li>
+                  </ul>
+                </Card>
               </>
             ) : null}
           </div>
           {/* 약속 로딩 적용 */}
 
-          <div className="flex flex-col flex-1 gap-base pb-base">
-            {meeting?.progressStatus === 'POST' && (
-              <RetrospectiveCardButtons
-                gatheringId={gatheringId}
-                meetingId={meetingId}
-                retrospectiveStatus={meeting.retrospectiveStatus}
-                personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
-              />
+          <div className="flex flex-col flex-1 gap-base pb-base min-w-0">
+            {showMeetingInfo && meeting ? (
+              <MeetingInfoPanel meeting={meeting} />
+            ) : (
+              <>
+                {meeting?.progressStatus === 'POST' && (
+                  <RetrospectiveCardButtons
+                    gatheringId={gatheringId}
+                    meetingId={meetingId}
+                    retrospectiveStatus={meeting.retrospectiveStatus}
+                    personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
+                  />
+                )}
+
+                <p className="text-black typo-heading3">주제</p>
+
+                <Tabs
+                  value={activeTab}
+                  onValueChange={(value) => {
+                    const tab = value as TopicStatus
+                    setUserSelectedTab(tab)
+                    if (tab === 'PROPOSED') void refetchProposed()
+                  }}
+                  className="gap-medium"
+                >
+                  <TabsList className="border-b border-grey-300" size="medium">
+                    <TabsTrigger
+                      className="typo-subtitle2"
+                      value="PROPOSED"
+                      badge={(proposedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
+                      size="medium"
+                    >
+                      제안
+                    </TabsTrigger>
+                    <TabsTrigger
+                      className="typo-subtitle2"
+                      value="CONFIRMED"
+                      badge={(confirmedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
+                      size="medium"
+                    >
+                      확정된 주제
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="PROPOSED">
+                    {proposedError ? (
+                      <TopicError
+                        message="제안 주제를 불러오지 못했습니다"
+                        onRetry={() => refetchProposed()}
+                      />
+                    ) : showProposedSkeleton || !proposedTopicsInfiniteData ? (
+                      <TopicSkeleton />
+                    ) : (
+                      <div className="flex flex-col gap-base">
+                        <TopicHeader
+                          activeTab="PROPOSED"
+                          confirmedTopic={meeting?.confirmedTopic ?? false}
+                          actions={proposedTopicsInfiniteData.pages[0].actions}
+                          confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                          proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
+                          onOpenChange={setIsConfirmTopicOpen}
+                          gatheringId={gatheringId}
+                          meetingId={meetingId}
+                        />
+                        <ProposedTopicList
+                          topics={proposedTopicsInfiniteData.pages.flatMap(
+                            (page: GetProposedTopicsResponse) => page.items
+                          )}
+                          confirmedTopic={meeting?.confirmedTopic ?? false}
+                          hasNextPage={hasNextProposedPage}
+                          isFetchingNextPage={isFetchingNextProposedPage}
+                          onLoadMore={fetchNextProposedPage}
+                          gatheringId={gatheringId}
+                          meetingId={meetingId}
+                          canLike={proposedTopicsInfiniteData.pages[0].actions.canLike}
+                        />
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="CONFIRMED">
+                    {confirmedError ? (
+                      <TopicError
+                        message="확정된 주제를 불러오지 못했습니다"
+                        onRetry={() => refetchConfirmed()}
+                      />
+                    ) : isConfirmedLoading || !confirmedTopicsInfiniteData ? (
+                      <TopicSkeleton />
+                    ) : (
+                      <div className="flex flex-col gap-base">
+                        <TopicHeader
+                          activeTab="CONFIRMED"
+                          confirmedTopic={meeting?.confirmedTopic ?? false}
+                          actions={confirmedTopicsInfiniteData.pages[0].actions}
+                          confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
+                          progressStatus={meeting?.progressStatus ?? 'PRE'}
+                          gatheringId={gatheringId}
+                          meetingId={meetingId}
+                          isParticipating={isParticipating}
+                        />
+                        <ConfirmedTopicList
+                          topics={confirmedTopicsInfiniteData.pages.flatMap(
+                            (page: GetConfirmedTopicsResponse) => page.items
+                          )}
+                          hasNextPage={hasNextConfirmedPage}
+                          isFetchingNextPage={isFetchingNextConfirmedPage}
+                          onLoadMore={fetchNextConfirmedPage}
+                        />
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </>
             )}
-
-            <p className="text-black typo-heading3">주제</p>
-
-            <Tabs
-              value={activeTab}
-              onValueChange={(value) => {
-                const tab = value as TopicStatus
-                setUserSelectedTab(tab)
-                if (tab === 'PROPOSED') void refetchProposed()
-              }}
-              className="gap-medium"
-            >
-              <TabsList className="border-b border-grey-300" size="medium">
-                <TabsTrigger
-                  className="typo-subtitle2"
-                  value="PROPOSED"
-                  badge={(proposedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
-                  size="medium"
-                >
-                  제안
-                </TabsTrigger>
-                <TabsTrigger
-                  className="typo-subtitle2"
-                  value="CONFIRMED"
-                  badge={(confirmedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
-                  size="medium"
-                >
-                  확정된 주제
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="PROPOSED">
-                {proposedError ? (
-                  <TopicError
-                    message="제안 주제를 불러오지 못했습니다"
-                    onRetry={() => refetchProposed()}
-                  />
-                ) : showProposedSkeleton || !proposedTopicsInfiniteData ? (
-                  <TopicSkeleton />
-                ) : (
-                  <div className="flex flex-col gap-base">
-                    <TopicHeader
-                      activeTab="PROPOSED"
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      actions={proposedTopicsInfiniteData.pages[0].actions}
-                      confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
-                      proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
-                      onOpenChange={setIsConfirmTopicOpen}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                    />
-                    <ProposedTopicList
-                      topics={proposedTopicsInfiniteData.pages.flatMap(
-                        (page: GetProposedTopicsResponse) => page.items
-                      )}
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      hasNextPage={hasNextProposedPage}
-                      isFetchingNextPage={isFetchingNextProposedPage}
-                      onLoadMore={fetchNextProposedPage}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                      canLike={proposedTopicsInfiniteData.pages[0].actions.canLike}
-                    />
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="CONFIRMED">
-                {confirmedError ? (
-                  <TopicError
-                    message="확정된 주제를 불러오지 못했습니다"
-                    onRetry={() => refetchConfirmed()}
-                  />
-                ) : isConfirmedLoading || !confirmedTopicsInfiniteData ? (
-                  <TopicSkeleton />
-                ) : (
-                  <div className="flex flex-col gap-base">
-                    <TopicHeader
-                      activeTab="CONFIRMED"
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      actions={confirmedTopicsInfiniteData.pages[0].actions}
-                      confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
-                      progressStatus={meeting?.progressStatus ?? 'PRE'}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                      isParticipating={isParticipating}
-                    />
-                    <ConfirmedTopicList
-                      topics={confirmedTopicsInfiniteData.pages.flatMap(
-                        (page: GetConfirmedTopicsResponse) => page.items
-                      )}
-                      hasNextPage={hasNextConfirmedPage}
-                      isFetchingNextPage={isFetchingNextConfirmedPage}
-                      onLoadMore={fetchNextConfirmedPage}
-                    />
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
           </div>
         </div>
         {isConfirmTopicOpen && (
