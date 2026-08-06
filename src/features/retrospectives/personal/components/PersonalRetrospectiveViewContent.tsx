@@ -5,6 +5,8 @@ import { Division } from '@/shared/components/Division'
 import { cn } from '@/shared/lib/utils'
 
 import {
+  PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE,
+  PERSONAL_RETRO_SCROLL_OFFSET_MOBILE,
   PERSONAL_RETRO_SECTION_IDS,
   PERSONAL_RETRO_STICKY_OFFSET,
 } from '../personalRetrospective.constants'
@@ -51,13 +53,20 @@ export default function PersonalRetrospectiveViewContent({
   useEffect(() => {
     let timerId: ReturnType<typeof setTimeout> | null = null
 
+    const getActiveOffset = () =>
+      window.matchMedia('(min-width: 1024px)').matches
+        ? PERSONAL_RETRO_STICKY_OFFSET
+        : PERSONAL_RETRO_ACTIVE_OFFSET_MOBILE
+
     const computeSection = () => {
-      let current: string | null = null
-      for (const { id } of anchors) {
-        const el = document.getElementById(id)
+      const stickyOffset = getActiveOffset()
+      let current: string | null = anchors[0]?.id ?? null
+      for (let i = 1; i < anchors.length; i++) {
+        const dividerId = `divider-${anchors[i].id}`
+        const el = document.getElementById(dividerId)
         if (!el) continue
-        if (el.getBoundingClientRect().top <= PERSONAL_RETRO_STICKY_OFFSET) {
-          current = id
+        if (el.getBoundingClientRect().top <= stickyOffset) {
+          current = anchors[i].id
         }
       }
       setActiveSection(current)
@@ -82,15 +91,42 @@ export default function PersonalRetrospectiveViewContent({
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id)
     if (!el) return
-    const top = el.getBoundingClientRect().top + window.scrollY - PERSONAL_RETRO_STICKY_OFFSET + 1
+    const scrollOffset = window.matchMedia('(min-width: 1024px)').matches
+      ? PERSONAL_RETRO_STICKY_OFFSET
+      : PERSONAL_RETRO_SCROLL_OFFSET_MOBILE
+    const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset + 1
     window.scrollTo({ top, behavior: 'smooth' })
   }
 
   return (
-    <div className="flex gap-[187.5px] pt-[22.5px] pb-25">
-      {/* 좌측 앵커 네비게이션 */}
+    <div className="flex flex-col lg:flex-row gap-large lg:gap-[187.5px] lg:pt-[22.5px] pb-25">
+      {/* 모바일 섹션 탭 */}
       {anchors.length > 0 && (
-        <nav className="hidden md:block w-[129px] shrink-0">
+        <div className="sticky top-17 z-20 -mx-5 bg-white shadow-drop lg:hidden">
+          <div className="flex gap-large overflow-x-auto scrollbar-hide px-5">
+            {anchors.map(({ id, label }) => {
+              const isActive = activeSection === id
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => scrollToSection(id)}
+                  className={cn(
+                    'shrink-0 whitespace-nowrap border-b-2 border-transparent py-base typo-caption2 text-grey-600 transition-colors cursor-pointer',
+                    isActive && 'typo-body5 text-primary-300'
+                  )}
+                >
+                  {label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 좌측 앵커 네비게이션 (데스크탑) */}
+      {anchors.length > 0 && (
+        <nav className="hidden lg:block w-[129px] shrink-0">
           <div className="sticky sticky-retro-view-nav flex flex-col gap-large">
             {anchors.map(({ id, label }) => {
               const isActive = activeSection === id
@@ -127,49 +163,48 @@ export default function PersonalRetrospectiveViewContent({
             id={PERSONAL_RETRO_SECTION_IDS.changedThoughts}
             className="flex flex-col gap-medium"
           >
-            <h3 className="text-black typo-heading3">바뀐 나의 생각</h3>
+            <h3 className="text-black typo-heading3 max-lg:typo-subtitle2">바뀐 나의 생각</h3>
             <div className="flex flex-col gap-xlarge">
               {changedThoughts.map((item) => (
                 <div key={item.topicId} className="flex flex-col gap-medium">
                   <div className="flex flex-col gap-base">
-                    <p className="text-black typo-subtitle2">{item.topicTitle}</p>
-                    {item.keyIssue && <p className="text-black typo-body1">{item.keyIssue}</p>}
+                    <p className="text-black typo-subtitle2 max-lg:typo-body2">{item.topicTitle}</p>
+                    {item.keyIssue && (
+                      <p className="text-black typo-body1 max-lg:typo-body4">{item.keyIssue}</p>
+                    )}
                   </div>
 
-                  {item.preOpinion && item.postOpinion ? (
-                    <div className="grid grid-cols-2 gap-base">
-                      <div className="flex flex-col gap-[14px]">
-                        <span className="text-grey-700 typo-body4">모임 전 내 의견</span>
-                        <div className="rounded-small bg-grey-200 px-medium py-base">
-                          <p className="text-grey-800 typo-body1 whitespace-pre-wrap">
-                            {item.preOpinion}
-                          </p>
+                  {item.preOpinion || item.postOpinion ? (
+                    <div
+                      className={cn(
+                        'gap-base',
+                        item.preOpinion && item.postOpinion
+                          ? 'grid grid-cols-1 lg:grid-cols-2'
+                          : 'flex flex-col'
+                      )}
+                    >
+                      {item.preOpinion && (
+                        <div className="flex flex-col gap-tiny">
+                          <span className="text-grey-700 typo-body4 max-lg:typo-body3">
+                            모임 전 내 의견
+                          </span>
+                          <div className="rounded-small bg-grey-200 px-medium py-base">
+                            <p className="text-grey-800 typo-body1 whitespace-pre-wrap max-lg:typo-body4">
+                              {item.preOpinion}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-col gap-tiny">
-                        <span className="text-grey-600 typo-body4">모임 후 나의 생각</span>
-                        <div className="rounded-small px-medium py-base">
-                          <p className="text-black typo-body1 whitespace-pre-wrap">
+                      )}
+                      {item.postOpinion && (
+                        <div className="flex flex-col gap-tiny">
+                          <span className="text-grey-600 typo-body4 max-lg:typo-body3">
+                            {item.preOpinion ? '모임 후 나의 생각' : '모임 후 내 의견'}
+                          </span>
+                          <p className="text-black typo-body1 whitespace-pre-wrap max-lg:typo-body4">
                             {item.postOpinion}
                           </p>
                         </div>
-                      </div>
-                    </div>
-                  ) : item.preOpinion ? (
-                    <div className="flex flex-col gap-tiny">
-                      <span className="text-grey-600 typo-body4">모임 전 내 의견</span>
-                      <div className="rounded-small bg-grey-200 border border-grey-300 p-medium">
-                        <p className="text-black typo-body3 whitespace-pre-wrap">
-                          {item.preOpinion}
-                        </p>
-                      </div>
-                    </div>
-                  ) : item.postOpinion ? (
-                    <div className="flex flex-col gap-xsmall">
-                      <span className="text-grey-600 typo-body4">모임 후 내 의견</span>
-                      <p className="text-black typo-body1 whitespace-pre-wrap">
-                        {item.postOpinion}
-                      </p>
+                      )}
                     </div>
                   ) : !item.keyIssue ? (
                     <p className="text-grey-500 typo-body3">해당 기록이 없어요</p>
@@ -182,7 +217,10 @@ export default function PersonalRetrospectiveViewContent({
 
         {/* 바뀐 나의 생각 → 타인의 관점/자유 기록 사이 구분선 */}
         {changedThoughts.length > 0 && (othersPerspectives.length > 0 || freeTexts.length > 0) && (
-          <Division className="my-base" />
+          <Division
+            id={`divider-${othersPerspectives.length > 0 ? PERSONAL_RETRO_SECTION_IDS.othersPerspective : PERSONAL_RETRO_SECTION_IDS.freeRecord}`}
+            className="my-base"
+          />
         )}
 
         {/* 타인의 관점 */}
@@ -191,23 +229,28 @@ export default function PersonalRetrospectiveViewContent({
             id={PERSONAL_RETRO_SECTION_IDS.othersPerspective}
             className="flex flex-col gap-medium"
           >
-            <h3 className="text-black typo-heading3">타인의 관점</h3>
+            <h3 className="text-black typo-heading3 max-lg:typo-subtitle2">타인의 관점</h3>
             <div className="flex flex-col gap-xlarge">
               {othersPerspectives.map((item) => (
                 <div
                   key={`${item.topicId}-${item.meetingMemberId}`}
                   className="flex flex-col gap-medium"
                 >
-                  <span className="text-black typo-subtitle2">{item.topicTitle}</span>
+                  <span className="text-black typo-subtitle2 max-lg:hidden">{item.topicTitle}</span>
                   <ExcerptBlock>
-                    <p className="text-grey-700 typo-body3 whitespace-pre-wrap">
+                    <span className="hidden max-lg:block text-black typo-body3 pt-xsmall">
+                      {item.topicTitle}
+                    </span>
+                    <p className="text-grey-700 typo-body3 whitespace-pre-wrap max-lg:typo-body1 max-lg:border-b max-lg:border-grey-300 max-lg:pb-xsmall max-lg:mb-tiny">
                       {item.opinionContent}
                     </p>
-                    <span className="text-grey-600 typo-body5">{item.nickname}</span>
+                    <span className="text-grey-600 typo-body5 max-lg:typo-body1">
+                      {item.nickname}
+                    </span>
                   </ExcerptBlock>
 
                   {item.impressiveReason && (
-                    <p className="text-grey-700 typo-body3 whitespace-pre-wrap">
+                    <p className="text-grey-700 typo-body3 whitespace-pre-wrap max-lg:typo-body1">
                       {item.impressiveReason}
                     </p>
                   )}
@@ -218,21 +261,27 @@ export default function PersonalRetrospectiveViewContent({
         )}
 
         {/* 타인의 관점 → 자유 기록 사이 구분선 */}
-        {othersPerspectives.length > 0 && freeTexts.length > 0 && <Division className="my-base" />}
+        {othersPerspectives.length > 0 && freeTexts.length > 0 && (
+          <Division id={`divider-${PERSONAL_RETRO_SECTION_IDS.freeRecord}`} className="my-base" />
+        )}
 
         {/* 자유 기록 */}
         {freeTexts.length > 0 && (
           <section id={PERSONAL_RETRO_SECTION_IDS.freeRecord} className="flex flex-col gap-medium">
-            <h3 className="text-black typo-heading3">자유 기록</h3>
+            <h3 className="text-black typo-heading3 max-lg:typo-subtitle2">자유 기록</h3>
             <div className="flex flex-col gap-medium">
               {freeTexts.map((item) => (
                 <div
                   key={`${item.title ?? ''}-${item.content ?? ''}`}
                   className="flex flex-col gap-xsmall"
                 >
-                  {item.title && <p className="text-black typo-subtitle2">{item.title}</p>}
+                  {item.title && (
+                    <p className="text-black typo-subtitle2 max-lg:typo-body2">{item.title}</p>
+                  )}
                   {item.content && (
-                    <p className="text-black typo-body1 whitespace-pre-wrap">{item.content}</p>
+                    <p className="text-black typo-body1 whitespace-pre-wrap max-lg:typo-body1">
+                      {item.content}
+                    </p>
                   )}
                 </div>
               ))}

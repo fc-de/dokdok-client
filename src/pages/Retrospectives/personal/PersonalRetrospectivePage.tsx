@@ -134,8 +134,8 @@ export default function PersonalRetrospectivePage() {
         </div>
       </div>
 
-      <div className="flex-1 bg-grey-100 pb-large">
-        <div className="mx-auto max-w-layout-max px-layout-padding">
+      <div className="flex-1 bg-grey-100 max-lg:bg-white pb-large">
+        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
           {isAnyLoading && (
             <div className="flex justify-center py-xlarge">
               <Spinner />

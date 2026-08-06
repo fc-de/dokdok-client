@@ -5,6 +5,7 @@ import {
   Container,
   Input,
   Textarea,
+  TextButton,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -36,8 +37,13 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
 
   return (
     <section>
-      <Container className="gap-[19px]">
-        <div className="flex justify-between items-center">
+      {/* 모바일: 타이틀을 카드 바깥에 노출 */}
+      <h3 className="hidden max-lg:block text-black typo-heading3 mb-medium max-lg:typo-subtitle2">
+        자유 기록
+      </h3>
+
+      <Container className="gap-[19px] max-lg:gap-medium max-lg:bg-transparent max-lg:rounded-none max-lg:p-0 max-lg:shadow-none">
+        <div className="flex justify-between items-center max-lg:hidden">
           <h3 className="text-black typo-heading3">자유 기록</h3>
           <button
             type="button"
@@ -48,7 +54,7 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
             <X className="size-6 text-grey-600 cursor-pointer" />
           </button>
         </div>
-        {entries.map((entry) => {
+        {entries.map((entry, index) => {
           const isPartial = form.isEntryPartial(entry.id)
           const titleError = showErrors && isPartial && entry.title.trim() === ''
           const titleExceeded = entry.title.length >= FREE_RECORD_LIMITS.TITLE_MAX
@@ -61,8 +67,23 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
               className="flex flex-col gap-small rounded-small bg-grey-100 border border-grey-300 p-medium"
               {...(showErrors && isPartial ? { 'data-field-error': '' } : {})}
             >
+              {/* 모바일: 항목 순번 + 삭제하기 */}
+              <div className="hidden max-lg:flex justify-between items-center">
+                <span className="text-black typo-body2">기록{index + 1}</span>
+                <TextButton
+                  onClick={() => {
+                    removeEntry(entry.id)
+                    if (entries.length === 1) onClose()
+                  }}
+                  className="text-grey-500 typo-m-caption2 hover:text-black"
+                  aria-label={`기록${index + 1} 삭제`}
+                >
+                  삭제하기
+                </TextButton>
+              </div>
+
               <div className="flex flex-col gap-tiny">
-                <span className="text-grey-600 typo-body4">제목</span>
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">제목</span>
                 <Input
                   placeholder="제목을 작성해주세요"
                   value={entry.title}
@@ -77,7 +98,7 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                 />
               </div>
               <div className="flex flex-col gap-tiny">
-                <span className="text-grey-600 typo-body4">상세 내용</span>
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">상세 내용</span>
                 <Textarea
                   placeholder="내용을 작성해주세요"
                   value={entry.content}
@@ -93,7 +114,7 @@ export default function FreeRecordSection({ form, showErrors, onClose }: FreeRec
                 />
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-end max-lg:hidden">
                 <button
                   type="button"
                   className="text-grey-400 hover:text-accent-300 transition-colors"
