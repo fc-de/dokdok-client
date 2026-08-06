@@ -30,7 +30,7 @@ import {
 } from '@/features/topics'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
-import { useDeferredLoading } from '@/shared/hooks'
+import { useDeferredLoading, useScrollCollapse } from '@/shared/hooks'
 import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
 import { Card, Spinner, Tabs, TabsContent, TabsList, TabsTrigger, TextButton } from '@/shared/ui'
@@ -51,6 +51,9 @@ export default function MeetingDetailPage() {
   const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
   const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
   const [showMeetingInfo, setShowMeetingInfo] = useState(false)
+
+  // 스크롤 상태 (헤더 접힘 여부)
+  const isHeaderCollapsed = useScrollCollapse({ collapseThreshold: 100, expandThreshold: 20 })
 
   const {
     data: meeting,
@@ -118,7 +121,8 @@ export default function MeetingDetailPage() {
   return (
     <MobileLayoutFrame
       variant="header"
-      title=" "
+      // 모바일 상단바: 스크롤로 헤더가 접히면 약속명 노출 (공백은 상단바 유지용)
+      title={isHeaderCollapsed ? (meeting?.meetingName ?? ' ') : ' '}
       leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
       className="min-h-dvh lg:min-h-0"
     >
