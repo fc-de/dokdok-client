@@ -6,7 +6,7 @@ interface MeetingBookInfoProps {
 
 export default function MeetingBookInfo({ book }: MeetingBookInfoProps) {
   return (
-    <div className="relative w-75 h-75 rounded-small overflow-hidden bg-grey-200 flex items-center justify-center">
+    <div className="relative mx-auto w-[300px] h-[300px] max-lg:w-full max-lg:h-auto max-lg:max-w-[350px] max-lg:aspect-square rounded-small overflow-hidden bg-grey-200 flex items-center justify-center">
       <img
         src={book.thumbnail}
         alt=""

@@ -11,3 +11,6 @@ export {
 
 // 약속 유효성 검사
 export { isPastDate, isStartBeforeEnd, isValidParticipants } from './meetingValidation'
+
+// 약속 진행 상태 뱃지
+export { MEETING_PROGRESS_BADGE_MAP, type MeetingProgressBadge } from './meetingProgressBadge'

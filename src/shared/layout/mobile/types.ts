@@ -16,6 +16,8 @@ export type MobileHeaderAction = {
   onClick: () => void
   disabled?: boolean
   ariaLabel?: string
+  /** 기본 타이포(typo-body2)를 오버라이드할 때 사용 */
+  className?: string
 }
 
 export type MobileBottomCTAConfig = {

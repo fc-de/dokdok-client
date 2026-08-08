@@ -83,7 +83,10 @@ export default function MobileScreenHeader({
         ) : headerAction ? (
           <button
             type="button"
-            className="relative z-10 max-w-18 truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500"
+            className={cn(
+              'relative z-10 max-w-18 truncate whitespace-nowrap rounded-xsmall px-xsmall py-xsmall typo-body2 text-grey-600 transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:text-grey-500',
+              headerAction.className
+            )}
             onClick={headerAction.onClick}
             disabled={headerAction.disabled}
             aria-label={headerAction.ariaLabel ?? headerAction.label}
