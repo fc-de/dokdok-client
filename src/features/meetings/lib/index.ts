@@ -1,5 +1,6 @@
 // 날짜/시간 포맷팅 함수
 export { formatDateTime, formatScheduleRange } from './dateTimeFormatters'
+export { formatMeetingDateTime } from './formatMeetingDateTime'
 
 // 날짜/시간 조작 유틸리티
 export {

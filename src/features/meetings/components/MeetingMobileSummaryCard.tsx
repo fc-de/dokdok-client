@@ -1,5 +1,4 @@
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
+import { formatMeetingDateTime } from '@/features/meetings/lib'
 
 import type { GetMeetingDetailResponse } from '../meetings.types'
 import MeetingDetailHeader from './MeetingDetailHeader'
@@ -37,9 +36,7 @@ export default function MeetingMobileSummaryCard({
         </MeetingDetailHeader>
         <div className="flex flex-col gap-xxtiny">
           <p className="typo-caption1 text-grey-600">
-            {format(new Date(meeting.schedule.startDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-              locale: ko,
-            })}
+            {formatMeetingDateTime(meeting.schedule.startDateTime)}
           </p>
           <p className="truncate typo-caption1 text-grey-600">
             멤버 {meeting.participants.currentCount}

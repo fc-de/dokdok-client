@@ -1,10 +1,9 @@
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
 import { CalendarClock, ChevronRight, MapPin } from 'lucide-react'
 import { useEffect } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 
 import {
+  formatMeetingDateTime,
   MeetingBookInfo,
   MeetingDetailHeader,
   MeetingInfoIcon,
@@ -99,17 +98,8 @@ export default function MobileMeetingInfoPage() {
                   <div className="flex items-center gap-small">
                     <MeetingInfoIcon icon={CalendarClock} />
                     <div className="flex flex-col text-black typo-body3">
-                      <p>
-                        {format(new Date(meeting.schedule.startDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-                          locale: ko,
-                        })}
-                      </p>
-                      <p>
-                        ~{' '}
-                        {format(new Date(meeting.schedule.endDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-                          locale: ko,
-                        })}
-                      </p>
+                      <p>{formatMeetingDateTime(meeting.schedule.startDateTime)}</p>
+                      <p>~ {formatMeetingDateTime(meeting.schedule.endDateTime)}</p>
                     </div>
                   </div>
 

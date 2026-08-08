@@ -157,7 +157,11 @@ export default function MeetingDetailPage() {
           <div className="flex flex-col flex-1 gap-base pb-base min-w-0">
             {showMeetingInfo && meeting ? (
               /* PC: 약속 상세 정보 패널 */
-              <MeetingPCInfoPanel meeting={meeting} />
+              <MeetingPCInfoPanel
+                meeting={meeting}
+                handleAction={handleAction}
+                isPending={isActionPending}
+              />
             ) : (
               <>
                 {meeting?.progressStatus === 'POST' && (

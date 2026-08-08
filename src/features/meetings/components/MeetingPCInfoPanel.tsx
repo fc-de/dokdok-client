@@ -1,8 +1,6 @@
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
 import { Book, CalendarClock, MapPin } from 'lucide-react'
 
-import { useMeetingAction } from '@/features/meetings/hooks'
+import { formatMeetingDateTime } from '@/features/meetings/lib'
 import { Button, Card, TextButton } from '@/shared/ui'
 
 import type { GetMeetingDetailResponse } from '../meetings.types'
@@ -11,18 +9,19 @@ import MeetingParticipants from './MeetingParticipants'
 
 // PC 전용: MeetingDetailPage에서 "더보기" 클릭 시 인라인으로 표시됨
 // 모바일에서는 같은 정보를 별도 페이지(MobileMeetingInfoPage)에서 보여줌
+// handleAction/isPending은 상위(MeetingDetailPage)의 useMeetingAction 인스턴스를 그대로 전달받아 사용 (중복 훅 방지)
 interface MeetingPCInfoPanelProps {
   meeting: GetMeetingDetailResponse
+  handleAction: () => void
+  isPending: boolean
 }
 
-export default function MeetingPCInfoPanel({ meeting }: MeetingPCInfoPanelProps) {
+export default function MeetingPCInfoPanel({
+  meeting,
+  handleAction,
+  isPending,
+}: MeetingPCInfoPanelProps) {
   const actionType = meeting.actionState.type
-  const { handleAction, isPending } = useMeetingAction(
-    actionType,
-    meeting.gathering.gatheringId,
-    meeting.meetingId
-  )
-
   const isCancelSectionVisible = actionType === 'CAN_CANCEL' || actionType === 'CANCEL_TIME_EXPIRED'
   const isCancelDisabled = actionType === 'CANCEL_TIME_EXPIRED' || isPending
 
@@ -59,17 +58,8 @@ export default function MeetingPCInfoPanel({ meeting }: MeetingPCInfoPanelProps)
           <div className="flex flex-1 items-center gap-small px-base min-w-0">
             <MeetingInfoIcon icon={CalendarClock} />
             <div className="flex flex-col text-black typo-body3">
-              <p>
-                {format(new Date(meeting.schedule.startDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-                  locale: ko,
-                })}
-              </p>
-              <p>
-                ~{' '}
-                {format(new Date(meeting.schedule.endDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-                  locale: ko,
-                })}
-              </p>
+              <p>{formatMeetingDateTime(meeting.schedule.startDateTime)}</p>
+              <p>~ {formatMeetingDateTime(meeting.schedule.endDateTime)}</p>
             </div>
           </div>
 

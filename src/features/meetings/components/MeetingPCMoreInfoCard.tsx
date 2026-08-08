@@ -1,7 +1,6 @@
-import { format } from 'date-fns'
-import { ko } from 'date-fns/locale'
 import { ChevronRight } from 'lucide-react'
 
+import { formatMeetingDateTime } from '@/features/meetings/lib'
 import { Card, TextButton } from '@/shared/ui'
 
 import type { GetMeetingDetailResponse } from '../meetings.types'
@@ -19,11 +18,7 @@ export default function MeetingPCMoreInfoCard({
   return (
     <Card>
       <ul className="text-body3 gap-tiny">
-        <li>
-          {format(new Date(meeting.schedule.startDateTime), 'yyyy.MM.dd(eee) HH:mm', {
-            locale: ko,
-          })}
-        </li>
+        <li>{formatMeetingDateTime(meeting.schedule.startDateTime)}</li>
         <li>
           멤버 {meeting.participants.currentCount}
           {meeting.location && <> &bull; {meeting.location.name}</>}
