@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 
+import { useAuth } from '@/features/auth'
 import {
   MeetingBookInfo,
   MeetingDetailHeader,
@@ -49,6 +50,15 @@ export default function MeetingDetailPage() {
     isLoading: meetingLoading,
     error: meetingError,
   } = useMeetingDetail(meetingId)
+
+  const userId = useAuth().data?.userId
+  const isHost = useMemo(
+    () =>
+      meeting?.participants.members.some(
+        (member) => member.userId === userId && member.role === 'LEADER'
+      ) ?? false,
+    [meeting?.participants.members, userId]
+  )
 
   // 수정(CAN_EDIT)/참가취소(CAN_CANCEL)/취소불가(CANCEL_TIME_EXPIRED)는 MeetingPCInfoPanel / MobileMeetingInfoPage에서 처리
   const actionType = meeting?.actionState.type
@@ -171,6 +181,7 @@ export default function MeetingDetailPage() {
                     meetingId={meetingId}
                     retrospectiveStatus={meeting.retrospectiveStatus}
                     personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
+                    isHost={isHost}
                   />
                 )}
                 <MeetingTopicSection

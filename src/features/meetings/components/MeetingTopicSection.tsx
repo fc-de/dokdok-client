@@ -86,9 +86,9 @@ export default function MeetingTopicSection({
           setUserSelectedTab(tab)
           if (tab === 'PROPOSED') void refetchProposed()
         }}
-        className="gap-medium"
+        className="gap-medium max-lg:gap-base"
       >
-        <TabsList className="border-b border-grey-300" size="medium">
+        <TabsList className="border-b border-grey-300 max-lg:border-0" size="medium">
           <TabsTrigger
             className="typo-subtitle2"
             value="PROPOSED"
