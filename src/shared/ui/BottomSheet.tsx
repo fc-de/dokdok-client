@@ -91,7 +91,7 @@ function BottomSheetContent({
         className={cn(
           'fixed inset-x-0 bottom-0 z-50',
           'flex flex-col bg-white',
-          'rounded-t-[20px] pt-large',
+          'rounded-t-medium pt-large',
           'max-h-[85vh]',
           'data-[state=open]:animate-in data-[state=closed]:animate-out',
           'data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom',

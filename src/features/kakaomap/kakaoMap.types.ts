@@ -141,7 +141,14 @@ export interface KakaoInfoWindow {
 export interface KakaoMap {
   setCenter(latlng: KakaoLatLng): void
   setLevel(level: number): void
-  setBounds(bounds: KakaoLatLngBounds): void
+  setBounds(
+    bounds: KakaoLatLngBounds,
+    paddingTop?: number,
+    paddingRight?: number,
+    paddingBottom?: number,
+    paddingLeft?: number
+  ): void
+  panBy(dx: number, dy: number): void
   relayout(): void
   addControl(control: KakaoControl, position: number): void
   removeControl(control: KakaoControl): void

@@ -1,10 +1,13 @@
+import { cn } from '@/shared/lib/utils'
+
 type PlaceListSkeletonProps = {
   count?: number
+  className?: string
 }
 
-export default function PlaceListSkeleton({ count = 5 }: PlaceListSkeletonProps) {
+export default function PlaceListSkeleton({ count = 5, className }: PlaceListSkeletonProps) {
   return (
-    <ul className="flex flex-col overflow-y-auto custom-scroll">
+    <ul className={cn('flex flex-col overflow-y-auto custom-scroll', className)}>
       {[...Array(count).keys()].map((i) => (
         <li key={i} className=" bg-white border-b border-grey-300 p-medium pb-base">
           <div className="flex gap-xsmall">

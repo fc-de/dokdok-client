@@ -13,7 +13,7 @@
  *   - 'error'      SDK 로드 실패 또는 검색 API 오류
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import type { KakaoMap, KakaoPlace } from '@/features/kakaomap'
 import { useKakaoLoader, useKakaoPlaceSearch } from '@/features/kakaomap'
@@ -31,14 +31,31 @@ export type UsePlaceSearchOptions = {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSelectPlace: (place: SelectedPlace) => void
+  bottomOffset?: number
+  /** 지도 컨테이너 높이 (px) — setBounds 하단 패딩 상한 계산에 사용 */
+  mapContainerHeight?: number
 }
 
-export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSearchOptions) {
+export function usePlaceSearch({
+  open,
+  onOpenChange,
+  onSelectPlace,
+  bottomOffset = 0,
+  mapContainerHeight,
+}: UsePlaceSearchOptions) {
   const [sdkLoading, sdkError] = useKakaoLoader()
 
   const [searchState, setSearchState] = useState<PlaceSearchState>('idle')
   const [mapInstance, setMapInstance] = useState<KakaoMap | null>(null)
   const [hoveredPlaceId, setHoveredPlaceId] = useState<string | null>(null)
+
+  // ref로 유지해 setBounds effect의 dep에서 제외 — 높이 변경 시 지도를 재초기화하지 않음
+  const bottomOffsetRef = useRef(bottomOffset)
+  const mapContainerHeightRef = useRef(mapContainerHeight ?? 0)
+  useLayoutEffect(() => {
+    bottomOffsetRef.current = bottomOffset
+    mapContainerHeightRef.current = mapContainerHeight ?? 0
+  })
 
   // 카카오 Map SDK는 마운트 시점의 컨테이너 크기로 지도를 초기화합니다.
   // display:none 상태에서 마운트되면 크기가 0으로 계산되어 지도가 깨지므로,
@@ -61,18 +78,20 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
     },
   })
 
-  // SDK 로드 실패 시 error 상태로 전환
   const effectiveSearchState: PlaceSearchState = sdkError ? 'error' : searchState
 
-  // places 또는 mapInstance가 준비되면 지도 범위를 자동 조정
-  // (첫 검색 시 places가 먼저 오거나 mapInstance가 먼저 올 수 있으므로 둘 다 dep에 포함)
+  // places와 mapInstance 중 어느 쪽이 먼저 준비될지 모르므로 둘 다 dep에 포함
   useEffect(() => {
     if (!mapInstance || places.length === 0) return
 
     const { kakao } = window
     const bounds = new kakao.maps.LatLngBounds()
     places.forEach((p) => bounds.extend(new kakao.maps.LatLng(Number(p.y), Number(p.x))))
-    mapInstance.setBounds(bounds)
+    // 하단 패딩이 지도 높이를 덮으면 가용 영역이 0이 되므로 상한을 둡니다.
+    const mapHeight = mapContainerHeightRef.current
+    const safeBottom =
+      mapHeight > 0 ? Math.min(bottomOffsetRef.current, mapHeight * 0.6) : bottomOffsetRef.current
+    mapInstance.setBounds(bounds, 0, 0, safeBottom, 0)
   }, [mapInstance, places])
 
   const resetState = useCallback(() => {
@@ -93,10 +112,7 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
       const keyword = keywordRef.current?.value.trim() ?? ''
       if (!keyword) return
 
-      // SDK 로드 실패 상태에서는 검색 불가
       if (sdkError) return
-
-      // SDK 아직 로드 중이라면 무시
       if (sdkLoading) return
 
       reset()
@@ -130,6 +146,10 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
       if (!mapInstance) return
       mapInstance.setLevel(4)
       mapInstance.setCenter(new window.kakao.maps.LatLng(Number(place.y), Number(place.x)))
+      if (bottomOffsetRef.current > 0) {
+        // 드로어로 가려진 영역을 고려해 가시 영역의 중심을 보정 (위로 이동)
+        mapInstance.panBy(0, -bottomOffsetRef.current / 2)
+      }
     },
     [mapInstance]
   )
@@ -139,15 +159,11 @@ export function usePlaceSearch({ open, onOpenChange, onSelectPlace }: UsePlaceSe
     resetState()
   }, [onOpenChange, resetState])
 
-  // error 상태에서 노출할 메시지 — SDK 오류 우선
   const errorMessage = sdkError?.message ?? searchError ?? '오류가 발생했습니다. 다시 시도해주세요.'
 
-  // Map 컴포넌트를 DOM에 마운트할지 여부
-  // error 상태는 인스턴스 보존이 불필요하므로 unmount (다음 검색 시 새로 초기화)
+  // error 시에는 unmount해 다음 검색 시 새로 초기화
   const isMapMounted = open && hasBeenSearched && effectiveSearchState !== 'error'
-
-  // 지도 영역을 화면에 표시할지 여부 (isMapMounted가 true일 때만 유의미)
-  // noResults에서는 Map 인스턴스를 유지한 채 CSS로만 숨김 → 재검색 시 재초기화 없이 재사용
+  // noResults 시 hidden으로만 숨겨 인스턴스를 유지 → 재검색 시 재초기화 없이 재사용
   const isMapVisible = effectiveSearchState === 'searching' || effectiveSearchState === 'hasResults'
 
   return {
