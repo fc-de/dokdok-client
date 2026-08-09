@@ -38,6 +38,7 @@ export default function PersonalRetrospectiveViewContent({
   const { changedThoughts, othersPerspectives, freeTexts } = data.retrospective
   const [activeSection, setActiveSection] = useState<string | null>(null)
   const suppressSpyRef = useRef(false)
+  const suppressSpyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const anchors = useMemo(
     () =>
@@ -107,11 +108,15 @@ export default function PersonalRetrospectiveViewContent({
     const top = el.getBoundingClientRect().top + window.scrollY - scrollOffset + 1
 
     // 클릭으로 이동하는 동안에는 스크롤 스파이가 다른 탭을 active로 덮어쓰지 않도록 일시 중단
+    if (suppressSpyTimerRef.current !== null) {
+      clearTimeout(suppressSpyTimerRef.current)
+    }
     suppressSpyRef.current = true
     setActiveSection(id)
     window.scrollTo({ top, behavior: 'smooth' })
-    window.setTimeout(() => {
+    suppressSpyTimerRef.current = window.setTimeout(() => {
       suppressSpyRef.current = false
+      suppressSpyTimerRef.current = null
     }, 600)
   }
 
