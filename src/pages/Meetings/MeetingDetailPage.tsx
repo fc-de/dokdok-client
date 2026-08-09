@@ -42,6 +42,14 @@ export default function MeetingDetailPage() {
   const [showMeetingInfo, setShowMeetingInfo] = useState(shouldOpenInfoPanel)
   const { isMobile } = useDevice()
 
+  // 히스토리 state에 남은 openInfoPanel을 소비 후 제거 (뒤로가기 시 패널 재오픈 방지)
+  useEffect(() => {
+    if (shouldOpenInfoPanel) {
+      navigate(location.pathname, { replace: true, state: null })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // 스크롤 상태 (헤더 접힘 여부)
   const isHeaderCollapsed = useScrollCollapse({ collapseThreshold: 100, expandThreshold: 20 })
 

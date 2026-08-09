@@ -17,7 +17,7 @@ export default function MeetingPCMoreInfoCard({
 }: MeetingPCMoreInfoCardProps) {
   return (
     <Card>
-      <ul className="text-body3 gap-tiny">
+      <ul className="typo-body3">
         <li>{formatMeetingDateTime(meeting.schedule.startDateTime)}</li>
         <li>
           멤버 {meeting.participants.currentCount}
