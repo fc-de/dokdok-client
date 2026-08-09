@@ -124,7 +124,7 @@ function TopicTypeSelectItem({
       data-state={isSelected ? 'on' : 'off'}
       onClick={() => toggle(value)}
       className={cn(
-        'h-10 w-54 px-[14px] py-[10px] rounded-small border transition-colors cursor-pointer',
+        'h-10 w-[216px] px-[14px] py-[10px] rounded-small border transition-colors cursor-pointer max-lg:w-auto max-lg:min-w-[146px]',
         'bg-white border-grey-400 text-grey-700',
         isSelected && 'border-primary-300 bg-primary-100 text-primary-300',
         className
