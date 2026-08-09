@@ -4,6 +4,7 @@
  */
 
 import type { KakaoPlace } from '@/features/kakaomap'
+import { cn } from '@/shared/lib/utils'
 import { Button } from '@/shared/ui'
 
 export type PlaceListProps = {
@@ -13,11 +14,17 @@ export type PlaceListProps = {
   onPlaceFocus: (place: KakaoPlace) => void
   /** 선택 버튼 클릭 핸들러 */
   onPlaceClick: (place: KakaoPlace) => void
+  className?: string
 }
 
-export default function PlaceList({ places, onPlaceFocus, onPlaceClick }: PlaceListProps) {
+export default function PlaceList({
+  places,
+  onPlaceFocus,
+  onPlaceClick,
+  className,
+}: PlaceListProps) {
   return (
-    <ul className="flex flex-col overflow-y-auto custom-scroll">
+    <ul className={cn('flex flex-col overflow-y-auto custom-scroll', className)}>
       {places.map((place) => (
         <li
           key={place.id}

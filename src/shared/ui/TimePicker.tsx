@@ -15,13 +15,16 @@ import {
 import { Button } from '@/shared/ui/Button'
 import { Select } from '@/shared/ui/Select'
 
-type TimeOption = {
+type TimeProps = {
   value: string
-  label: string
+  children: React.ReactNode
 }
 
+const Time: React.FC<TimeProps> = () => null
+Time.displayName = 'TimePicker.Time'
+
 type TimePickerProps = {
-  options: TimeOption[]
+  children?: React.ReactNode
   value: string
   onValueChange: (value: string) => void
   placeholder?: string
@@ -29,14 +32,8 @@ type TimePickerProps = {
   disabled?: boolean
 }
 
-/**
- * TimePicker
- *
- * - PC: Select 드롭다운
- * - 모바일: BottomSheet 리스트
- */
 function TimePicker({
-  options,
+  children,
   value,
   onValueChange,
   placeholder = '시간 선택',
@@ -47,10 +44,20 @@ function TimePicker({
   const [open, setOpen] = React.useState(false)
   const [pendingValue, setPendingValue] = React.useState(value)
 
+  const options = React.Children.toArray(children)
+    .filter(
+      (child): child is React.ReactElement<TimeProps> =>
+        React.isValidElement(child) && (child.type as React.FC).displayName === 'TimePicker.Time'
+    )
+    .map((child) => ({
+      value: child.props.value,
+      label: child.props.children as string,
+    }))
+
   const selectedLabel = options.find((o) => o.value === value)?.label
 
   const handleOpenChange = (isOpen: boolean) => {
-    if (isOpen) setPendingValue(value)
+    if (isOpen) setPendingValue(value || (options[0]?.value ?? ''))
     setOpen(isOpen)
   }
 
@@ -129,5 +136,6 @@ function TimePicker({
   )
 }
 
+TimePicker.Time = Time
+
 export { TimePicker }
-export type { TimeOption }
