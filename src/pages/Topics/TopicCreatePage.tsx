@@ -10,6 +10,7 @@ import {
   useCreateTopic,
 } from '@/features/topics'
 import FormPageHeader from '@/shared/components/FormPageHeader'
+import { MobileLayoutFrame } from '@/shared/layout'
 import { showToast } from '@/shared/lib/toast'
 import { Container, Input, Textarea, TopicTypeSelectGroup, TopicTypeSelectItem } from '@/shared/ui'
 import { useGlobalModalStore } from '@/store'
@@ -75,16 +76,29 @@ export default function TopicCreatePage() {
   }
 
   return (
-    <>
+    <MobileLayoutFrame
+      variant="header"
+      title="주제 제안하기"
+      leftAction={{ type: 'close', onClick: () => navigate(-1) }}
+      bottomCTA={{
+        label: '제안하기',
+        loadingLabel: '제안 중...',
+        onClick: handleSubmit,
+        disabled: createMutation.isPending,
+        loading: createMutation.isPending,
+      }}
+      className="min-h-dvh lg:min-h-0"
+    >
       <FormPageHeader
         title="주제 제안하기"
         actionLabel={createMutation.isPending ? '...' : '제안하기'}
         onAction={handleSubmit}
         isActionDisabled={createMutation.isPending}
+        className="max-lg:hidden"
       />
-      <div className="bg-grey-100">
-        <div className="mx-auto max-w-layout-max px-layout-padding">
-          <div className="flex flex-col gap-base py-xlarge">
+      <div className="bg-grey-100 max-lg:min-h-dvh">
+        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
+          <div className="flex flex-col gap-base py-xlarge max-lg:py-5">
             <Container>
               <Container.Title className="typo-subtitle3" required>
                 주제 타입선택
@@ -96,7 +110,7 @@ export default function TopicCreatePage() {
                     type="single"
                     value={topicType}
                     onChange={(value) => setTopicType(value as TopicType)}
-                    className="grid grid-cols-3 gap-xsmall lg:grid-cols-4 xl:grid-cols-5"
+                    className="grid grid-cols-5 gap-xsmall max-lg:grid-cols-2"
                   >
                     {TOPIC_TYPE_OPTIONS.map(({ value, label }) => (
                       <TopicTypeSelectItem key={value} value={value} className="typo-body3">
@@ -104,7 +118,7 @@ export default function TopicCreatePage() {
                       </TopicTypeSelectItem>
                     ))}
                   </TopicTypeSelectGroup>
-                  <p className="typo-body3 text-purple-200 flex gap-tiny items-center">
+                  <p className="typo-body3 max-lg:typo-m-body3 text-purple-200 flex gap-tiny items-center">
                     <Info size="16" /> {topicTypeHint}
                   </p>
                 </div>
@@ -142,6 +156,6 @@ export default function TopicCreatePage() {
           </div>
         </div>
       </div>
-    </>
+    </MobileLayoutFrame>
   )
 }

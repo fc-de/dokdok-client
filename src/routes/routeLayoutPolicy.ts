@@ -52,6 +52,11 @@ const ROUTE_LAYOUT_POLICIES: RouteLayoutPolicy[] = [
     hideGlobalHeaderOnMobile: true,
   },
   {
+    path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/topic-create`,
+    end: true,
+    hideGlobalHeaderOnMobile: true,
+  },
+  {
     path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/pre-opinions`,
     end: true,
     hideGlobalHeaderOnMobile: true,
