@@ -15,7 +15,6 @@ import {
   LandingPage,
   LoginPage,
   MeetingCreatePage,
-  MeetingDetailInfoPage,
   MeetingDetailPage,
   MeetingRetrospectiveCreatePage,
   MeetingRetrospectiveDetailPage,
@@ -27,6 +26,7 @@ import {
   MobileGatheringMembersPage,
   MobileGatheringPendingMeetingsPage,
   MobileGatheringPendingMembersPage,
+  MobileMeetingInfoPage,
   OnboardingPage,
   PersonalRetrospectivePage,
   PersonalRetrospectiveViewPage,
@@ -130,7 +130,7 @@ export const router = createBrowserRouter([
               // 약속
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId/info`,
-                element: <MeetingDetailInfoPage />,
+                element: <MobileMeetingInfoPage />,
               },
               {
                 path: `${ROUTES.GATHERINGS}/:gatheringId/meetings/:meetingId`,

@@ -72,6 +72,7 @@ function TabsTrigger({ className, size: sizeProp, badge, children, ...props }: T
           'typo-subtitle3 text-grey-700 py-small',
           'data-[state=active]:typo-subtitle2 data-[state=active]:text-black',
           'data-[state=active]:border-b-2 data-[state=active]:border-black',
+          'max-lg:typo-m-subtitle2 max-lg:data-[state=active]:typo-m-subtitle2 max-lg:gap-xtiny max-lg:data-[state=active]:border-0 max-lg:py-0',
         ],
         // Large
         size === 'large' && [
@@ -93,6 +94,7 @@ function TabsTrigger({ className, size: sizeProp, badge, children, ...props }: T
             size === 'medium' && [
               'typo-body3 text-grey-700 bg-grey-200 size-6',
               'group-data-[state=active]:text-black',
+              'max-lg:typo-m-caption2 max-lg:size-4.5 max-lg:group-data-[state=active]:bg-black max-lg:group-data-[state=active]:text-white',
             ],
             // Large badge
             size === 'large' && [

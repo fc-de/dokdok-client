@@ -1,38 +1,29 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { useAuth } from '@/features/auth'
 import {
-  MeetingDetailButton,
+  MeetingBookInfo,
   MeetingDetailHeader,
-  MeetingDetailInfo,
+  MeetingMobileSummaryCard,
+  MeetingPCActionButton,
+  MeetingPCInfoPanel,
+  MeetingPCMoreInfoCard,
+  MeetingTopicSection,
+  useMeetingAction,
   useMeetingDetail,
 } from '@/features/meetings'
 import { RetrospectiveCardButtons } from '@/features/retrospectives/meeting'
-import type {
-  GetConfirmedTopicsResponse,
-  GetProposedTopicsResponse,
-  TopicStatus,
-} from '@/features/topics'
-import {
-  ConfirmedTopicList,
-  ConfirmTopicModal,
-  ProposedTopicList,
-  TopicError,
-  TopicHeader,
-  TopicSkeleton,
-  useConfirmedTopics,
-  useProposedTopics,
-} from '@/features/topics'
 import SubPageHeader from '@/shared/components/SubPageHeader'
 import { ROUTES } from '@/shared/constants'
-import { useDeferredLoading } from '@/shared/hooks'
+import { useDevice, useScrollCollapse } from '@/shared/hooks'
 import { MobileLayoutFrame } from '@/shared/layout'
 import { showErrorToast } from '@/shared/lib/toast'
-import { Spinner, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared/ui'
+import { Spinner } from '@/shared/ui'
 
 export default function MeetingDetailPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { gatheringId: gatheringIdParam, meetingId: meetingIdParam } = useParams<{
     gatheringId: string
     meetingId: string
@@ -44,8 +35,23 @@ export default function MeetingDetailPage() {
   const gatheringId = Number.isFinite(parsedGatheringId) ? parsedGatheringId : 0
   const meetingId = Number.isFinite(parsedMeetingId) ? parsedMeetingId : 0
 
-  const [userSelectedTab, setUserSelectedTab] = useState<TopicStatus | null>(null)
-  const [isConfirmTopicOpen, setIsConfirmTopicOpen] = useState(false)
+  // MobileMeetingInfoPage에서 PC 폭으로 넓어져 돌아온 경우, 인라인 패널을 연 상태로 이어감
+  const shouldOpenInfoPanel = Boolean(
+    (location.state as { openInfoPanel?: boolean } | null)?.openInfoPanel
+  )
+  const [showMeetingInfo, setShowMeetingInfo] = useState(shouldOpenInfoPanel)
+  const { isMobile } = useDevice()
+
+  // 히스토리 state에 남은 openInfoPanel을 소비 후 제거 (뒤로가기 시 패널 재오픈 방지)
+  useEffect(() => {
+    if (shouldOpenInfoPanel) {
+      navigate(location.pathname, { replace: true, state: null })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // 스크롤 상태 (헤더 접힘 여부)
+  const isHeaderCollapsed = useScrollCollapse({ collapseThreshold: 100, expandThreshold: 20 })
 
   const {
     data: meeting,
@@ -53,50 +59,37 @@ export default function MeetingDetailPage() {
     error: meetingError,
   } = useMeetingDetail(meetingId)
 
-  // 사용자 선택이 없으면 progressStatus에 따라 자동 결정
-  const activeTab =
-    userSelectedTab !== null
-      ? userSelectedTab
-      : meeting?.progressStatus === 'POST'
-        ? 'CONFIRMED'
-        : 'PROPOSED'
-
-  // 제안된 주제 조회 (무한 스크롤)
-  const {
-    data: proposedTopicsInfiniteData,
-    isLoading: isProposedLoading,
-    isRefetching: isProposedRefetching,
-    error: proposedError,
-    refetch: refetchProposed,
-    fetchNextPage: fetchNextProposedPage,
-    hasNextPage: hasNextProposedPage,
-    isFetchingNextPage: isFetchingNextProposedPage,
-  } = useProposedTopics({
-    gatheringId: gatheringId,
-    meetingId: meetingId,
-  })
-
-  const showProposedSkeleton = useDeferredLoading(isProposedRefetching || isProposedLoading)
-
-  // 확정된 주제 조회 (무한 스크롤)
-  const {
-    data: confirmedTopicsInfiniteData,
-    isLoading: isConfirmedLoading,
-    error: confirmedError,
-    refetch: refetchConfirmed,
-    fetchNextPage: fetchNextConfirmedPage,
-    hasNextPage: hasNextConfirmedPage,
-    isFetchingNextPage: isFetchingNextConfirmedPage,
-  } = useConfirmedTopics({
-    gatheringId: gatheringId,
-    meetingId: meetingId,
-  })
-
   const userId = useAuth().data?.userId
-  const isParticipating = useMemo(
-    () => meeting?.participants.members.some((member) => member.userId === userId) ?? false,
+  const isHost = useMemo(
+    () =>
+      meeting?.participants.members.some(
+        (member) => member.userId === userId && member.role === 'LEADER'
+      ) ?? false,
     [meeting?.participants.members, userId]
   )
+
+  // 수정(CAN_EDIT)/참가취소(CAN_CANCEL)/취소불가(CANCEL_TIME_EXPIRED)는 MeetingPCInfoPanel / MobileMeetingInfoPage에서 처리
+  const actionType = meeting?.actionState.type
+  const { handleAction, isPending: isActionPending } = useMeetingAction(
+    actionType ?? 'DONE',
+    gatheringId,
+    meetingId
+  )
+  const showActionButton =
+    !!meeting &&
+    actionType !== 'CAN_EDIT' &&
+    actionType !== 'CAN_CANCEL' &&
+    actionType !== 'CANCEL_TIME_EXPIRED'
+  // 모바일 하단 고정 CTA (MobileLayoutFrame의 bottomCTA, lg 이상에서는 자동으로 숨김)
+  const mobileBottomCTA =
+    showActionButton && meeting
+      ? {
+          label: meeting.actionState.buttonLabel,
+          onClick: handleAction,
+          disabled: !meeting.actionState.enabled,
+          loading: isActionPending,
+        }
+      : undefined
 
   useEffect(() => {
     if (meetingError) {
@@ -110,11 +103,18 @@ export default function MeetingDetailPage() {
 
   if (gatheringId === 0 || meetingId === 0) return null
 
+  // PC 인라인 상세 패널이 열린 상태로 모바일 폭까지 줄어들면 전용 페이지(MobileMeetingInfoPage)로 이동
+  if (isMobile && showMeetingInfo) {
+    return <Navigate to={ROUTES.MEETING_INFO(gatheringId, meetingId)} replace />
+  }
+
   return (
     <MobileLayoutFrame
       variant="header"
-      title=" "
+      // 모바일 상단바: 스크롤로 헤더가 접히면 약속명 노출 (공백은 상단바 유지용)
+      title={isHeaderCollapsed ? (meeting?.meetingName ?? ' ') : ' '}
       leftAction={{ type: 'back', to: ROUTES.GATHERING_DETAIL(gatheringId) }}
+      bottomCTA={mobileBottomCTA}
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader
@@ -123,9 +123,9 @@ export default function MeetingDetailPage() {
         className="max-lg:hidden"
       />
 
-      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5 max-lg:pt-5">
-        <div className="flex justify-between gap-[36px] max-lg:block max-lg:pt-large">
-          {/* 약속 로딩 적용 */}
+      <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
+        <div className="flex justify-between gap-[36px] max-lg:block">
+          {/* 약속 */}
           <div className="w-[300px] flex-none flex flex-col gap-base max-lg:w-full">
             {meetingLoading ? (
               <div className="flex items-center justify-center h-[400px]">
@@ -133,141 +133,74 @@ export default function MeetingDetailPage() {
               </div>
             ) : meeting ? (
               <>
-                <MeetingDetailHeader progressStatus={meeting.progressStatus}>
-                  {meeting.meetingName}
-                </MeetingDetailHeader>
+                {/* 모바일: 책 요약 카드, 클릭 시 약속 상세 정보 페이지(MEETING_INFO)로 이동 */}
+                <div className="lg:hidden">
+                  <MeetingMobileSummaryCard
+                    meeting={meeting}
+                    onClick={() => navigate(ROUTES.MEETING_INFO(gatheringId, meetingId))}
+                  />
+                </div>
 
-                <MeetingDetailInfo meeting={meeting} />
+                {/* PC: 헤더 + 책 정보 + 액션 버튼 + 더보기(인라인 상세 패널 토글) */}
+                <div className="max-lg:hidden flex flex-col gap-base">
+                  <MeetingDetailHeader
+                    progressStatus={meeting.progressStatus}
+                    onClick={() => setShowMeetingInfo(false)}
+                  >
+                    {meeting.meetingName}
+                  </MeetingDetailHeader>
 
-                <MeetingDetailButton
-                  buttonLabel={meeting.actionState.buttonLabel}
-                  isEnabled={meeting.actionState.enabled}
-                  type={meeting.actionState.type}
-                  gatheringId={gatheringId}
-                  meetingId={meeting.meetingId}
-                />
+                  <MeetingBookInfo book={meeting.book} />
+
+                  {showActionButton && (
+                    <MeetingPCActionButton
+                      buttonLabel={meeting.actionState.buttonLabel}
+                      isEnabled={meeting.actionState.enabled}
+                      type={meeting.actionState.type}
+                      isPending={isActionPending}
+                      onClick={handleAction}
+                    />
+                  )}
+
+                  <MeetingPCMoreInfoCard
+                    meeting={meeting}
+                    onMoreClick={() => setShowMeetingInfo(true)}
+                  />
+                </div>
               </>
             ) : null}
           </div>
-          {/* 약속 로딩 적용 */}
 
-          <div className="flex flex-col flex-1 gap-base pb-base">
-            {meeting?.progressStatus === 'POST' && (
-              <RetrospectiveCardButtons
-                gatheringId={gatheringId}
-                meetingId={meetingId}
-                retrospectiveStatus={meeting.retrospectiveStatus}
-                personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
+          {/* 주제 */}
+          <div className="flex flex-col flex-1 gap-base pb-base min-w-0">
+            {showMeetingInfo && meeting ? (
+              /* PC: 약속 상세 정보 패널 */
+              <MeetingPCInfoPanel
+                meeting={meeting}
+                handleAction={handleAction}
+                isPending={isActionPending}
               />
+            ) : (
+              <>
+                {meeting?.progressStatus === 'POST' && (
+                  /* 회고 버튼 */
+                  <RetrospectiveCardButtons
+                    gatheringId={gatheringId}
+                    meetingId={meetingId}
+                    retrospectiveStatus={meeting.retrospectiveStatus}
+                    personalRetrospectiveWritten={meeting.personalRetrospectiveWritten}
+                    isHost={isHost}
+                  />
+                )}
+                <MeetingTopicSection
+                  gatheringId={gatheringId}
+                  meetingId={meetingId}
+                  meeting={meeting}
+                />
+              </>
             )}
-
-            <p className="text-black typo-heading3">주제</p>
-
-            <Tabs
-              value={activeTab}
-              onValueChange={(value) => {
-                const tab = value as TopicStatus
-                setUserSelectedTab(tab)
-                if (tab === 'PROPOSED') void refetchProposed()
-              }}
-              className="gap-medium"
-            >
-              <TabsList className="border-b border-grey-300" size="medium">
-                <TabsTrigger
-                  className="typo-subtitle2"
-                  value="PROPOSED"
-                  badge={(proposedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
-                  size="medium"
-                >
-                  제안
-                </TabsTrigger>
-                <TabsTrigger
-                  className="typo-subtitle2"
-                  value="CONFIRMED"
-                  badge={(confirmedTopicsInfiniteData?.pages[0]?.totalCount ?? 0).toString()}
-                  size="medium"
-                >
-                  확정된 주제
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="PROPOSED">
-                {proposedError ? (
-                  <TopicError
-                    message="제안 주제를 불러오지 못했습니다"
-                    onRetry={() => refetchProposed()}
-                  />
-                ) : showProposedSkeleton || !proposedTopicsInfiniteData ? (
-                  <TopicSkeleton />
-                ) : (
-                  <div className="flex flex-col gap-base">
-                    <TopicHeader
-                      activeTab="PROPOSED"
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      actions={proposedTopicsInfiniteData.pages[0].actions}
-                      confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
-                      proposedTopicsCount={proposedTopicsInfiniteData.pages[0].totalCount ?? 0}
-                      onOpenChange={setIsConfirmTopicOpen}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                    />
-                    <ProposedTopicList
-                      topics={proposedTopicsInfiniteData.pages.flatMap(
-                        (page: GetProposedTopicsResponse) => page.items
-                      )}
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      hasNextPage={hasNextProposedPage}
-                      isFetchingNextPage={isFetchingNextProposedPage}
-                      onLoadMore={fetchNextProposedPage}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                      canLike={proposedTopicsInfiniteData.pages[0].actions.canLike}
-                    />
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="CONFIRMED">
-                {confirmedError ? (
-                  <TopicError
-                    message="확정된 주제를 불러오지 못했습니다"
-                    onRetry={() => refetchConfirmed()}
-                  />
-                ) : isConfirmedLoading || !confirmedTopicsInfiniteData ? (
-                  <TopicSkeleton />
-                ) : (
-                  <div className="flex flex-col gap-base">
-                    <TopicHeader
-                      activeTab="CONFIRMED"
-                      confirmedTopic={meeting?.confirmedTopic ?? false}
-                      actions={confirmedTopicsInfiniteData.pages[0].actions}
-                      confirmedTopicDate={meeting?.confirmedTopicDate ?? null}
-                      progressStatus={meeting?.progressStatus ?? 'PRE'}
-                      gatheringId={gatheringId}
-                      meetingId={meetingId}
-                      isParticipating={isParticipating}
-                    />
-                    <ConfirmedTopicList
-                      topics={confirmedTopicsInfiniteData.pages.flatMap(
-                        (page: GetConfirmedTopicsResponse) => page.items
-                      )}
-                      hasNextPage={hasNextConfirmedPage}
-                      isFetchingNextPage={isFetchingNextConfirmedPage}
-                      onLoadMore={fetchNextConfirmedPage}
-                    />
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
           </div>
         </div>
-        {isConfirmTopicOpen && (
-          <ConfirmTopicModal
-            open={isConfirmTopicOpen}
-            onOpenChange={setIsConfirmTopicOpen}
-            gatheringId={gatheringId}
-            meetingId={meetingId}
-          />
-        )}
       </div>
     </MobileLayoutFrame>
   )

@@ -35,15 +35,16 @@ export default function TopicHeader(props: TopicHeaderProps) {
     <>
       {/* 제안탭 */}
       {props.activeTab === 'PROPOSED' && (
-        <div className="flex justify-between">
+        <div className="flex justify-between max-lg:flex-col max-lg:gap-small">
           <div className="flex flex-col gap-tiny">
             {props.confirmedTopic && props.confirmedTopicDate ? (
               // 주제 확정됨
               <>
-                <p className="text-black typo-subtitle3">
-                  주제 제안이 마감되었어요. 확정된 주제를 확인해보세요!
-                </p>
-                <p className="typo-body4 text-grey-600">
+                <div className="text-black typo-subtitle3 flex gap-tiny max-lg:flex-col max-lg:gap-0">
+                  <p className="">주제 제안이 마감되었어요.</p>
+                  <p>확정된 주제를 확인해보세요!</p>
+                </div>
+                <p className="typo-body4 text-grey-600 max-lg:hidden">
                   {format(props.confirmedTopicDate, 'yyyy.MM.dd HH:mm')} 마감
                 </p>
               </>
@@ -53,16 +54,21 @@ export default function TopicHeader(props: TopicHeaderProps) {
                 <p className="text-black typo-subtitle3">
                   약속에서 나누고 싶은 주제를 제안해보세요
                 </p>
-                <p className="typo-body4 text-grey-600">
+                <p className="typo-body4 text-grey-600 max-lg:hidden">
                   주제를 미리 정하면 우리 모임이 훨씬 풍성하고 즐거워질 거예요
                 </p>
               </>
             )}
           </div>
 
-          <div className="flex gap-xsmall">
+          <div className="flex gap-xsmall max-lg:gap-small">
             {props.actions.canConfirm && props.proposedTopicsCount > 0 && (
-              <Button variant="secondary" outline onClick={() => props.onOpenChange(true)}>
+              <Button
+                variant="secondary"
+                outline
+                onClick={() => props.onOpenChange(true)}
+                className="max-lg:flex-1"
+              >
                 주제 확정하기
               </Button>
             )}
@@ -70,6 +76,7 @@ export default function TopicHeader(props: TopicHeaderProps) {
             <Button
               onClick={() => navigate(ROUTES.TOPICS_CREATE(props.gatheringId, props.meetingId))}
               disabled={!props.actions.canSuggest}
+              className="max-lg:flex-1 max-lg:bg-primary-150"
             >
               제안하기
             </Button>
@@ -81,7 +88,7 @@ export default function TopicHeader(props: TopicHeaderProps) {
 
       {/* 확정탭 */}
       {props.activeTab === 'CONFIRMED' && (
-        <div className="flex justify-between">
+        <div className="flex justify-between max-lg:flex-col max-lg:gap-small">
           <div className="flex flex-col gap-tiny">
             {props.progressStatus === 'POST' ? (
               // 약속 완료됨
@@ -89,7 +96,7 @@ export default function TopicHeader(props: TopicHeaderProps) {
                 <p className="flex items-center text-black typo-subtitle3 gap-tiny">
                   <Check size="20" /> 약속이 완료됐어요
                 </p>
-                <p className="typo-body4 text-grey-600">
+                <p className="typo-body4 text-grey-600 max-lg:hidden">
                   아래 주제들로 약속이 진행됐어요. 멤버들의 사전 의견을 참고해보세요.
                 </p>
               </>
@@ -99,7 +106,7 @@ export default function TopicHeader(props: TopicHeaderProps) {
                 <p className="flex items-center text-black typo-subtitle3 gap-tiny">
                   <Check size="20" /> 주제가 확정되었어요!
                 </p>
-                <p className="typo-body4 text-grey-600">
+                <p className="typo-body4 text-grey-600 max-lg:hidden">
                   나의 생각을 미리 정리해서 공유하면 다른 멤버들의 의견도 바로 확인할 수 있어요
                 </p>
               </>
@@ -115,19 +122,20 @@ export default function TopicHeader(props: TopicHeaderProps) {
           </div>
 
           {props.isParticipating && (
-            <div className="flex gap-xsmall">
+            <div className="flex gap-xsmall max-lg:gap-small">
               {props.actions.canViewPreOpinions ? (
                 <Button
                   variant="secondary"
                   outline
                   onClick={() => navigate(ROUTES.PRE_OPINIONS(props.gatheringId, props.meetingId))}
+                  className="max-lg:flex-1"
                 >
                   사전 의견 확인하기
                 </Button>
               ) : (
                 <Tooltip dismissable>
                   <TooltipTrigger asChild>
-                    <Button variant="secondary" outline disabled>
+                    <Button variant="secondary" outline disabled className="max-lg:flex-1">
                       사전 의견 확인하기
                     </Button>
                   </TooltipTrigger>
@@ -144,6 +152,7 @@ export default function TopicHeader(props: TopicHeaderProps) {
                   onClick={() =>
                     navigate(ROUTES.PRE_OPINION_WRITE(props.gatheringId, props.meetingId))
                   }
+                  className="max-lg:flex-1 max-lg:bg-primary-150"
                 >
                   사전 의견 작성하기
                 </Button>

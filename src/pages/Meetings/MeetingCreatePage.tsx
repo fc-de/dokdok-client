@@ -325,7 +325,7 @@ export default function MeetingCreatePage() {
                     )}
                   </div>
                   {errors?.bookId && (
-                    <p className="mt-tiny text-accent-300 text-body3">{errors.bookId}</p>
+                    <p className="mt-tiny text-accent-300 typo-body3">{errors.bookId}</p>
                   )}
                 </Container.Content>
               </Container>
@@ -350,7 +350,7 @@ export default function MeetingCreatePage() {
                   </Button>
 
                   {errors?.location && (
-                    <p className="text-accent-300 text-body3 mt-xtiny">{errors.location}</p>
+                    <p className="text-accent-300 typo-body3 mt-xtiny">{errors.location}</p>
                   )}
                 </Container.Content>
               </Container>
@@ -431,7 +431,7 @@ export default function MeetingCreatePage() {
                     </Card>
                   )}
                   {errors?.schedule && (
-                    <p className="text-accent-300 text-body3 mt-xtiny">{errors.schedule}</p>
+                    <p className="text-accent-300 typo-body3 mt-xtiny">{errors.schedule}</p>
                   )}
                 </Container.Content>
               </Container>
