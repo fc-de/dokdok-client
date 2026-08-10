@@ -26,7 +26,10 @@ export default function ConfirmModalTopicCard({
   return (
     <div className="cursor-pointer" onClick={() => checkboxRef.current?.click()}>
       <Card
-        className={cn('flex gap-small items-start p-medium', isSelected && 'border-primary-200')}
+        className={cn(
+          'flex gap-small items-start p-medium',
+          isSelected && 'border-primary-200 max-lg:drop-shadow'
+        )}
       >
         <div className="flex items-center" onClick={(e) => e.stopPropagation()}>
           <NumberedCheckbox id={topicId.toString()} ref={checkboxRef} />

@@ -82,30 +82,26 @@ export default function ConfirmTopicModal({
   return (
     <Modal open={open} onOpenChange={handleClose}>
       <ModalContent variant="wide" onInteractOutside={(e) => e.preventDefault()}>
-        <ModalHeader className="items-start">
-          <ModalTitle>
-            <div className="flex flex-col gap-base">
-              <p>주제 확정하기</p>
-              <div className="flex justify-between items-center">
-                <p className="typo-subtitle4 text-grey-600">확정할 주제를 순서대로 선택해주세요</p>
-                {selectedTopicIds.length > 0 && (
-                  <TextButton className="-mr-base" onClick={resetSelected}>
-                    전체해제
-                  </TextButton>
-                )}
-              </div>
-            </div>
-          </ModalTitle>
+        <ModalHeader mobileLeftAction="back">
+          <ModalTitle>주제 확정하기</ModalTitle>
         </ModalHeader>
 
         <ModalBody className="flex flex-col gap-base">
+          <div className="flex justify-between items-center">
+            <p className="typo-subtitle4 text-grey-600">확정할 주제를 순서대로 선택해주세요</p>
+            {selectedTopicIds.length > 0 && (
+              <TextButton className="" onClick={resetSelected}>
+                전체해제
+              </TextButton>
+            )}
+          </div>
           {isLoading ? (
             <TopicListSkeleton count={5} />
           ) : (
             <NumberedCheckboxGroup
               value={selectedTopicIds}
               onChange={setSelectedTopicIds}
-              className="flex flex-col gap-small"
+              className="flex flex-col gap-small max-lg:gap-xsmall"
             >
               {topics.map((topic) => (
                 <ConfirmModalTopicCard
@@ -122,14 +118,14 @@ export default function ConfirmTopicModal({
           )}
         </ModalBody>
 
-        <ModalFooter>
-          <div className="flex gap-large justify-between items-start flex-1">
+        <ModalFooter className="max-lg:border-0 max-lg:shadow-bottom">
+          <div className="flex gap-large justify-between items-start flex-1 max-lg:flex-col max-lg:gap-base">
             <p className="typo-body4 text-grey-700 shrink-0">
               선택 <span className="typo-body3 text-black">{selectedTopicIds.length}</span>개
             </p>
             <Button
               size="medium"
-              className="w-full"
+              className="w-full max-lg:h-[54px]"
               disabled={selectedTopicIds.length === 0 || confirmMutation.isPending}
               onClick={handleConfirm}
             >
