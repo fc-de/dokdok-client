@@ -9,6 +9,7 @@ import {
   Input,
   Select,
   Textarea,
+  TextButton,
 } from '@/shared/ui'
 
 import type { UseOthersPerspectiveReturn } from '../hooks/useOthersPerspective'
@@ -49,8 +50,13 @@ export default function OthersPerspectiveSection({
 
   return (
     <section>
-      <Container className="gap-large">
-        <div className="flex justify-between items-center">
+      {/* 모바일: 타이틀을 카드 바깥에 노출 */}
+      <h3 className="hidden max-lg:block text-black typo-heading3 mb-medium max-lg:typo-subtitle2">
+        타인의 관점
+      </h3>
+
+      <Container className="gap-large max-lg:gap-medium max-lg:bg-transparent max-lg:rounded-none max-lg:p-0 max-lg:shadow-none">
+        <div className="flex justify-between items-center max-lg:hidden">
           <h3 className="text-black typo-heading3">타인의 관점</h3>
           <button
             type="button"
@@ -61,7 +67,7 @@ export default function OthersPerspectiveSection({
             <X className="size-6 text-grey-600 cursor-pointer" />
           </button>
         </div>
-        {items.map((item) => {
+        {items.map((item, index) => {
           const isPartial = form.isItemPartial(item.id)
           const speakerError = showErrors && isPartial && item.speakerMemberId === null
           const topicError = showErrors && isPartial && item.topicId === null
@@ -77,8 +83,26 @@ export default function OthersPerspectiveSection({
               className="flex flex-col gap-base rounded-small bg-grey-100 border border-grey-300 p-medium"
               {...(showErrors && isPartial ? { 'data-field-error': '' } : {})}
             >
+              {/* 모바일: 항목 순번 + 삭제하기 */}
+              <div className="hidden max-lg:flex justify-between items-center">
+                <span className="text-black typo-body2">관점{index + 1}</span>
+                <TextButton
+                  onClick={() => {
+                    if (items.length === 1) {
+                      onClose()
+                    } else {
+                      removeItem(item.id)
+                    }
+                  }}
+                  className="text-grey-500 typo-m-caption2 hover:text-black"
+                  aria-label={`관점${index + 1} 삭제`}
+                >
+                  삭제하기
+                </TextButton>
+              </div>
+
               <div className="flex flex-col gap-small">
-                <span className="text-grey-600 typo-body4">누가 말했나요?</span>
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">누가 말했나요?</span>
                 <Select
                   placeholder="멤버를 선택하세요"
                   className={`w-full md:max-w-full bg-white ${speakerError ? 'border-accent-300' : 'border-grey-300'}`}
@@ -109,7 +133,9 @@ export default function OthersPerspectiveSection({
               </div>
 
               <div className="flex flex-col gap-small">
-                <span className="text-grey-600 typo-body4">어떤 주제에서 나온 의견인가요?</span>
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">
+                  어떤 주제에서 나온 의견인가요?
+                </span>
                 <Select
                   placeholder="주제를 선택하세요"
                   className={`w-full md:max-w-full bg-white ${topicError ? 'border-accent-300' : 'border-grey-300'}`}
@@ -128,7 +154,9 @@ export default function OthersPerspectiveSection({
               </div>
 
               <div className="flex flex-col gap-small">
-                <span className="text-grey-600 typo-body4">어떤 의견이었나요?</span>
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">
+                  어떤 의견이었나요?
+                </span>
                 <Input
                   placeholder="의견의 내용을 작성해주세요"
                   value={item.opinion}
@@ -144,7 +172,7 @@ export default function OthersPerspectiveSection({
               </div>
 
               <div className="flex flex-col gap-small">
-                <span className="text-grey-600 typo-body4">
+                <span className="text-grey-600 typo-body4 max-lg:typo-body3">
                   이 의견이 나에게 어떤 영향을 주었나요?
                 </span>
                 <Textarea
@@ -162,13 +190,16 @@ export default function OthersPerspectiveSection({
                 />
               </div>
 
-              <div className="flex justify-end">
+              <div className="flex justify-end max-lg:hidden">
                 <button
                   type="button"
                   className="text-grey-400 hover:text-accent-300 transition-colors"
                   onClick={() => {
-                    removeItem(item.id)
-                    if (items.length === 1) onClose()
+                    if (items.length === 1) {
+                      onClose()
+                    } else {
+                      removeItem(item.id)
+                    }
                   }}
                   aria-label="관점 삭제"
                 >

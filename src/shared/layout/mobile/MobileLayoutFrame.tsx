@@ -73,7 +73,9 @@ export default function MobileLayoutFrame({
         className={cn(
           !preview && 'max-lg:mobile-frame',
           hasMainNavigation && !preview && 'pt-13 lg:pt-0',
-          hasScreenHeader && !preview && 'pt-12.25 lg:pt-0',
+          hasScreenHeader &&
+            !preview &&
+            (subtitle ? 'pt-17 lg:pt-0' : 'pt-mobile-header-height lg:pt-0'),
           hasMainNavigation &&
             'pb-[calc(var(--spacing-mobile-bottom-nav-height)+env(safe-area-inset-bottom))] lg:pb-0',
           hasBottomCTA && 'pb-[calc(5.375rem+env(safe-area-inset-bottom))] lg:pb-0',

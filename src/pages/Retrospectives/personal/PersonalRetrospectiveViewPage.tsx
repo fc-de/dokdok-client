@@ -35,10 +35,14 @@ export default function PersonalRetrospectiveViewPage() {
   if (!isValidIds) return null
 
   const handleDelete = async () => {
-    const confirmed = await openConfirm('개인 회고 삭제', '작성한 개인 회고를 삭제하시겠습니까?', {
-      confirmText: '삭제',
-      variant: 'danger',
-    })
+    const confirmed = await openConfirm(
+      '삭제를 진행할까요?',
+      '개인 회고를 삭제하면 책장의 기록도 삭제돼요. \n이 과정은 되돌릴 수 없어요. 삭제를 진행할까요?',
+      {
+        confirmText: '삭제',
+        variant: 'danger',
+      }
+    )
     if (!confirmed) return
 
     deleteRetrospective(meetingId, {
@@ -98,6 +102,7 @@ export default function PersonalRetrospectiveViewPage() {
           </PopoverContent>
         </Popover>
       }
+      headerDisableShadow
       className="min-h-dvh lg:min-h-0"
     >
       <SubPageHeader
@@ -136,7 +141,7 @@ export default function PersonalRetrospectiveViewPage() {
       </div>
 
       <div className="flex-1 pb-large">
-        <div className="mx-auto max-w-layout-max px-layout-padding">
+        <div className="mx-auto max-w-layout-max px-layout-padding max-lg:px-5">
           {isLoading && (
             <div className="flex justify-center py-xlarge">
               <Spinner />
@@ -149,7 +154,7 @@ export default function PersonalRetrospectiveViewPage() {
             </p>
           )}
 
-          {data && <PersonalRetrospectiveViewContent data={data} />}
+          {data && <PersonalRetrospectiveViewContent data={data} hasSubtitle={!!headerSubtitle} />}
         </div>
       </div>
     </MobileLayoutFrame>
