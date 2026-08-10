@@ -3,9 +3,6 @@
  * @description 약속 승인 아이템 컴포넌트
  */
 
-import { Check } from 'lucide-react'
-import { useState } from 'react'
-
 import {
   formatDateTime,
   type MeetingApprovalItemType,
@@ -13,15 +10,6 @@ import {
   useDeleteMeeting,
   useRejectMeeting,
 } from '@/features/meetings'
-import {
-  BottomSheet,
-  BottomSheetBody,
-  BottomSheetClose,
-  BottomSheetContent,
-  BottomSheetDescription,
-  BottomSheetFooter,
-  BottomSheetTitle,
-} from '@/shared/ui/BottomSheet'
 import { Button } from '@/shared/ui/Button'
 import { useGlobalModalStore } from '@/store'
 
@@ -48,23 +36,20 @@ export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprov
   const isPending =
     confirmMutation.isPending || rejectMutation.isPending || deleteMutation.isPending
   const { openConfirm, openError } = useGlobalModalStore()
-  const [isApproveSheetOpen, setIsApproveSheetOpen] = useState(false)
 
-  const approveMeeting = () => {
-    setIsApproveSheetOpen(false)
+  const handleApprove = async () => {
+    if (isPending) return
+    const confirmed = await openConfirm(
+      '약속을 승인할까요?',
+      '승인하면 모임원들에게 약속이 공유돼요.\n승인 후에는 취소할 수 없어요.',
+      { confirmText: '승인', icon: 'check' }
+    )
+    if (!confirmed) return
 
     confirmMutation.mutate(meetingId, {
       //Todo : 동시간에 승인할 수 없다고 별도로 알려주면 좋을듯
       onError: (error) => openError('에러', error.userMessage),
     })
-  }
-
-  const handleApprove = async () => {
-    if (isPending) return
-    const confirmed = await openConfirm('약속 승인', '약속을 승인 하시겠습니까?')
-    if (!confirmed) return
-
-    approveMeeting()
   }
 
   const handleReject = async () => {
@@ -125,16 +110,7 @@ export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprov
               size="small"
               onClick={handleApprove}
               disabled={isPending}
-              className="max-lg:hidden"
-            >
-              승인
-            </Button>
-            <Button
-              variant="primary"
-              size="small"
-              onClick={() => setIsApproveSheetOpen(true)}
-              disabled={isPending}
-              className="hidden max-lg:h-12 max-lg:flex-1 max-lg:typo-m-subtitle1"
+              className="max-lg:h-12 max-lg:flex-1 max-lg:typo-m-subtitle1"
             >
               승인
             </Button>
@@ -145,42 +121,6 @@ export default function MeetingApprovalItem({ item, gatheringId }: MeetingApprov
           </Button>
         )}
       </div>
-
-      <BottomSheet open={isApproveSheetOpen} onOpenChange={setIsApproveSheetOpen}>
-        <BottomSheetContent className="max-h-none">
-          <BottomSheetBody className="flex-none px-5 pt-7 pb-10 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-primary-100 text-primary-400">
-              <Check aria-hidden className="size-7" strokeWidth={3} />
-            </div>
-            <BottomSheetTitle className="mt-6 text-black max-lg:typo-m-heading2">
-              약속을 승인할까요?
-            </BottomSheetTitle>
-            <BottomSheetDescription className="mt-4 whitespace-pre-line text-grey-600 max-lg:typo-m-body1 max-lg:leading-6">
-              승인하면 모임원들에게 약속이 공유돼요.\n승인 후에는 취소할 수 없어요.
-            </BottomSheetDescription>
-          </BottomSheetBody>
-          <BottomSheetFooter className="px-5 pt-0">
-            <BottomSheetClose asChild>
-              <Button
-                variant="secondary"
-                size="large"
-                className="flex-1 max-lg:h-12 max-lg:bg-grey-100 max-lg:typo-m-subtitle1"
-              >
-                취소
-              </Button>
-            </BottomSheetClose>
-            <Button
-              variant="primary"
-              size="large"
-              className="flex-1 max-lg:h-12 max-lg:typo-m-subtitle1"
-              onClick={approveMeeting}
-              disabled={isPending}
-            >
-              승인
-            </Button>
-          </BottomSheetFooter>
-        </BottomSheetContent>
-      </BottomSheet>
     </li>
   )
 }

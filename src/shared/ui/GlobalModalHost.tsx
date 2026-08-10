@@ -9,6 +9,7 @@
  */
 
 import CircleAlertIcon from '@/shared/assets/icon/circle-alert.svg'
+import CircleCheckIcon from '@/shared/assets/icon/circle-check.svg'
 import { useDevice } from '@/shared/hooks/useDevice'
 import {
   BottomSheet,
@@ -58,7 +59,7 @@ import { useGlobalModalStore } from '@/store'
  * ```
  */
 export function GlobalModalHost() {
-  const { isOpen, title, description, buttons, close, mobileLayout } = useGlobalModalStore()
+  const { isOpen, title, description, buttons, close, mobileLayout, icon } = useGlobalModalStore()
   const { isMobile } = useDevice()
 
   if (!isOpen) {
@@ -76,14 +77,16 @@ export function GlobalModalHost() {
     return (
       <BottomSheet open={isOpen} onOpenChange={handleOpenChange}>
         <BottomSheetContent>
-          <BottomSheetBody className="flex flex-col items-center text-center py-large">
-            <img src={CircleAlertIcon} alt="" />
-            <BottomSheetTitle className="mb-xsmall typo-m-subtitle1 text-black">
-              {title}
-            </BottomSheetTitle>
-            <BottomSheetDescription className="whitespace-pre-line typo-m-body3 text-grey-700">
-              {description}
-            </BottomSheetDescription>
+          <BottomSheetBody className="flex flex-col items-center text-center py-large gap-base">
+            <img src={icon === 'check' ? CircleCheckIcon : CircleAlertIcon} alt="" />
+            <div className="flex flex-col gap-xsmal">
+              <BottomSheetTitle className="mb-xsmall typo-m-subtitle1 text-black">
+                {title}
+              </BottomSheetTitle>
+              <BottomSheetDescription className="whitespace-pre-line typo-m-body3 text-grey-700">
+                {description}
+              </BottomSheetDescription>
+            </div>
           </BottomSheetBody>
           <BottomSheetFooter>
             {buttons.map((button, index) => (

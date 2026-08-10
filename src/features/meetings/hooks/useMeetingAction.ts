@@ -57,7 +57,8 @@ export function useMeetingAction(
       case 'CAN_CANCEL': {
         const confirmed = await openConfirm(
           '참가 취소하기',
-          '참가를 취소하면 약속에서 내가 한 활동이 모두 삭제됩니다.\n약속 참가를 취소하시겠어요?'
+          '참가를 취소하면 약속에서 내가 한 활동이 모두 삭제됩니다.\n약속 참가를 취소하시겠어요?',
+          { confirmText: '확인', variant: 'danger' }
         )
         if (!confirmed) return
 
