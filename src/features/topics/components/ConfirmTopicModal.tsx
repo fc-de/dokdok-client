@@ -57,7 +57,7 @@ export default function ConfirmTopicModal({
     const confirmed = await openConfirm(
       '주제 확정',
       `한 번 확정하면 이후에는 순서를 바꾸거나 주제를 추가하기 어려워요. \n이대로 확정할까요?`,
-      { confirmText: '확정하기' }
+      { confirmText: '확정하기', icon: 'check' }
     )
 
     if (!confirmed) return

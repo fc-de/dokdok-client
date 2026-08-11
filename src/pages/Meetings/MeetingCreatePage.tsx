@@ -228,7 +228,7 @@ export default function MeetingCreatePage() {
       : isLeader
         ? '약속을 생성하시겠습니까?'
         : '모임장이 승인하면 약속이 만들어질 거예요.'
-    const confirmed = await openConfirm(confirmTitle, confirmMessage)
+    const confirmed = await openConfirm(confirmTitle, confirmMessage, { icon: 'check' })
     if (!confirmed) return
 
     if (isEditMode && meetingId) {
